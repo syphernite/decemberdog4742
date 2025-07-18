@@ -6,32 +6,27 @@ const Gallery = () => {
 
   const images = [
     {
-      url: 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg',
-      alt: 'Thai Riverside riverside dining area',
-      caption: 'Scenic riverside dining'
+      url: '/Thai1.jpg',
+      alt: 'Thai Riverside plated duck',
+      caption: 'Plated Crispy Duck w/ Noodles'
     },
     {
-      url: 'https://images.pexels.com/photos/1640774/pexels-photo-1640774.jpeg',
-      alt: 'Signature Pad Thai dish',
-      caption: 'Authentic Pad Thai'
-    },
-    {
-      url: 'https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg',
+      url: '/Thai4.jpg',
       alt: 'Shrimp Paradise in pineapple',
       caption: 'Shrimp Paradise - Chef Special'
     },
     {
-      url: 'https://images.pexels.com/photos/1640769/pexels-photo-1640769.jpeg',
+      url: '/Thai5.jpg',
       alt: 'Dog-friendly patio seating',
       caption: 'Dog-friendly patio'
     },
     {
-      url: 'https://images.pexels.com/photos/1640775/pexels-photo-1640775.jpeg',
-      alt: 'Thai green curry with vegetables',
-      caption: 'Fresh Green Curry'
+      url: '/Thai6.jpg',
+      alt: 'Bankok Duck',
+      caption: 'Savory Thai Duck'
     },
     {
-      url: 'https://images.pexels.com/photos/1640773/pexels-photo-1640773.jpeg',
+      url: '/Thai3.jpg',
       alt: 'Cozy indoor dining area',
       caption: 'Cozy indoor atmosphere'
     }
