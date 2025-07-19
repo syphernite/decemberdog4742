@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: project/landingpage/thairiverside
+        working-directory: project/thairiverside
 
     steps:
       - name: Checkout Repository
@@ -30,4 +30,4 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
-          folder: project/landingpage/thairiverside/dist
+          folder: project/thairiverside/dist
