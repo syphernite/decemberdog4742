@@ -1,32 +1,39 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
+// Import images from src/assets
+import Thai1 from '../assets/Thai1.jpg';
+import Thai4 from '../assets/Thai4.jpg';
+import Thai5 from '../assets/Thai5.jpg';
+import Thai6 from '../assets/Thai6.jpg';
+import Thai3 from '../assets/Thai3.jpg';
+
 const Gallery = () => {
   const [currentImage, setCurrentImage] = useState(0);
 
   const images = [
     {
-      url: '/Thai1.jpg',
+      url: Thai1,
       alt: 'Thai Riverside plated duck',
       caption: 'Plated Crispy Duck w/ Noodles'
     },
     {
-      url: '/Thai4.jpg',
+      url: Thai4,
       alt: 'Shrimp Paradise in pineapple',
       caption: 'Shrimp Paradise - Chef Special'
     },
     {
-      url: '/Thai5.jpg',
+      url: Thai5,
       alt: 'Dog-friendly patio seating',
       caption: 'Dog-friendly patio'
     },
     {
-      url: '/Thai6.jpg',
+      url: Thai6,
       alt: 'Bankok Duck',
       caption: 'Savory Thai Duck'
     },
     {
-      url: '/Thai3.jpg',
+      url: Thai3,
       alt: 'Cozy indoor dining area',
       caption: 'Cozy indoor atmosphere'
     }
