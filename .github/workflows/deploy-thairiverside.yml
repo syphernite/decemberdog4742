@@ -3,7 +3,7 @@ name: Deploy Thai Riverside
 on:
   push:
     branches:
-      - main  # or your default branch name
+      - main
 
 jobs:
   build-and-deploy:
@@ -19,15 +19,15 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-        working-directory: thairiverside
+        working-directory: project/thairiverside
 
       - name: Build
         run: npm run build
-        working-directory: thairiverside
+        working-directory: project/thairiverside
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: thairiverside/dist
+          publish_dir: project/thairiverside/dist
           publish_branch: gh-pages-thairiverside
