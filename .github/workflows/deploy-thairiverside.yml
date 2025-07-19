@@ -7,10 +7,6 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: project/thairiverside
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -22,9 +18,11 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+        working-directory: project/thairiverside
 
       - name: Build the project
         run: npm run build
+        working-directory: project/thairiverside
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
