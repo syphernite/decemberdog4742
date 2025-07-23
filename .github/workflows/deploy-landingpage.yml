@@ -29,7 +29,7 @@ jobs:
       - name: Copy to deploy folder
         run: |
           mkdir -p ../../__deploy
-          cp -r dist/* ../../__deploy/
+          cp -a dist/. ../../__deploy/
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
