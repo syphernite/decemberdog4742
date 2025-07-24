@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: Deploy Thai Riverside
 
 on:
   push:
@@ -7,6 +7,10 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: project/thairiverside
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -18,14 +22,17 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-        working-directory: project/thairiverside
 
       - name: Build the project
         run: npm run build
-        working-directory: project/thairiverside
+
+      - name: Copy to deploy folder
+        run: |
+          mkdir -p ../../__deploy/thairiverside
+          cp -a dist/. ../../__deploy/thairiverside/
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
-          folder: project/thairiverside/dist
+          folder: project/__deploy

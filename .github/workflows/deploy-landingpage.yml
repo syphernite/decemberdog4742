@@ -36,5 +36,3 @@ jobs:
         with:
           branch: gh-pages
           folder: project/__deploy
-
-test deploy
