@@ -31,10 +31,11 @@ jobs:
           mkdir -p ../../__deploy
           cp -a dist/. ../../__deploy/
 
+      - name: Debug - List __deploy folder after copy
+        run: ls -al ../../__deploy
+
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
           folder: project/__deploy
-
-          
