@@ -31,7 +31,7 @@ jobs:
           mkdir -p ../../__deploy
           cp -a dist/. ../../__deploy/
 
-      - name: Debug - List __deploy folder after copy
+      - name: Debug - List __deploy folder before deploy
         run: ls -al ../../__deploy
 
       - name: Deploy to GitHub Pages
