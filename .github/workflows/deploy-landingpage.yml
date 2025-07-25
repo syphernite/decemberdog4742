@@ -26,6 +26,9 @@ jobs:
       - name: Build the project
         run: npm run build
 
+      - name: List everything after build
+        run: find . -type f
+
       - name: Copy to deploy folder
         run: |
           mkdir -p ../../__deploy
