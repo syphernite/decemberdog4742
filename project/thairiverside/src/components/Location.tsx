@@ -5,8 +5,8 @@ const Location = () => {
   const hours = [
     { day: 'Tuesday - Friday', time: '11am - 2pm, 4pm - 8pm' },
     { day: 'Saturday', time: '11am - 3pm, 5pm - 8pm' },
-    { day: 'Sunday', time: '11am - 3pm' },
-    { day: 'Monday', time: 'Closed' },
+    { day: 'Sunday', time: '11am - 3pm, 5pm - 8pm' },
+    { day: 'Monday', time: '11am - 2pm, 4pm - 8pm' },
   ];
 
   return (
