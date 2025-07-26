@@ -10,9 +10,7 @@ const Contact = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
     console.log('Form submitted:', formData);
-    // Reset form
     setFormData({ name: '', email: '', message: '' });
   };
 
@@ -62,7 +60,7 @@ const Contact = () => {
                   className="group bg-gradient-to-r from-accent-500 to-warm-500 hover:from-accent-600 hover:to-warm-600 text-white px-12 py-5 rounded-full text-xl font-bold transition-all duration-300 transform hover:scale-105 hover:shadow-warm-lg inline-block relative overflow-hidden"
                 >
                   <span className="relative z-10">
-                  Order on DoorDash
+                    Order on DoorDash
                   </span>
                   <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </a>
@@ -77,10 +75,10 @@ const Contact = () => {
                       <Phone className="w-6 h-6 text-accent-600" />
                     </div>
                     <a 
-                      href="tel:+1423555-0123"
+                      href="tel:+14237651570"
                       className="text-gray-700 hover:text-accent-600 transition-colors font-semibold text-lg"
                     >
-                      (423) 555-0123
+                      +1 (423) 765-1570
                     </a>
                   </div>
                   
@@ -111,13 +109,17 @@ const Contact = () => {
                 <h3 className="font-bold text-gray-900 mb-6 text-xl font-display">Follow Us</h3>
                 <div className="flex space-x-6">
                   <a
-                    href="#"
+                    href="https://facebook.com/ThaiRiversideTN"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="group flex items-center justify-center w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-2xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-110 shadow-lg hover:shadow-xl"
                   >
                     <Facebook className="w-6 h-6 group-hover:scale-110 transition-transform" />
                   </a>
                   <a
-                    href="#"
+                    href="https://www.instagram.com/thairiverside?igsh=eml4cmlkWRrZmVl"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="group flex items-center justify-center w-14 h-14 bg-gradient-to-br from-pink-500 to-pink-600 text-white rounded-2xl hover:from-pink-600 hover:to-pink-700 transition-all duration-300 transform hover:scale-110 shadow-lg hover:shadow-xl"
                   >
                     <Instagram className="w-6 h-6 group-hover:scale-110 transition-transform" />
@@ -181,7 +183,7 @@ const Contact = () => {
                   className="group w-full bg-gradient-to-r from-accent-500 to-warm-500 hover:from-accent-600 hover:to-warm-600 text-white py-5 px-8 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-warm-lg relative overflow-hidden"
                 >
                   <span className="relative z-10">
-                  Send Message
+                    Send Message
                   </span>
                   <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </button>
