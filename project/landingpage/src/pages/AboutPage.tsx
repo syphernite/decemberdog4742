@@ -26,34 +26,6 @@ const AboutPage = () => {
     }
   ];
 
-  const team = [
-    {
-      name: "Alex Chen",
-      role: "Founder & Lead Developer",
-      description: "Full-stack developer with 8+ years building high-performance websites for small businesses.",
-      image: "https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=400"
-    },
-    {
-      name: "Sarah Rodriguez",
-      role: "UI/UX Designer",
-      description: "Design expert focused on creating beautiful, conversion-optimized user experiences.",
-      image: "https://images.pexels.com/photos/3756679/pexels-photo-3756679.jpeg?auto=compress&cs=tinysrgb&w=400"
-    },
-    {
-      name: "Mike Johnson",
-      role: "Marketing Strategist",
-      description: "Digital marketing specialist helping businesses maximize their online presence and ROI.",
-      image: "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400"
-    }
-  ];
-
-  const stats = [
-    { number: "150+", label: "Websites Delivered" },
-    { number: "98%", label: "Client Satisfaction" },
-    { number: "3 Years", label: "Average Partnership" },
-    { number: "200%", label: "Avg. Traffic Increase" }
-  ];
-
   return (
     <div className="pt-16 lg:pt-20">
       {/* Header */}
