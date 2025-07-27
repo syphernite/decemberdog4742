@@ -22,15 +22,19 @@ jobs:
 
       - name: Build all projects into __deploy
         run: |
-          folders=("landingpage" "thairiverside") # Add more as needed
+          folders=("landingpage" "thairiverside")
           mkdir -p project/__deploy
           for folder in "${folders[@]}"; do
             echo "🔨 Building $folder..."
             cd project/$folder
             npm install
             npm run build
-            mkdir -p ../../__deploy/$folder
-            cp -a dist/. ../../__deploy/$folder/
+            if [ "$folder" = "landingpage" ]; then
+              cp -a dist/. ../../__deploy/
+            else
+              mkdir -p ../../__deploy/$folder
+              cp -a dist/. ../../__deploy/$folder/
+            fi
             cd ../..
           done
 
@@ -39,4 +43,3 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: project/__deploy
-
