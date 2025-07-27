@@ -22,7 +22,7 @@ jobs:
 
       - name: Build all projects into __deploy
         run: |
-          folders=("landingpage" "client1" "client2") # Add more as needed
+          folders=("landingpage" "thairiverside") # Add more as needed
           mkdir -p project/__deploy
           for folder in "${folders[@]}"; do
             echo "🔨 Building $folder..."
