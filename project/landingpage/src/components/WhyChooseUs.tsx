@@ -1,66 +1,59 @@
 import React from 'react';
-import { Zap, Smartphone, Search, Palette } from 'lucide-react';
+import { Clock, Smartphone, Headphones, Shield } from 'lucide-react';
 
-const features = [
-  {
-    icon: Zap,
-    title: "Speed",
-    description: "Lightning-fast loading times that keep your visitors engaged.",
-    animation: "animate-pulse"
-  },
-  {
-    icon: Smartphone,
-    title: "Mobile-First",
-    description: "Designed for mobile, optimized for all devices.",
-    animation: "animate-bounce"
-  },
-  {
-    icon: Search,
-    title: "SEO Ready",
-    description: "Built with search engine optimization in mind.",
-    animation: "animate-pulse"
-  },
-  {
-    icon: Palette,
-    title: "Fully Custom",
-    description: "Tailored designs that reflect your unique brand.",
-    animation: "animate-bounce"
-  }
-];
+const WhyChooseUs: React.FC = () => {
+  const features = [
+    {
+      icon: Clock,
+      title: 'Fast Turnaround',
+      description: 'Most projects completed within 7-14 days. We respect your timeline and deliver on our promises.',
+    },
+    {
+      icon: Smartphone,
+      title: 'Mobile-Optimized',
+      description: 'Every website is built mobile-first, ensuring perfect performance across all devices and screen sizes.',
+    },
+    {
+      icon: Headphones,
+      title: 'Real Support',
+      description: 'Direct access to your developer. No chatbots or outsourced support – just genuine, helpful assistance.',
+    },
+    {
+      icon: Shield,
+      title: 'Secure & Reliable',
+      description: 'Built with modern security practices and hosted on reliable infrastructure for peace of mind.',
+    },
+  ];
 
-const WhyChooseUs = () => {
   return (
-    <section className="py-20 px-4 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-900/10 to-transparent"></div>
-      
-      <div className="max-w-6xl mx-auto relative z-10">
+    <section id="why-choose-us" className="py-20 bg-white dark:bg-slate-900">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-300">
-            Why Choose Us
+          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
+            Why Choose Built4You?
           </h2>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-            We combine cutting-edge technology with creative excellence to deliver exceptional results.
+          <p className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto">
+            We're not just another web agency. We're your dedicated partner in building a strong online presence.
           </p>
         </div>
-        
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
           {features.map((feature, index) => (
             <div
               key={index}
-              className="group text-center p-8 rounded-2xl bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-lg border border-white/10 hover:border-green-400/50 transition-all duration-500 hover:transform hover:scale-105 hover:shadow-xl hover:shadow-green-500/20"
+              className="group bg-slate-50 dark:bg-slate-800 p-8 rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-2 border border-slate-100 dark:border-slate-700"
             >
-              <div className="relative mb-6">
-                <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-teal-400 rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-300">
-                  <feature.icon className={`w-10 h-10 text-black ${feature.animation}`} />
+              <div className="flex items-center justify-center mb-6">
+                <div className="p-3 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg group-hover:bg-emerald-200 dark:group-hover:bg-emerald-900/50 transition-colors duration-300">
+                  <feature.icon className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
                 </div>
-                <div className="absolute inset-0 bg-gradient-to-br from-green-400/20 to-teal-400/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
               
-              <h3 className="text-2xl font-bold mb-4 text-white group-hover:text-green-300 transition-colors duration-300">
+              <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-4 text-center">
                 {feature.title}
               </h3>
               
-              <p className="text-gray-300 leading-relaxed">
+              <p className="text-slate-600 dark:text-slate-300 text-center leading-relaxed">
                 {feature.description}
               </p>
             </div>

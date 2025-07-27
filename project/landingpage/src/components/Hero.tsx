@@ -1,72 +1,86 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowRight } from 'lucide-react';
-import AnimatedGrid from './AnimatedGrid';
-import Logo from './Logo';
+import { ArrowRight, Play } from 'lucide-react';
 
-const Hero = () => {
-  const [isVisible, setIsVisible] = useState(false);
+const Hero: React.FC = () => {
+  const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
-    setIsVisible(true);
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-black via-purple-900/20 to-blue-900/30"></div>
+    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Parallax Background */}
+      <div 
+        className="absolute inset-0 bg-gradient-to-br from-slate-50 via-emerald-50 to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900"
+        style={{
+          transform: `translateY(${scrollY * 0.5}px)`,
+        }}
+      />
       
-      {/* Animated Grid */}
-      <AnimatedGrid />
-      
-      {/* Content */}
-      <div className="relative z-10 text-center px-4 max-w-6xl mx-auto">
-        {/* Logo */}
-        <div className={`mb-8 transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-          <Logo />
-        </div>
-        
-        {/* Main Slogan */}
-        <h1 className={`text-5xl md:text-7xl lg:text-8xl font-bold mb-8 transform transition-all duration-1000 delay-300 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-200 to-blue-200 drop-shadow-2xl">
-            Your Vision.
-          </span>
-          <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-green-300 to-teal-300 drop-shadow-2xl neon-glow">
-            Built 4 You.
-          </span>
-        </h1>
-        
-        {/* Subtitle */}
-        <p className={`text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed transform transition-all duration-1000 delay-500 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-          Premium web design agency crafting stunning digital experiences that convert visitors into customers.
-        </p>
-        
-        {/* CTA Button */}
-        <div className={`transform transition-all duration-1000 delay-700 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-          <button className="group relative inline-flex items-center px-8 py-4 text-lg font-semibold text-black bg-gradient-to-r from-green-400 to-teal-400 rounded-full overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-green-500/50 hover:scale-105 glow-button">
-            <span className="relative z-10 flex items-center">
-              Launch My Website
-              <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
-            </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-green-300 to-teal-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          </button>
-        </div>
+      {/* Decorative Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-emerald-200/20 dark:bg-emerald-400/10 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-200/20 dark:bg-blue-400/10 rounded-full blur-3xl" />
       </div>
-      
-      {/* Floating Particles */}
-      <div className="absolute inset-0 pointer-events-none">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 bg-white rounded-full animate-pulse"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${2 + Math.random() * 2}s`
-            }}
-          />
-        ))}
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="animate-fade-in-up">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 dark:text-white mb-6 leading-tight">
+            Custom Websites for
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-blue-600">
+              {' '}Small Businesses
+            </span>
+          </h1>
+          
+          <p className="text-xl sm:text-2xl text-slate-600 dark:text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+            Professional, fast-loading websites that grow your business. 
+            No templates, no compromises – just beautiful, custom web solutions built for you.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+            <button 
+              onClick={() => scrollToSection('pricing')}
+              className="group bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center space-x-2"
+            >
+              <span>Get Started</span>
+              <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
+            </button>
+            
+            <button 
+              onClick={() => scrollToSection('why-choose-us')}
+              className="group bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-800 text-slate-900 dark:text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 border border-slate-200 dark:border-slate-700 hover:shadow-lg flex items-center space-x-2 backdrop-blur-sm"
+            >
+              <Play className="h-5 w-5" />
+              <span>Learn More</span>
+            </button>
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-2xl mx-auto">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-emerald-600 dark:text-emerald-400">50+</div>
+              <div className="text-slate-600 dark:text-slate-400">Projects Delivered</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-emerald-600 dark:text-emerald-400">100%</div>
+              <div className="text-slate-600 dark:text-slate-400">Client Satisfaction</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-emerald-600 dark:text-emerald-400">7 Days</div>
+              <div className="text-slate-600 dark:text-slate-400">Average Delivery</div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
