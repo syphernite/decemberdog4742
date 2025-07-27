@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Set up Node.js
@@ -38,6 +38,9 @@ jobs:
             cd ../..
           done
 
+      - name: Copy CNAME for custom domain
+        run: echo 'built4you.org' > project/__deploy/CNAME
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
@@ -45,3 +48,4 @@ jobs:
           publish_dir: project/__deploy
           publish_branch: gh-pages
           force_orphan: true
+          commit_message: 'Deploy all projects to GitHub Pages'
