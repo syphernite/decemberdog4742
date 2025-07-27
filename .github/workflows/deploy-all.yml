@@ -27,7 +27,7 @@ jobs:
           for folder in "${folders[@]}"; do
             echo "🔨 Building $folder..."
             cd project/$folder
-            npm install
+            npm ci || npm install
             npm run build
             if [ "$folder" = "landingpage" ]; then
               cp -a dist/. ../../__deploy/
