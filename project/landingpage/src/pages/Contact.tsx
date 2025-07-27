@@ -28,15 +28,9 @@ const Contact: React.FC = () => {
 
   const contactInfo = [
     {
-      icon: Mail,
-      title: 'Email Us',
-      details: 'hello@built4you.dev',
-      description: 'Send us an email anytime',
-    },
-    {
       icon: Phone,
-      title: 'Call Us',
-      details: '(555) 123-4567',
+      title: 'Call or Text Us',
+      details: '(302) 551-7227',
       description: 'Mon-Fri from 9am to 6pm',
     },
     {
@@ -221,7 +215,7 @@ const Contact: React.FC = () => {
                   {isSubmitted ? (
                     <>
                       <CheckCircle className="h-5 w-5" />
-                      <span>Message Sent!</span>
+                      <span>Message Sent! Thank you for your interest!</span>
                     </>
                   ) : (
                     <>
