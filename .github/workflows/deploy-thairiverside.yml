@@ -34,8 +34,18 @@ jobs:
           mkdir -p $GITHUB_WORKSPACE/project/__deploy/thairiverside
           cp -a $GITHUB_WORKSPACE/project/thairiverside/dist/. $GITHUB_WORKSPACE/project/__deploy/thairiverside/
 
-      - name: Debug - List deploy folder
-        run: ls -al $GITHUB_WORKSPACE/project/__deploy/thairiverside
+      - name: Debug - List __deploy folder contents
+        run: |
+          echo "::group::Files in deploy folder"
+          find $GITHUB_WORKSPACE/project/__deploy -type f
+          echo "::endgroup::"
+
+      - name: Debug - Check if deploy folder exists
+        run: |
+          if [ ! -d "$GITHUB_WORKSPACE/project/__deploy" ]; then
+            echo "⛔ project/__deploy does not exist!"
+            exit 1
+          fi
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
