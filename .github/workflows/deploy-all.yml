@@ -1,17 +1,45 @@
-- name: Build all projects into __deploy
-  run: |
-    folders=("landingpage" "thairiverside")
-    mkdir -p project/__deploy
-    for folder in "${folders[@]}"; do
-      echo "🔨 Building $folder..."
-      cd project/$folder
-      npm install
-      npm run build
-      if [ "$folder" = "landingpage" ]; then
-        cp -a dist/. ../../__deploy/
-      else
-        mkdir -p ../../__deploy/$folder
-        cp -a dist/. ../../__deploy/$folder/
-      fi
-      cd ../..
-    done
+name: Deploy All Projects
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'project/**'
+      - '.github/workflows/deploy-all.yml'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Build all projects into __deploy
+        run: |
+          folders=("landingpage" "thairiverside")
+          mkdir -p project/__deploy
+          for folder in "${folders[@]}"; do
+            echo "🔨 Building $folder..."
+            cd project/$folder
+            npm install
+            npm run build
+            if [ "$folder" = "landingpage" ]; then
+              cp -a dist/. ../../__deploy/
+            else
+              mkdir -p ../../__deploy/$folder
+              cp -a dist/. ../../__deploy/$folder/
+            fi
+            cd ../..
+          done
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: project/__deploy
