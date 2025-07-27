@@ -36,11 +36,12 @@ jobs:
               cp -a dist/. ../../__deploy/$folder/
             fi
             cd ../..
-          done
+      
+      - name: Copy CNAME into __deploy
+        run: echo 'built4you.org' > project/__deploy/CNAME
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: project/__deploy
-          publish_branch: gh-pages
