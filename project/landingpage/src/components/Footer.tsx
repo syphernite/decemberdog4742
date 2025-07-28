@@ -49,14 +49,9 @@ const Footer: React.FC = () => {
               Professional, fast, and built specifically for your success.
             </p>
             
-            <div className="space-y-3">
-              <div className="flex items-center space-x-3">
-                <Mail className="h-5 w-5 text-emerald-400" />
-                <span className="text-slate-300">hello@built4you.dev</span>
-              </div>
               <div className="flex items-center space-x-3">
                 <Phone className="h-5 w-5 text-emerald-400" />
-                <span className="text-slate-300">(555) 123-4567</span>
+                <span className="text-slate-300">(302) 551-7227</span>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin className="h-5 w-5 text-emerald-400" />
