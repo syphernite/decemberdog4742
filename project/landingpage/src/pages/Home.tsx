@@ -95,6 +95,3 @@ export default function Home() {
     </main>
   );
 }
-import "../styles/globals.css"; // Ensure global styles are imported
-import "../styles/tailwind.css"; // Ensure Tailwind CSS styles are imported
-import "../styles/pricing.css"; // Import the updated pricing styles  
