@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Set up Node.js
@@ -20,26 +20,28 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install & Build Projects
+      - name: Build all projects into __deploy
         run: |
-          folders=("landingpage" "thairiverside")
-          mkdir -p project/__deploy
-          for folder in "${folders[@]}"; do
-            echo "🔨 Building $folder..."
-            cd project/$folder
-            npm ci || npm install
-            npm run build
-            if [ "$folder" = "landingpage" ]; then
-              cp -a dist/. ../../__deploy/
-            else
-              mkdir -p ../../__deploy/$folder
-              cp -a dist/. ../../__deploy/$folder/
-            fi
-            cd ../..
-          done
+          cd project
+          rm -rf __deploy
+          mkdir __deploy
+          
+          echo "🔨 Building landingpage..."
+          cd landingpage
+          npm install
+          npm run build
+          cp -a dist/. ../__deploy/
+          cd ..
 
-      - name: Add CNAME
-        run: echo 'built4you.org' > project/__deploy/CNAME
+          echo "🔨 Building thairiverside..."
+          cd thairiverside
+          npm install
+          npm run build
+          mkdir -p ../__deploy/thairiverside
+          cp -a dist/. ../__deploy/thairiverside/
+          cd ..
+
+          echo 'built4you.org' > __deploy/CNAME
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
