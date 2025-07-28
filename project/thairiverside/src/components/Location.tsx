@@ -79,10 +79,10 @@ const Location = () => {
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-2">Phone</h3>
                     <a 
-                      href="tel:+1423555-0123"
+                      href="tel:+14237651570"
                       className="text-primary-600 hover:text-primary-700 transition-colors"
                     >
-                      (423) 555-0123
+                      (423) 765-1570
                     </a>
                   </div>
                 </div>
