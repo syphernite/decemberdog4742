@@ -182,8 +182,8 @@ const Contact: React.FC = () => {
                       className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white dark:bg-slate-700 text-slate-900 dark:text-white transition-colors duration-200"
                     >
                       <option value="">Select Budget Range</option>
-                      <option value="1000-2500">$1,000 - $2,500</option>
-                      <option value="2500-5000">$2,500 - $5,000</option>
+                      <option value="1000-2500">$299 - $599</option>
+                      <option value="2500-5000">$</option>
                       <option value="5000-10000">$5,000 - $10,000</option>
                       <option value="10000+">$10,000+</option>
                     </select>

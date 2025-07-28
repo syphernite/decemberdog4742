@@ -22,7 +22,7 @@ const Footer: React.FC = () => {
   // { name: 'Twitter', icon: Twitter, href: '#' },
     // { name: 'GitHub', icon: Github, href: '#' },
     // { name: 'LinkedIn', icon: Linkedin, href: '#' },
-  // ];
+  //];
 
   return (
     <footer className="bg-slate-900 dark:bg-slate-950 text-white">
@@ -95,21 +95,6 @@ const Footer: React.FC = () => {
             <p className="text-slate-400 text-sm mb-4 md:mb-0">
               © 2025 Built4You. All rights reserved.
             </p>
-            
-            <div className="flex items-center space-x-6">
-              <div className="flex space-x-4">
-                {socialLinks.map((social) => (
-                  <a
-                    key={social.name}
-                    href={social.href}
-                    className="p-2 bg-slate-800 hover:bg-emerald-600 rounded-lg transition-colors duration-200"
-                    aria-label={social.name}
-                  >
-                    <social.icon className="h-5 w-5" />
-                  </a>
-                ))}
-              </div>
-              
               <div className="flex space-x-6">
                 <button className="text-slate-400 hover:text-emerald-400 text-sm transition-colors duration-200">
                   Privacy Policy
@@ -120,7 +105,6 @@ const Footer: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
     </footer>
   );
 };
