@@ -1,4 +1,5 @@
 import React from "react";
+import Pricing from "../components/Pricing"; // ✅ This pulls in the updated plans
 
 export default function Home() {
   return (
@@ -8,9 +9,9 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           <h1 className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">Built4You</h1>
           <nav className="space-x-6 hidden md:block">
-            <a href='' className="hover:underline">Pricing</a>
-            <a href='' className="hover:underline">Why Choose Us</a>
-            <a href='' className="hover:underline">Contact</a>
+            <a href="#pricing" className="hover:underline">Pricing</a>
+            <a href="#why" className="hover:underline">Why Choose Us</a>
+            <a href="#contact" className="hover:underline">Contact</a>
           </nav>
         </div>
       </header>
@@ -24,54 +25,15 @@ export default function Home() {
           We build beautiful, responsive websites tailored to your business goals — fast, affordable, and hassle-free.
         </p>
         <a
-          href=''
+          href="#pricing"
           className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-md text-lg transition-all"
         >
           Get Started
         </a>
       </section>
 
-      {/* Pricing Section */}
-      <section id="pricing" className="py-20 bg-white dark:bg-gray-900">
-        <div className="max-w-6xl mx-auto px-4 text-center">
-          <h3 className="text-3xl font-bold mb-10">Simple, Transparent Pricing</h3>
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                title: "Starter",
-                price: "$299",
-                features: ["1 Page Site", "Mobile Friendly", "Basic Contact Form"],
-              },
-              {
-                title: "Standard",
-                price: "$599",
-                features: ["Up to 5 Pages", "Custom Design", "SEO Optimized"],
-              },
-              {
-                title: "Premium",
-                price: "$999",
-                features: ["10+ Pages", "Custom Features", "Ongoing Support"],
-              },
-            ].map((tier) => (
-              <div key={tier.title} className="border rounded-lg p-6 shadow-md dark:border-gray-700 bg-slate-50 dark:bg-gray-800">
-                <h4 className="text-xl font-semibold mb-2">{tier.title}</h4>
-                <p className="text-3xl font-bold text-indigo-600 dark:text-indigo-400 mb-4">{tier.price}</p>
-                <ul className="space-y-2 text-sm text-left mb-4">
-                  {tier.features.map((feature) => (
-                    <li key={feature}>✔ {feature}</li>
-                  ))}
-                </ul>
-                <a
-                  href=''
-                  className="block mt-auto bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition"
-                >
-                  Choose {tier.title}
-                </a>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* ✅ Updated Pricing Section */}
+      <Pricing />
 
       {/* Why Choose Us */}
       <section id="why" className="py-20 bg-slate-100 dark:bg-gray-800">
@@ -133,3 +95,6 @@ export default function Home() {
     </main>
   );
 }
+import "../styles/globals.css"; // Ensure global styles are imported
+import "../styles/tailwind.css"; // Ensure Tailwind CSS styles are imported
+import "../styles/pricing.css"; // Import the updated pricing styles  
