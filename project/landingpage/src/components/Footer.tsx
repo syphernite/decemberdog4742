@@ -18,11 +18,11 @@ const Footer: React.FC = () => {
     'Maintenance',
   ];
 
-  const socialLinks = [
-    { name: 'Twitter', icon: Twitter, href: '#' },
-    { name: 'GitHub', icon: Github, href: '#' },
-    { name: 'LinkedIn', icon: Linkedin, href: '#' },
-  ];
+  // const socialLinks = [
+  // { name: 'Twitter', icon: Twitter, href: '#' },
+    // { name: 'GitHub', icon: Github, href: '#' },
+    // { name: 'LinkedIn', icon: Linkedin, href: '#' },
+  // ];
 
   return (
     <footer className="bg-slate-900 dark:bg-slate-950 text-white">
