@@ -5,52 +5,62 @@ const Pricing: React.FC = () => {
   const plans = [
     {
       name: 'Starter',
-      price: '$1,200',
-      duration: 'one-time',
-      description: 'Perfect for small businesses getting started online',
+      price: '$350',
+      duration: 'One-time',
+      description: '',
       features: [
-        'Up to 5 pages',
-        'Mobile responsive design',
-        'Contact form integration',
-        'Basic SEO optimization',
-        'Social media links',
-        '30 days support',
+        '1-Page Website',
+        'Mobile-Responsive',
+        'Contact Form',
+        'Basic SEO',
       ],
       popular: false,
     },
     {
-      name: 'Standard',
-      price: '$2,500',
-      duration: 'one-time',
-      description: 'Ideal for established businesses looking to grow',
+      name: 'Pro',
+      price: '$600',
+      duration: 'One-time',
+      description: '',
       features: [
-        'Up to 10 pages',
-        'Custom design & branding',
-        'Advanced contact forms',
-        'SEO optimization',
-        'Analytics integration',
-        'Content management system',
-        '60 days support',
+        'Up to 5 Pages',
+        'Google Maps + Socials',
+        'Photo Gallery',
+        'Custom Domain Setup',
+      ],
+      popular: false,
+    },
+    {
+      name: 'Business',
+      price: '$99',
+      duration: '/mo',
+      description: '',
+      features: [
+        'Unlimited Edits',
+        'Hosting & Domain Included',
+        'Monthly Reports',
+        'Priority Support',
       ],
       popular: true,
     },
     {
-      name: 'Premium',
-      price: '$4,500',
-      duration: 'one-time',
-      description: 'Complete solution for businesses ready to scale',
+      name: 'Custom',
+      price: 'Quote Only',
+      duration: '',
+      description: '',
       features: [
-        'Unlimited pages',
-        'E-commerce functionality',
-        'Custom integrations',
-        'Advanced SEO & analytics',
-        'Performance optimization',
-        'Training & documentation',
-        '90 days support',
-        'Priority updates',
+        'Fully Custom Design',
+        'Integrations (Booking, Menu, Store)',
+        'Dedicated Manager',
       ],
       popular: false,
     },
+  ];
+
+  const addons = [
+    { name: 'Extra Page', price: '$50 per page' },
+    { name: 'Logo Design', price: '$75 one-time' },
+    { name: 'Hosting Only', price: '$15/mo' },
+    { name: 'Rush Delivery (48 hrs)', price: '+$100' },
   ];
 
   return (
@@ -58,14 +68,11 @@ const Pricing: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-            Simple, Transparent Pricing
+            BUILT4YOU Pricing Plans
           </h2>
-          <p className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto">
-            No hidden fees, no monthly subscriptions. Just honest pricing for quality work.
-          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-7xl mx-auto">
           {plans.map((plan, index) => (
             <div
               key={index}
@@ -79,23 +86,21 @@ const Pricing: React.FC = () => {
                   Most Popular
                 </div>
               )}
-              
+
               <div className={`p-8 ${plan.popular ? 'pt-16' : ''}`}>
                 <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
                   {plan.name}
                 </h3>
-                
-                <p className="text-slate-600 dark:text-slate-300 mb-6">
-                  {plan.description}
-                </p>
-                
-                <div className="mb-8">
-                  <span className="text-4xl font-bold text-slate-900 dark:text-white">
+
+                <div className="mb-6">
+                  <span className="text-3xl font-bold text-slate-900 dark:text-white">
                     {plan.price}
                   </span>
-                  <span className="text-slate-600 dark:text-slate-300 ml-2">
-                    {plan.duration}
-                  </span>
+                  {plan.duration && (
+                    <span className="text-slate-600 dark:text-slate-300 ml-2">
+                      {plan.duration}
+                    </span>
+                  )}
                 </div>
 
                 <ul className="space-y-4 mb-8">
@@ -119,6 +124,30 @@ const Pricing: React.FC = () => {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="text-center mt-16">
+          <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">
+            Optional Add-Ons
+          </h3>
+          <div className="max-w-2xl mx-auto">
+            <table className="w-full text-left border-t border-slate-300 dark:border-slate-700 mt-6">
+              <thead>
+                <tr>
+                  <th className="py-2 pr-4 text-slate-600 dark:text-slate-400">Add-On</th>
+                  <th className="py-2 text-slate-600 dark:text-slate-400">Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {addons.map((addon, index) => (
+                  <tr key={index} className="border-t border-slate-200 dark:border-slate-700">
+                    <td className="py-3 pr-4 text-slate-800 dark:text-slate-200">{addon.name}</td>
+                    <td className="py-3 text-slate-800 dark:text-slate-200">{addon.price}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div className="text-center mt-12">
