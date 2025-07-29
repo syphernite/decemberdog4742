@@ -4,33 +4,42 @@ import Header from './Header';
 import Footer from './Footer';
 
 const Layout: React.FC = () => {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState<boolean | null>(null);
 
-  // Auto-detect system preference and set initial dark mode
+  // On first load: load from localStorage or use system preference
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    setDarkMode(mediaQuery.matches);
+    const stored = localStorage.getItem('darkMode');
 
-    const handleChange = (e: MediaQueryListEvent) => {
-      setDarkMode(e.matches);
-    };
-
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
+    if (stored === 'true') {
+      setDarkMode(true);
+    } else if (stored === 'false') {
+      setDarkMode(false);
+    } else {
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setDarkMode(systemPrefersDark);
+    }
   }, []);
 
-  // Apply dark mode class to document
+  // Update the document class and save to localStorage when darkMode changes
   useEffect(() => {
+    if (darkMode === null) return;
+
+    const root = document.documentElement;
     if (darkMode) {
-      document.documentElement.classList.add('dark');
+      root.classList.add('dark');
+      localStorage.setItem('darkMode', 'true');
     } else {
-      document.documentElement.classList.remove('dark');
+      root.classList.remove('dark');
+      localStorage.setItem('darkMode', 'false');
     }
   }, [darkMode]);
 
   const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
+    setDarkMode((prev) => !prev);
   };
+
+  // Only render after darkMode is determined
+  if (darkMode === null) return null;
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900 transition-colors duration-300">
