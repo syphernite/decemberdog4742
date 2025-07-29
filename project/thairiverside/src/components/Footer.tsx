@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart, MapPin, Phone, Clock } from 'lucide-react';
+import { Heart, MapPin, Phone } from 'lucide-react';
 
 const Footer = () => {
   return (
