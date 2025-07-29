@@ -2,150 +2,154 @@ import React, { useState } from 'react';
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
-    fullName: '',
+    name: '',
     email: '',
     company: '',
-    pages: '',
     industry: '',
-    details: '',
+    pages: '',
+    message: '',
   });
-
   const [submitted, setSubmitted] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formData);
-    setSubmitted(true);
-    // Add form submission logic here (e.g., API call)
+
+    try {
+      const response = await fetch('https://formspree.io/f/mrblknpq', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setSubmitted(true);
+        setFormData({
+          name: '',
+          email: '',
+          company: '',
+          industry: '',
+          pages: '',
+          message: '',
+        });
+      } else {
+        alert('Something went wrong. Please try again.');
+      }
+    } catch (error) {
+      alert('There was an error. Please try again later.');
+    }
   };
 
   return (
-    <section className="min-h-screen bg-white dark:bg-slate-900 py-20 px-4">
-      <div className="max-w-4xl mx-auto bg-white dark:bg-slate-800 p-8 rounded-lg shadow-md">
-        <h2 className="text-2xl sm:text-3xl font-bold mb-8 text-slate-900 dark:text-white">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      {!submitted && (
+        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-8">
           Tell Us About Your Project
         </h2>
-        {submitted ? (
-          <p className="text-green-600 dark:text-green-400 font-semibold">Message sent! We’ll get back to you soon.</p>
-        ) : (
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div className="flex flex-col">
-              <label htmlFor="fullName" className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Full Name
-              </label>
-              <input
-                type="text"
-                id="fullName"
-                name="fullName"
-                value={formData.fullName}
-                onChange={handleChange}
-                required
-                className="rounded-md border border-slate-300 dark:border-slate-600 px-4 py-2 text-slate-900 dark:text-white bg-white dark:bg-slate-700"
-                placeholder="John Doe"
-              />
-            </div>
+      )}
 
-            <div className="flex flex-col">
-              <label htmlFor="email" className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Email Address
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                className="rounded-md border border-slate-300 dark:border-slate-600 px-4 py-2 text-slate-900 dark:text-white bg-white dark:bg-slate-700"
-                placeholder="john@example.com"
-              />
-            </div>
-
-            <div className="flex flex-col">
-              <label htmlFor="company" className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Business/Company Name
-              </label>
-              <input
-                type="text"
-                id="company"
-                name="company"
-                value={formData.company}
-                onChange={handleChange}
-                className="rounded-md border border-slate-300 dark:border-slate-600 px-4 py-2 text-slate-900 dark:text-white bg-white dark:bg-slate-700"
-                placeholder="Your Company or Name"
-              />
-            </div>
-
-            <div className="flex flex-col">
-              <label htmlFor="pages" className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Pages Desired
-              </label>
-              <select
-                id="pages"
-                name="pages"
-                value={formData.pages}
-                onChange={handleChange}
-                className="rounded-md border border-slate-300 dark:border-slate-600 px-4 py-2 text-slate-900 dark:text-white bg-white dark:bg-slate-700"
+      {submitted ? (
+        <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg text-center">
+          <p className="text-green-600 text-lg font-semibold">
+            Message sent! We’ll get back to you soon.
+          </p>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="flex flex-col">
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Full Name *</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              placeholder="John Doe"
+              className="px-4 py-3 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Email Address *</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              placeholder="john@example.com"
+              className="px-4 py-3 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Business / Name</label>
+            <input
+              type="text"
+              name="company"
+              value={formData.company}
+              onChange={handleChange}
+              placeholder="Your Company or Name"
+              className="px-4 py-3 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Industry</label>
+            <input
+              type="text"
+              name="industry"
+              value={formData.industry}
+              onChange={handleChange}
+              placeholder="e.g. Restaurant, Gym, Auto Shop"
+              className="px-4 py-3 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
+            />
+          </div>
+          <div className="flex flex-col sm:col-span-2">
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"># of Pages Desired</label>
+            <input
+              type="number"
+              name="pages"
+              value={formData.pages}
+              onChange={handleChange}
+              placeholder="Example: 3"
+              className="px-4 py-3 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
+            />
+          </div>
+          <div className="flex flex-col sm:col-span-2">
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Project Details *</label>
+            <textarea
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
+              required
+              placeholder="Tell us about your project, goals, timeline, and any specific requirements..."
+              rows={5}
+              className="px-4 py-3 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
+            />
+          </div>
+          <div className="sm:col-span-2">
+            <button
+              type="submit"
+              className="w-full bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-600 hover:to-blue-600 text-white py-3 rounded-lg font-semibold flex items-center justify-center space-x-2"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
               >
-                <option value="">Select Number of Pages</option>
-                <option value="1 Page">1 Page</option>
-                <option value="Up to 5 Pages">2-5 Pages</option>
-                <option value="Unlimited">5+ Pages</option>
-                <option value="Fully Custom">10+ Pages</option>
-              </select>
-            </div>
-
-            <div className="sm:col-span-2 flex flex-col">
-              <label htmlFor="industry" className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Industry
-              </label>
-              <input
-                type="text"
-                id="industry"
-                name="industry"
-                value={formData.industry}
-                onChange={handleChange}
-                className="rounded-md border border-slate-300 dark:border-slate-600 px-4 py-2 text-slate-900 dark:text-white bg-white dark:bg-slate-700"
-                placeholder="Restaurant, Salon, Fitness, etc."
-              />
-            </div>
-
-            <div className="sm:col-span-2 flex flex-col">
-              <label htmlFor="details" className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Project Details 
-              </label>
-              <textarea
-                id="details"
-                name="details"
-                value={formData.details}
-                onChange={handleChange}
-                required
-                rows={5}
-                className="rounded-md border border-slate-300 dark:border-slate-600 px-4 py-2 text-slate-900 dark:text-white bg-white dark:bg-slate-700"
-                placeholder="Tell us about your project, goals, timeline, and any specific requirements..."
-              />
-            </div>
-
-            <div className="sm:col-span-2">
-              <button
-                type="submit"
-                className="w-full bg-gradient-to-r from-emerald-500 to-blue-500 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:opacity-90 transition duration-300 flex items-center justify-center gap-2"
-              >
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
-                Send Message
-              </button>
-            </div>
-          </form>
-        )}
-      </div>
-    </section>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Send Message</span>
+            </button>
+          </div>
+        </form>
+      )}
+    </div>
   );
 };
 
