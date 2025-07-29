@@ -1,8 +1,15 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Pricing from "../components/Pricing";
 
 export default function Home() {
+  const navigate = useNavigate();
+
+  const handleContactClick = () => {
+    window.scrollTo(0, 0);
+    navigate("/contact");
+  };
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-white to-slate-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-white font-sans">
       {/* Navbar */}
@@ -56,20 +63,24 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Call to Action Section */}
+      {/* ✅ CTA Section replacing contact form */}
       <section className="py-24 bg-white dark:bg-gray-900 text-center">
-        <h3 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">
+        <h3 className="text-4xl font-bold mb-6 text-gray-900 dark:text-white">
           Ready to Bring Your Vision to Life?
         </h3>
-        <p className="mb-10 text-lg text-gray-600 dark:text-gray-300">
-          Let’s build something amazing together. Reach out and let’s chat about your project.
+        <p className="mb-12 text-xl text-gray-600 dark:text-gray-300">
+          Let’s build something amazing together.
         </p>
-        <Link
-          to="/contact"
-          className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 text-lg rounded-lg transition-all shadow-md"
-        >
-          Contact Us
-        </Link>
+
+        <div className="relative inline-block">
+          <span className="absolute -inset-2 rounded-full bg-indigo-500 animate-ping opacity-75"></span>
+          <button
+            onClick={handleContactClick}
+            className="relative z-10 inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-12 py-6 text-2xl rounded-xl shadow-lg transition-all"
+          >
+            Contact Us
+          </button>
+        </div>
       </section>
 
       {/* Footer */}
