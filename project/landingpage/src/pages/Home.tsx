@@ -1,5 +1,6 @@
 import React from "react";
-import Pricing from "../components/Pricing"; // ✅ This pulls in the updated plans
+import { Link } from "react-router-dom"; // ⬅️ Add this line
+import Pricing from "../components/Pricing";
 
 export default function Home() {
   return (
@@ -9,9 +10,9 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           <h1 className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">Built4You</h1>
           <nav className="space-x-6 hidden md:block">
-            <a href="#pricing" className="hover:underline">Pricing</a>
+            <Link to="/pricing" className="hover:underline">Pricing</Link>
             <a href="#why" className="hover:underline">Why Choose Us</a>
-            <a href="#contact" className="hover:underline">Contact</a>
+            <Link to="/contact" className="hover:underline">Contact</Link>
           </nav>
         </div>
       </header>
@@ -24,12 +25,12 @@ export default function Home() {
         <p className="text-lg md:text-xl max-w-2xl mb-6 text-gray-600 dark:text-gray-300">
           We build beautiful, responsive websites tailored to your business goals — fast, affordable, and hassle-free.
         </p>
-        <a
-          href="#pricing"
+        <Link
+          to="/contact"
           className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-md text-lg transition-all"
         >
           Get Started
-        </a>
+        </Link>
       </section>
 
       {/* ✅ Updated Pricing Section */}
