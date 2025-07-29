@@ -6,17 +6,8 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-white to-slate-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-white font-sans">
       {/* Navbar */}
-      <header className="sticky top-0 z-50 backdrop-blur bg-white/70 dark:bg-gray-900/70 border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          {/* 🔻 Removed purple Built4You text here */}
-          <nav className="space-x-6 hidden md:block">
-            <Link to="/pricing" className="hover:underline">Pricing</Link>
-            <a href="#why" className="hover:underline">Why Choose Us</a>
-            <Link to="/contact" className="hover:underline">Contact</Link>
-          </nav>
-        </div>
-      </header>
-
+      {/* 🔻 Entire header removed as requested */}
+      
       {/* Hero Section */}
       <section className="flex flex-col justify-center items-center text-center py-24 px-6">
         <h2 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">
@@ -33,7 +24,7 @@ export default function Home() {
         </Link>
       </section>
 
-      {/* Updated Pricing Section */}
+      {/* Pricing Section */}
       <Pricing />
 
       {/* Why Choose Us */}
