@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom"; // ⬅️ Add this line
+import { Link } from "react-router-dom";
 import Pricing from "../components/Pricing";
 
 export default function Home() {
@@ -8,7 +8,7 @@ export default function Home() {
       {/* Navbar */}
       <header className="sticky top-0 z-50 backdrop-blur bg-white/70 dark:bg-gray-900/70 border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">Built4You</h1>
+          {/* 🔻 Removed purple Built4You text here */}
           <nav className="space-x-6 hidden md:block">
             <Link to="/pricing" className="hover:underline">Pricing</Link>
             <a href="#why" className="hover:underline">Why Choose Us</a>
@@ -33,7 +33,7 @@ export default function Home() {
         </Link>
       </section>
 
-      {/* ✅ Updated Pricing Section */}
+      {/* Updated Pricing Section */}
       <Pricing />
 
       {/* Why Choose Us */}
