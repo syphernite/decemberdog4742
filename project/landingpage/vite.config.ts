@@ -1,8 +1,11 @@
-// project/landingpage/vite.config.js or vite.config.ts
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
+// https://vitejs.dev/config/
 export default defineConfig({
-  base: '/',
-  plugins: [react()]
-})
+  plugins: [react()],
+  base: '/', // Keep this if deploying to root domain like built4you.org
+  build: {
+    outDir: 'dist',
+  },
+});
