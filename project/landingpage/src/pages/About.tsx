@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Award, Users, Clock, Heart } from 'lucide-react';
+import { Link } from 'react-router-dom'; // ✅ Added for internal routing
 
 const About: React.FC = () => {
   const values = [
@@ -114,6 +115,7 @@ const About: React.FC = () => {
           </div>
         </motion.div>
 
+        {/* ✅ FIXED CTA BUTTON BELOW */}
         <motion.div
           className="bg-gradient-to-r from-emerald-50 to-blue-50 dark:from-slate-800 dark:to-slate-700 rounded-3xl p-12 text-center"
           initial={{ opacity: 0, y: 30 }}
@@ -126,14 +128,14 @@ const About: React.FC = () => {
           <p className="text-xl text-slate-600 dark:text-slate-300 mb-8 max-w-2xl mx-auto">
             Let's discuss your project and see how we can help your business grow online.
           </p>
-          <motion.a
-            href="/contact"
-            className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-emerald-600 to-blue-600 text-white font-semibold rounded-2xl hover:from-emerald-700 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Get In Touch
-          </motion.a>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Link
+              to="/contact"
+              className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-emerald-600 to-blue-600 text-white font-semibold rounded-2xl hover:from-emerald-700 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl text-lg md:text-xl"
+            >
+              Get In Touch
+            </Link>
+          </motion.div>
         </motion.div>
       </div>
     </div>
