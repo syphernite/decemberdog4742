@@ -64,7 +64,8 @@ const Services: React.FC = () => {
 
   return (
     <div className="py-24 bg-white dark:bg-slate-900">
-      <div className="max-w-screen-md mx-auto px-4 sm:px-6 lg:px-4 xl:px-2">
+      <div className="w-full max-w-[720px] mx-auto px-4 sm:px-4">
+
         <motion.div
           className="text-center mb-20"
           initial={{ opacity: 0, y: 30 }}
