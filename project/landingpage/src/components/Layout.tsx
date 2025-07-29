@@ -42,7 +42,7 @@ const Layout: React.FC = () => {
   if (darkMode === null) return null;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-900 transition-colors duration-300">
+    <div className="zoom-desktop-only min-h-screen bg-white dark:bg-slate-900 transition-colors duration-300">
       <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
       <main className="pt-16">
         <Outlet />
