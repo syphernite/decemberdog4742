@@ -54,7 +54,7 @@ const Hero: React.FC = () => {
             >
               <span className="relative z-10">Get Started</span>
               <ArrowRight className="h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform duration-200" />
-              <span className="absolute inset-0 bg-white/20 blur-md opacity-0 group-hover:opacity-100 animate-glow-slide" />
+              <span className="absolute inset-0 bg-white/20 blur-md opacity-0 group-hover:opacity-100 animate-slide-glow" />
             </button>
 
             <button 
