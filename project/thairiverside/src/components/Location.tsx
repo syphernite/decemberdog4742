@@ -3,10 +3,10 @@ import { MapPin, Clock, Phone } from 'lucide-react';
 
 const Location = () => {
   const hours = [
+    { day: 'Monday', time: '11am - 2pm, 4pm - 8pm' },
     { day: 'Tuesday - Friday', time: '11am - 2pm, 4pm - 8pm' },
     { day: 'Saturday', time: '11am - 3pm, 5pm - 8pm' },
     { day: 'Sunday', time: '11am - 3pm, 5pm - 8pm' },
-    { day: 'Monday', time: '11am - 2pm, 4pm - 8pm' },
   ];
 
   return (
