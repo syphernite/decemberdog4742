@@ -5,7 +5,6 @@ import Home from './pages/Home';
 import Services from './pages/Services';
 import About from './pages/About';
 import Contact from './pages/Contact';
-import PricingPage from './pages/PricingPage.tsx';
 
 function App() {
   // Add global styles and animations
@@ -64,7 +63,6 @@ function App() {
           <Route path="services" element={<Services />} />
           <Route path="about" element={<About />} />
           <Route path="contact" element={<Contact />} />
-          <Route path="pricing" element={<PricingPage />} />
         </Route>
       </Routes>
     </Router>
