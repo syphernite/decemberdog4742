@@ -8,14 +8,14 @@ export default {
         sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       animation: {
-        'fade-in-up': 'fadeInUp 0.8s ease-out',
-        'fade-in-down': 'fadeInDown 0.8s ease-out',
-        'fade-in-left': 'fadeInLeft 0.8s ease-out',
-        'fade-in-right': 'fadeInRight 0.8s ease-out',
-        'bounce-slow': 'bounce 2s infinite',
-        'pulse-slow': 'pulse 3s infinite',
-        'float': 'float 6s ease-in-out infinite',
-        'slide-glow': 'slide-glow 2s ease-in-out infinite', // ✅ NEW
+        fadeInUp: 'fadeInUp 0.8s ease-out',
+        fadeInDown: 'fadeInDown 0.8s ease-out',
+        fadeInLeft: 'fadeInLeft 0.8s ease-out',
+        fadeInRight: 'fadeInRight 0.8s ease-out',
+        bounceSlow: 'bounce 2s infinite',
+        pulseSlow: 'pulse 3s infinite',
+        float: 'float 6s ease-in-out infinite',
+        slideGlow: 'slideGlow 2s ease-in-out infinite',
       },
       keyframes: {
         fadeInUp: {
@@ -66,7 +66,7 @@ export default {
             transform: 'translateY(-20px)',
           },
         },
-        slide-glow: { // ✅ NEW
+        slideGlow: {
           '0%': {
             transform: 'translateY(0)',
             opacity: '0.8',
@@ -86,8 +86,7 @@ export default {
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
       backdropBlur: {
         xs: '2px',
@@ -96,4 +95,3 @@ export default {
   },
   plugins: [],
 };
-
