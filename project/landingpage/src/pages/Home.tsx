@@ -12,18 +12,6 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-white to-slate-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-white font-sans">
-      {/* Navbar */}
-      <header className="sticky top-0 z-50 backdrop-blur bg-white/70 dark:bg-gray-900/70 border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">Built4You</h1>
-          <nav className="space-x-6 hidden md:block">
-            <Link to="/pricing" className="hover:underline">Pricing</Link>
-            <a href="#why" className="hover:underline">Why Choose Us</a>
-            <Link to="/contact" className="hover:underline">Contact</Link>
-          </nav>
-        </div>
-      </header>
-
       {/* Hero Section */}
       <section className="flex flex-col justify-center items-center text-center py-24 px-6">
         <h2 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">
@@ -63,7 +51,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ✅ CTA Section replacing contact form */}
+      {/* CTA Section */}
       <section className="py-24 bg-white dark:bg-gray-900 text-center">
         <h3 className="text-4xl font-bold mb-6 text-gray-900 dark:text-white">
           Ready to Bring Your Vision to Life?
