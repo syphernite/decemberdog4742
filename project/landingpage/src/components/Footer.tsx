@@ -84,18 +84,25 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
+        {/* Bottom Bar */}
         <div className="border-t border-slate-800 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-slate-400 text-sm">
               © {new Date().getFullYear()} Built4You. All rights reserved.
             </p>
             <div className="flex space-x-6">
-              <button className="text-slate-400 hover:text-emerald-400 text-sm transition-colors duration-200">
+              <Link
+                to="/privacy-policy"
+                className="text-slate-400 hover:text-emerald-400 text-sm transition-colors duration-200"
+              >
                 Privacy Policy
-              </button>
-              <button className="text-slate-400 hover:text-emerald-400 text-sm transition-colors duration-200">
+              </Link>
+              <Link
+                to="/terms-of-service"
+                className="text-slate-400 hover:text-emerald-400 text-sm transition-colors duration-200"
+              >
                 Terms of Service
-              </button>
+              </Link>
             </div>
           </div>
         </div>
