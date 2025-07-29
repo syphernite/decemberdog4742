@@ -67,10 +67,6 @@ const Footer = () => {
                   (423) 765-1570
                 </a>
               </div>
-              <div className="flex items-center space-x-2">
-                <Clock className="w-4 h-4 text-primary-400" />
-                <span className="text-gray-300">Tue-Sun | Closed Mondays</span>
-              </div>
             </div>
           </div>
         </div>
