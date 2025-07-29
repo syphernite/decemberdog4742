@@ -39,7 +39,7 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      max-w-[900px] mx-auto px-4 sm:px-6 lg:px-4 xl:px-2
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <Link to="/" className="flex-shrink-0 group">

@@ -27,7 +27,7 @@ const WhyChooseUs: React.FC = () => {
 
   return (
     <section id="why-choose-us" className="py-20 bg-white dark:bg-slate-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      max-w-[900px] mx-auto px-4 sm:px-6 lg:px-4 xl:px-2
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
             Why Choose Built4You?
