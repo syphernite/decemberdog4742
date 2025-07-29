@@ -36,7 +36,7 @@ const Contact: React.FC = () => {
           <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="flex flex-col">
               <label htmlFor="fullName" className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Full Name *
+                Full Name
               </label>
               <input
                 type="text"
@@ -52,7 +52,7 @@ const Contact: React.FC = () => {
 
             <div className="flex flex-col">
               <label htmlFor="email" className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Email Address *
+                Email Address
               </label>
               <input
                 type="email"
@@ -68,7 +68,7 @@ const Contact: React.FC = () => {
 
             <div className="flex flex-col">
               <label htmlFor="company" className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Name or Business
+                Business/Company Name
               </label>
               <input
                 type="text"
@@ -94,9 +94,9 @@ const Contact: React.FC = () => {
               >
                 <option value="">Select Number of Pages</option>
                 <option value="1 Page">1 Page</option>
-                <option value="Up to 5 Pages">Up to 5 Pages</option>
-                <option value="Unlimited">Unlimited</option>
-                <option value="Fully Custom">Fully Custom</option>
+                <option value="Up to 5 Pages">2-5 Pages</option>
+                <option value="Unlimited">5+ Pages</option>
+                <option value="Fully Custom">10+ Pages</option>
               </select>
             </div>
 
@@ -117,7 +117,7 @@ const Contact: React.FC = () => {
 
             <div className="sm:col-span-2 flex flex-col">
               <label htmlFor="details" className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Project Details *
+                Project Details 
               </label>
               <textarea
                 id="details"
