@@ -30,7 +30,6 @@ jobs:
           cd landingpage
           npm install
           npm run build
-          cp public/_redirects dist/_redirects
           cp -a dist/. ../__deploy/
           cd ..
 
