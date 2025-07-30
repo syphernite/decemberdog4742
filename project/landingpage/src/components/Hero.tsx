@@ -20,7 +20,7 @@ const Hero: React.FC = () => {
   return (
     <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Parallax Background */}
-      <div
+      <div 
         className="absolute inset-0 bg-gradient-to-br from-slate-50 via-emerald-50 to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900"
         style={{
           transform: `translateY(${scrollY * 0.5}px)`,
@@ -48,16 +48,18 @@ const Hero: React.FC = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-            <button
+            <button 
               onClick={() => scrollToSection('pricing')}
-              className="relative group bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center space-x-2 overflow-hidden animate-slide-glow"
+              className="relative group bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl overflow-hidden"
             >
-              <span className="relative z-10">Get Started</span>
-              <ArrowRight className="h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform duration-200" />
-              <span className="absolute inset-0 bg-white/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <span className="relative z-10 flex items-center space-x-2">
+                <span>Get Started</span>
+                <ArrowRight className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-1" />
+              </span>
+              <span className="absolute inset-0 bg-white/10 blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             </button>
 
-            <button
+            <button 
               onClick={() => scrollToSection('why-choose-us')}
               className="group bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-800 text-slate-900 dark:text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 border border-slate-200 dark:border-slate-700 hover:shadow-lg flex items-center space-x-2 backdrop-blur-sm"
             >
