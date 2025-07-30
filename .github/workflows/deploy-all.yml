@@ -25,22 +25,29 @@ jobs:
           cd project
           rm -rf __deploy
           mkdir __deploy
-          
-          echo "🔨 Building landingpage..."
-          cd landingpage
-          npm install
-          npm run build
-          cp public/_redirects dist/_redirects
-          cp -a dist/. ../__deploy/
-          cd ..
 
-          echo "🔨 Building thairiverside..."
-          cd thairiverside
-          npm install
-          npm run build
-          mkdir -p ../__deploy/thairiverside
-          cp -a dist/. ../__deploy/thairiverside/
-          cd ..
+          folders=("landingpage" "thairiverside "chickenmac&more") # 🔧 Add new clients here
+
+          for folder in "${folders[@]}"
+          do
+            echo "🔨 Building $folder..."
+            cd "$folder"
+            npm install
+            npm run build
+
+            if [ -f public/_redirects ]; then
+              cp public/_redirects dist/_redirects
+            fi
+
+            if [ "$folder" = "landingpage" ]; then
+              cp -a dist/. ../__deploy/
+            else
+              mkdir -p "../__deploy/$folder"
+              cp -a dist/. "../__deploy/$folder/"
+            fi
+
+            cd ..
+          done
 
           echo 'built4you.org' > __deploy/CNAME
 
