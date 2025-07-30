@@ -26,7 +26,7 @@ const Hero: React.FC = () => {
           transform: `translateY(${scrollY * 0.5}px)`,
         }}
       />
-
+      
       {/* Decorative Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-emerald-200/20 dark:bg-emerald-400/10 rounded-full blur-3xl" />
@@ -41,22 +41,20 @@ const Hero: React.FC = () => {
               {' '}Small Businesses
             </span>
           </h1>
-
+          
           <p className="text-xl sm:text-2xl text-slate-600 dark:text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Professional, fast-loading websites that grow your business.
+            Professional, fast-loading websites that grow your business. 
             No templates, no compromises – just beautiful, custom web solutions built for you.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
             <button 
               onClick={() => scrollToSection('pricing')}
-              className="relative group bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl overflow-hidden"
+              className="group relative overflow-hidden bg-emerald-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 hover:bg-emerald-700 hover:shadow-lg flex items-center space-x-2 animate-pulse"
             >
-              <span className="relative z-10 flex items-center space-x-2">
-                <span>Get Started</span>
-                <ArrowRight className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-1" />
-              </span>
-              <span className="absolute inset-0 bg-white/10 blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <span className="relative z-10">Get Started</span>
+              <ArrowRight className="h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform duration-200" />
+              <span className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition duration-300 blur-md" />
             </button>
 
             <button 
