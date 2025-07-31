@@ -26,6 +26,21 @@ const Pricing: React.FC = () => {
       popular: true,
     },
     {
+      name: 'Business Pro',
+      price: '$199',
+      duration: '/mo',
+      features: [
+        'Everything in Business',
+        'Custom Integrations (Booking, Payments, Menus)',
+        'Biweekly Strategy Calls',
+        'Conversion Optimization',
+        'Same-Day Edits (M–F)',
+        'Quarterly Design Refresh',
+        'Enhanced Security + Backups',
+      ],
+      popular: false,
+    },
+    {
       name: 'Custom',
       price: 'Quote Only',
       duration: '',
@@ -45,19 +60,22 @@ const Pricing: React.FC = () => {
     <section id="pricing" className="py-20 bg-slate-50 dark:bg-slate-800">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
             Pricing Plans
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 max-w-7xl mx-auto">
           {plans.map((plan, index) => (
             <div
               key={index}
               className={`relative bg-white dark:bg-slate-900 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden ${
-                plan.popular ? 'ring-2 ring-emerald-500 scale-105' : ''
+                plan.popular
+                  ? 'ring-2 ring-emerald-500 scale-105'
+                  : plan.name === 'Business Pro'
+                  ? 'ring-2 ring-blue-500 scale-105'
+                  : ''
               }`}
             >
               {plan.popular && (
