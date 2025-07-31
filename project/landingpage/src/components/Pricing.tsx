@@ -37,7 +37,7 @@ const Pricing: React.FC = () => {
   const addons = [
     { name: 'Extra Page', price: '$50 per page' },
     { name: 'Logo Design', price: '$75 one-time' },
-    { name: 'Hosting Only', price: '$15/mo' },
+    { name: 'Hosting Only (Custom Server)', price: '$30/mo' },
     { name: 'Rush Delivery (48 hrs)', price: '+$100' },
   ];
 
