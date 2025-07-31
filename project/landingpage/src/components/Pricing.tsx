@@ -5,7 +5,7 @@ import { Check, Star } from 'lucide-react';
 const Pricing: React.FC = () => {
   const plans = [
     {
-      name: 'Starter',
+      name: 'Basic',
       price: '$350',
       duration: 'One-time',
       features: ['1-Page Website', 'Mobile-Responsive', 'Contact Form', 'Basic SEO'],
