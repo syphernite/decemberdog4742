@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createPortal } from 'react-dom';
-import Layout from '../components/Layout';
 
 function useInViewAnimation(threshold = 0.3) {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -112,82 +111,79 @@ const WhyWeCreatedBuilt4You: React.FC = () => {
   }, []);
 
   return (
-    <Layout>
-      <main className="bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-white min-h-screen font-sans">
-        <section className="text-center py-20 px-6 bg-white dark:bg-slate-800 shadow">
-          <h1 className="text-3xl md:text-5xl font-extrabold mb-4">Why We Created Built4You</h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-xl mx-auto">
-            We exist to give small businesses the online edge they deserve — fast, affordable, and hassle-free.
-          </p>
-          <button
-            onClick={() => setModalOpen(true)}
-            className="mt-8 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg relative animate-pulse focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400"
+    <main className="bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-white min-h-screen font-sans">
+      <section className="text-center py-20 px-6 bg-white dark:bg-slate-800 shadow">
+        <h1 className="text-3xl md:text-5xl font-extrabold mb-4">Why We Created Built4You</h1>
+        <p className="text-lg text-gray-600 dark:text-gray-300 max-w-xl mx-auto">
+          We exist to give small businesses the online edge they deserve — fast, affordable, and hassle-free.
+        </p>
+        <button
+          onClick={() => setModalOpen(true)}
+          className="mt-8 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg relative animate-pulse focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400"
+        >
+          <span className="relative z-10">✨ Let’s Build Yours</span>
+        </button>
+      </section>
+
+      {[...
+        {
+          title: 'Offline = Invisible in 2025',
+          content: 'People search online first. If they can’t find your business, they’ll find someone else. We help local legends stay visible.'
+        },
+        {
+          title: 'Agencies Are Too Slow + Pricey',
+          content: 'Small businesses can’t wait 6 weeks or pay $5K. We deliver polished sites fast — sometimes within 3 days.'
+        },
+        {
+          title: 'Built for Real People',
+          content: 'Our clients are barbers, mechanics, bakers, cleaners, artists — people with hustle but no time to learn web design.'
+        },
+        {
+          title: 'Simple. Fast. Done For You.',
+          content: 'Send us your info. Pick a style. We build it. You focus on your business while we make sure people can find it.'
+        }
+      ].map(({ title, content }, i) => {
+        const { ref, isVisible } = useInViewAnimation();
+        return (
+          <motion.section
+            ref={ref}
+            key={i}
+            className="py-16 px-6 max-w-4xl mx-auto text-center"
+            initial={{ opacity: 0, y: 50 }}
+            animate={isVisible ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
           >
-            <span className="relative z-10">✨ Let’s Build Yours</span>
-          </button>
-        </section>
+            <h2 className="text-2xl md:text-3xl font-bold mb-3">{title}</h2>
+            <p className="text-gray-600 dark:text-gray-400">{content}</p>
+          </motion.section>
+        );
+      })}
 
-        {[...
-          {
-            title: 'Offline = Invisible in 2025',
-            content: 'People search online first. If they can’t find your business, they’ll find someone else. We help local legends stay visible.'
-          },
-          {
-            title: 'Agencies Are Too Slow + Pricey',
-            content: 'Small businesses can’t wait 6 weeks or pay $5K. We deliver polished sites fast — sometimes within 3 days.'
-          },
-          {
-            title: 'Built for Real People',
-            content: 'Our clients are barbers, mechanics, bakers, cleaners, artists — people with hustle but no time to learn web design.'
-          },
-          {
-            title: 'Simple. Fast. Done For You.',
-            content: 'Send us your info. Pick a style. We build it. You focus on your business while we make sure people can find it.'
-          }
-        ].map(({ title, content }, i) => {
-          const { ref, isVisible } = useInViewAnimation();
-          return (
-            <motion.section
-              ref={ref}
-              key={i}
-              className="py-16 px-6 max-w-4xl mx-auto text-center"
-              initial={{ opacity: 0, y: 50 }}
-              animate={isVisible ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, ease: 'easeOut' }}
-            >
-              <h2 className="text-2xl md:text-3xl font-bold mb-3">{title}</h2>
-              <p className="text-gray-600 dark:text-gray-400">{content}</p>
-            </motion.section>
-          );
-        })}
+      <div id="calendar" className="w-full max-w-4xl mx-auto px-4 pb-20 scroll-mt-20">
+        <h2 className="text-2xl font-semibold text-center mb-6">🗓️ Book a Free Demo Call</h2>
+        <iframe
+          src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0hRscFCqAlikNLhx7I1rb-xghG1bygoubGeEZ3G2r-JoIKLhNVX_Lr2nV6qlc8EFCk6Ourjn1F?gv=true"
+          width="100%"
+          height="600"
+          className="w-full rounded-xl border shadow-lg"
+          style={{ border: 0 }}
+          allowFullScreen
+          loading="lazy"
+          title="Google Booking"
+        />
+      </div>
 
-        <div id="calendar" className="w-full max-w-4xl mx-auto px-4 pb-20 scroll-mt-20">
-          <h2 className="text-2xl font-semibold text-center mb-6">🗓️ Book a Free Demo Call
-          </h2>
-          <iframe
-            src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0hRscFCqAlikNLhx7I1rb-xghG1bygoubGeEZ3G2r-JoIKLhNVX_Lr2nV6qlc8EFCk6Ourjn1F?gv=true"
-            width="100%"
-            height="600"
-            className="w-full rounded-xl border shadow-lg"
-            style={{ border: 0 }}
-            allowFullScreen
-            loading="lazy"
-            title="Google Booking"
-          />
-        </div>
+      <div className="fixed bottom-4 left-0 right-0 px-4 md:hidden z-40">
+        <button
+          onClick={() => setModalOpen(true)}
+          className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3 rounded-lg shadow-lg transition font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-400"
+        >
+          🚀 Get My Site
+        </button>
+      </div>
 
-        <div className="fixed bottom-4 left-0 right-0 px-4 md:hidden z-40">
-          <button
-            onClick={() => setModalOpen(true)}
-            className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3 rounded-lg shadow-lg transition font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-400"
-          >
-            🚀 Get My Site
-          </button>
-        </div>
-
-        <OfferModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
-      </main>
-    </Layout>
+      <OfferModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+    </main>
   );
 };
 
