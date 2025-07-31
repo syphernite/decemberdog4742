@@ -173,15 +173,21 @@ const WhyWeExist: React.FC = () => {
         );
       })}
 
-      {/* Google Calendar Embed */}
-      <div id="calendar" className="w-full max-w-4xl mx-auto px-4 pb-20 scroll-mt-20">
-        <h2 className="text-2xl font-semibold text-center mb-6">📅 Book a Free Demo Call</h2>
+      {/* Google Calendar Embed with forced light mode */}
+      <div
+        id="calendar"
+        className="w-full max-w-4xl mx-auto px-4 pb-20 scroll-mt-20 bg-white rounded-xl shadow-lg"
+        style={{ colorScheme: 'light' }}
+      >
+        <h2 className="text-2xl font-semibold text-center mb-6 text-black">
+          📅 Book a Free Demo Call
+        </h2>
         <iframe
           src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0hRscFCqAlikNLhx7I1rb-xghG1bygoubGeEZ3G2r-JoIKLhNVX_Lr2nV6qlc8EFCk6Ourjn1F?gv=true"
           width="100%"
           height="600"
           className="w-full rounded-xl border shadow-lg"
-          style={{ border: 0 }}
+          style={{ border: 0, backgroundColor: 'white' }}
           allowFullScreen
           loading="lazy"
           title="Google Booking"
