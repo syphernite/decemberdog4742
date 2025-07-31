@@ -28,7 +28,6 @@ const OfferModal: React.FC<{
 }> = ({ isOpen, onClose }) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
-  // Accessibility: Trap focus
   useEffect(() => {
     const focusable = modalRef.current?.querySelectorAll<HTMLElement>(
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
@@ -79,13 +78,28 @@ const OfferModal: React.FC<{
           </p>
 
           <div className="flex flex-col gap-3">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400">
+            <a
+              href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0hRscFCqAlikNLhx7I1rb-xghG1bygoubGeEZ3G2r-JoIKLhNVX_Lr2nV6qlc8EFCk6Ourjn1F?gv=true"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition text-center font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400"
+            >
               📞 Schedule My Demo
-            </button>
+            </a>
             <div className="flex justify-center text-sm gap-2 text-gray-500">
-              <button className="hover:underline">Basic</button>
+              <a
+                href="/pricing#basic"
+                className="hover:underline focus:outline-none focus:ring-1 rounded"
+              >
+                Basic
+              </a>
               <span>·</span>
-              <button className="hover:underline">Pro</button>
+              <a
+                href="/pricing#pro"
+                className="hover:underline focus:outline-none focus:ring-1 rounded"
+              >
+                Pro
+              </a>
             </div>
           </div>
         </motion.div>
@@ -98,16 +112,13 @@ const OfferModal: React.FC<{
 const WhyWeCreatedBuilt4You: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
 
-  // Trigger modal after 10 seconds
   useEffect(() => {
     const timer = setTimeout(() => setModalOpen(true), 10000);
     return () => clearTimeout(timer);
   }, []);
 
-  // CTA sparkle animation using Tailwind + keyframes
   return (
     <main className="bg-gray-50 text-gray-800 min-h-screen font-sans">
-      {/* Hero Section */}
       <section className="text-center py-20 px-6 bg-white shadow">
         <h1 className="text-3xl md:text-5xl font-extrabold mb-4">Why We Created Built4You</h1>
         <p className="text-lg text-gray-600 max-w-xl mx-auto">
@@ -121,7 +132,6 @@ const WhyWeCreatedBuilt4You: React.FC = () => {
         </button>
       </section>
 
-      {/* Sections with fade-up animations */}
       {[
         {
           title: 'Offline = Invisible in 2025',
@@ -156,7 +166,20 @@ const WhyWeCreatedBuilt4You: React.FC = () => {
         );
       })}
 
-      {/* Sticky CTA on bottom of mobile */}
+      <div className="w-full max-w-4xl mx-auto px-4 pb-20">
+        <h2 className="text-2xl font-semibold text-center mb-6">📅 Book a Free Demo Call</h2>
+        <iframe
+          src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0hRscFCqAlikNLhx7I1rb-xghG1bygoubGeEZ3G2r-JoIKLhNVX_Lr2nV6qlc8EFCk6Ourjn1F?gv=true"
+          width="100%"
+          height="600"
+          className="w-full rounded-xl border shadow-lg"
+          style={{ border: 0 }}
+          allowFullScreen
+          loading="lazy"
+          title="Google Booking"
+        />
+      </div>
+
       <div className="fixed bottom-4 left-0 right-0 px-4 md:hidden z-40">
         <button
           onClick={() => setModalOpen(true)}
@@ -166,7 +189,6 @@ const WhyWeCreatedBuilt4You: React.FC = () => {
         </button>
       </div>
 
-      {/* Modal */}
       <OfferModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
     </main>
   );
