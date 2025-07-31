@@ -3,8 +3,8 @@ import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/coffeeexample/',
   plugins: [react()],
+  base: '/coffeeexample/',
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
