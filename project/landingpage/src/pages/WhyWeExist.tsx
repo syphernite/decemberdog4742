@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createPortal } from 'react-dom';
 
-// Helper Hook: Intersection Observer for section animations
 function useInViewAnimation(threshold = 0.3) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [isVisible, setVisible] = useState(false);
@@ -21,7 +20,6 @@ function useInViewAnimation(threshold = 0.3) {
   return { ref, isVisible };
 }
 
-// Reusable Modal Component
 const OfferModal: React.FC<{
   isOpen: boolean;
   onClose: () => void;
@@ -72,7 +70,9 @@ const OfferModal: React.FC<{
           >
             ✕
           </button>
-          <h2 className="text-xl font-bold mb-3 text-center text-gray-800 dark:text-white">🚀 Get Online in 72 Hours</h2>
+          <h2 className="text-xl font-bold mb-3 text-center text-gray-800 dark:text-white">
+            🚀 Get Online in 72 Hours
+          </h2>
           <p className="text-center text-gray-600 dark:text-gray-300 mb-4">
             Book your <span className="font-semibold text-blue-600">free demo call</span> and we’ll build your homepage — fast.
           </p>
@@ -86,17 +86,11 @@ const OfferModal: React.FC<{
               📞 Schedule My Demo
             </a>
             <div className="flex justify-center text-sm gap-2 text-gray-500 dark:text-gray-400">
-              <a
-                href="/pricing#basic"
-                className="hover:underline focus:outline-none focus:ring-1 rounded"
-              >
+              <a href="/pricing#basic" className="hover:underline focus:outline-none focus:ring-1 rounded">
                 Basic
               </a>
               <span>·</span>
-              <a
-                href="/pricing#pro"
-                className="hover:underline focus:outline-none focus:ring-1 rounded"
-              >
+              <a href="/pricing#pro" className="hover:underline focus:outline-none focus:ring-1 rounded">
                 Pro
               </a>
             </div>
@@ -131,7 +125,7 @@ const WhyWeCreatedBuilt4You: React.FC = () => {
         </button>
       </section>
 
-      {[
+      {[...
         {
           title: 'Offline = Invisible in 2025',
           content: 'People search online first. If they can’t find your business, they’ll find someone else. We help local legends stay visible.'
@@ -166,7 +160,8 @@ const WhyWeCreatedBuilt4You: React.FC = () => {
       })}
 
       <div id="calendar" className="w-full max-w-4xl mx-auto px-4 pb-20 scroll-mt-20">
-        <h2 className="text-2xl font-semibold text-center mb-6">📅 Book a Free Demo Call</h2>
+        <h2 className="text-2xl font-semibold text-center mb-6">🗓️ Book a Free Demo Call
+        </h2>
         <iframe
           src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0hRscFCqAlikNLhx7I1rb-xghG1bygoubGeEZ3G2r-JoIKLhNVX_Lr2nV6qlc8EFCk6Ourjn1F?gv=true"
           width="100%"
