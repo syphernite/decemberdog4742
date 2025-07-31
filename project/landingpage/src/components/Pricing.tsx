@@ -20,7 +20,7 @@ const Pricing: React.FC = () => {
     },
     {
       name: 'Business',
-      price: '$99',
+      price: '$129',
       duration: '/mo',
       features: ['Unlimited Edits', 'Hosting & Domain Included', 'Monthly Reports', 'Priority Support'],
       popular: true,
