@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createPortal } from 'react-dom';
 
+// Hook for triggering animations when elements come into view
 function useInViewAnimation(threshold = 0.3) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [isVisible, setVisible] = useState(false);
@@ -20,6 +21,7 @@ function useInViewAnimation(threshold = 0.3) {
   return { ref, isVisible };
 }
 
+// Modal Component
 const OfferModal: React.FC<{
   isOpen: boolean;
   onClose: () => void;
@@ -27,11 +29,11 @@ const OfferModal: React.FC<{
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const focusable = modalRef.current?.querySelectorAll<HTMLElement>(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    );
-    if (isOpen && focusable?.length) {
-      focusable[0]?.focus();
+    if (isOpen) {
+      const focusable = modalRef.current?.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      focusable?.[0]?.focus();
     }
 
     const handleKey = (e: KeyboardEvent) => {
@@ -57,11 +59,11 @@ const OfferModal: React.FC<{
       >
         <motion.div
           ref={modalRef}
-          className="bg-white dark:bg-slate-800 rounded-xl shadow-2xl max-w-md w-full p-6 relative transform perspective-1000"
-          initial={{ rotateY: 90, scale: 0.5 }}
-          animate={{ rotateY: 0, scale: 1 }}
-          exit={{ rotateY: 90, scale: 0.5 }}
-          transition={{ type: 'spring', stiffness: 80 }}
+          className="bg-white dark:bg-slate-800 rounded-xl shadow-2xl max-w-md w-full p-6 relative"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.8, opacity: 0 }}
+          transition={{ type: 'spring', stiffness: 100 }}
         >
           <button
             onClick={onClose}
@@ -70,9 +72,7 @@ const OfferModal: React.FC<{
           >
             ✕
           </button>
-          <h2 className="text-xl font-bold mb-3 text-center text-gray-800 dark:text-white">
-            🚀 Get Online in 72 Hours
-          </h2>
+          <h2 className="text-xl font-bold mb-3 text-center text-gray-800 dark:text-white">🚀 Get Online in 72 Hours</h2>
           <p className="text-center text-gray-600 dark:text-gray-300 mb-4">
             Book your <span className="font-semibold text-blue-600">free demo call</span> and we’ll build your homepage — fast.
           </p>
@@ -86,11 +86,17 @@ const OfferModal: React.FC<{
               📞 Schedule My Demo
             </a>
             <div className="flex justify-center text-sm gap-2 text-gray-500 dark:text-gray-400">
-              <a href="/pricing#basic" className="hover:underline focus:outline-none focus:ring-1 rounded">
+              <a
+                href="/pricing#basic"
+                className="hover:underline focus:outline-none focus:ring-1 rounded"
+              >
                 Basic
               </a>
               <span>·</span>
-              <a href="/pricing#pro" className="hover:underline focus:outline-none focus:ring-1 rounded">
+              <a
+                href="/pricing#pro"
+                className="hover:underline focus:outline-none focus:ring-1 rounded"
+              >
                 Pro
               </a>
             </div>
@@ -102,7 +108,7 @@ const OfferModal: React.FC<{
   );
 };
 
-const WhyWeCreatedBuilt4You: React.FC = () => {
+const WhyWeExist: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
@@ -112,6 +118,7 @@ const WhyWeCreatedBuilt4You: React.FC = () => {
 
   return (
     <main className="bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-white min-h-screen font-sans">
+      {/* Hero */}
       <section className="text-center py-20 px-6 bg-white dark:bg-slate-800 shadow">
         <h1 className="text-3xl md:text-5xl font-extrabold mb-4">Why We Created Built4You</h1>
         <p className="text-lg text-gray-600 dark:text-gray-300 max-w-xl mx-auto">
@@ -125,7 +132,8 @@ const WhyWeCreatedBuilt4You: React.FC = () => {
         </button>
       </section>
 
-      {[...
+      {/* Sections */}
+      {[
         {
           title: 'Offline = Invisible in 2025',
           content: 'People search online first. If they can’t find your business, they’ll find someone else. We help local legends stay visible.'
@@ -159,8 +167,9 @@ const WhyWeCreatedBuilt4You: React.FC = () => {
         );
       })}
 
+      {/* Google Calendar Embed */}
       <div id="calendar" className="w-full max-w-4xl mx-auto px-4 pb-20 scroll-mt-20">
-        <h2 className="text-2xl font-semibold text-center mb-6">🗓️ Book a Free Demo Call</h2>
+        <h2 className="text-2xl font-semibold text-center mb-6">📅 Book a Free Demo Call</h2>
         <iframe
           src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0hRscFCqAlikNLhx7I1rb-xghG1bygoubGeEZ3G2r-JoIKLhNVX_Lr2nV6qlc8EFCk6Ourjn1F?gv=true"
           width="100%"
@@ -173,6 +182,7 @@ const WhyWeCreatedBuilt4You: React.FC = () => {
         />
       </div>
 
+      {/* Mobile CTA */}
       <div className="fixed bottom-4 left-0 right-0 px-4 md:hidden z-40">
         <button
           onClick={() => setModalOpen(true)}
@@ -182,9 +192,10 @@ const WhyWeCreatedBuilt4You: React.FC = () => {
         </button>
       </div>
 
+      {/* Modal */}
       <OfferModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
     </main>
   );
 };
 
-export default WhyWeCreatedBuilt4You;
+export default WhyWeExist;
