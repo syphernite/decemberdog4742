@@ -114,7 +114,21 @@ const WhyWeExist: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setModalOpen(true), 10000);
+    const timer = setTimeout(() => {
+      // Check if #calendar is in viewport
+      const calendar = document.getElementById('calendar');
+      if (calendar) {
+        const rect = calendar.getBoundingClientRect();
+        const isVisible =
+          rect.top < window.innerHeight && rect.bottom > 0;
+        if (isVisible) {
+          // Don't show modal if calendar visible
+          return;
+        }
+      }
+      setModalOpen(true);
+    }, 10000);
+
     return () => clearTimeout(timer);
   }, []);
 
