@@ -70,7 +70,7 @@ const Pricing: React.FC = () => {
           {plans.map((plan, index) => (
             <div
               key={index}
-              className={`relative bg-white dark:bg-slate-900 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden ${
+              className={`relative flex flex-col justify-between h-full bg-white dark:bg-slate-900 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden ${
                 plan.popular
                   ? 'ring-2 ring-emerald-500 scale-105'
                   : plan.name === 'Business Pro'
