@@ -26,7 +26,7 @@ jobs:
           rm -rf __deploy
           mkdir __deploy
 
-          folders=("landingpage" "thairiverside" "chickenmacandmore"v"coffeeexample") # 🔧 Add new clients here
+          folders=("landingpage" "thairiverside" "chickenmacandmore") # 🔧 Add new clients here
 
           for folder in "${folders[@]}"
           do
