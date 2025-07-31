@@ -25,6 +25,7 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
     { label: 'Home', path: '/' },
     { label: 'Services', path: '/services' },
     { label: 'About', path: '/about' },
+    { label: 'Our Mission', path: '/why-we-exist' }, // ✅ NEW LINK
     { label: 'Contact', path: '/contact' },
   ];
 
@@ -40,8 +41,6 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <Link to="/" className="flex-shrink-0 group">
