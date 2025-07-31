@@ -79,9 +79,8 @@ const OfferModal: React.FC<{
 
           <div className="flex flex-col gap-3">
             <a
-              href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0hRscFCqAlikNLhx7I1rb-xghG1bygoubGeEZ3G2r-JoIKLhNVX_Lr2nV6qlc8EFCk6Ourjn1F?gv=true"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#calendar"
+              onClick={onClose}
               className="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition text-center font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400"
             >
               📞 Schedule My Demo
@@ -166,7 +165,7 @@ const WhyWeCreatedBuilt4You: React.FC = () => {
         );
       })}
 
-      <div className="w-full max-w-4xl mx-auto px-4 pb-20">
+      <div id="calendar" className="w-full max-w-4xl mx-auto px-4 pb-20 scroll-mt-20">
         <h2 className="text-2xl font-semibold text-center mb-6">📅 Book a Free Demo Call</h2>
         <iframe
           src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0hRscFCqAlikNLhx7I1rb-xghG1bygoubGeEZ3G2r-JoIKLhNVX_Lr2nV6qlc8EFCk6Ourjn1F?gv=true"
