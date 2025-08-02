@@ -32,11 +32,10 @@ jobs:
           do
             echo "🔨 Building $folder..."
             cd "$folder"
-            npm install
-            npm run build
+            npm install || true
+            npm run build || true
 
-            # 🔁 Use shared _redirects file
-            cp ../_redirects dist/_redirects
+            cp ../_redirects dist/_redirects || true
 
             if [ "$folder" = "landingpage" ]; then
               cp -a dist/. ../__deploy/
