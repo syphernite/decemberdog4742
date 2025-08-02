@@ -35,9 +35,8 @@ jobs:
             npm install
             npm run build
 
-            if [ -f public/_redirects ]; then
-              cp public/_redirects dist/_redirects
-            fi
+            # 🔁 Use shared _redirects file
+            cp ../_redirects dist/_redirects
 
             if [ "$folder" = "landingpage" ]; then
               cp -a dist/. ../__deploy/
