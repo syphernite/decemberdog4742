@@ -1,4 +1,4 @@
-name: Deploy all projects to GitHub Pages
+name: Deploy all client sites
 
 on:
   push:
@@ -8,49 +8,31 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    strategy:
+      matrix:
+        project: [landingpage, anissaylaa, thairiverside, chickenmacandmore]
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - name: Build landing page
-        working-directory: project/landingpage
+      - name: Build ${{ matrix.project }}
+        working-directory: project/${{ matrix.project }}
         run: |
           npm ci
           npm run build
 
-      - name: Build all other projects
-        run: |
-          for dir in project/*; do
-            name=$(basename "$dir")
-            if [ "$name" != "landingpage" ] && [ -d "project/$name/src" ]; then
-              cd "project/$name"
-              npm ci
-              npm run build
-              cd -
-            fi
-          done
-
-      - name: Prepare deploy folder
-        run: |
-          rm -rf __deploy
-          mkdir __deploy
-          cp -r project/landingpage/dist/* __deploy/
-          for dir in project/*; do
-            name=$(basename "$dir")
-            if [ "$name" != "landingpage" ] && [ -d "project/$name/dist" ]; then
-              mkdir -p __deploy/"$name"
-              cp -r "project/$name/dist/"* __deploy/"$name"/
-            fi
-          done
-          touch __deploy/.nojekyll
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Deploy ${{ matrix.project }} to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: __deploy
+          publish_dir: project/${{ matrix.project }}/dist
+          destination_dir: ${{ matrix.project }}
