@@ -1,4 +1,3 @@
-@ -1,88 +0,0 @@
 import React from 'react';
 import { Instagram, Play, Youtube, Mail, MessageCircle } from 'lucide-react';
 

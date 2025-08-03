@@ -1,59 +1,49 @@
-name: Deploy All Projects
+# .github/workflows/deploy.yml
+name: Deploy All Sites
 
 on:
   push:
     branches: [main]
-    paths:
-      - 'project/**'
-      - '.github/workflows/deploy-all.yml'
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: Build all projects into __deploy
+      - name: Install and Build Landing Page
+        working-directory: ./landingpage
         run: |
-          cd project
-          rm -rf __deploy
-          mkdir __deploy
+          npm ci
+          npm run build
 
-          folders=("landingpage" "thairiverside" "chickenmacandmore" "anissaylaa") # 🔧 Add new clients here
+      - name: Install and Build Thai Riverside
+        working-directory: ./thairiverside
+        run: |
+          npm ci
+          npm run build
 
-          for folder in "${folders[@]}"
-          do
-            echo "🔨 Building $folder..."
-            cd "$folder"
-            npm install || true
-            npm run build || true
+      - name: Install and Build Chicken Mac
+        working-directory: ./chickenmacandmore
+        run: |
+          npm ci
+          npm run build
 
-            cp ../_redirects dist/_redirects || true
-
-            if [ "$folder" = "landingpage" ]; then
-              cp -a dist/. ../__deploy/
-            else
-              mkdir -p "../__deploy/$folder"
-              cp -a dist/. "../__deploy/$folder/"
-            fi
-
-            cd ..
-          done
-
-          echo 'built4you.org' > __deploy/CNAME
+      - name: Install and Build Anissaylaa
+        working-directory: ./anissaylaa
+        run: |
+          npm ci
+          npm run build
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+        uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: project/__deploy
-          publish_branch: gh-pages
-          force_orphan: true
-          commit_message: 'Deploy all projects to GitHub Pages'
+          publish_dir: ./__deploy
