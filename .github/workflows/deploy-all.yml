@@ -10,31 +10,54 @@ jobs:
     permissions:
       contents: write
 
-    strategy:
-      matrix:
-        project: [ landingpage, anissaylaa, thairiverside, chickenmacandmore ]
-
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: 18
 
-      - name: Install & build ${{ matrix.project }}
+      - name: Create deploy folder
+        run: rm -rf deploy && mkdir deploy
+
+      - name: Build Landing Page
         run: |
-          cd project/${{ matrix.project }}
+          cd project/landingpage
           npm ci
           npm run build
+          mkdir -p ../../deploy
+          cp -r dist/* ../../deploy
 
-      - name: Deploy ${{ matrix.project }} to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Build Anissa
+        run: |
+          cd project/anissaylaa
+          npm ci
+          npm run build
+          mkdir -p ../../deploy/anissaylaa
+          cp -r dist/* ../../deploy/anissaylaa
+
+      - name: Build ThaiRiverside
+        run: |
+          cd project/thairiverside
+          npm ci
+          npm run build
+          mkdir -p ../../deploy/thairiverside
+          cp -r dist/* ../../deploy/thairiverside
+
+      - name: Build ChickenMacAndMore
+        run: |
+          cd project/chickenmacandmore
+          npm ci
+          npm run build
+          mkdir -p ../../deploy/chickenmacandmore
+          cp -r dist/* ../../deploy/chickenmacandmore
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: project/${{ matrix.project }}/dist
-          destination_dir: ${{ matrix.project }}
+          publish_dir: deploy
+          force_orphan: true
           publish_branch: gh-pages
-          user_name: github-actions[bot]
-          user_email: github-actions[bot]@users.noreply.github.com
