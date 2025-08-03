@@ -1,37 +1,53 @@
-name: deploy
+name: Deploy all projects to GitHub Pages
+
 on:
   push:
     branches:
       - main
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        project:
-          - anissaylaa
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: Install & Build Vite Site
+      - name: Build landing page
+        working-directory: project/landingpage
         run: |
-          cd project/${{ matrix.project }}
-          npm install
+          npm ci
           npm run build
 
-      - name: Copy to __deploy
+      - name: Build all other projects
         run: |
-          mkdir -p __deploy/${{ matrix.project }}
-          cp -r project/${{ matrix.project }}/dist/* __deploy/${{ matrix.project }}/
+          for dir in project/*; do
+            name=$(basename "$dir")
+            if [ "$name" != "landingpage" ] && [ -d "project/$name/src" ]; then
+              cd "project/$name"
+              npm ci
+              npm run build
+              cd -
+            fi
+          done
 
-      - name: Add .nojekyll
-        run: touch __deploy/.nojekyll
+      - name: Prepare deploy folder
+        run: |
+          rm -rf __deploy
+          mkdir __deploy
+          cp -r project/landingpage/dist/* __deploy/
+          for dir in project/*; do
+            name=$(basename "$dir")
+            if [ "$name" != "landingpage" ] && [ -d "project/$name/dist" ]; then
+              mkdir -p __deploy/"$name"
+              cp -r "project/$name/dist/"* __deploy/"$name"/
+            fi
+          done
+          touch __deploy/.nojekyll
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
