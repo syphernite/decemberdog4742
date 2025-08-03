@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        project: [landingpage, anissaylaa, thairiverside, chickenmacandmore]
+        project: [ landingpage, anissaylaa, thairiverside, chickenmacandmore ]
 
     steps:
       - name: Checkout code
@@ -21,18 +21,20 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: '18'
 
-      - name: Build ${{ matrix.project }}
-        working-directory: project/${{ matrix.project }}
+      - name: Install & build ${{ matrix.project }}
         run: |
+          cd project/${{ matrix.project }}
           npm ci
           npm run build
 
       - name: Deploy ${{ matrix.project }} to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: project/${{ matrix.project }}/dist
           destination_dir: ${{ matrix.project }}
-          force_orphan: true
+          publish_branch: gh-pages
+          user_name: github-actions[bot]
+          user_email: github-actions[bot]@users.noreply.github.com
