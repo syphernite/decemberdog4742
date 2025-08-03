@@ -2,33 +2,30 @@ name: Deploy all projects to GitHub Pages
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 18
 
-      - name: Build all projects
+      - name: Install and Build anissaylaa
+        working-directory: ./project/anissaylaa
         run: |
-          cd project/anissaylaa && npm ci && npm run build
-          cd ../landingpage && npm ci && npm run build
-          cd ../thairiverside && npm ci && npm run build
-          cd ../chickenmacandmore && npm ci && npm run build
+          npm install
+          npm run build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./__deploy
+          publish_dir: ./project/anissaylaa/dist
+          destination_dir: anissaylaa
+          keep_files: true
