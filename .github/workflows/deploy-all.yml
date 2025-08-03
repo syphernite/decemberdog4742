@@ -1,4 +1,3 @@
-# .github/workflows/deploy-all.yml
 name: Build & Deploy All Sites
 
 on:
@@ -20,49 +19,63 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Prepare deploy directory
-        run: |
-          rm -rf deploy
-          mkdir deploy
-
+      # ────────────── Landing Page ──────────────
       - name: Build Landing Page
         run: |
           cd project/landingpage
           npm ci
           npm run build
-          # Copy root build
-          cp -r dist/* ../../deploy
 
+      - name: Deploy Landing Page to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: project/landingpage/dist
+          # "" means root of gh-pages branch
+          destination_dir: ''
+          # first publish wipes old content
+
+      # ────────────── Anissaylaa ──────────────
       - name: Build Anissaylaa
         run: |
           cd project/anissaylaa
           npm ci
           npm run build
-          mkdir -p ../../deploy/anissaylaa
-          cp -r dist/* ../../deploy/anissaylaa
 
+      - name: Deploy Anissaylaa to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: project/anissaylaa/dist
+          destination_dir: anissaylaa
+          keep_files: true    # preserve what landingpage pushed
+
+      # ────────────── ThaiRiverside ──────────────
       - name: Build ThaiRiverside
         run: |
           cd project/thairiverside
           npm ci
           npm run build
-          mkdir -p ../../deploy/thairiverside
-          cp -r dist/* ../../deploy/thairiverside
 
+      - name: Deploy ThaiRiverside to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: project/thairiverside/dist
+          destination_dir: thairiverside
+          keep_files: true
+
+      # ────────────── ChickenMacAndMore ──────────────
       - name: Build ChickenMacAndMore
         run: |
           cd project/chickenmacandmore
           npm ci
           npm run build
-          mkdir -p ../../deploy/chickenmacandmore
-          cp -r dist/* ../../deploy/chickenmacandmore
 
-      - name: Publish to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Deploy ChickenMacAndMore to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: deploy
-          force_orphan: true        # ensures a fresh branch each time
-          publish_branch: gh-pages
-          user_name: github-actions[bot]
-          user_email: github-actions[bot]@users.noreply.github.com
+          publish_dir: project/chickenmacandmore/dist
+          destination_dir: chickenmacandmore
+          keep_files: true
