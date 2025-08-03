@@ -1,0 +1,63 @@
+name: Build & Publish All Demos
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  pages: write       # allow publishing to GitHub Pages
+  id-token: write    # required by `configure-pages`
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: [ landingpage, anissaylaa, thairiverside, chickenmacandmore ]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install & build ${{ matrix.project }}
+        working-directory: project/${{ matrix.project }}
+        run: |
+          npm ci
+          npm run build
+
+      # package all builds into a single “site” directory
+      - name: Collect all sites
+        if: ${{ matrix.project == 'landingpage' }}
+        run: |
+          rm -rf site
+          mkdir site
+          # landingpage goes at root
+          cp -r project/landingpage/dist/* site/
+      - name: Collect anissaylaa
+        if: ${{ matrix.project == 'anissaylaa' }}
+        run: cp -r project/anissaylaa/dist      site/anissaylaa
+      - name: Collect thairiverside
+        if: ${{ matrix.project == 'thairiverside' }}
+        run: cp -r project/thairiverside/dist   site/thairiverside
+      - name: Collect chickenmacandmore
+        if: ${{ matrix.project == 'chickenmacandmore' }}
+        run: cp -r project/chickenmacandmore/dist site/chickenmacandmore
+
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure Pages
+        uses: actions/configure-pages@v2
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v1
