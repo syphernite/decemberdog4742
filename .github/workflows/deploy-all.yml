@@ -1,61 +1,34 @@
-name: Deploy All Projects
+name: Deploy all projects to GitHub Pages
 
 on:
   push:
-    branches: [main]
-    paths:
-      - 'project/**'
-      - '.github/workflows/deploy-all.yml'
+    branches:
+      - main
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
-      - name: Build all projects into __deploy
+      - name: Build all projects
         run: |
-          cd project
-          rm -rf __deploy
-          mkdir __deploy
-
-          folders=("landingpage" "thairiverside" "chickenmacandmore" "anissaylaa") # 🔧 Add new clients here
-
-          for folder in "${folders[@]}"
-          do
-            echo "🔨 Building $folder..."
-            cd "$folder"
-            npm install
-            npm run build
-
-            if [ -f public/_redirects ]; then
-              cp public/_redirects dist/_redirects
-            fi
-
-            if [ "$folder" = "landingpage" ]; then
-              cp -a dist/. ../__deploy/
-            else
-              mkdir -p "../__deploy/$folder"
-              cp -a dist/. "../__deploy/$folder/"
-            fi
-
-            cd ..
-          done
-
-          echo 'built4you.org' > __deploy/CNAME
+          cd project/anissaylaa && npm ci && npm run build
+          cd ../landingpage && npm ci && npm run build
+          cd ../thairiverside && npm ci && npm run build
+          cd ../chickenmacandmore && npm ci && npm run build
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+        uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: project/__deploy
-          publish_branch: gh-pages
-          force_orphan: true
-          commit_message: 'Deploy all projects to GitHub Pages'
+          publish_dir: ./__deploy
