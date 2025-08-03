@@ -25,19 +25,19 @@ jobs:
           npm run build
 
       - name: Install and Build Thai Riverside
-        working-directory: ./thairiverside
+        working-directory: ./project/thairiverside
         run: |
           npm ci
           npm run build
 
       - name: Install and Build Chicken Mac
-        working-directory: ./chickenmacandmore
+        working-directory: ./project/chickenmacandmore
         run: |
           npm ci
           npm run build
 
       - name: Install and Build Anissaylaa
-        working-directory: ./anissaylaa
+        working-directory: ./project/anissaylaa
         run: |
           npm ci
           npm run build
