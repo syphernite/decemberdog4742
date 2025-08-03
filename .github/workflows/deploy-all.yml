@@ -19,7 +19,7 @@ jobs:
           node-version: 18
 
       - name: Install and Build Landing Page
-        working-directory: ./landingpage
+        working-directory: ./project/landingpage
         run: |
           npm ci
           npm run build
