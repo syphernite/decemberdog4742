@@ -1,3 +1,4 @@
+// project/anissaylaa/src/App.tsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
@@ -29,5 +30,3 @@ export default function App() {
     </Router>
   );
 }
-import './App.css'; // Ensure to import your CSS file for styles
-import './fonts/SpaceGrotesk.css'; // Import your custom font styles
