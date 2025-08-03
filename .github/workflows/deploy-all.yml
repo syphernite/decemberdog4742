@@ -1,46 +1,31 @@
-# .github/workflows/deploy.yml
-name: Deploy All Sites
+name: Deploy all projects to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
-      - name: Install and Build Landing Page
-        working-directory: ./project/landingpage
+      - name: Build all projects
         run: |
-          npm ci
-          npm run build
-
-      - name: Install and Build Thai Riverside
-        working-directory: ./project/thairiverside
-        run: |
-          npm ci
-          npm run build
-
-      - name: Install and Build Chicken Mac
-        working-directory: ./project/chickenmacandmore
-        run: |
-          npm ci
-          npm run build
-
-      - name: Install and Build Anissaylaa
-        working-directory: ./project/anissaylaa
-        run: |
-          npm ci
-          npm run build
+          cd project/anissaylaa && npm ci && npm run build
+          cd ../landingpage && npm ci && npm run build
+          cd ../thairiverside && npm ci && npm run build
+          cd ../chickenmacandmore && npm ci && npm run build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
