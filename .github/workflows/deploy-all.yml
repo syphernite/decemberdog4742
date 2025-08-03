@@ -1,3 +1,4 @@
+# .github/workflows/deploy-all.yml
 name: Build & Deploy All Sites
 
 on:
@@ -19,18 +20,19 @@ jobs:
         with:
           node-version: 18
 
-      - name: Create deploy folder
-        run: rm -rf deploy && mkdir deploy
+      - name: Prepare deploy folder
+        run: |
+          rm -rf deploy
+          mkdir deploy
 
       - name: Build Landing Page
         run: |
           cd project/landingpage
           npm ci
           npm run build
-          mkdir -p ../../deploy
           cp -r dist/* ../../deploy
 
-      - name: Build Anissa
+      - name: Build Anissaylaa
         run: |
           cd project/anissaylaa
           npm ci
@@ -58,7 +60,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: deploy
           publish_branch: gh-pages
+          publish_dir: deploy
           user_name: github-actions[bot]
           user_email: github-actions[bot]@users.noreply.github.com
