@@ -1,31 +1,40 @@
-name: Deploy all projects to GitHub Pages
-
+name: deploy
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project:
+          - anissaylaa
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: Install and Build anissaylaa
-        working-directory: ./project/anissaylaa
+      - name: Install & Build Vite Site
         run: |
+          cd project/${{ matrix.project }}
           npm install
           npm run build
+
+      - name: Copy to __deploy
+        run: |
+          mkdir -p __deploy/${{ matrix.project }}
+          cp -r project/${{ matrix.project }}/dist/* __deploy/${{ matrix.project }}/
+
+      - name: Add .nojekyll
+        run: touch __deploy/.nojekyll
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./project/anissaylaa/dist
-          destination_dir: anissaylaa
-          keep_files: true
+          publish_dir: __deploy
