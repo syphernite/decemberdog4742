@@ -35,3 +35,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: project/${{ matrix.project }}/dist
           destination_dir: ${{ matrix.project }}
+          force_orphan: true
