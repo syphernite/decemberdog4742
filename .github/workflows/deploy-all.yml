@@ -18,9 +18,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: '18'
 
-      - name: Prepare deploy folder
+      - name: Prepare deploy directory
         run: |
           rm -rf deploy
           mkdir deploy
@@ -30,6 +30,7 @@ jobs:
           cd project/landingpage
           npm ci
           npm run build
+          # Copy root build
           cp -r dist/* ../../deploy
 
       - name: Build Anissaylaa
@@ -56,11 +57,12 @@ jobs:
           mkdir -p ../../deploy/chickenmacandmore
           cp -r dist/* ../../deploy/chickenmacandmore
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Publish to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
           publish_dir: deploy
+          force_orphan: true        # ensures a fresh branch each time
+          publish_branch: gh-pages
           user_name: github-actions[bot]
           user_email: github-actions[bot]@users.noreply.github.com
