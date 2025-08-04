@@ -3,7 +3,8 @@ name: 🚀 Build & Deploy All Clients
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -11,15 +12,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Checkout the code
+      # 1) Checkout
       - uses: actions/checkout@v4
 
-      # 2) Setup Node.js
+      # 2) Setup Node
       - uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      # 3) Build each folder under project/
+      # 3) Build each client in project/
       - name: Build all clients
         run: |
           for dir in project/*/ ; do
@@ -34,30 +35,26 @@ jobs:
             cp -r "project/$slug/dist/." "$slug/"
           done
 
-      # 4) Copy landing-page build output to repo root
+      # 4) Copy landing page into root (with absolute base='/')
       - name: Copy landing page
         run: |
           cp -r project/landingpage/dist/* .
 
-      # 5) Copy CNAME (so your custom domain stays set)
-      - name: Copy CNAME
-        run: cp CNAME .
-
-      # 6) SPA fallback: serve index.html on 404 (deep links)
+      # 5) SPA fallback: serve index.html for all paths
       - name: Fallback 404 → index.html
         run: cp index.html 404.html
 
-      # 7) Debug (optional—remove after you confirm it works)
+      # 6) Debug publish dir (just to confirm)
       - name: Show publish directory
         run: |
           echo "=== publish contents ==="
           ls -R .
           echo "========================"
 
-      # 8) Deploy to GitHub Pages (gh-pages branch)
-      - name: Deploy
+      # 7) Deploy to gh-pages
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: ./
+          publish_dir: ./   # contains index.html, assets/, /<slug>/, CNAME, 404.html
