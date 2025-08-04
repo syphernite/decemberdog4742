@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: 18
 
-      # 3) Build every folder under project/
+      # 3) Build every client under project/
       - name: Build all clients
         run: |
           for dir in project/*/ ; do
@@ -35,38 +35,32 @@ jobs:
             cp -r "project/$slug/dist/." "$slug/"
           done
 
-      # 4) Copy landing-page build artifacts into repo root
+      # 4) Copy landing-page build output into repo root
       - name: Copy landing page
         run: |
           cp -r project/landingpage/dist/* .
-          # Rewrite absolute asset paths to relative
-          sed -i 's|src="/assets|src="assets|g' index.html
-          sed -i 's|href="/assets|href="assets|g' index.html
-          sed -i 's|href="/vite.svg|href="vite.svg|g' index.html
+          # Ensure your base is './' in vite.config.ts so assets resolve
+          # (double-check with your local test)
 
-      # 5) Add SPA fallback for deep links
-      - name: Add 404.html
-        run: |
-          cat > 404.html << 'EOF'
-          <!DOCTYPE html>
-          <html><head>
-            <meta http-equiv="refresh" content="0; url=/" />
-          </head><body>
-            <p>Redirecting…</p>
-          </body></html>
-          EOF
+      # 5) Copy CNAME so custom domain sticks
+      - name: Copy CNAME
+        run: cp CNAME .
 
-      # 6) Debug: show everything that will be published
+      # 6) SPA fallback: serve index.html on any 404 (deep link)
+      - name: Create 404.html fallback
+        run: cp index.html 404.html
+
+      # 7) Debug: list everything to be published
       - name: Show publish directory contents
         run: |
           echo "=== publish dir listing ==="
           ls -R .
           echo "=== end listing ==="
 
-      # 7) Deploy to GitHub Pages (pushes to gh-pages)
+      # 8) Deploy to gh-pages branch
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: ./   # now contains index.html, assets/, /<slug>/, 404.html, CNAME
+          publish_dir: ./
