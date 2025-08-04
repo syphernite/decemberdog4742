@@ -3,8 +3,7 @@ name: 🚀 Build & Deploy All Clients
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -12,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Checkout code
+      # 1) Checkout the code
       - uses: actions/checkout@v4
 
       # 2) Setup Node.js
@@ -20,7 +19,7 @@ jobs:
         with:
           node-version: 18
 
-      # 3) Build every folder under project/
+      # 3) Build each folder under project/
       - name: Build all clients
         run: |
           for dir in project/*/ ; do
@@ -35,21 +34,28 @@ jobs:
             cp -r "project/$slug/dist/." "$slug/"
           done
 
-      # 4) Copy landing page AND patch asset paths
-      - name: Copy & fix landing page
+      # 4) Copy landing-page build output to repo root
+      - name: Copy landing page
         run: |
           cp -r project/landingpage/dist/* .
-          # Strip leading slashes so <script src="assets/..."> actually resolves
-          sed -i 's|href="/assets|href="assets|g' index.html
-          sed -i 's|src="/assets|src="assets|g' index.html
-          sed -i 's|href="/vite.svg|href="vite.svg|g' index.html
 
-      # 5) SPA fallback: serve index.html on any missing path
-      - name: Create SPA fallback 404
+      # 5) Copy CNAME (so your custom domain stays set)
+      - name: Copy CNAME
+        run: cp CNAME .
+
+      # 6) SPA fallback: serve index.html on 404 (deep links)
+      - name: Fallback 404 → index.html
         run: cp index.html 404.html
 
-      # 6) Deploy to GitHub Pages (gh-pages branch)
-      - name: Deploy to GitHub Pages
+      # 7) Debug (optional—remove after you confirm it works)
+      - name: Show publish directory
+        run: |
+          echo "=== publish contents ==="
+          ls -R .
+          echo "========================"
+
+      # 8) Deploy to GitHub Pages (gh-pages branch)
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
