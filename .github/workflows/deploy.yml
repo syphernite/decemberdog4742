@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Checkout code
+      # 1) Checkout the repository
       - uses: actions/checkout@v4
 
       # 2) Setup Node.js
@@ -39,28 +39,23 @@ jobs:
       - name: Copy landing page
         run: |
           cp -r project/landingpage/dist/* .
-          # Ensure your base is './' in vite.config.ts so assets resolve
-          # (double-check with your local test)
 
-      # 5) Copy CNAME so custom domain sticks
-      - name: Copy CNAME
-        run: cp CNAME .
-
-      # 6) SPA fallback: serve index.html on any 404 (deep link)
+      # 5) SPA fallback for deep links
       - name: Create 404.html fallback
-        run: cp index.html 404.html
+        run: |
+          cp index.html 404.html
 
-      # 7) Debug: list everything to be published
+      # 6) Debug: list everything that will be published
       - name: Show publish directory contents
         run: |
           echo "=== publish dir listing ==="
           ls -R .
           echo "=== end listing ==="
 
-      # 8) Deploy to gh-pages branch
+      # 7) Deploy to GitHub Pages (pushes to gh-pages)
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: ./
+          publish_dir: ./   # root now has index.html, assets/, /<slug>/, 404.html, CNAME
