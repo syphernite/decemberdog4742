@@ -12,16 +12,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Checkout
+      # 1) Checkout your code
       - uses: actions/checkout@v4
 
-      # 2) Setup Node
+      # 2) Setup Node.js
       - uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      # 3) Build each client in project/
-      - name: Build all clients
+      # 3) Build each client under project/
+      - name: Build all clients + create per‐slug 404
         run: |
           for dir in project/*/ ; do
             slug=$(basename "$dir")
@@ -30,31 +30,35 @@ jobs:
             npm ci
             npm run build
             cd ../../
+
+            # Copy dist into its slug folder
             rm -rf "$slug"
             mkdir -p "$slug"
             cp -r "project/$slug/dist/." "$slug/"
+
+            # Per‐client SPA fallback: serve index.html for any path under /$slug/
+            cp "$slug/index.html" "$slug/404.html"
           done
 
-      # 4) Copy landing page into root (with absolute base='/')
-      - name: Copy landing page
+      # 4) Copy landing‐page build output to root
+      - name: Copy landing page + root SPA fallback
         run: |
           cp -r project/landingpage/dist/* .
 
-      # 5) SPA fallback: serve index.html for all paths
-      - name: Fallback 404 → index.html
-        run: cp index.html 404.html
+          # Root SPA fallback: serve landing index.html on any unknown path
+          cp index.html 404.html
 
-      # 6) Debug publish dir (just to confirm)
-      - name: Show publish directory
+      # 5) Debug (optional—remove once you confirm it works)
+      - name: Show publish directory contents
         run: |
           echo "=== publish contents ==="
           ls -R .
           echo "========================"
 
-      # 7) Deploy to gh-pages
+      # 6) Deploy to GitHub Pages (gh-pages branch)
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: ./   # contains index.html, assets/, /<slug>/, CNAME, 404.html
+          publish_dir: ./   # root now has index.html, 404.html, assets/, and a folder + 404.html per client
