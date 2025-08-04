@@ -41,7 +41,6 @@ jobs:
       # 5) Add domain & SPA fallback
       - name: Add CNAME & 404.html
         run: |
-          cp CNAME ./
           cat > 404.html << 'EOF'
           <!DOCTYPE html>
           <html><head>
