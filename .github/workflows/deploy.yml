@@ -12,7 +12,7 @@ jobs:
       # 1) Checkout your code
       - uses: actions/checkout@v4
 
-      # 2) Setup Node.js (no root npm install)
+      # 2) Setup Node.js
       - uses: actions/setup-node@v4
         with:
           node-version: 18
@@ -32,20 +32,13 @@ jobs:
             cp -r "project/$slug/dist/." "$slug/"
           done
 
-      # 4) Copy landing page
+      # 4) Copy landing page build artifacts into repo root
       - name: Copy landing page
         run: |
-          # bring the built landing-page into root
-          cp project/landingpage/dist/index.html ./index.html
-          cp -r project/landingpage/dist/assets .
+          cp -r project/landingpage/dist/* .
 
-          # fix absolute URLs so they resolve correctly on your custom domain
-          sed -i 's|src="/assets|src="assets|g' index.html
-          sed -i 's|href="/assets|href="assets|g' index.html
-          sed -i 's|href="/vite.svg|href="vite.svg|g' index.html
-
-      # 5) Add domain & SPA fallback
-      - name: Add CNAME & 404.html
+      # 5) Add SPA fallback (404.html)
+      - name: Add 404.html
         run: |
           cat > 404.html << 'EOF'
           <!DOCTYPE html>
@@ -56,10 +49,10 @@ jobs:
           </body></html>
           EOF
 
-      # 6) Deploy to GitHub Pages (defaults to gh-pages branch)
+      # 6) Deploy to GitHub Pages (gh-pages branch by default)
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./   # root now has index.html, /<slug>/ folders, assets/, 404.html, CNAME
+          publish_dir: ./
           # publish_branch: gh-pages  # optional, defaults to gh-pages
