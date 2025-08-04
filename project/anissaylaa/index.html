@@ -9,6 +9,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- ✅ Fix for index.html# paths breaking refresh -->
+    <script>
+      if (window.location.pathname.endsWith('/index.html')) {
+        const cleanPath = window.location.pathname.replace('/index.html', '/');
+        const hash = window.location.hash;
+        window.location.replace(cleanPath + hash);
+      }
+    </script>
   </head>
   <body class="bg-dark-bg">
     <div id="root"></div>
