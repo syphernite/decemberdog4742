@@ -1,63 +1,58 @@
-name: Build & Publish All Demos
+name: 🚀 Build & Deploy All Clients
 
 on:
   push:
     branches: [ main ]
 
-permissions:
-  pages: write       # allow publishing to GitHub Pages
-  id-token: write    # required by `configure-pages`
-
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        project: [ landingpage, anissaylaa, thairiverside, chickenmacandmore ]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Install & build ${{ matrix.project }}
-        working-directory: project/${{ matrix.project }}
-        run: |
-          npm ci
-          npm run build
-
-      # package all builds into a single “site” directory
-      - name: Collect all sites
-        if: ${{ matrix.project == 'landingpage' }}
-        run: |
-          rm -rf site
-          mkdir site
-          # landingpage goes at root
-          cp -r project/landingpage/dist/* site/
-      - name: Collect anissaylaa
-        if: ${{ matrix.project == 'anissaylaa' }}
-        run: cp -r project/anissaylaa/dist      site/anissaylaa
-      - name: Collect thairiverside
-        if: ${{ matrix.project == 'thairiverside' }}
-        run: cp -r project/thairiverside/dist   site/thairiverside
-      - name: Collect chickenmacandmore
-        if: ${{ matrix.project == 'chickenmacandmore' }}
-        run: cp -r project/chickenmacandmore/dist site/chickenmacandmore
-
-      - name: Upload Pages Artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: site
-
-  deploy:
-    needs: build
+  pages:
     runs-on: ubuntu-latest
     steps:
-      - name: Configure Pages
-        uses: actions/configure-pages@v2
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+
+      # Install any shared devDependencies (optional)
+      - run: npm ci
+
+      # Find & build each project folder
+      - name: Build all clients
+        run: |
+          for dir in project/*/ ; do
+            slug=$(basename "$dir")
+            echo "Building $slug…"
+            cd "$dir"
+            npm ci
+            npm run build
+            cd ../../
+            rm -rf "$slug"
+            mkdir -p "$slug"
+            cp -r "project/$slug/dist/." "$slug/"
+          done
+
+      # Landing page goes to root
+      - name: Copy landing page
+        run: |
+          cp project/landingpage/dist/index.html .
+          cp -r project/landingpage/dist/assets .
+
+      # Add CNAME + SPA fallback
+      - run: |
+          cp CNAME .
+          cat > 404.html <<'EOF'
+          <!DOCTYPE html>
+          <html><head>
+            <meta http-equiv="refresh" content="0; url=/" />
+          </head><body>
+            <p>Redirecting…</p>
+          </body></html>
+          EOF
 
       - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v1
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./    # root now contains /<slug>/ for each client + index.html, assets/, 404.html, CNAME
