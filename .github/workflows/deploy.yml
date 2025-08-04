@@ -1,10 +1,12 @@
+# File: .github/workflows/deploy.yml
 name: 🚀 Build & Deploy All Clients
 
-# → Now also supports manual dispatch for testing
 on:
+  # Run automatically whenever you push to main
   push:
     branches:
       - main
+  # Also allow a manual trigger from the Actions UI
   workflow_dispatch:
 
 jobs:
@@ -12,12 +14,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1) Checkout code
       - uses: actions/checkout@v4
 
+      # 2) Setup Node.js
       - uses: actions/setup-node@v4
         with:
           node-version: 18
 
+      # 3) Build every client folder under project/
       - name: Build all clients
         run: |
           for dir in project/*/ ; do
@@ -32,10 +37,12 @@ jobs:
             cp -r "project/$slug/dist/." "$slug/"
           done
 
+      # 4) Copy landing-page build artifacts to repo root
       - name: Copy landing page
         run: |
           cp -r project/landingpage/dist/* .
 
+      # 5) Add fallback 404 for SPA deep links
       - name: Add 404.html
         run: |
           cat > 404.html << 'EOF'
@@ -47,8 +54,10 @@ jobs:
           </body></html>
           EOF
 
+      # 6) Deploy everything to GitHub Pages (gh-pages branch)
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
+          publish_dir: ./   # now contains index.html, assets/, /<slug>/, 404.html, CNAME
+          # publish_branch: gh-pages  # defaults to gh-pages
