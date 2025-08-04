@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Apply zoom only on desktop */
+.zoom-desktop-only {
+  zoom: 0.75;
+}
+
+@media (max-width: 1024px) {
+  .zoom-desktop-only {
+    zoom: 1;
+  }
+}
