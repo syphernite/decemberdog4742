@@ -1,18 +1,23 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Built4You - Custom websites for small businesses. Professional, fast-loading websites that grow your business." />
-    <title>Built4You - Custom Websites for Small Businesses</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <script type="module" crossorigin src="./assets/index-Cuwb65Ix.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-G0QAvKTA.css">
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Redirecting…</title></head>
+<body>
+  <script>
+    // Split path segments
+    const parts = location.pathname.split('/').filter(Boolean)
+    if (parts.length > 0) {
+      // first segment is the demo slug
+      const slug = parts[0]
+      // rest after slug
+      const rest = parts.slice(1).join('/')
+      // build target URL: /<slug>/index.html#/<rest>
+      const hash = rest ? '#/' + rest : ''
+      window.location.replace(`/${slug}/index.html${hash}`)
+    } else {
+      // no slug → root landing page
+      window.location.replace('/index.html')
+    }
+  </script>
+  <p>Redirecting…</p>
+</body>
 </html>
