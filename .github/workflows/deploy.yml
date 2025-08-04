@@ -7,23 +7,22 @@ on:
 jobs:
   pages:
     runs-on: ubuntu-latest
+
     steps:
+      # 1) Checkout your code
       - uses: actions/checkout@v4
 
+      # 2) Setup Node.js (no root npm install)
       - uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: npm
 
-      # Install any shared devDependencies (optional)
-      - run: npm ci
-
-      # Find & build each project folder
+      # 3) Build every folder under project/
       - name: Build all clients
         run: |
           for dir in project/*/ ; do
             slug=$(basename "$dir")
-            echo "Building $slug…"
+            echo "🔨 Building $slug…"
             cd "$dir"
             npm ci
             npm run build
@@ -33,16 +32,17 @@ jobs:
             cp -r "project/$slug/dist/." "$slug/"
           done
 
-      # Landing page goes to root
+      # 4) Copy landing page into the repo root
       - name: Copy landing page
         run: |
-          cp project/landingpage/dist/index.html .
+          cp project/landingpage/dist/index.html ./index.html
           cp -r project/landingpage/dist/assets .
 
-      # Add CNAME + SPA fallback
-      - run: |
-          cp CNAME .
-          cat > 404.html <<'EOF'
+      # 5) Add domain & SPA fallback
+      - name: Add CNAME & 404.html
+        run: |
+          cp CNAME ./
+          cat > 404.html << 'EOF'
           <!DOCTYPE html>
           <html><head>
             <meta http-equiv="refresh" content="0; url=/" />
@@ -51,9 +51,10 @@ jobs:
           </body></html>
           EOF
 
+      # 6) Deploy to GitHub Pages (defaults to gh-pages branch)
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./    # root now contains /<slug>/ for each client + index.html, assets/, 404.html, CNAME
-          
+          publish_dir: ./   # repo root now has index.html, /<slug>/ folders, assets/, 404.html, CNAME
+          # publish_branch: gh-pages  # optional, defaults to gh-pages
