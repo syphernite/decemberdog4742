@@ -3,16 +3,14 @@ name: 🚀 Build & Deploy All Clients
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
   pages:
     runs-on: ubuntu-latest
-
     steps:
-      # 1) Checkout your code
+      # 1) Checkout code
       - uses: actions/checkout@v4
 
       # 2) Setup Node.js
@@ -20,45 +18,48 @@ jobs:
         with:
           node-version: 18
 
-      # 3) Build each client under project/
-      - name: Build all clients + create per‐slug 404
+      # 3) Build *all clients except* landingpage
+      - name: Build client demos
         run: |
           for dir in project/*/ ; do
             slug=$(basename "$dir")
-            echo "🔨 Building $slug…"
+            if [ "$slug" = "landingpage" ]; then
+              continue
+            fi
+            echo "🔨 Building demo: $slug"
             cd "$dir"
             npm ci
             npm run build
             cd ../../
-
-            # Copy dist into its slug folder
             rm -rf "$slug"
             mkdir -p "$slug"
             cp -r "project/$slug/dist/." "$slug/"
-
-            # Per‐client SPA fallback: serve index.html for any path under /$slug/
+            # Per-client SPA fallback:
             cp "$slug/index.html" "$slug/404.html"
           done
 
-      # 4) Copy landing‐page build output to root
-      - name: Copy landing page + root SPA fallback
+      # 4) Build & copy the landing page into root
+      - name: Build landing page
         run: |
+          cd project/landingpage
+          npm ci
+          npm run build
+          cd ../../
           cp -r project/landingpage/dist/* .
-
-          # Root SPA fallback: serve landing index.html on any unknown path
+          # Root SPA fallback:
           cp index.html 404.html
 
-      # 5) Debug (optional—remove once you confirm it works)
+      # 5) (Optional) Debug listing
       - name: Show publish directory contents
         run: |
           echo "=== publish contents ==="
           ls -R .
           echo "========================"
 
-      # 6) Deploy to GitHub Pages (gh-pages branch)
+      # 6) Deploy to gh-pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: ./   # root now has index.html, 404.html, assets/, and a folder + 404.html per client
+          publish_dir: ./
