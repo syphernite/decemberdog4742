@@ -2,11 +2,9 @@
 name: 🚀 Build & Deploy All Clients
 
 on:
-  # Automatically on pushes to main
   push:
     branches:
       - main
-  # Also allow manual triggering
   workflow_dispatch:
 
 jobs:
@@ -14,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Checkout the code
+      # 1) Checkout code
       - uses: actions/checkout@v4
 
       # 2) Setup Node.js
@@ -41,6 +39,10 @@ jobs:
       - name: Copy landing page
         run: |
           cp -r project/landingpage/dist/* .
+          # Rewrite absolute asset paths to relative
+          sed -i 's|src="/assets|src="assets|g' index.html
+          sed -i 's|href="/assets|href="assets|g' index.html
+          sed -i 's|href="/vite.svg|href="vite.svg|g' index.html
 
       # 5) Add SPA fallback for deep links
       - name: Add 404.html
@@ -54,17 +56,17 @@ jobs:
           </body></html>
           EOF
 
-      # 6) Debug: list everything that will be published
+      # 6) Debug: show everything that will be published
       - name: Show publish directory contents
         run: |
           echo "=== publish dir listing ==="
           ls -R .
           echo "=== end listing ==="
 
-      # 7) Deploy to GitHub Pages (pushes to gh-pages branch)
+      # 7) Deploy to GitHub Pages (pushes to gh-pages)
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: ./   # root now contains index.html, assets/, /<slug>/ folders, 404.html, CNAME
+          publish_dir: ./   # now contains index.html, assets/, /<slug>/, 404.html, CNAME
