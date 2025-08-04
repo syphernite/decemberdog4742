@@ -1,23 +1,23 @@
 name: 🚀 Build & Deploy All Clients
 
+# → Now also supports manual dispatch for testing
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   pages:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Checkout your code
       - uses: actions/checkout@v4
 
-      # 2) Setup Node.js
       - uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      # 3) Build every folder under project/
       - name: Build all clients
         run: |
           for dir in project/*/ ; do
@@ -32,19 +32,10 @@ jobs:
             cp -r "project/$slug/dist/." "$slug/"
           done
 
-      # 4) Copy landing page build artifacts into repo root
       - name: Copy landing page
         run: |
           cp -r project/landingpage/dist/* .
 
-      # 5) Debug: show the top of the built landing index.html
-      - name: Debug landing page build
-        run: |
-          echo "=== landing index.html (first 20 lines) ==="
-          head -n 20 project/landingpage/dist/index.html
-          echo "=== end debug ==="
-
-      # 6) Add SPA fallback (404.html)
       - name: Add 404.html
         run: |
           cat > 404.html << 'EOF'
@@ -56,9 +47,8 @@ jobs:
           </body></html>
           EOF
 
-      # 7) Deploy to GitHub Pages (gh-pages branch by default)
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./   # root now has index.html, /<slug>/, assets/, 404.html, CNAME
+          publish_dir: ./
