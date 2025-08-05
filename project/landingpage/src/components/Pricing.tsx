@@ -22,7 +22,12 @@ const Pricing: React.FC = () => {
       name: 'Business',
       price: '$129',
       duration: '/mo',
-      features: ['Unlimited Edits', 'Hosting & Domain Included', 'Monthly Reports', 'Priority Support'],
+      features: [
+        'Unlimited Content Edits',
+        'Hosting + Domain Included',
+        'Priority Support',
+        'Analytics Dashboard',
+      ],
       popular: true,
     },
     {
@@ -30,9 +35,10 @@ const Pricing: React.FC = () => {
       price: '$199',
       duration: '/mo',
       features: [
-        'Custom Integrations (Bookings, Payments, Menus)',
-        'Biweekly Strategy Calls',
-        'Same-Day Edits (Mon–Fri)',
+        'Everything in Business',
+        'Custom Integrations (Bookings, Payments, Menus, CRM)',
+        'Biweekly Strategy + Performance Calls',
+        'Same-Day Priority Edits (Mon–Fri)',
       ],
       popular: false,
     },
@@ -66,7 +72,7 @@ const Pricing: React.FC = () => {
           {plans.map((plan, index) => (
             <div
               key={index}
-              className={`relative flex flex-col bg-white dark:bg-slate-900 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden ${
+              className={`relative flex flex-col bg-white dark:bg-slate-900 rounded-2xl shadow-lg transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:ring-1 hover:ring-emerald-400 ${
                 plan.popular
                   ? 'ring-2 ring-emerald-500 scale-105'
                   : plan.name === 'Business Pro'
