@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createPortal } from 'react-dom';
+import { Link } from 'react-router-dom'; // ✅ Added
 
 // Hook for triggering animations when elements come into view
 function useInViewAnimation(threshold = 0.3) {
@@ -88,19 +89,21 @@ const OfferModal: React.FC<{
               📞 Schedule My Demo
             </a>
             <div className="flex justify-center text-sm gap-2 text-gray-500 dark:text-gray-400">
-              <a
-                href="/pricing#basic"
+              <Link
+                to="/pricing#basic"
                 className="hover:underline focus:outline-none focus:ring-1 rounded"
+                onClick={onClose}
               >
                 Basic
-              </a>
+              </Link>
               <span>·</span>
-              <a
-                href="/pricing#pro"
+              <Link
+                to="/pricing#pro"
                 className="hover:underline focus:outline-none focus:ring-1 rounded"
+                onClick={onClose}
               >
                 Pro
-              </a>
+              </Link>
             </div>
           </div>
         </motion.div>
@@ -115,16 +118,12 @@ const WhyWeExist: React.FC = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      // Check if #calendar is in viewport
       const calendar = document.getElementById('calendar');
       if (calendar) {
         const rect = calendar.getBoundingClientRect();
         const isVisible =
           rect.top < window.innerHeight && rect.bottom > 0;
-        if (isVisible) {
-          // Don't show modal if calendar visible
-          return;
-        }
+        if (isVisible) return;
       }
       setModalOpen(true);
     }, 10000);
@@ -187,7 +186,7 @@ const WhyWeExist: React.FC = () => {
         );
       })}
 
-      {/* Google Calendar Embed with improved styling */}
+      {/* Google Calendar Embed */}
       <div
         id="calendar"
         className="w-full max-w-5xl mx-auto px-6 py-10 scroll-mt-20 bg-white rounded-2xl shadow-xl"
