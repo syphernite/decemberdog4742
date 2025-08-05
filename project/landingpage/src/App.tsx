@@ -1,4 +1,3 @@
-// src/App.tsx
 import React, { useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 
@@ -10,7 +9,7 @@ import Contact from './pages/Contact';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import WhyWeCreatedBuilt4You from './pages/WhyWeExist';
-import SolarPricing from './pages/SolarPricing'; // 👈 new import
+import SolarPricing from './pages/Pricing';
 
 function ScrollToTopOnRouteChange() {
   const location = useLocation();
@@ -33,7 +32,7 @@ function App() {
           <Route path="privacy-policy" element={<PrivacyPolicy />} />
           <Route path="terms-of-service" element={<TermsOfService />} />
           <Route path="why-we-exist" element={<WhyWeCreatedBuilt4You />} />
-          <Route path="pricing" element={<SolarPricing />} /> {/* 👈 new route */}
+          <Route path="pricing" element={<SolarPricing />} />
         </Route>
       </Routes>
     </>

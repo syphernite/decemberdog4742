@@ -1,4 +1,3 @@
-// src/pages/WhyWeExist.tsx
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createPortal } from 'react-dom';
@@ -150,28 +149,29 @@ const WhyWeExist: React.FC = () => {
         </button>
       </section>
 
-      {[
-        {
-          title: 'Offline = Invisible in 2025',
-          content:
-            'People search online first. If they can’t find your business, they’ll find someone else. We help local legends stay visible.'
-        },
-        {
-          title: 'Agencies Are Too Slow + Pricey',
-          content:
-            'Small businesses can’t wait 6 weeks or pay $5K. We deliver polished sites fast — sometimes within 3 days.'
-        },
-        {
-          title: 'Built for Real People',
-          content:
-            'Our clients are barbers, mechanics, bakers, cleaners, artists — people with hustle but no time to learn web design.'
-        },
-        {
-          title: 'Simple. Fast. Done For You.',
-          content:
-            'Send us your info. Pick a style. We build it. You focus on your business while we make sure people can find it.'
-        }
-      ].map(({ title, content }, i) => {
+      {[...Array(4)].map((_, i) => {
+        const sections = [
+          {
+            title: 'Offline = Invisible in 2025',
+            content:
+              'People search online first. If they can’t find your business, they’ll find someone else. We help local legends stay visible.'
+          },
+          {
+            title: 'Agencies Are Too Slow + Pricey',
+            content:
+              'Small businesses can’t wait 6 weeks or pay $5K. We deliver polished sites fast — sometimes within 3 days.'
+          },
+          {
+            title: 'Built for Real People',
+            content:
+              'Our clients are barbers, mechanics, bakers, cleaners, artists — people with hustle but no time to learn web design.'
+          },
+          {
+            title: 'Simple. Fast. Done For You.',
+            content:
+              'Send us your info. Pick a style. We build it. You focus on your business while we make sure people can find it.'
+          }
+        ];
         const { ref, isVisible } = useInViewAnimation();
         return (
           <div key={i} ref={ref}>
@@ -181,8 +181,8 @@ const WhyWeExist: React.FC = () => {
               animate={isVisible ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, ease: 'easeOut' }}
             >
-              <h2 className="text-2xl md:text-3xl font-bold mb-3">{title}</h2>
-              <p className="text-gray-600 dark:text-gray-400">{content}</p>
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">{sections[i].title}</h2>
+              <p className="text-gray-600 dark:text-gray-400">{sections[i].content}</p>
             </motion.section>
           </div>
         );
