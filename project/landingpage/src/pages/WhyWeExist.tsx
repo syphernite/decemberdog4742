@@ -1,9 +1,9 @@
+// src/pages/WhyWeExist.tsx
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createPortal } from 'react-dom';
-import { Link } from 'react-router-dom'; // ✅ Added
+import { useNavigate } from 'react-router-dom';
 
-// Hook for triggering animations when elements come into view
 function useInViewAnimation(threshold = 0.3) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [isVisible, setVisible] = useState(false);
@@ -22,12 +22,9 @@ function useInViewAnimation(threshold = 0.3) {
   return { ref, isVisible };
 }
 
-// Modal Component
-const OfferModal: React.FC<{
-  isOpen: boolean;
-  onClose: () => void;
-}> = ({ isOpen, onClose }) => {
+const OfferModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
   const modalRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isOpen) {
@@ -82,28 +79,37 @@ const OfferModal: React.FC<{
 
           <div className="flex flex-col gap-3">
             <a
-              href="#calendar"
-              onClick={onClose}
-              className="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition text-center font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400"
+              onClick={() => {
+                onClose();
+                setTimeout(() => {
+                  const el = document.getElementById('calendar');
+                  el?.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+              }}
+              className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition text-center font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400"
             >
               📞 Schedule My Demo
             </a>
             <div className="flex justify-center text-sm gap-2 text-gray-500 dark:text-gray-400">
-              <Link
-                to="/pricing#basic"
+              <button
+                onClick={() => {
+                  onClose();
+                  navigate('/pricing', { state: { scrollTo: 'basic' } });
+                }}
                 className="hover:underline focus:outline-none focus:ring-1 rounded"
-                onClick={onClose}
               >
                 Basic
-              </Link>
+              </button>
               <span>·</span>
-              <Link
-                to="/pricing#pro"
+              <button
+                onClick={() => {
+                  onClose();
+                  navigate('/pricing', { state: { scrollTo: 'pro' } });
+                }}
                 className="hover:underline focus:outline-none focus:ring-1 rounded"
-                onClick={onClose}
               >
                 Pro
-              </Link>
+              </button>
             </div>
           </div>
         </motion.div>
@@ -121,19 +127,16 @@ const WhyWeExist: React.FC = () => {
       const calendar = document.getElementById('calendar');
       if (calendar) {
         const rect = calendar.getBoundingClientRect();
-        const isVisible =
-          rect.top < window.innerHeight && rect.bottom > 0;
+        const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
         if (isVisible) return;
       }
       setModalOpen(true);
     }, 10000);
-
     return () => clearTimeout(timer);
   }, []);
 
   return (
     <main className="bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-white min-h-screen font-sans">
-      {/* Hero */}
       <section className="text-center py-20 px-6 bg-white dark:bg-slate-800 shadow">
         <h1 className="text-3xl md:text-5xl font-extrabold mb-4">Why We Created Built4You</h1>
         <p className="text-lg text-gray-600 dark:text-gray-300 max-w-xl mx-auto">
@@ -147,7 +150,6 @@ const WhyWeExist: React.FC = () => {
         </button>
       </section>
 
-      {/* Sections */}
       {[
         {
           title: 'Offline = Invisible in 2025',
@@ -186,15 +188,12 @@ const WhyWeExist: React.FC = () => {
         );
       })}
 
-      {/* Google Calendar Embed */}
       <div
         id="calendar"
         className="w-full max-w-5xl mx-auto px-6 py-10 scroll-mt-20 bg-white rounded-2xl shadow-xl"
         style={{ colorScheme: 'light', minHeight: '700px' }}
       >
-        <h2 className="text-3xl font-semibold text-center mb-8 text-black">
-          📅 Book a Free Demo Call
-        </h2>
+        <h2 className="text-3xl font-semibold text-center mb-8 text-black">📅 Book a Free Demo Call</h2>
         <iframe
           src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0hRscFCqAlikNLhx7I1rb-xghG1bygoubGeEZ3G2r-JoIKLhNVX_Lr2nV6qlc8EFCk6Ourjn1F?gv=true"
           width="100%"
@@ -207,7 +206,6 @@ const WhyWeExist: React.FC = () => {
         />
       </div>
 
-      {/* Mobile CTA */}
       <div className="fixed bottom-4 left-0 right-0 px-4 md:hidden z-40">
         <button
           onClick={() => setModalOpen(true)}
@@ -217,7 +215,6 @@ const WhyWeExist: React.FC = () => {
         </button>
       </div>
 
-      {/* Modal */}
       <OfferModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
     </main>
   );
