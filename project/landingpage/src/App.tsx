@@ -1,3 +1,4 @@
+// src/App.tsx
 import React, { useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 
@@ -32,8 +33,8 @@ function App() {
           <Route path="privacy-policy" element={<PrivacyPolicy />} />
           <Route path="terms-of-service" element={<TermsOfService />} />
           <Route path="why-we-exist" element={<WhyWeCreatedBuilt4You />} />
-          <Route path="pricing" element={<SolarPricing />} />
         </Route>
+        <Route path="/pricing" element={<SolarPricing />} />
       </Routes>
     </>
   );
