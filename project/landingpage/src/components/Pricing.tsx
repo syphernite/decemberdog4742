@@ -1,23 +1,28 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+// src/pages/Pricing.tsx
+
+import React, { useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { Check, Star } from 'lucide-react';
 
 const plans = [
   {
+    id: 'basic',
     name: 'Basic',
-    price: '$350 One-time',
-    duration: '',
+    price: '$350',
+    duration: 'One-time',
     features: ['1-Page Website', 'Mobile-Responsive', 'Contact Form', 'Basic SEO'],
     popular: false,
   },
   {
+    id: 'pro',
     name: 'Pro',
-    price: '$600 One-time',
-    duration: '',
+    price: '$600',
+    duration: 'One-time',
     features: ['Up to 5 Pages', 'Google Maps + Socials', 'Photo Gallery', 'Custom Domain Setup'],
     popular: false,
   },
   {
+    id: 'business',
     name: 'Business',
     price: '$129',
     duration: '/mo',
@@ -25,6 +30,7 @@ const plans = [
     popular: true,
   },
   {
+    id: 'business-pro',
     name: 'Business Pro',
     price: '$199',
     duration: '/mo',
@@ -32,6 +38,7 @@ const plans = [
     popular: false,
   },
   {
+    id: 'custom',
     name: 'Custom',
     price: 'Quote Only',
     duration: '',
@@ -48,6 +55,17 @@ const addons = [
 ];
 
 const Pricing: React.FC = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.scrollTo) {
+      const target = document.getElementById(location.state.scrollTo);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [location]);
+
   return (
     <section id="pricing" className="py-20 bg-slate-50 dark:bg-slate-800">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -62,6 +80,7 @@ const Pricing: React.FC = () => {
           {plans.map((plan, index) => (
             <div
               key={index}
+              id={plan.id}
               className={`relative flex flex-col bg-white dark:bg-slate-900 rounded-2xl shadow-lg transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:ring-1 hover:ring-emerald-400 ${
                 plan.popular
                   ? 'ring-2 ring-emerald-500 scale-105'
