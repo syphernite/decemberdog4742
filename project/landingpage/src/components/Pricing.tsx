@@ -81,7 +81,7 @@ const Pricing: React.FC = () => {
               }`}
             >
               {plan.popular && (
-                <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-emerald-500 to-blue-500 text-white text-center py-2 text-sm font-semibold">
+                <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-emerald-500 to-blue-500 text-white text-center py-2 text-sm font-semibold rounded-t-2xl">
                   <Star className="inline h-4 w-4 mr-1" />
                   Most Popular
                 </div>
