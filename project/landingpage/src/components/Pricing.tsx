@@ -30,7 +30,6 @@ const Pricing: React.FC = () => {
       price: '$199',
       duration: '/mo',
       features: [
-        'Everything in Business',
         'Custom Integrations (Bookings, Payments, Menus)',
         'Biweekly Strategy Calls',
         'Same-Day Edits (Mon–Fri)',
