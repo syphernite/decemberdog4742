@@ -45,7 +45,7 @@ const plans = [
     name: 'Custom',
     price: 'Quote Only',
     duration: '',
-    features: ['Fully Custom Design', 'Booking/Menu/Store Integration', 'Dedicated Manager'],
+    features: ['Fully Custom Design', 'Menu / Store Integration', 'Dedicated Manager'],
     popular: false,
   },
 ];
@@ -91,7 +91,9 @@ const Pricing: React.FC = () => {
                 <div className="mb-6">
                   <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{plan.name}</h3>
                   <div>
-                    <span className="text-3xl font-bold text-slate-900 dark:text-white">{plan.price}</span>
+                    <span className={`text-3xl font-bold ${plan.name === 'Custom' ? 'text-emerald-500' : 'text-sky-500'}`}>
+                      {plan.price}
+                    </span>
                     {plan.duration && (
                       <span className="text-slate-600 dark:text-slate-300 ml-2">{plan.duration}</span>
                     )}
@@ -103,7 +105,9 @@ const Pricing: React.FC = () => {
                     {plan.features.map((feature, i) => (
                       <li key={i} className="flex items-start">
                         <Check className="h-5 w-5 text-emerald-500 mt-0.5 mr-3 flex-shrink-0" />
-                        <span className="text-slate-600 dark:text-slate-300">{feature}</span>
+                        <span className="text-slate-600 dark:text-slate-300 break-words">
+                          {feature}
+                        </span>
                       </li>
                     ))}
                   </ul>
