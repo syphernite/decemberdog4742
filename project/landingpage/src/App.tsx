@@ -10,7 +10,7 @@ import Contact from './pages/Contact';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import WhyWeCreatedBuilt4You from './pages/WhyWeExist';
-import SolarPricing from './pages/Pricing';
+import SolarPricing from './pages/SolarPricing';
 
 function ScrollToTopOnRouteChange() {
   const location = useLocation();
