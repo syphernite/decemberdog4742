@@ -66,7 +66,7 @@ const Pricing: React.FC = () => {
           {plans.map((plan, index) => (
             <div
               key={index}
-              className={`relative flex flex-col justify-between h-full bg-white dark:bg-slate-900 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden ${
+              className={`relative flex flex-col bg-white dark:bg-slate-900 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden ${
                 plan.popular
                   ? 'ring-2 ring-emerald-500 scale-105'
                   : plan.name === 'Business Pro'
@@ -81,7 +81,7 @@ const Pricing: React.FC = () => {
                 </div>
               )}
 
-              <div className={`p-8 ${plan.popular ? 'pt-16' : ''}`}>
+              <div className={`p-8 flex flex-col space-y-6 ${plan.popular ? 'pt-16' : ''}`}>
                 <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{plan.name}</h3>
 
                 <div className="mb-6">
