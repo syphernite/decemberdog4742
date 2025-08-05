@@ -5,15 +5,15 @@ import { Check, Star } from 'lucide-react';
 const plans = [
   {
     name: 'Basic',
-    price: '$350',
-    duration: 'One-time',
+    price: '$350 One-time',
+    duration: '',
     features: ['1-Page Website', 'Mobile-Responsive', 'Contact Form', 'Basic SEO'],
     popular: false,
   },
   {
     name: 'Pro',
-    price: '$600',
-    duration: 'One-time',
+    price: '$600 One-time',
+    duration: '',
     features: ['Up to 5 Pages', 'Google Maps + Socials', 'Photo Gallery', 'Custom Domain Setup'],
     popular: false,
   },
@@ -21,24 +21,14 @@ const plans = [
     name: 'Business',
     price: '$129',
     duration: '/mo',
-    features: [
-      'Unlimited Edits',
-      'Hosting + Domain',
-      'Monthly Reports',
-      'Priority Support',
-    ],
+    features: ['Unlimited Edits', 'Hosting + Domain', 'Monthly Reports', 'Priority Support'],
     popular: true,
   },
   {
     name: 'Business Pro',
     price: '$199',
     duration: '/mo',
-    features: [
-      'Advanced Integrations',
-      '2x Monthly Strategy Calls',
-      'Same-Day Edits',
-      'VIP Support',
-    ],
+    features: ['Advanced Integrations', '2x Monthly Strategy Calls', 'Same-Day Edits', 'VIP Support'],
     popular: false,
   },
   {
@@ -91,7 +81,11 @@ const Pricing: React.FC = () => {
                 <div className="mb-6">
                   <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{plan.name}</h3>
                   <div>
-                    <span className={`text-3xl font-bold ${plan.name === 'Custom' ? 'text-emerald-500' : 'text-sky-500'}`}>
+                    <span
+                      className={`text-3xl font-bold ${
+                        plan.name === 'Custom' ? 'text-emerald-500' : 'text-sky-500'
+                      }`}
+                    >
                       {plan.price}
                     </span>
                     {plan.duration && (
@@ -105,9 +99,7 @@ const Pricing: React.FC = () => {
                     {plan.features.map((feature, i) => (
                       <li key={i} className="flex items-start">
                         <Check className="h-5 w-5 text-emerald-500 mt-0.5 mr-3 flex-shrink-0" />
-                        <span className="text-slate-600 dark:text-slate-300 break-words">
-                          {feature}
-                        </span>
+                        <span className="text-slate-600 dark:text-slate-300 break-words">{feature}</span>
                       </li>
                     ))}
                   </ul>
@@ -140,8 +132,13 @@ const Pricing: React.FC = () => {
         </div>
 
         <div className="text-center mt-12">
-          <p className="text-slate-600 dark:text-slate-400 mb-4">All plans include free consultations and revisions during development.</p>
-          <Link to="/contact" className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 font-semibold transition-colors duration-200">
+          <p className="text-slate-600 dark:text-slate-400 mb-4">
+            All plans include free consultations and revisions during development.
+          </p>
+          <Link
+            to="/contact"
+            className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 font-semibold transition-colors duration-200"
+          >
             Need something custom? Let's talk →
           </Link>
         </div>
