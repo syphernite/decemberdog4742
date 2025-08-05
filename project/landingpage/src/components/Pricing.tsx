@@ -2,62 +2,62 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Check, Star } from 'lucide-react';
 
+const plans = [
+  {
+    name: 'Basic',
+    price: '$350',
+    duration: 'One-time',
+    features: ['1-Page Website', 'Mobile-Responsive', 'Contact Form', 'Basic SEO'],
+    popular: false,
+  },
+  {
+    name: 'Pro',
+    price: '$600',
+    duration: 'One-time',
+    features: ['Up to 5 Pages', 'Google Maps + Socials', 'Photo Gallery', 'Custom Domain Setup'],
+    popular: false,
+  },
+  {
+    name: 'Business',
+    price: '$129',
+    duration: '/mo',
+    features: [
+      'Unlimited Content Edits',
+      'Hosting & Domain Included',
+      'Monthly Reports',
+      'Priority Support',
+    ],
+    popular: true,
+  },
+  {
+    name: 'Business Pro',
+    price: '$199',
+    duration: '/mo',
+    features: [
+      'Advanced Integrations (Booking, Payments, Menu)',
+      'Strategy Calls (2× / month)',
+      'Same-Day Edits (Mon–Fri)',
+      'VIP Support Access',
+    ],
+    popular: false,
+  },
+  {
+    name: 'Custom',
+    price: 'Quote Only',
+    duration: '',
+    features: ['Fully Custom Design', 'Integrations (Booking, Menu, Store)', 'Dedicated Manager'],
+    popular: false,
+  },
+];
+
+const addons = [
+  { name: 'Extra Page', price: '$50 per page' },
+  { name: 'Logo Design', price: '$75 one-time' },
+  { name: 'Hosting Only (Custom Server)', price: '$30/mo' },
+  { name: 'Rush Delivery (48 hrs)', price: '+$100' },
+];
+
 const Pricing: React.FC = () => {
-  const plans = [
-    {
-      name: 'Basic',
-      price: '$350',
-      duration: 'One-time',
-      features: ['1-Page Website', 'Mobile-Responsive', 'Contact Form', 'Basic SEO'],
-      popular: false,
-    },
-    {
-      name: 'Pro',
-      price: '$600',
-      duration: 'One-time',
-      features: ['Up to 5 Pages', 'Google Maps + Socials', 'Photo Gallery', 'Custom Domain Setup'],
-      popular: false,
-    },
-    {
-      name: 'Business',
-      price: '$129',
-      duration: '/mo',
-      features: [
-        'Unlimited Content Edits',
-        'Hosting & Domain Included',
-        'Monthly Reports',
-        'Priority Support',
-      ],
-      popular: true,
-    },
-    {
-      name: 'Business Pro',
-      price: '$199',
-      duration: '/mo',
-      features: [
-        'Advanced Integrations (Booking, Payments, Menu)',
-        'Strategy Calls (2× / month)',
-        'Same-Day Edits (Mon–Fri)',
-        'VIP Support Access',
-      ],
-      popular: false,
-    },
-    {
-      name: 'Custom',
-      price: 'Quote Only',
-      duration: '',
-      features: ['Fully Custom Design', 'Integrations (Booking, Menu, Store)', 'Dedicated Manager'],
-      popular: false,
-    },
-  ];
-
-  const addons = [
-    { name: 'Extra Page', price: '$50 per page' },
-    { name: 'Logo Design', price: '$75 one-time' },
-    { name: 'Hosting Only (Custom Server)', price: '$30/mo' },
-    { name: 'Rush Delivery (48 hrs)', price: '+$100' },
-  ];
-
   return (
     <section id="pricing" className="py-20 bg-slate-50 dark:bg-slate-800">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -72,7 +72,7 @@ const Pricing: React.FC = () => {
           {plans.map((plan, index) => (
             <div
               key={index}
-              className={`relative h-full flex flex-col justify-start bg-white dark:bg-slate-900 rounded-2xl shadow-lg transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:ring-1 hover:ring-emerald-400 ${
+              className={`relative flex flex-col bg-white dark:bg-slate-900 rounded-2xl shadow-lg transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:ring-1 hover:ring-emerald-400 ${
                 plan.popular
                   ? 'ring-2 ring-emerald-500 scale-105'
                   : plan.name === 'Business Pro'
@@ -87,13 +87,18 @@ const Pricing: React.FC = () => {
                 </div>
               )}
 
-              <div className={`p-8 ${plan.popular ? 'pt-16' : ''} flex flex-col flex-grow justify-between`}>
-                <div>
+              <div className={`flex flex-col h-full ${plan.popular ? 'pt-16' : 'pt-8'} pb-8 px-8`}>
+                <div className="mb-6">
                   <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{plan.name}</h3>
-                  <div className="mb-6">
+                  <div>
                     <span className="text-3xl font-bold text-slate-900 dark:text-white">{plan.price}</span>
-                    {plan.duration && <span className="text-slate-600 dark:text-slate-300 ml-2">{plan.duration}</span>}
+                    {plan.duration && (
+                      <span className="text-slate-600 dark:text-slate-300 ml-2">{plan.duration}</span>
+                    )}
                   </div>
+                </div>
+
+                <div className="flex-grow">
                   <ul className="space-y-4">
                     {plan.features.map((feature, i) => (
                       <li key={i} className="flex items-start">
@@ -133,7 +138,7 @@ const Pricing: React.FC = () => {
         <div className="text-center mt-12">
           <p className="text-slate-600 dark:text-slate-400 mb-4">All plans include free consultations and revisions during development.</p>
           <Link to="/contact" className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 font-semibold transition-colors duration-200">
-            Need something custom? Let&apos;s talk →
+            Need something custom? Let's talk →
           </Link>
         </div>
       </div>
