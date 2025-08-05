@@ -36,7 +36,7 @@ const Pricing: React.FC = () => {
       duration: '/mo',
       features: [
         'Advanced Integrations (Booking, Payments, Menu)',
-        'Strategy Calls (2x / month)',
+        'Strategy Calls (2× / month)',
         'Same-Day Edits (Mon–Fri)',
         'VIP Support Access',
       ],
@@ -68,11 +68,11 @@ const Pricing: React.FC = () => {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 max-w-7xl mx-auto items-stretch">
           {plans.map((plan, index) => (
             <div
               key={index}
-              className={`relative flex flex-col bg-white dark:bg-slate-900 rounded-2xl shadow-lg transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:ring-1 hover:ring-emerald-400 ${
+              className={`relative h-full flex flex-col justify-start bg-white dark:bg-slate-900 rounded-2xl shadow-lg transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:ring-1 hover:ring-emerald-400 ${
                 plan.popular
                   ? 'ring-2 ring-emerald-500 scale-105'
                   : plan.name === 'Business Pro'
@@ -87,33 +87,29 @@ const Pricing: React.FC = () => {
                 </div>
               )}
 
-              <div className={`p-8 flex flex-col space-y-6 ${plan.popular ? 'pt-16' : ''}`}>
-                <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{plan.name}</h3>
-
-                <div className="mb-6">
-                  <span className="text-3xl font-bold text-slate-900 dark:text-white">{plan.price}</span>
-                  {plan.duration && (
-                    <span className="text-slate-600 dark:text-slate-300 ml-2">{plan.duration}</span>
-                  )}
+              <div className={`p-8 ${plan.popular ? 'pt-16' : ''} flex flex-col flex-grow justify-between`}>
+                <div>
+                  <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{plan.name}</h3>
+                  <div className="mb-6">
+                    <span className="text-3xl font-bold text-slate-900 dark:text-white">{plan.price}</span>
+                    {plan.duration && <span className="text-slate-600 dark:text-slate-300 ml-2">{plan.duration}</span>}
+                  </div>
+                  <ul className="space-y-4">
+                    {plan.features.map((feature, i) => (
+                      <li key={i} className="flex items-start">
+                        <Check className="h-5 w-5 text-emerald-500 mt-0.5 mr-3 flex-shrink-0" />
+                        <span className="text-slate-600 dark:text-slate-300">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-
-                <ul className="space-y-4">
-                  {plan.features.map((feature, i) => (
-                    <li key={i} className="flex items-start">
-                      <Check className="h-5 w-5 text-emerald-500 mt-0.5 mr-3 flex-shrink-0" />
-                      <span className="text-slate-600 dark:text-slate-300">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
               </div>
             </div>
           ))}
         </div>
 
         <div className="text-center mt-16">
-          <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">
-            Optional Add-Ons
-          </h3>
+          <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">Optional Add-Ons</h3>
           <div className="max-w-2xl mx-auto">
             <table className="w-full text-left border-t border-slate-300 dark:border-slate-700 mt-6">
               <thead>
@@ -135,13 +131,8 @@ const Pricing: React.FC = () => {
         </div>
 
         <div className="text-center mt-12">
-          <p className="text-slate-600 dark:text-slate-400 mb-4">
-            All plans include free consultations and revisions during development.
-          </p>
-          <Link
-            to="/contact"
-            className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 font-semibold transition-colors duration-200"
-          >
+          <p className="text-slate-600 dark:text-slate-400 mb-4">All plans include free consultations and revisions during development.</p>
+          <Link to="/contact" className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 font-semibold transition-colors duration-200">
             Need something custom? Let&apos;s talk →
           </Link>
         </div>
