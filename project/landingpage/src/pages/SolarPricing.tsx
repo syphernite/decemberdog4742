@@ -5,12 +5,7 @@ import React, { useMemo, useRef, useState } from "react";
  * Stack: React + Tailwind
  * Single-file drop in. No new files created.
  *
- * Behaviors:
- * - Dark mode default with glowing, twinkling star background
- * - Orbit UI with center spotlight, rotating planets, desktop arrows, mobile swipe
- * - Legend/menu fixed top right with collapsible mobile behavior
- * - Full features panel below the orbit
- * - No em dashes used
+ * Changes: Neon glow space background in Starfield
  */
 
 type PlanKind = "core" | "optional" | "one-time" | "custom";
@@ -242,40 +237,109 @@ function useSwipe(onLeft: () => void, onRight: () => void) {
   return { onTouchStart, onTouchEnd };
 }
 
+/** Neon Glow Space Background */
 const Starfield: React.FC = () => (
   <>
     <style>{`
       @keyframes twinkle {
-        0% { opacity: 0.8; transform: translateY(0px); }
-        50% { opacity: 0.4; transform: translateY(-0.5px); }
-        100% { opacity: 0.8; transform: translateY(0px); }
+        0% { opacity: 0.9; transform: translateY(0px); }
+        50% { opacity: 0.5; transform: translateY(-0.6px); }
+        100% { opacity: 0.9; transform: translateY(0px); }
       }
+      @keyframes auroraShift {
+        0%   { background-position: 0% 50%, 100% 50%; opacity: 0.55; }
+        50%  { background-position: 100% 50%, 0% 50%; opacity: 0.9; }
+        100% { background-position: 0% 50%, 100% 50%; opacity: 0.55; }
+      }
+      @keyframes pulseNebula {
+        0% { opacity: 0.25; transform: scale(1); }
+        50% { opacity: 0.6; transform: scale(1.05); }
+        100% { opacity: 0.25; transform: scale(1); }
+      }
+      @keyframes drift {
+        0% { transform: translate3d(-2%, -2%, 0); }
+        50% { transform: translate3d(2%, 2%, 0); }
+        100% { transform: translate3d(-2%, -2%, 0); }
+      }
+
+      /* star layers */
       .twinkle::before, .twinkle::after {
         content: "";
         position: absolute;
         inset: 0;
         background-image:
-          radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,0.8), transparent 60%),
-          radial-gradient(1.5px 1.5px at 80% 20%, rgba(255,255,255,0.7), transparent 60%),
-          radial-gradient(1.5px 1.5px at 60% 70%, rgba(255,255,255,0.6), transparent 60%),
-          radial-gradient(2px 2px at 30% 80%, rgba(255,255,255,0.7), transparent 60%),
-          radial-gradient(1.5px 1.5px at 50% 50%, rgba(255,255,255,0.6), transparent 60%),
-          radial-gradient(1px 1px at 10% 60%, rgba(255,255,255,0.5), transparent 60%),
-          radial-gradient(1px 1px at 90% 40%, rgba(255,255,255,0.5), transparent 60%);
-        animation: twinkle 6s infinite ease-in-out;
-        filter: blur(0.2px);
+          radial-gradient(2.2px 2.2px at 18% 30%, rgba(255,255,255,0.95), transparent 62%),
+          radial-gradient(1.8px 1.8px at 82% 18%, rgba(255,255,255,0.9), transparent 60%),
+          radial-gradient(1.6px 1.6px at 62% 74%, rgba(255,255,255,0.8), transparent 58%),
+          radial-gradient(2.6px 2.6px at 28% 78%, rgba(255,255,255,0.95), transparent 60%),
+          radial-gradient(1.4px 1.4px at 48% 48%, rgba(255,255,255,0.7), transparent 60%),
+          radial-gradient(1.2px 1.2px at 12% 64%, rgba(255,255,255,0.7), transparent 60%),
+          radial-gradient(1.2px 1.2px at 92% 42%, rgba(255,255,255,0.7), transparent 60%);
+        animation: twinkle 7s infinite ease-in-out;
+        filter: drop-shadow(0 0 2px rgba(255,255,255,0.5));
       }
       .twinkle::after {
-        animation-delay: 3s;
-        opacity: 0.6;
+        animation-delay: 3.5s;
+        opacity: 0.7;
       }
-      @keyframes orbit-rotate {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+
+      /* neon aurora bands that shift left to right */
+      .aurora {
+        position: absolute;
+        inset: -10%;
+        background:
+          radial-gradient(1200px 600px at 10% 20%, rgba(0,255,200,0.18), transparent 60%),
+          radial-gradient(900px 500px at 85% 30%, rgba(160,100,255,0.20), transparent 60%),
+          radial-gradient(900px 500px at 40% 85%, rgba(0,150,255,0.18), transparent 60%);
+        mix-blend-mode: screen;
+        animation: drift 24s ease-in-out infinite alternate;
+        pointer-events: none;
+      }
+
+      /* neon gradient overlay that slowly shifts hues */
+      .neon-shift {
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(115deg, rgba(0,255,180,0.10), rgba(140,0,255,0.12), rgba(0,160,255,0.10)),
+          linear-gradient(245deg, rgba(255,0,180,0.08), rgba(0,255,200,0.08));
+        background-size: 200% 200%, 200% 200%;
+        animation: auroraShift 30s ease-in-out infinite;
+        mix-blend-mode: screen;
+        pointer-events: none;
+      }
+
+      /* soft nebula pulse behind everything */
+      .nebula {
+        position: absolute;
+        inset: -20%;
+        background:
+          radial-gradient(600px 600px at 70% 20%, rgba(255,0,200,0.10), transparent 70%),
+          radial-gradient(700px 700px at 20% 80%, rgba(0,120,255,0.10), transparent 70%);
+        mix-blend-mode: screen;
+        animation: pulseNebula 12s ease-in-out infinite;
+        filter: blur(2px);
+        pointer-events: none;
+      }
+
+      /* subtle vignette to add contrast */
+      .vignette {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 50% 50%, transparent 60%, rgba(0,0,0,0.45) 100%);
+        pointer-events: none;
       }
     `}</style>
-    <div className="absolute inset-0 bg-[#070918] twinkle" />
-    <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_50%_0%,rgba(56,189,248,0.18),transparent_60%),radial-gradient(circle_at_80%_20%,rgba(168,85,247,0.14),transparent_55%),radial-gradient(circle_at_20%_80%,rgba(34,197,94,0.12),transparent_55%)]" />
+
+    {/* deep base with stars */}
+    <div className="absolute inset-0 bg-[#050611] twinkle" />
+    {/* neon layers */}
+    <div className="neon-shift" />
+    <div className="aurora" />
+    <div className="nebula" />
+    {/* soft color spots like distant galaxies */}
+    <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_55%_10%,rgba(56,189,248,0.18),transparent_60%),radial-gradient(circle_at_82%_24%,rgba(168,85,247,0.18),transparent_60%),radial-gradient(circle_at_20%_78%,rgba(34,197,94,0.14),transparent_60%)]" />
+    <div className="vignette" />
   </>
 );
 
@@ -291,8 +355,6 @@ const Pricing: React.FC = () => {
   function prev() { setIndex((i) => (i - 1 + len) % len); }
 
   const swipe = useSwipe(next, prev);
-
-  // exclude the focused plan from orbiting planets
   const planets = orderedPlans.map((p, i) => ({ plan: p, i })).filter(({ i }) => i !== index);
 
   return (
@@ -357,7 +419,6 @@ const Pricing: React.FC = () => {
       {/* Orbit stage */}
       <div className="relative z-0 flex items-center justify-center pt-6 pb-8 sm:pb-12">
         <div className="relative w-[92vw] max-w-[1050px] aspect-square">
-          {/* Rotating ring */}
           <div
             className="absolute inset-0 rounded-full border border-white/10"
             style={{ animation: "orbit-rotate 40s linear infinite" }}
