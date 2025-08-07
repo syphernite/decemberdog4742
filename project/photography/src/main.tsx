@@ -1,3 +1,4 @@
+// project/photography/src/main.tsx
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';
@@ -6,7 +7,7 @@ import './index.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <HashRouter basename="/photography">
+    <HashRouter basename="/">
       <App />
     </HashRouter>
   </StrictMode>
