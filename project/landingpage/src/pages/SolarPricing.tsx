@@ -4,11 +4,11 @@ import { Menu, X, Code } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 /**
- * /pricing — Solar orbit layout with CRAZY neon galaxy background
+ * /pricing — Solar orbit layout with neon galaxy background
  * - Local header (logo glow) only on this page
  * - Dark mode forced; no light toggle
  * - Mobile auto-slide w/ pause on interaction or when out of view
- * - FIX: planets positioned via polar math (cos/sin) so they don't overlap
+ * - FIX: tighter orbit, non-overlapping planets, readable labels, subtle spin
  */
 
 /* ----------------------------- TYPES & DATA ----------------------------- */
@@ -489,9 +489,8 @@ const Starfield: React.FC = () => (
       />
     ))}
 
-    {/* wide soft spots */}
+    {/* wide color spots + vignette */}
     <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_55%_10%,rgba(56,189,248,0.35),transparent_62%),radial-gradient(circle_at_82%_24%,rgba(168,85,247,0.35),transparent_62%),radial-gradient(circle_at_20%_78%,rgba(34,197,94,0.26),transparent_62%)]" />
-    {/* vignette */}
     <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_60%,rgba(0,0,0,0.62)_100%)]" />
   </>
 );
@@ -704,7 +703,7 @@ const Pricing: React.FC = () => {
         {/* DESKTOP ORBIT */}
         <div className="relative z-0 hidden sm:flex items-center justify-center pt-6 pb-8 sm:pb-12">
           <div className="relative w-[92vw] max-w-[1120px] aspect-square">
-            {/* Orbit ring (glow boosted) */}
+            {/* Orbit ring (glow) */}
             <div
               className="absolute inset-0 rounded-full"
               style={{
@@ -715,10 +714,10 @@ const Pricing: React.FC = () => {
               }}
             />
 
-            {/* Center orb */}
+            {/* Center orb (slightly smaller) */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div
-                className={`relative w-[52vw] max-w-[440px] aspect-square rounded-full bg-white/5 backdrop-blur-sm border ${
+                className={`relative w-[46vw] max-w-[400px] aspect-square rounded-full bg-white/5 backdrop-blur-sm border ${
                   current.spotlightColor || "ring-cyan-400"
                 } ring-2 ring-inset border-white/10 shadow-[0_0_60px_rgba(0,255,255,0.28)]`}
               >
@@ -741,12 +740,12 @@ const Pricing: React.FC = () => {
               </div>
             </div>
 
-            {/* Plan planets — FIXED polar positioning (no overlap) */}
+            {/* Plan planets — tighter orbit, spin + readable labels */}
             <div className="absolute inset-0" style={{ animation: "orbit-rotate 30s linear infinite" }}>
               {planets.map(({ plan, i: planIndex }, slot) => {
                 const totalSlots = planets.length;
                 const angle = angleForSlot(slot, totalSlots);
-                const radius = "44%"; // percent of container size (via calc with cos/sin)
+                const radius = "34%"; // tighter orbit so everything fits on one page
                 return (
                   <button
                     key={plan.key}
@@ -760,19 +759,22 @@ const Pricing: React.FC = () => {
                     aria-label={plan.name}
                   >
                     <div
-                      className={`relative w-20 h-20 rounded-full bg-white/10 border border-white/15 backdrop-blur-sm ring-2 ${
+                      className={`relative w-[4.5rem] h-[4.5rem] overflow-hidden rounded-full bg-white/10 border border-white/15 backdrop-blur-sm ring-2 ${
                         plan.spotlightColor || "ring-cyan-400"
                       } hover:scale-105 transition-transform shadow-[0_0_30px_rgba(255,255,255,0.18)]`}
+                      style={{ animation: "orbit-rotate 14s linear infinite" }} // planet spins
                     >
                       <div className="absolute inset-0 rounded-full bg-black/30" />
-                      {/* keep labels upright as the orbit rotates */}
+                      {/* counter-rotate text so it stays upright */}
                       <div
-                        className="absolute inset-0 flex flex-col items-center justify-center text-center px-2"
-                        style={{ animation: "orbit-rotate-reverse 30s linear infinite" }}
+                        className="absolute inset-0 flex flex-col items-center justify-center text-center px-1 leading-tight"
+                        style={{ animation: "orbit-rotate-reverse 14s linear infinite" }}
                       >
-                        <div className="text-[10px] uppercase tracking-wider text-white/70">Plan</div>
-                        <div className="text-[13px] font-bold">{plan.name}</div>
-                        <div className="text-[11px] text-white/80">
+                        <div className="text-[9px] uppercase tracking-wider text-white/70">Plan</div>
+                        <div className="text-[11px] font-semibold whitespace-nowrap truncate max-w-[60px]">
+                          {plan.name}
+                        </div>
+                        <div className="text-[10px] text-white/80 whitespace-nowrap truncate max-w-[60px]">
                           {plan.price} <span className="opacity-70">{plan.cadence}</span>
                         </div>
                       </div>
