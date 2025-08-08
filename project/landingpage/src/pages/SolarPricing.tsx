@@ -1,4 +1,6 @@
 import React, { useMemo, useRef, useState, useEffect } from "react";
+// ⬇️ Change this import if your Header is in a different folder
+import Header from "../components/Header";
 
 /**
  * Route: /pricing
@@ -6,9 +8,10 @@ import React, { useMemo, useRef, useState, useEffect } from "react";
  * Single-file drop in. No new files created.
  *
  * Adds:
- * - Slow elegant desktop orbit (30s revolution)
+ * - CRAZY neon galaxy starfield (multi-layer stars, aurora, pulsing nebula, parallax)
+ * - Slow elegant desktop orbit (30s revolution) using rotate→translate (no cos/sin)
  * - Mobile carousel with auto-slide (5s) + swipe
- * - Neon galaxy starfield (animated stars, aurora, nebula)
+ * - Uses your site Header (logo, nav, dark mode toggle)
  */
 
 type PlanKind = "core" | "optional" | "one-time" | "custom";
@@ -108,7 +111,7 @@ const PLANS_IN_ORDER: Plan[] = [
       "Booking or store setups",
     ],
     addOns: [
-      "Hosting Only for Custom builds - $30 per month",
+      "Hosting Only - $30 per month",
       "Logo Design - $75",
       "Rush Delivery 48 hours - +$100",
       "Extra Page - $50 per page",
@@ -218,10 +221,23 @@ const PLANS_IN_ORDER: Plan[] = [
   },
 ];
 
+/** Orbit order (matches what you asked for) */
+const ORDER_KEYS = [
+  "startup",
+  "basic",
+  "pro",
+  "elite",
+  "business",
+  "business-pro",
+  "ecom-starter",
+  "vip-flex",
+  "custom",
+];
+
+/** Swipe helper */
 function useSwipe(onLeft: () => void, onRight: () => void) {
   const startX = useRef<number | null>(null);
   const startY = useRef<number | null>(null);
-
   function onTouchStart(e: React.TouchEvent) {
     startX.current = e.changedTouches[0].clientX;
     startY.current = e.changedTouches[0].clientY;
@@ -240,118 +256,145 @@ function useSwipe(onLeft: () => void, onRight: () => void) {
   return { onTouchStart, onTouchEnd };
 }
 
-/** Neon Glow Space Background */
+/** CRAZY Neon Galaxy Background (with parallax + reduced-motion guard) */
 const Starfield: React.FC = () => (
   <>
     <style>{`
-      @keyframes twinkle {
-        0% { opacity: 0.9; transform: translateY(0px); }
-        50% { opacity: 0.5; transform: translateY(-0.6px); }
-        100% { opacity: 0.9; transform: translateY(0px); }
+      :root {
+        --mx: 0px;  /* mouse parallax X */
+        --my: 0px;  /* mouse parallax Y */
+      }
+
+      @keyframes twinkleA {
+        0% { opacity: 1; transform: translateY(0); }
+        50% { opacity: 0.55; transform: translateY(-0.8px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes twinkleB {
+        0% { opacity: 0.9; transform: translateY(0); }
+        50% { opacity: 0.4; transform: translateY(0.8px); }
+        100% { opacity: 0.9; transform: translateY(0); }
       }
       @keyframes auroraShift {
-        0%   { background-position: 0% 50%, 100% 50%; opacity: 0.55; }
-        50%  { background-position: 100% 50%, 0% 50%; opacity: 0.9; }
-        100% { background-position: 0% 50%, 100% 50%; opacity: 0.55; }
+        0%   { background-position: 0% 50%, 100% 50%; opacity: 0.6; }
+        50%  { background-position: 100% 50%, 0% 50%; opacity: 0.95; }
+        100% { background-position: 0% 50%, 100% 50%; opacity: 0.6; }
       }
       @keyframes pulseNebula {
         0% { opacity: 0.25; transform: scale(1); }
-        50% { opacity: 0.6; transform: scale(1.05); }
+        50% { opacity: 0.7; transform: scale(1.06); }
         100% { opacity: 0.25; transform: scale(1); }
       }
-      @keyframes drift {
-        0% { transform: translate3d(-2%, -2%, 0); }
-        50% { transform: translate3d(2%, 2%, 0); }
-        100% { transform: translate3d(-2%, -2%, 0); }
-      }
+
       @keyframes orbit-rotate {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
       }
-
-      /* star layers */
-      .twinkle::before, .twinkle::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background-image:
-          radial-gradient(2.4px 2.4px at 18% 30%, rgba(255,255,255,0.95), transparent 62%),
-          radial-gradient(2px 2px at 82% 18%, rgba(255,255,255,0.9), transparent 60%),
-          radial-gradient(1.8px 1.8px at 62% 74%, rgba(255,255,255,0.85), transparent 58%),
-          radial-gradient(2.8px 2.8px at 28% 78%, rgba(255,255,255,0.95), transparent 60%),
-          radial-gradient(1.6px 1.6px at 48% 48%, rgba(255,255,255,0.8), transparent 60%),
-          radial-gradient(1.2px 1.2px at 12% 64%, rgba(255,255,255,0.7), transparent 60%),
-          radial-gradient(1.2px 1.2px at 92% 42%, rgba(255,255,255,0.7), transparent 60%);
-        animation: twinkle 7s infinite ease-in-out;
-        filter: drop-shadow(0 0 2px rgba(255,255,255,0.6));
-      }
-      .twinkle::after {
-        animation-delay: 3.5s;
-        opacity: 0.75;
+      @keyframes orbit-rotate-reverse {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(-360deg); }
       }
 
-      /* neon aurora bands that shift left to right */
-      .aurora {
-        position: absolute;
-        inset: -10%;
-        background:
-          radial-gradient(1200px 600px at 10% 20%, rgba(0,255,200,0.22), transparent 60%),
-          radial-gradient(900px 500px at 85% 30%, rgba(160,100,255,0.24), transparent 60%),
-          radial-gradient(900px 500px at 40% 85%, rgba(0,150,255,0.22), transparent 60%);
-        mix-blend-mode: screen;
-        animation: drift 24s ease-in-out infinite alternate;
-        pointer-events: none;
-      }
-
-      /* neon gradient overlay that slowly shifts hues */
-      .neon-shift {
-        position: absolute;
-        inset: 0;
-        background:
-          linear-gradient(115deg, rgba(0,255,180,0.12), rgba(140,0,255,0.16), rgba(0,160,255,0.12)),
-          linear-gradient(245deg, rgba(255,0,180,0.10), rgba(0,255,200,0.10));
-        background-size: 200% 200%, 200% 200%;
-        animation: auroraShift 30s ease-in-out infinite;
-        mix-blend-mode: screen;
-        pointer-events: none;
-      }
-
-      /* soft nebula pulse behind everything */
-      .nebula {
-        position: absolute;
-        inset: -20%;
-        background:
-          radial-gradient(600px 600px at 70% 20%, rgba(255,0,200,0.14), transparent 70%),
-          radial-gradient(700px 700px at 20% 80%, rgba(0,120,255,0.14), transparent 70%);
-        mix-blend-mode: screen;
-        animation: pulseNebula 12s ease-in-out infinite;
-        filter: blur(2px);
-        pointer-events: none;
-      }
-
-      /* subtle vignette to add contrast */
-      .vignette {
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(circle at 50% 50%, transparent 60%, rgba(0,0,0,0.5) 100%);
-        pointer-events: none;
+      /* Reduced motion respect */
+      @media (prefers-reduced-motion: reduce) {
+        .anim, .twinkleA, .twinkleB { animation: none !important; }
+        .parallax { transform: none !important; }
       }
     `}</style>
 
-    {/* deep base with stars */}
-    <div className="absolute inset-0 bg-[#04040b] twinkle" />
-    {/* neon layers */}
-    <div className="neon-shift" />
-    <div className="aurora" />
-    <div className="nebula" />
-    {/* soft color spots like distant galaxies */}
-    <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_55%_10%,rgba(56,189,248,0.22),transparent_60%),radial-gradient(circle_at_82%_24%,rgba(168,85,247,0.22),transparent_60%),radial-gradient(circle_at_20%_78%,rgba(34,197,94,0.18),transparent_60%)]" />
-    <div className="vignette" />
+    {/* Star Layers & Neon Effects */}
+    <div className="absolute inset-0 bg-[#03030a]" />
+
+    {/* Dense stars */}
+    <div
+      className="absolute inset-0 anim twinkleA parallax"
+      style={{
+        animation: "twinkleA 7s ease-in-out infinite",
+        backgroundImage: `
+          radial-gradient(2.2px 2.2px at 10% 20%, rgba(255,255,255,0.95), transparent 60%),
+          radial-gradient(1.8px 1.8px at 25% 75%, rgba(255,255,255,0.8), transparent 60%),
+          radial-gradient(1.6px 1.6px at 80% 15%, rgba(255,255,255,0.85), transparent 60%),
+          radial-gradient(2.4px 2.4px at 65% 60%, rgba(255,255,255,0.95), transparent 60%),
+          radial-gradient(1.4px 1.4px at 45% 45%, rgba(255,255,255,0.7), transparent 60%),
+          radial-gradient(1.2px 1.2px at 92% 42%, rgba(255,255,255,0.7), transparent 60%)`,
+        backgroundRepeat: "no-repeat",
+        filter: "drop-shadow(0 0 3px rgba(255,255,255,0.7))",
+        transform: "translate3d(calc(var(--mx) * 0.08), calc(var(--my) * 0.08), 0)",
+      }}
+    />
+    {/* Sparse bright stars */}
+    <div
+      className="absolute inset-0 anim twinkleB parallax"
+      style={{
+        animation: "twinkleB 9s ease-in-out infinite",
+        backgroundImage: `
+          radial-gradient(3px 3px at 15% 35%, rgba(255,255,255,0.95), transparent 60%),
+          radial-gradient(2.6px 2.6px at 70% 25%, rgba(255,255,255,0.9), transparent 60%),
+          radial-gradient(2.4px 2.4px at 30% 85%, rgba(255,255,255,0.9), transparent 60%),
+          radial-gradient(2px 2px at 88% 65%, rgba(255,255,255,0.85), transparent 60%)`,
+        backgroundRepeat: "no-repeat",
+        transform: "translate3d(calc(var(--mx) * 0.15), calc(var(--my) * 0.15), 0)",
+      }}
+    />
+
+    {/* Aurora bands */}
+    <div
+      className="absolute inset-0 anim parallax"
+      style={{
+        background:
+          "radial-gradient(1200px 600px at 8% 18%, rgba(0,255,220,0.25), transparent 60%), radial-gradient(1000px 520px at 85% 28%, rgba(170,100,255,0.28), transparent 60%), radial-gradient(1000px 520px at 40% 85%, rgba(0,160,255,0.25), transparent 60%)",
+        mixBlendMode: "screen",
+        animation: "auroraShift 30s ease-in-out infinite",
+        transform: "translate3d(calc(var(--mx) * 0.04), calc(var(--my) * 0.04), 0)",
+      }}
+    />
+
+    {/* Nebula pulse */}
+    <div
+      className="absolute inset-0 anim parallax"
+      style={{
+        background:
+          "radial-gradient(700px 700px at 70% 18%, rgba(255,0,200,0.18), transparent 72%), radial-gradient(800px 800px at 18% 80%, rgba(0,120,255,0.18), transparent 72%)",
+        mixBlendMode: "screen",
+        filter: "blur(2px)",
+        animation: "pulseNebula 12s ease-in-out infinite",
+        transform: "translate3d(calc(var(--mx) * 0.02), calc(var(--my) * 0.02), 0)",
+      }}
+    />
+
+    {/* Color spots + vignette */}
+    <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_55%_10%,rgba(56,189,248,0.28),transparent_62%),radial-gradient(circle_at_82%_24%,rgba(168,85,247,0.28),transparent_62%),radial-gradient(circle_at_20%_78%,rgba(34,197,94,0.2),transparent_62%)]" />
+    <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_60%,rgba(0,0,0,0.55)_100%)]" />
   </>
 );
 
 const Pricing: React.FC = () => {
-  const orderedPlans = useMemo(() => PLANS_IN_ORDER, []);
+  // ======== DARK MODE for header (matches your site toggle) ========
+  const [darkMode, setDarkMode] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem("theme");
+      if (saved) return saved === "dark";
+      return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    } catch {
+      return true;
+    }
+  });
+  useEffect(() => {
+    const root = document.documentElement;
+    if (darkMode) {
+      root.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      root.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [darkMode]);
+
+  // ======== Plans/order ========
+  const orderedPlans = useMemo(
+    () => ORDER_KEYS.map((k) => PLANS_IN_ORDER.find((p) => p.key === k)!).filter(Boolean),
+    []
+  );
   const [index, setIndex] = useState(0);
   const [legendOpen, setLegendOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -364,6 +407,21 @@ const Pricing: React.FC = () => {
     return () => window.removeEventListener("resize", check);
   }, []);
 
+  // Parallax: track mouse (desktop only)
+  useEffect(() => {
+    const handle = (e: MouseEvent) => {
+      // normalize to -30..30px
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
+      const mx = Math.max(-30, Math.min(30, ((e.clientX - cx) / cx) * 30));
+      const my = Math.max(-30, Math.min(30, ((e.clientY - cy) / cy) * 30));
+      document.documentElement.style.setProperty("--mx", `${mx}px`);
+      document.documentElement.style.setProperty("--my", `${my}px`);
+    };
+    if (!isMobile) window.addEventListener("mousemove", handle);
+    return () => window.removeEventListener("mousemove", handle);
+  }, [isMobile]);
+
   // auto-slide on mobile every 5s
   useEffect(() => {
     if (!isMobile) return;
@@ -374,326 +432,348 @@ const Pricing: React.FC = () => {
   const len = orderedPlans.length;
   const current = orderedPlans[index];
 
-  function next() { setIndex((i) => (i + 1) % len); }
-  function prev() { setIndex((i) => (i - 1 + len) % len); }
+  function next() {
+    setIndex((i) => (i + 1) % len);
+  }
+  function prev() {
+    setIndex((i) => (i - 1 + len) % len);
+  }
 
   const swipe = useSwipe(next, prev);
 
   // exclude the focused plan from orbiting planets
   const planets = orderedPlans.map((p, i) => ({ plan: p, i })).filter(({ i }) => i !== index);
 
+  // utility: compute angle per slot
+  function angleForSlot(slotIndex: number, totalSlots: number) {
+    const step = 360 / totalSlots;
+    return step * slotIndex;
+  }
+
   return (
-    <div className="relative min-h-screen text-white overflow-hidden" {...swipe}>
-      <Starfield />
+    <div className="relative min-h-screen text-white overflow-hidden">
+      {/* Header from your homepage */}
+      <Header darkMode={darkMode} toggleDarkMode={() => setDarkMode((d) => !d)} />
 
-      {/* Top bar with title and legend/menu */}
-      <div className="relative z-10 flex items-center justify-between px-4 sm:px-6 py-4">
-        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">
-          Pricing <span className="ml-2 text-sm align-middle opacity-70">Solar orbit view</span>
-        </h1>
-
-        <div className="flex items-center gap-3">
-          <button
-            className="sm:hidden inline-flex items-center px-3 py-2 rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 transition"
-            onClick={() => setLegendOpen((v) => !v)}
-            aria-expanded={legendOpen}
-          >
-            {legendOpen ? "Hide Plans" : "Show Plans"}
-          </button>
-
-          <div className="hidden sm:flex items-center gap-2">
-            {orderedPlans.map((p, i) => (
-              <button
-                key={p.key}
-                onClick={() => setIndex(i)}
-                className={`px-3 py-1 rounded-lg text-sm border transition ${
-                  i === index
-                    ? "border-white/60 bg-white/10"
-                    : "border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10"
-                }`}
-                title={p.name}
-              >
-                {p.name}
-              </button>
-            ))}
-          </div>
-        </div>
+      {/* Galaxy Background */}
+      <div className="absolute inset-0 -z-10">{/* keeps it behind everything */}
+        <Starfield />
       </div>
 
-      {/* Mobile legend list */}
-      {legendOpen && (
-        <div className="relative z-10 sm:hidden px-4 pb-2">
-          <div className="rounded-2xl border border-white/10 bg-black/30 p-2 grid grid-cols-2 gap-2">
-            {orderedPlans.map((p, i) => (
-              <button
-                key={p.key}
-                onClick={() => { setIndex(i); setLegendOpen(false); }}
-                className={`w-full px-3 py-2 rounded-xl text-left text-sm border transition ${
-                  i === index
-                    ? "border-white/60 bg-white/10"
-                    : "border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10"
-                }`}
-              >
-                {p.name}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Content wrapper with top padding (header height ~80px) */}
+      <main className="pt-24" {...swipe}>
+        {/* Top controls row (legend button + plan buttons on desktop) */}
+        <div className="relative z-10 flex items-center justify-between px-4 sm:px-6 py-2">
+          {/* Left spacer so header remains the only "branding" */}
+          <div />
 
-      {/* MOBILE CAROUSEL (sm:hidden) */}
-      <div className="relative z-0 sm:hidden px-4 pb-6">
-        <div className="w-full">
-          <div className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur p-6 shadow-[0_0_40px_rgba(255,255,255,0.10)]">
-            <div className="text-xs uppercase tracking-widest text-white/70 mb-2 text-center">In focus</div>
-            <h2 className="text-2xl font-bold text-center">{current.name}</h2>
-            <div className="mt-1 text-lg font-semibold text-center">
-              {current.price} <span className="text-white/70">{current.cadence}</span>
-            </div>
-            <ul className="mt-3 space-y-1 text-sm text-white/80">
-              {current.shortBullets.map((b, idx) => (
-                <li key={idx} className="flex items-center justify-center gap-2">
-                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-white/70" />
-                  {b}
-                </li>
-              ))}
-            </ul>
-            {current.cta && (
-              <a
-                href={current.cta.href}
-                className="mt-4 mx-auto w-full inline-flex items-center justify-center px-4 py-2 rounded-xl bg-white text-black font-semibold hover:bg-white/90 transition shadow"
-              >
-                {current.cta.label}
-              </a>
-            )}
-
-            {/* Carousel dots */}
-            <div className="mt-5 flex items-center justify-center gap-1.5">
-              {orderedPlans.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setIndex(i)}
-                  className={`h-2 w-2 rounded-full transition ${
-                    i === index ? "bg-cyan-400" : "bg-white/30 hover:bg-white/60"
-                  }`}
-                  aria-label={`Go to ${orderedPlans[i].name}`}
-                />
-              ))}
-            </div>
-
-            {/* Swipe hint */}
-            <div className="mt-3 text-center text-xs text-white/60">Auto slides. Swipe to change.</div>
-          </div>
-        </div>
-      </div>
-
-      {/* DESKTOP ORBIT (hidden on mobile) */}
-      <div className="relative z-0 hidden sm:flex items-center justify-center pt-6 pb-8 sm:pb-12">
-        <div className="relative w-[92vw] max-w-[1050px] aspect-square">
-          {/* Rotating ring */}
-          <div
-            className="absolute inset-0 rounded-full border border-white/10"
-            style={{ animation: "orbit-rotate 30s linear infinite" }}
-          />
-
-          {/* Center orb spotlight */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div
-              className={`relative w-[64vw] max-w-[520px] aspect-square rounded-full bg-white/5 backdrop-blur-sm border ${current.spotlightColor || "ring-cyan-400"} ring-2 ring-inset border-white/10 shadow-[0_0_40px_rgba(255,255,255,0.12)]`}
-            >
-              <div className="absolute inset-[10%] rounded-full bg-black/30 blur-2xl" />
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-                <div className="text-xs uppercase tracking-widest text-white/70 mb-2">In focus</div>
-                <h2 className="text-2xl sm:text-3xl font-bold drop-shadow">{current.name}</h2>
-                <div className="mt-1 text-lg sm:text-xl font-semibold">
-                  {current.price} <span className="text-white/70">{current.cadence}</span>
-                </div>
-                <ul className="mt-3 space-y-1 text-sm text-white/80">
-                  {current.shortBullets.map((b, idx) => (
-                    <li key={idx} className="flex items-center justify-center gap-2">
-                      <span className="inline-block h-1.5 w-1.5 rounded-full bg-white/70" />
-                      {b}
-                    </li>
-                  ))}
-                </ul>
-                {current.cta && (
-                  <a
-                    href={current.cta.href}
-                    className="mt-4 inline-flex items-center px-4 py-2 rounded-xl bg-white text-black font-semibold hover:bg-white/90 transition shadow"
-                  >
-                    {current.cta.label}
-                  </a>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Orbiting planets (container rotates; items positioned radially) */}
-          <div className="absolute inset-0" style={{ animation: "orbit-rotate 30s linear infinite" }}>
-            {planets.map(({ plan, i: planIndex }, slot) => {
-              const totalSlots = planets.length;
-              const angle = angleForSlot(slot, totalSlots);
-              const radius = "42%";
-              return (
-                <button
-                  key={plan.key}
-                  onClick={() => setIndex(planIndex)}
-                  className="absolute"
-                  style={{
-                    left: `calc(50% + ${radius} * cos(${angle}deg))`,
-                    top: `calc(50% + ${radius} * sin(${angle}deg))`,
-                    transform: "translate(-50%, -50%)",
-                  }}
-                  title={plan.name}
-                >
-                  <div
-                    className={`relative w-28 h-28 rounded-full bg-white/10 border border-white/15 backdrop-blur-sm ring-2 ${plan.spotlightColor || "ring-cyan-400"} hover:scale-105 transition-transform`}
-                  >
-                    <div className="absolute inset-0 rounded-full bg-black/30" />
-                    {/* Counter-rotate label to stay upright */}
-                    <div
-                      className="absolute inset-0 flex flex-col items-center justify-center text-center px-2"
-                      style={{ transform: "rotate(-0deg)" }}
-                    >
-                      <div className="text-[10px] uppercase tracking-wider text-white/70">Plan</div>
-                      <div className="text-sm font-bold">{plan.name}</div>
-                      <div className="text-xs text-white/80">
-                        {plan.price} <span className="opacity-70">{plan.cadence}</span>
-                      </div>
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Desktop arrows */}
-          <div className="hidden sm:block">
+          <div className="flex items-center gap-3">
             <button
-              onClick={prev}
-              className="absolute left-2 top-1/2 -translate-y-1/2 px-3 py-2 rounded-xl border border-white/15 bg-white/10 hover:bg-white/20 backdrop-blur-sm"
-              aria-label="Previous plan"
-              title="Previous plan"
+              className="sm:hidden inline-flex items-center px-3 py-2 rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 transition"
+              onClick={() => setLegendOpen((v) => !v)}
+              aria-expanded={legendOpen}
             >
-              ←
+              {legendOpen ? "Hide Plans" : "Show Plans"}
             </button>
-            <button
-              onClick={next}
-              className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-2 rounded-xl border border-white/15 bg-white/10 hover:bg-white/20 backdrop-blur-sm"
-              aria-label="Next plan"
-              title="Next plan"
-            >
-              →
-            </button>
-          </div>
-        </div>
-      </div>
 
-      {/* Details panel */}
-      <div className="relative z-10 mx-auto w-full max-w-4xl px-4 sm:px-6 pb-16">
-        <div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur p-6 sm:p-8 shadow-[0_0_40px_rgba(255,255,255,0.08)]">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <h3 className="text-xl sm:text-2xl font-bold">{current.name} Details</h3>
-              <div className="text-white/80">
-                <span className="font-semibold">{current.price}</span> {current.cadence}
-              </div>
-            </div>
             <div className="hidden sm:flex items-center gap-2">
-              {index > 0 && (
+              {orderedPlans.map((p, i) => (
                 <button
-                  onClick={prev}
-                  className="px-3 py-2 rounded-lg border border-white/15 bg-white/10 hover:bg-white/20"
-                  title="Previous"
+                  key={p.key}
+                  onClick={() => setIndex(i)}
+                  className={`px-3 py-1 rounded-lg text-sm border transition ${
+                    i === index
+                      ? "border-white/60 bg-white/10"
+                      : "border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10"
+                  }`}
+                  title={p.name}
                 >
-                  Previous
+                  {p.name}
                 </button>
-              )}
-              <button
-                onClick={next}
-                className="px-3 py-2 rounded-lg border border-white/15 bg-white/10 hover:bg-white/20"
-                title="Next"
-              >
-                Next
-              </button>
+              ))}
             </div>
           </div>
+        </div>
 
-          <div className="mt-6 grid gap-8 sm:grid-cols-2">
-            <div>
-              <div className="text-sm uppercase tracking-wider text-white/70 mb-2">Included</div>
-              <ul className="space-y-2">
-                {current.features.map((f, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <span className="mt-1 h-2 w-2 rounded-full bg-emerald-300" />
-                    <span>{f}</span>
+        {/* Mobile legend list */}
+        {legendOpen && (
+          <div className="relative z-10 sm:hidden px-4 pb-2">
+            <div className="rounded-2xl border border-white/10 bg-black/40 backdrop-blur p-2 grid grid-cols-2 gap-2">
+              {orderedPlans.map((p, i) => (
+                <button
+                  key={p.key}
+                  onClick={() => {
+                    setIndex(i);
+                    setLegendOpen(false);
+                  }}
+                  className={`w-full px-3 py-2 rounded-xl text-left text-sm border transition ${
+                    i === index
+                      ? "border-white/60 bg-white/10"
+                      : "border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10"
+                  }`}
+                >
+                  {p.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* MOBILE CAROUSEL */}
+        <div className="relative z-0 sm:hidden px-4 pb-6">
+          <div className="w-full">
+            <div className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur p-6 shadow-[0_0_40px_rgba(255,255,255,0.10)]">
+              <div className="text-xs uppercase tracking-widest text-white/70 mb-2 text-center">
+                In focus
+              </div>
+              <h2 className="text-2xl font-bold text-center">{current.name}</h2>
+              <div className="mt-1 text-lg font-semibold text-center">
+                {current.price} <span className="text-white/70">{current.cadence}</span>
+              </div>
+              <ul className="mt-3 space-y-1 text-sm text-white/80">
+                {current.shortBullets.map((b, idx) => (
+                  <li key={idx} className="flex items-center justify-center gap-2">
+                    <span className="inline-block h-1.5 w-1.5 rounded-full bg-white/70" />
+                    {b}
                   </li>
                 ))}
               </ul>
-            </div>
-
-            <div>
-              {current.notIncluded && current.notIncluded.length > 0 && (
-                <>
-                  <div className="text-sm uppercase tracking-wider text-white/70 mb-2">Not Included</div>
-                  <ul className="space-y-2">
-                    {current.notIncluded.map((f, i) => (
-                      <li key={i} className="flex items-start gap-3">
-                        <span className="mt-1 h-2 w-2 rounded-full bg-rose-300" />
-                        <span>{f}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </>
+              {current.cta && (
+                <a
+                  href={current.cta.href}
+                  className="mt-4 mx-auto w-full inline-flex items-center justify-center px-4 py-2 rounded-xl bg-white text-black font-semibold hover:bg-white/90 transition shadow"
+                >
+                  {current.cta.label}
+                </a>
               )}
 
-              {current.addOns && current.addOns.length > 0 && (
-                <div className="mt-6">
-                  <div className="text-sm uppercase tracking-wider text-white/70 mb-2">Add Ons</div>
-                  <ul className="space-y-2">
-                    {current.addOns.map((f, i) => (
-                      <li key={i} className="flex items-start gap-3">
-                        <span className="mt-1 h-2 w-2 rounded-full bg-amber-300" />
-                        <span>{f}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          </div>
+              {/* Carousel dots */}
+              <div className="mt-5 flex items-center justify-center gap-1.5">
+                {orderedPlans.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setIndex(i)}
+                    className={`h-2 w-2 rounded-full transition ${
+                      i === index ? "bg-cyan-400" : "bg-white/30 hover:bg-white/60"
+                    }`}
+                    aria-label={`Go to ${orderedPlans[i].name}`}
+                  />
+                ))}
+              </div>
 
-          {/* Universal Add Ons */}
-          <div className="mt-8 pt-6 border-t border-white/10">
-            <div className="text-sm uppercase tracking-wider text-white/70 mb-2">Universal Add Ons</div>
-            <ul className="grid sm:grid-cols-2 gap-2">
-              <li className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-white/70" /> Extra Page - $50 per page
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-white/70" /> Logo Design - $75 one time
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-white/70" /> Hosting Only for Custom builds - $30 per month
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-white/70" /> Rush Delivery 48 hours - +$100
-              </li>
-            </ul>
-            <div className="mt-4 text-xs text-white/60">
-              Large ecommerce and complex data migrations require a quote.
+              <div className="mt-3 text-center text-xs text-white/60">
+                Auto slides. Swipe to change.
+              </div>
             </div>
           </div>
         </div>
-      </div>
+
+        {/* DESKTOP ORBIT */}
+        <div className="relative z-0 hidden sm:flex items-center justify-center pt-6 pb-8 sm:pb-12">
+          <div className="relative w-[92vw] max-w-[1050px] aspect-square">
+            {/* Orbit ring (rotates slowly) */}
+            <div
+              className="absolute inset-0 rounded-full border border-white/10"
+              style={{ animation: "orbit-rotate 30s linear infinite" }}
+            />
+
+            {/* Center orb spotlight */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div
+                className={`relative w-[64vw] max-w-[520px] aspect-square rounded-full bg-white/5 backdrop-blur-sm border ${
+                  current.spotlightColor || "ring-cyan-400"
+                } ring-2 ring-inset border-white/10 shadow-[0_0_50px_rgba(0,255,255,0.25)]`}
+              >
+                <div className="absolute inset-[10%] rounded-full bg-black/30 blur-2xl" />
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+                  <div className="text-xs uppercase tracking-widest text-white/70 mb-2">In focus</div>
+                  <h2 className="text-2xl sm:text-3xl font-bold drop-shadow">{current.name}</h2>
+                  <div className="mt-1 text-lg sm:text-xl font-semibold">
+                    {current.price} <span className="text-white/70">{current.cadence}</span>
+                  </div>
+                  <ul className="mt-3 space-y-1 text-sm text-white/80">
+                    {current.shortBullets.map((b, idx) => (
+                      <li key={idx} className="flex items-center justify-center gap-2">
+                        <span className="inline-block h-1.5 w-1.5 rounded-full bg-white/70" />
+                        {b}
+                      </li>
+                    ))}
+                  </ul>
+                  {current.cta && (
+                    <a
+                      href={current.cta.href}
+                      className="mt-4 inline-flex items-center px-4 py-2 rounded-xl bg-white text-black font-semibold hover:bg-white/90 transition shadow"
+                    >
+                      {current.cta.label}
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Orbiting planets — container rotates; each planet is positioned with rotate→translate.
+                Inner label runs a reverse rotation so text stays upright */}
+            <div className="absolute inset-0" style={{ animation: "orbit-rotate 30s linear infinite" }}>
+              {planets.map(({ plan, i: planIndex }, slot) => {
+                const totalSlots = planets.length;
+                const angle = angleForSlot(slot, totalSlots);
+                const radius = "42%"; // distance from center
+                return (
+                  <button
+                    key={plan.key}
+                    onClick={() => setIndex(planIndex)}
+                    className="absolute left-1/2 top-1/2"
+                    style={{
+                      transform: `translate(-50%, -50%) rotate(${angle}deg) translate(${radius})`,
+                    }}
+                    title={plan.name}
+                    aria-label={plan.name}
+                  >
+                    <div
+                      className={`relative w-28 h-28 rounded-full bg-white/10 border border-white/15 backdrop-blur-sm ring-2 ${
+                        plan.spotlightColor || "ring-cyan-400"
+                      } hover:scale-105 transition-transform shadow-[0_0_30px_rgba(255,255,255,0.18)]`}
+                    >
+                      <div className="absolute inset-0 rounded-full bg-black/30" />
+                      {/* Counter-rotate text */}
+                      <div
+                        className="absolute inset-0 flex flex-col items-center justify-center text-center px-2"
+                        style={{ animation: "orbit-rotate-reverse 30s linear infinite" }}
+                      >
+                        <div className="text-[10px] uppercase tracking-wider text-white/70">Plan</div>
+                        <div className="text-sm font-bold">{plan.name}</div>
+                        <div className="text-xs text-white/80">
+                          {plan.price} <span className="opacity-70">{plan.cadence}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Desktop arrows */}
+            <div className="hidden sm:block">
+              <button
+                onClick={prev}
+                className="absolute left-2 top-1/2 -translate-y-1/2 px-3 py-2 rounded-xl border border-white/15 bg-white/10 hover:bg-white/20 backdrop-blur-sm"
+                aria-label="Previous plan"
+                title="Previous plan"
+              >
+                ←
+              </button>
+              <button
+                onClick={next}
+                className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-2 rounded-xl border border-white/15 bg-white/10 hover:bg-white/20 backdrop-blur-sm"
+                aria-label="Next plan"
+                title="Next plan"
+              >
+                →
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Details panel */}
+        <div className="relative z-10 mx-auto w-full max-w-4xl px-4 sm:px-6 pb-16">
+          <div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur p-6 sm:p-8 shadow-[0_0_40px_rgba(255,255,255,0.10)]">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h3 className="text-xl sm:text-2xl font-bold">{current.name} Details</h3>
+                <div className="text-white/80">
+                  <span className="font-semibold">{current.price}</span> {current.cadence}
+                </div>
+              </div>
+              <div className="hidden sm:flex items-center gap-2">
+                {index > 0 && (
+                  <button
+                    onClick={prev}
+                    className="px-3 py-2 rounded-lg border border-white/15 bg-white/10 hover:bg-white/20"
+                    title="Previous"
+                  >
+                    Previous
+                  </button>
+                )}
+                <button
+                  onClick={next}
+                  className="px-3 py-2 rounded-lg border border-white/15 bg-white/10 hover:bg-white/20"
+                  title="Next"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-6 grid gap-8 sm:grid-cols-2">
+              <div>
+                <div className="text-sm uppercase tracking-wider text-white/70 mb-2">Included</div>
+                <ul className="space-y-2">
+                  {current.features.map((f, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <span className="mt-1 h-2 w-2 rounded-full bg-emerald-300" />
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                {current.notIncluded && current.notIncluded.length > 0 && (
+                  <>
+                    <div className="text-sm uppercase tracking-wider text-white/70 mb-2">Not Included</div>
+                    <ul className="space-y-2">
+                      {current.notIncluded.map((f, i) => (
+                        <li key={i} className="flex items-start gap-3">
+                          <span className="mt-1 h-2 w-2 rounded-full bg-rose-300" />
+                          <span>{f}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+
+                {current.addOns && current.addOns.length > 0 && (
+                  <div className="mt-6">
+                    <div className="text-sm uppercase tracking-wider text-white/70 mb-2">Add Ons</div>
+                    <ul className="space-y-2">
+                      {current.addOns.map((f, i) => (
+                        <li key={i} className="flex items-start gap-3">
+                          <span className="mt-1 h-2 w-2 rounded-full bg-amber-300" />
+                          <span>{f}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Universal Add Ons */}
+            <div className="mt-8 pt-6 border-t border-white/10">
+              <div className="text-sm uppercase tracking-wider text-white/70 mb-2">Universal Add Ons</div>
+              <ul className="grid sm:grid-cols-2 gap-2">
+                <li className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-white/70" /> Extra Page - $50 per page
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-white/70" /> Logo Design - $75 one time
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-white/70" /> Hosting Only for Custom builds - $30 per month
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-white/70" /> Rush Delivery 48 hours - +$100
+                </li>
+              </ul>
+              <div className="mt-4 text-xs text-white/60">
+                Large ecommerce and complex data migrations require a quote.
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   );
 };
-
-// Helpers
-function angleForSlot(slotIndex: number, totalSlots: number) {
-  const step = 360 / totalSlots;
-  return step * slotIndex;
-}
 
 export default Pricing;
