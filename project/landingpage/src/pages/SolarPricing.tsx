@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
  * - Local header (logo glow) only on this page
  * - Dark mode forced; no light toggle
  * - Mobile auto-slide w/ pause on interaction or when out of view
- * - FIX: tighter orbit, non-overlapping planets, readable labels, subtle spin
+ * - Tighter orbit, readable larger planets, outer orbit ring removed
  */
 
 /* ----------------------------- TYPES & DATA ----------------------------- */
@@ -257,7 +257,7 @@ const LocalHeader: React.FC = () => {
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
-      {/* neon logo glow (page-only) */}
+      {/* logo glow */}
       <style>{`
         @keyframes logoPulse { 0%{opacity:.35;transform:scale(1)} 50%{opacity:.85;transform:scale(1.07)} 100%{opacity:.35;transform:scale(1)} }
         @keyframes logoOrbit { 0%{transform:rotate(0)} 100%{transform:rotate(360deg)} }
@@ -267,7 +267,6 @@ const LocalHeader: React.FC = () => {
         <div className="flex justify-between items-center h-20">
           <Link to="/" className="flex-shrink-0 group">
             <motion.div className="relative flex items-center space-x-3" whileHover={{ scale: 1.05 }}>
-              {/* outer orbit halo */}
               <div
                 className="absolute -inset-4 rounded-2xl opacity-60 blur-2xl pointer-events-none"
                 style={{
@@ -276,12 +275,10 @@ const LocalHeader: React.FC = () => {
                   animation: "logoOrbit 10s linear infinite",
                 }}
               />
-              {/* core pulse */}
               <div
                 className="absolute -inset-2 rounded-2xl bg-emerald-400/15 blur-xl pointer-events-none"
                 style={{ animation: "logoPulse 4.5s ease-in-out infinite" }}
               />
-              {/* icon */}
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-blue-600 rounded-xl blur-lg opacity-40 group-hover:opacity-60 transition-opacity"></div>
                 <div className="relative bg-gradient-to-r from-emerald-600 to-blue-600 p-2 rounded-xl shadow-lg shadow-emerald-500/25">
@@ -297,7 +294,6 @@ const LocalHeader: React.FC = () => {
             </motion.div>
           </Link>
 
-          {/* desktop nav */}
           <nav className="hidden lg:flex items-center space-x-1">
             {navItems.map((item) => (
               <Link
@@ -321,7 +317,6 @@ const LocalHeader: React.FC = () => {
             ))}
           </nav>
 
-          {/* mobile menu button */}
           <div className="lg:hidden">
             <motion.button
               onClick={() => setIsMenuOpen((v) => !v)}
@@ -406,7 +401,7 @@ const Starfield: React.FC = () => (
 
     <div className="absolute inset-0 bg-[#02020a]" />
 
-    {/* star layers */}
+    {/* stars */}
     <div
       className="absolute inset-0 anim parallax"
       style={{
@@ -469,7 +464,7 @@ const Starfield: React.FC = () => (
       }}
     />
 
-    {/* random shooting stars */}
+    {/* shooting stars */}
     {Array.from({ length: 7 }).map((_, i) => (
       <div
         key={i}
@@ -489,7 +484,7 @@ const Starfield: React.FC = () => (
       />
     ))}
 
-    {/* wide color spots + vignette */}
+    {/* color spots + vignette */}
     <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_55%_10%,rgba(56,189,248,0.35),transparent_62%),radial-gradient(circle_at_82%_24%,rgba(168,85,247,0.35),transparent_62%),radial-gradient(circle_at_20%_78%,rgba(34,197,94,0.26),transparent_62%)]" />
     <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_60%,rgba(0,0,0,0.62)_100%)]" />
   </>
@@ -498,7 +493,7 @@ const Starfield: React.FC = () => (
 /* ---------------------------------- PAGE --------------------------------- */
 
 const Pricing: React.FC = () => {
-  // force dark (site-wide theme untouched elsewhere)
+  // force dark
   useEffect(() => {
     document.documentElement.classList.add("dark");
     try { localStorage.setItem("theme", "dark"); } catch {}
@@ -520,7 +515,7 @@ const Pricing: React.FC = () => {
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  // mouse parallax control for bg
+  // mouse parallax control
   useEffect(() => {
     const handle = (e: MouseEvent) => {
       const cx = window.innerWidth / 2;
@@ -590,9 +585,7 @@ const Pricing: React.FC = () => {
     () => { pauseForInteraction(); prev(); }
   );
 
-  // planets exclude focused
   const planets = orderedPlans.map((p, i) => ({ plan: p, i })).filter(({ i }) => i !== index);
-
   const angleForSlot = (slotIndex: number, totalSlots: number) => (360 / totalSlots) * slotIndex;
 
   return (
@@ -703,18 +696,9 @@ const Pricing: React.FC = () => {
         {/* DESKTOP ORBIT */}
         <div className="relative z-0 hidden sm:flex items-center justify-center pt-6 pb-8 sm:pb-12">
           <div className="relative w-[92vw] max-w-[1120px] aspect-square">
-            {/* Orbit ring (glow) */}
-            <div
-              className="absolute inset-0 rounded-full"
-              style={{
-                animation: "orbit-rotate 30s linear infinite",
-                boxShadow: "inset 0 0 40px rgba(0,255,255,0.25), 0 0 120px rgba(99,102,241,0.18)",
-                border: "1px solid rgba(255,255,255,0.08)",
-                background: "radial-gradient(circle at center, rgba(0,255,255,0.12) 0%, rgba(0,0,0,0) 55%)",
-              }}
-            />
+            {/* (Outer orbit ring removed per request) */}
 
-            {/* Center orb (slightly smaller) */}
+            {/* Center orb */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div
                 className={`relative w-[46vw] max-w-[400px] aspect-square rounded-full bg-white/5 backdrop-blur-sm border ${
@@ -740,12 +724,12 @@ const Pricing: React.FC = () => {
               </div>
             </div>
 
-            {/* Plan planets — tighter orbit, spin + readable labels */}
+            {/* Plan planets — tighter orbit, larger, spin + readable labels */}
             <div className="absolute inset-0" style={{ animation: "orbit-rotate 30s linear infinite" }}>
               {planets.map(({ plan, i: planIndex }, slot) => {
                 const totalSlots = planets.length;
                 const angle = angleForSlot(slot, totalSlots);
-                const radius = "34%"; // tighter orbit so everything fits on one page
+                const radius = "34%"; // tight orbit
                 return (
                   <button
                     key={plan.key}
@@ -759,7 +743,7 @@ const Pricing: React.FC = () => {
                     aria-label={plan.name}
                   >
                     <div
-                      className={`relative w-[4.5rem] h-[4.5rem] overflow-hidden rounded-full bg-white/10 border border-white/15 backdrop-blur-sm ring-2 ${
+                      className={`relative w-[5.5rem] h-[5.5rem] overflow-hidden rounded-full bg-white/10 border border-white/15 backdrop-blur-sm ring-2 ${
                         plan.spotlightColor || "ring-cyan-400"
                       } hover:scale-105 transition-transform shadow-[0_0_30px_rgba(255,255,255,0.18)]`}
                       style={{ animation: "orbit-rotate 14s linear infinite" }} // planet spins
@@ -770,11 +754,12 @@ const Pricing: React.FC = () => {
                         className="absolute inset-0 flex flex-col items-center justify-center text-center px-1 leading-tight"
                         style={{ animation: "orbit-rotate-reverse 14s linear infinite" }}
                       >
-                        <div className="text-[9px] uppercase tracking-wider text-white/70">Plan</div>
-                        <div className="text-[11px] font-semibold whitespace-nowrap truncate max-w-[60px]">
+                        <div className="text-[10px] uppercase tracking-wider text-white/70">Plan</div>
+                        {/* allow wrap to avoid clipping */}
+                        <div className="text-[12px] font-semibold break-words text-center px-1">
                           {plan.name}
                         </div>
-                        <div className="text-[10px] text-white/80 whitespace-nowrap truncate max-w-[60px]">
+                        <div className="text-[11px] text-white/80 text-center">
                           {plan.price} <span className="opacity-70">{plan.cadence}</span>
                         </div>
                       </div>
