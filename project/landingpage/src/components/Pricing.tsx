@@ -74,6 +74,13 @@ const Pricing: React.FC = () => {
           <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
             Pricing Plans
           </h2>
+          {/* Subtle link to full pricing page */}
+          <Link
+            to="/pricing"
+            className="inline-block mt-2 px-5 py-2 rounded-lg bg-emerald-600/90 text-white text-sm font-medium hover:bg-emerald-500 transition-colors"
+          >
+            View Full Pricing →
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-5 gap-8 max-w-7xl mx-auto items-stretch">
