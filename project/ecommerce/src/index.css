@@ -1,0 +1,92 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-obsidian text-white font-body antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .film-grain {
+    position: relative;
+  }
+  
+  .film-grain::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      radial-gradient(circle at 25% 25%, #ffffff03 1px, transparent 0),
+      radial-gradient(circle at 50% 50%, #ffffff02 1px, transparent 0),
+      radial-gradient(circle at 75% 75%, #ffffff03 1px, transparent 0);
+    background-size: 3px 3px, 5px 5px, 7px 7px;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+  
+  .glass-gradient {
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  
+  .champagne-gradient {
+    background: linear-gradient(135deg, #D4AF37, #FFD700);
+  }
+  
+  .obsidian-gradient {
+    background: linear-gradient(135deg, #0F0F23, #1A1A2E);
+  }
+  
+  .magnetic-hover {
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .magnetic-hover:hover {
+    transform: translateY(-2px);
+  }
+  
+  .text-shadow-luxury {
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  }
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
