@@ -18,24 +18,25 @@ concurrency:
   group: "auto-prepare-${{ github.ref }}"
   cancel-in-progress: true
 
+permissions:
+  contents: write
+
 jobs:
   prepare:
-    # Guards to avoid infinite loops / bot-triggered reruns
-    if: ${{ github.actor != 'github-actions[bot]' && !contains(github.event.head_commit.message, 'chore(bot): auto-prepare') }}
+    # Avoid loops and run only when useful
+    if: ${{ github.actor != 'github-actions[bot]' && (github.event_name != 'push' || !contains(github.event.head_commit.message, 'chore(bot): auto-prepare')) }}
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          persist-credentials: false
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - name: Run subfolder preparation
+      - name: Prepare subfolders
         run: |
           node --version
           npm --version
