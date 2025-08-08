@@ -37,7 +37,6 @@ const Specials = () => {
   ];
 
   useEffect(() => {
-    // Fade in when in view (avoid work until visible)
     const observer = new IntersectionObserver(
       (entries) => entries.forEach(e => e.isIntersecting && setIsVisible(true)),
       { threshold: 0.1 }
@@ -69,7 +68,8 @@ const Specials = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Feature carousel */}
           <div className="lg:col-span-2">
-            <div className="relative overflow-hidden rounded-2xl">
+            {/* NOTE: set a fixed height so absolute slides have a box to fill */}
+            <div className="relative overflow-hidden rounded-2xl h-96">
               {specials.map((sp, idx) => (
                 <div
                   key={sp.title}
@@ -80,7 +80,7 @@ const Specials = () => {
                     decoding="async"
                     src={sp.image}
                     alt={sp.title}
-                    className="w-full h-96 object-cover"
+                    className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/10" />
                   <div className="absolute bottom-0 p-6">
