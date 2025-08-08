@@ -15,13 +15,13 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: auto-prepare-${{ github.ref }}
+  group: "auto-prepare-${{ github.ref }}"
   cancel-in-progress: true
 
 jobs:
   prepare:
     # Guards to avoid infinite loops / bot-triggered reruns
-    if: github.actor != 'github-actions[bot]' && !contains(github.event.head_commit.message, 'chore(bot): auto-prepare')
+    if: ${{ github.actor != 'github-actions[bot]' && !contains(github.event.head_commit.message, 'chore(bot): auto-prepare') }}
     runs-on: ubuntu-latest
 
     steps:
