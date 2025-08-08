@@ -2,11 +2,78 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <!-- make favicon relative so it loads under /detailer/ -->
     <link rel="icon" type="image/svg+xml" href="./vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Shine Xpress - Premium Mobile Car Detailing | We Come To You</title>
-    <!-- keep your other head tags the same -->
+    
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://images.pexels.com">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Professional mobile car detailing that comes to you. Premium interior and exterior services, paint correction, and ceramic coating packages. Fully insured with satisfaction guarantee.">
+    <meta name="keywords" content="mobile car detailing, car wash, interior detailing, exterior detailing, paint correction, ceramic coating, auto detailing, mobile service, car cleaning">
+    <meta name="author" content="Shine Xpress">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#0a0a0a">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:title" content="Shine Xpress - Premium Mobile Car Detailing">
+    <meta property="og:description" content="We come to you — show-room shine at your home or office.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://built4you.org/detailer/">
+    <meta property="og:image" content="https://images.pexels.com/photos/6870320/pexels-photo-6870320.jpeg?auto=compress&cs=tinysrgb&w=1600">
+    <meta property="og:site_name" content="Shine Xpress">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Shine Xpress - Premium Mobile Car Detailing">
+    <meta name="twitter:description" content="We come to you — show-room shine at your home or office.">
+    <meta name="twitter:image" content="https://images.pexels.com/photos/6870320/pexels-photo-6870320.jpeg?auto=compress&cs=tinysrgb&w=1600">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- JSON-LD Local Business Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "AutoDetailing",
+      "name": "Shine Xpress",
+      "url": "https://built4you.org/detailer/",
+      "logo": "https://images.pexels.com/photos/6870320/pexels-photo-6870320.jpeg",
+      "image": "https://images.pexels.com/photos/6870320/pexels-photo-6870320.jpeg",
+      "description": "Premium mobile car detailing at your location.",
+      "areaServed": {
+        "@type": "City",
+        "name": "Your City"
+      },
+      "sameAs": [
+        "https://www.instagram.com/yourhandle",
+        "https://www.facebook.com/yourpage"
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Your City",
+        "addressRegion": "Your State",
+        "postalCode": "00000",
+        "addressCountry": "US"
+      },
+      "geo": {
+        "@type": "GeoCircle",
+        "geoMidpoint": {
+          "@type": "GeoCoordinates",
+          "latitude": "40.7128",
+          "longitude": "-74.0060"
+        },
+        "geoRadius": "25"
+      },
+      "serviceType": ["Car Detailing", "Mobile Car Wash", "Ceramic Coating"],
+      "openingHours": "Mo,Tu,We,Th,Fr,Sa 08:00-18:00",
+      "priceRange": "$$"
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>
