@@ -1,0 +1,53 @@
+name: 🛠 Auto-prepare project subfolders (GH Pages)
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'project/**'
+      - '.github/workflows/auto-prepare-subfolders.yml'
+      - 'scripts/prepare-subfolder.mjs'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'project/**'
+      - 'scripts/prepare-subfolder.mjs'
+  workflow_dispatch:
+
+concurrency:
+  group: auto-prepare-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  prepare:
+    # Guards to avoid infinite loops / bot-triggered reruns
+    if: github.actor != 'github-actions[bot]' && !contains(github.event.head_commit.message, 'chore(bot): auto-prepare')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Run subfolder preparation
+        run: |
+          node --version
+          npm --version
+          node scripts/prepare-subfolder.mjs
+
+      - name: Commit changes (if any)
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(bot): auto-prepare project subfolders for GH Pages"
+          commit_options: "--no-verify"
+          file_pattern: |
+            project/**/vite.config.*
+            project/**/index.html
+            project/**/src/main.*
+            project/**/src/App.*

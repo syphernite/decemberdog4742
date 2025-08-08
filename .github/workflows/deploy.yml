@@ -1,14 +1,31 @@
-# File: .github/workflows/deploy.yml
 name: 🚀 Build & Deploy All Clients
 
 on:
+  # Run after the auto-prepare workflow completes (so we deploy the patched commit)
+  workflow_run:
+    workflows: ["🛠 Auto-prepare project subfolders (GH Pages)"]
+    types: [completed]
+
+  # Allow manual runs anytime
+  workflow_dispatch:
+
+  # Also deploy on pushes that DON'T touch project/**
+  # (root changes like 404.html, README, or workflow edits)
   push:
     branches: [ main ]
-  workflow_dispatch:
+    paths-ignore:
+      - 'project/**'
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   pages:
+    # Skip if the auto-prepare workflow failed; also ignore bot loops on direct pushes
+    if: (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success') && github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
+
     steps:
       # 1) Checkout code
       - uses: actions/checkout@v4
