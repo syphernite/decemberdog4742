@@ -24,7 +24,7 @@ type Plan = {
   shortBullets: string[];
   features: string[];
   notIncluded?: string[];
-  addOns?: string[];
+  addOns?: string[]; // kept in data, but we won't render plan-specific add-ons in Details anymore
   spotlightColor?: string;
   cta?: { label: string; href: string };
 };
@@ -46,7 +46,7 @@ const PLANS_IN_ORDER: Plan[] = [
     ],
     notIncluded: ["Unlimited edits", "Strategy calls", "SEO reports"],
     spotlightColor: "ring-blue-400",
-    cta: { label: "Start Startup", href: "#contact" },
+    cta: { label: "Start Startup", href: "/contact" },
   },
   {
     key: "basic",
@@ -58,7 +58,7 @@ const PLANS_IN_ORDER: Plan[] = [
     features: ["1 Page Website", "Mobile Responsive", "Contact Form", "Basic SEO Setup"],
     notIncluded: ["Hosting", "Edits after delivery", "Extra pages"],
     spotlightColor: "ring-emerald-400",
-    cta: { label: "Order Basic", href: "#contact" },
+    cta: { label: "Order Basic", href: "/contact" },
   },
   {
     key: "pro",
@@ -76,7 +76,7 @@ const PLANS_IN_ORDER: Plan[] = [
     notIncluded: ["Hosting", "Ongoing support", "Advanced integrations"],
     addOns: ["Extra Page - $50", "Logo Design - $75", "Rush Delivery 48 hours - +$100"],
     spotlightColor: "ring-cyan-400",
-    cta: { label: "Order Pro", href: "#contact" },
+    cta: { label: "Order Pro", href: "/contact" },
   },
   {
     key: "elite",
@@ -98,7 +98,7 @@ const PLANS_IN_ORDER: Plan[] = [
     notIncluded: ["Hosting and domain unless added", "Ongoing edits after 1 week", "Booking or store setups"],
     addOns: ["Hosting Only - $30 per month", "Logo Design - $75", "Rush Delivery 48 hours - +$100", "Extra Page - $50 per page"],
     spotlightColor: "ring-yellow-400",
-    cta: { label: "Get Elite Build", href: "#contact" },
+    cta: { label: "Get Elite Build", href: "/contact" },
   },
   {
     key: "business",
@@ -117,7 +117,7 @@ const PLANS_IN_ORDER: Plan[] = [
     ],
     notIncluded: ["Strategy calls", "Advanced integrations"],
     spotlightColor: "ring-violet-400",
-    cta: { label: "Start Business", href: "#contact" },
+    cta: { label: "Start Business", href: "/contact" },
   },
   {
     key: "business-pro",
@@ -136,7 +136,7 @@ const PLANS_IN_ORDER: Plan[] = [
     ],
     notIncluded: ["Large ecommerce builds", "Full redesigns without quote"],
     spotlightColor: "ring-fuchsia-400",
-    cta: { label: "Start Business Pro", href: "#contact" },
+    cta: { label: "Start Business Pro", href: "/contact" },
   },
   {
     key: "ecom-starter",
@@ -154,7 +154,7 @@ const PLANS_IN_ORDER: Plan[] = [
     ],
     notIncluded: ["Subscriptions", "Advanced filtering", "Shipping calculators"],
     spotlightColor: "ring-rose-400",
-    cta: { label: "Start Ecommerce", href: "#contact" },
+    cta: { label: "Start Ecommerce", href: "/contact" },
   },
   {
     key: "vip-flex",
@@ -173,7 +173,7 @@ const PLANS_IN_ORDER: Plan[] = [
     ],
     notIncluded: ["Large ecommerce without quote", "Complex data migrations without quote"],
     spotlightColor: "ring-amber-400",
-    cta: { label: "Start VIP Flex", href: "#contact" },
+    cta: { label: "Start VIP Flex", href: "/contact" },
   },
   {
     key: "custom",
@@ -191,7 +191,7 @@ const PLANS_IN_ORDER: Plan[] = [
       "Dedicated Project Manager",
     ],
     spotlightColor: "ring-sky-400",
-    cta: { label: "Request Custom Quote", href: "#contact" },
+    cta: { label: "Request Custom Quote", href: "/contact" },
   },
 ];
 
@@ -588,6 +588,20 @@ const Pricing: React.FC = () => {
   const planets = orderedPlans.map((p, i) => ({ plan: p, i })).filter(({ i }) => i !== index);
   const angleForSlot = (slotIndex: number, totalSlots: number) => (360 / totalSlots) * slotIndex;
 
+  // scroll hint (shows until user scrolls a bit or reaches bottom)
+  const [showScrollHint, setShowScrollHint] = useState(true);
+  useEffect(() => {
+    const onScroll = () => {
+      const scrolledPast = window.scrollY > 120;
+      const nearBottom =
+        window.innerHeight + window.scrollY >= (document.documentElement.scrollHeight || document.body.scrollHeight) - 120;
+      setShowScrollHint(!(scrolledPast || nearBottom));
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <div className="relative min-h-screen text-white overflow-hidden">
       <LocalHeader />
@@ -659,7 +673,7 @@ const Pricing: React.FC = () => {
               <div className="mt-1 text-lg font-semibold text-center">
                 {current.price} <span className="text-white/70">{current.cadence}</span>
               </div>
-              <ul className="mt-3 space-y-1 text-sm text-white/80">
+              <ul className="mt-3 space-y-1 text-sm text-white/80 list-none">
                 {current.shortBullets.map((b, idx) => (
                   <li key={idx} className="flex items-center justify-center gap-2">
                     <span className="inline-block h-1.5 w-1.5 rounded-full bg-white/70" />
@@ -696,8 +710,6 @@ const Pricing: React.FC = () => {
         {/* DESKTOP ORBIT */}
         <div className="relative z-0 hidden sm:flex items-center justify-center pt-6 pb-8 sm:pb-12">
           <div className="relative w-[92vw] max-w-[1120px] aspect-square">
-            {/* (Outer orbit ring removed per request) */}
-
             {/* Center orb */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div
@@ -712,7 +724,7 @@ const Pricing: React.FC = () => {
                   <div className="mt-1 text-lg sm:text-xl font-semibold">
                     {current.price} <span className="text-white/70">{current.cadence}</span>
                   </div>
-                  <ul className="mt-3 space-y-1 text-sm text-white/80">
+                  <ul className="mt-3 space-y-1 text-sm text-white/80 list-none">
                     {current.shortBullets.map((b, idx) => (
                       <li key={idx} className="flex items-center justify-center gap-2">
                         <span className="inline-block h-1.5 w-1.5 rounded-full bg-white/70" />
@@ -755,7 +767,6 @@ const Pricing: React.FC = () => {
                         style={{ animation: "orbit-rotate-reverse 14s linear infinite" }}
                       >
                         <div className="text-[10px] uppercase tracking-wider text-white/70">Plan</div>
-                        {/* allow wrap to avoid clipping */}
                         <div className="text-[12px] font-semibold break-words text-center px-1">
                           {plan.name}
                         </div>
@@ -816,11 +827,11 @@ const Pricing: React.FC = () => {
             <div className="mt-6 grid gap-8 sm:grid-cols-2">
               <div>
                 <div className="text-sm uppercase tracking-wider text-white/70 mb-2">Included</div>
-                <ul className="space-y-2">
+                <ul className="space-y-2 list-none">
                   {current.features.map((f, i) => (
                     <li key={i} className="flex items-start gap-3">
-                      <span className="mt-1 h-2 w-2 rounded-full bg-emerald-300" />
-                      <span>{f}</span>
+                      <span className="mt-1 h-2 w-2 rounded-full bg-emerald-300 flex-shrink-0" />
+                      <span className="leading-relaxed">{f}</span>
                     </li>
                   ))}
                 </ul>
@@ -830,46 +841,44 @@ const Pricing: React.FC = () => {
                 {current.notIncluded && current.notIncluded.length > 0 && (
                   <>
                     <div className="text-sm uppercase tracking-wider text-white/70 mb-2">Not Included</div>
-                    <ul className="space-y-2">
+                    <ul className="space-y-2 list-none">
                       {current.notIncluded.map((f, i) => (
                         <li key={i} className="flex items-start gap-3">
-                          <span className="mt-1 h-2 w-2 rounded-full bg-rose-300" />
-                          <span>{f}</span>
+                          <span className="mt-1 h-2 w-2 rounded-full bg-rose-300 flex-shrink-0" />
+                          <span className="leading-relaxed">{f}</span>
                         </li>
                       ))}
                     </ul>
                   </>
                 )}
 
-                {current.addOns && current.addOns.length > 0 && (
-                  <div className="mt-6">
-                    <div className="text-sm uppercase tracking-wider text-white/70 mb-2">Add Ons</div>
-                    <ul className="space-y-2">
-                      {current.addOns.map((f, i) => (
-                        <li key={i} className="flex items-start gap-3">
-                          <span className="mt-1 h-2 w-2 rounded-full bg-amber-300" />
-                          <span>{f}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                {/* Removed plan-specific Add Ons to avoid duplicates.
+                    Universal add-ons appear in the section below. */}
               </div>
             </div>
 
             <div className="mt-8 pt-6 border-t border-white/10">
               <div className="text-sm uppercase tracking-wider text-white/70 mb-2">Universal Add Ons</div>
-              <ul className="grid sm:grid-cols-2 gap-2">
+              <ul className="grid sm:grid-cols-2 gap-2 list-none">
                 <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-white/70" /> Extra Page - $50 per page</li>
                 <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-white/70" /> Logo Design - $75 one time</li>
-                <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-white/70" /> Hosting Only - $30 per month</li>
-                <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-white/70" /> Rush Delivery (48 hours) - +$100</li>
+                <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-white/70" /> Hosting Only for Custom builds - $30 per month</li>
+                <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-white/70" /> Rush Delivery 48 hours - +$100</li>
               </ul>
               <div className="mt-4 text-xs text-white/60">Large ecommerce and complex data migrations require a quote.</div>
             </div>
           </div>
         </div>
       </main>
+
+      {/* subtle scroll indicator */}
+      {showScrollHint && (
+        <div className="pointer-events-none fixed bottom-6 left-0 right-0 flex justify-center z-40">
+          <div className="px-3 py-2 rounded-full bg-black/30 backdrop-blur text-white/80 text-sm animate-bounce shadow-[0_0_20px_rgba(255,255,255,0.15)]">
+            Scroll for more ↓
+          </div>
+        </div>
+      )}
     </div>
   );
 };
