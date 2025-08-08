@@ -5,10 +5,10 @@ import { motion, AnimatePresence } from "framer-motion";
 
 /**
  * /pricing — Solar orbit layout with CRAZY neon galaxy background
- * Notes:
- * - LocalHeader is scoped to this file only (your other pages keep their header).
- * - Dark mode forced; no theme toggle.
- * - Mobile carousel auto-slides, pauses on interaction or when scrolled out of view.
+ * - Local header (logo glow) only on this page
+ * - Dark mode forced; no light toggle
+ * - Mobile auto-slide w/ pause on interaction or when out of view
+ * - FIX: planets positioned via polar math (cos/sin) so they don't overlap
  */
 
 /* ----------------------------- TYPES & DATA ----------------------------- */
@@ -499,7 +499,7 @@ const Starfield: React.FC = () => (
 /* ---------------------------------- PAGE --------------------------------- */
 
 const Pricing: React.FC = () => {
-  // force dark (site-wide theme remains untouched elsewhere)
+  // force dark (site-wide theme untouched elsewhere)
   useEffect(() => {
     document.documentElement.classList.add("dark");
     try { localStorage.setItem("theme", "dark"); } catch {}
@@ -591,13 +591,13 @@ const Pricing: React.FC = () => {
     () => { pauseForInteraction(); prev(); }
   );
 
+  // planets exclude focused
   const planets = orderedPlans.map((p, i) => ({ plan: p, i })).filter(({ i }) => i !== index);
 
   const angleForSlot = (slotIndex: number, totalSlots: number) => (360 / totalSlots) * slotIndex;
 
   return (
     <div className="relative min-h-screen text-white overflow-hidden">
-      {/* Page-only header with glow */}
       <LocalHeader />
 
       {/* background */}
@@ -711,15 +711,14 @@ const Pricing: React.FC = () => {
                 animation: "orbit-rotate 30s linear infinite",
                 boxShadow: "inset 0 0 40px rgba(0,255,255,0.25), 0 0 120px rgba(99,102,241,0.18)",
                 border: "1px solid rgba(255,255,255,0.08)",
-                background:
-                  "radial-gradient(circle at center, rgba(0,255,255,0.12) 0%, rgba(0,0,0,0) 55%)",
+                background: "radial-gradient(circle at center, rgba(0,255,255,0.12) 0%, rgba(0,0,0,0) 55%)",
               }}
             />
 
             {/* Center orb */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div
-                className={`relative w-[56vw] max-w-[480px] aspect-square rounded-full bg-white/5 backdrop-blur-sm border ${
+                className={`relative w-[52vw] max-w-[440px] aspect-square rounded-full bg-white/5 backdrop-blur-sm border ${
                   current.spotlightColor || "ring-cyan-400"
                 } ring-2 ring-inset border-white/10 shadow-[0_0_60px_rgba(0,255,255,0.28)]`}
               >
@@ -742,27 +741,31 @@ const Pricing: React.FC = () => {
               </div>
             </div>
 
-            {/* Plan planets — more spacing (radius 60%), smaller chips */}
+            {/* Plan planets — FIXED polar positioning (no overlap) */}
             <div className="absolute inset-0" style={{ animation: "orbit-rotate 30s linear infinite" }}>
               {planets.map(({ plan, i: planIndex }, slot) => {
                 const totalSlots = planets.length;
                 const angle = angleForSlot(slot, totalSlots);
-                const radius = "60%";
+                const radius = "44%"; // percent of container size (via calc with cos/sin)
                 return (
                   <button
                     key={plan.key}
                     onClick={() => setIndex(planIndex)}
-                    className="absolute left-1/2 top-1/2"
-                    style={{ transform: `translate(-50%, -50%) rotate(${angle}deg) translate(${radius})` }}
+                    className="absolute -translate-x-1/2 -translate-y-1/2"
+                    style={{
+                      left: `calc(50% + ${radius} * cos(${angle}deg))`,
+                      top: `calc(50% + ${radius} * sin(${angle}deg))`,
+                    }}
                     title={plan.name}
                     aria-label={plan.name}
                   >
                     <div
-                      className={`relative w-24 h-24 rounded-full bg-white/10 border border-white/15 backdrop-blur-sm ring-2 ${
+                      className={`relative w-20 h-20 rounded-full bg-white/10 border border-white/15 backdrop-blur-sm ring-2 ${
                         plan.spotlightColor || "ring-cyan-400"
                       } hover:scale-105 transition-transform shadow-[0_0_30px_rgba(255,255,255,0.18)]`}
                     >
                       <div className="absolute inset-0 rounded-full bg-black/30" />
+                      {/* keep labels upright as the orbit rotates */}
                       <div
                         className="absolute inset-0 flex flex-col items-center justify-center text-center px-2"
                         style={{ animation: "orbit-rotate-reverse 30s linear infinite" }}
