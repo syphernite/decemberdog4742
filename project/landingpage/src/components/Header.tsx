@@ -25,7 +25,8 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
     { label: 'Home', path: '/' },
     { label: 'Services', path: '/services' },
     { label: 'About', path: '/about' },
-    { label: 'Our Mission', path: '/why-we-exist' }, // ✅ NEW LINK
+    { label: 'Our Mission', path: '/why-we-exist' },
+    { label: 'Our Work', path: '/demos' }, // ← NEW: links to demo showcase
     { label: 'Contact', path: '/contact' },
   ];
 

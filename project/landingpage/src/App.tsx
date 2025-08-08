@@ -11,6 +11,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import WhyWeCreatedBuilt4You from './pages/WhyWeExist';
 import SolarPricing from './pages/SolarPricing';
+import DemoShowcase from './pages/DemoShowcase'; // ← New import
 
 function ScrollToTopOnRouteChange() {
   const location = useLocation();
@@ -33,6 +34,7 @@ function App() {
           <Route path="privacy-policy" element={<PrivacyPolicy />} />
           <Route path="terms-of-service" element={<TermsOfService />} />
           <Route path="why-we-exist" element={<WhyWeCreatedBuilt4You />} />
+          <Route path="demos" element={<DemoShowcase />} /> {/* ← New route */}
         </Route>
         <Route path="/pricing" element={<SolarPricing />} />
       </Routes>
