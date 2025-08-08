@@ -591,19 +591,15 @@ const Pricing: React.FC = () => {
   // scroll hint (shows until user scrolls a bit or reaches bottom)
   const [showScrollHint, setShowScrollHint] = useState(true);
   useEffect(() => {
-    const update = () => {
-      const doc = document.documentElement;
-      const scrolled = window.scrollY || doc.scrollTop || 0;
-      const atBottom = window.innerHeight + scrolled >= doc.scrollHeight - 16;
-      setShowScrollHint(scrolled < 120 && !atBottom);
+    const onScroll = () => {
+      const scrolledPast = window.scrollY > 120;
+      const nearBottom =
+        window.innerHeight + window.scrollY >= (document.documentElement.scrollHeight || document.body.scrollHeight) - 120;
+      setShowScrollHint(!(scrolledPast || nearBottom));
     };
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    return () => {
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
@@ -870,41 +866,37 @@ const Pricing: React.FC = () => {
                 <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-white/70" /> Rush Delivery 48 hours - +$100</li>
               </ul>
               <div className="mt-4 text-xs text-white/60">Large ecommerce and complex data migrations require a quote.</div>
+
+              {/* MOBILE-ONLY: keep top selection in sync when tapping Next/Previous down here */}
+              <div className="mt-6 flex sm:hidden items-center justify-end gap-2">
+                <button
+                  onClick={() => { pauseForInteraction(); prev(); }}
+                  className="px-3 py-2 rounded-lg border border-white/15 bg-white/10 hover:bg-white/20"
+                  title="Previous"
+                >
+                  Previous
+                </button>
+                <button
+                  onClick={() => { pauseForInteraction(); next(); }}
+                  className="px-3 py-2 rounded-lg border border-white/15 bg-white/10 hover:bg-white/20"
+                  title="Next"
+                >
+                  Next
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </main>
 
-      {/* subtle scroll indicator (auto-hides after slight scroll or near bottom) */}
-      <AnimatePresence>
-        {showScrollHint && (
-          <motion.div
-            key="scrollhint"
-            className="pointer-events-none fixed bottom-6 left-0 right-0 flex justify-center z-[60]"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            transition={{ duration: 0.35 }}
-            aria-hidden="true"
-          >
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900/60 backdrop-blur-md ring-1 ring-white/10 shadow-lg">
-              <span className="text-sm text-white/80">Scroll</span>
-              <motion.svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                className="text-white/80"
-                animate={{ y: [0, 6, 0] }}
-                transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-              >
-                <path d="M6 9l6 6 6-6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </motion.svg>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* subtle scroll indicator */}
+      {showScrollHint && (
+        <div className="pointer-events-none fixed bottom-6 left-0 right-0 flex justify-center z-40">
+          <div className="px-3 py-2 rounded-full bg-black/30 backdrop-blur text-white/80 text-sm animate-bounce shadow-[0_0_20px_rgba(255,255,255,0.15)]">
+            Scroll for more ↓
+          </div>
+        </div>
+      )}
     </div>
   );
 };
