@@ -4,12 +4,12 @@ import { Menu, X, Code } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 /**
- * /pricing — Solar orbit layout with neon galaxy background
- * - Local header (logo glow) only on this page
- * - Dark mode forced; no light toggle
- * - Mobile auto-slide w/ pause on interaction or when out of view
- * - Tighter orbit, readable larger planets, outer orbit ring removed
- * - Performance tuned: removed shooting stars, throttled parallax, reduced heavy effects
+ * /pricing — Solar orbit layout (performance-optimized)
+ * - Local header with “Our Work” link
+ * - Static star background (no animated gradients)
+ * - Single orbit animation; removed per-planet spin
+ * - Counter-rotate labels to stay upright only once
+ * - Removed mouse parallax and heavy starfield layers
  */
 
 /* ----------------------------- TYPES & DATA ----------------------------- */
@@ -25,7 +25,7 @@ type Plan = {
   shortBullets: string[];
   features: string[];
   notIncluded?: string[];
-  addOns?: string[]; // kept in data, but we won't render plan-specific add-ons in Details anymore
+  addOns?: string[];
   spotlightColor?: string;
   cta?: { label: string; href: string };
 };
@@ -208,25 +208,28 @@ const ORDER_KEYS = [
   "custom",
 ];
 
-/* ------------------------------- UTILITIES ------------------------------ */
+/* --------------------------- SIMPLE STATIC BG --------------------------- */
 
-function useSwipe(onLeft: () => void, onRight: () => void) {
-  const startX = useRef<number | null>(null);
-  const startY = useRef<number | null>(null);
-  function onTouchStart(e: React.TouchEvent) {
-    startX.current = e.changedTouches[0].clientX;
-    startY.current = e.changedTouches[0].clientY;
-  }
-  function onTouchEnd(e: React.TouchEvent) {
-    if (startX.current == null || startY.current == null) return;
-    const dx = e.changedTouches[0].clientX - startX.current;
-    const dy = e.changedTouches[0].clientY - startY.current;
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) (dx < 0 ? onLeft : onRight)();
-    startX.current = null;
-    startY.current = null;
-  }
-  return { onTouchStart, onTouchEnd };
-}
+const BG_URL =
+  // Prefer your provided stars image; update path if you place it elsewhere:
+  "/assets/pricing-stars.jpg"; // fallback-safe; leave as-is if you don't add the file
+
+const StaticSpaceBG: React.FC = () => (
+  <>
+    <div
+      className="absolute inset-0 -z-10"
+      style={{
+        backgroundColor: "#060616",
+        backgroundImage: `url('${BG_URL}')`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    />
+    {/* vignette for depth */}
+    <div className="absolute inset-0 -z-10 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_60%,rgba(0,0,0,0.65)_100%)]" />
+  </>
+);
 
 /* ------------------------- LOCAL PAGE-ONLY HEADER ------------------------ */
 
@@ -246,8 +249,12 @@ const LocalHeader: React.FC = () => {
     { label: "Services", path: "/services" },
     { label: "About", path: "/about" },
     { label: "Our Mission", path: "/why-we-exist" },
+    // NEW: Our Work link
+    { label: "Our Work", path: "https://built4you.org/#/demos" },
     { label: "Contact", path: "/contact" },
   ];
+
+  const isExternal = (p: string) => p.startsWith("http");
 
   return (
     <motion.header
@@ -259,7 +266,6 @@ const LocalHeader: React.FC = () => {
       transition={{ duration: 0.6, ease: "easeOut" }}
       style={{ willChange: "transform" }}
     >
-      {/* logo glow */}
       <style>{`
         @keyframes logoPulse { 0%{opacity:.35;transform:scale(1)} 50%{opacity:.85;transform:scale(1.07)} 100%{opacity:.35;transform:scale(1)} }
         @keyframes logoOrbit { 0%{transform:rotate(0)} 100%{transform:rotate(360deg)} }
@@ -299,26 +305,36 @@ const LocalHeader: React.FC = () => {
           </Link>
 
           <nav className="hidden lg:flex items-center space-x-1">
-            {navItems.map((item) => (
-              <Link
-                key={item.label}
-                to={item.path}
-                className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
-                  location.pathname === item.path
-                    ? "text-emerald-400 bg-emerald-900/20"
-                    : "text-slate-300 hover:text-emerald-400 hover:bg-slate-800/50"
-                }`}
-              >
-                {item.label}
-                {location.pathname === item.path && (
-                  <motion.div
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-emerald-600 to-blue-600 rounded-full"
-                    layoutId="activeTab"
-                    transition={{ duration: 0.3 }}
-                  />
-                )}
-              </Link>
-            ))}
+            {navItems.map((item) =>
+              isExternal(item.path) ? (
+                <a
+                  key={item.label}
+                  href={item.path}
+                  className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-300 text-slate-300 hover:text-emerald-400 hover:bg-slate-800/50`}
+                >
+                  {item.label}
+                </a>
+              ) : (
+                <Link
+                  key={item.label}
+                  to={item.path}
+                  className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                    location.pathname === item.path
+                      ? "text-emerald-400 bg-emerald-900/20"
+                      : "text-slate-300 hover:text-emerald-400 hover:bg-slate-800/50"
+                  }`}
+                >
+                  {item.label}
+                  {location.pathname === item.path && (
+                    <motion.div
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-emerald-600 to-blue-600 rounded-full"
+                      layoutId="activeTab"
+                      transition={{ duration: 0.3 }}
+                    />
+                  )}
+                </Link>
+              )
+            )}
           </nav>
 
           <div className="lg:hidden">
@@ -356,17 +372,27 @@ const LocalHeader: React.FC = () => {
               <div className="px-4 py-6 space-y-2">
                 {navItems.map((item, i) => (
                   <motion.div key={item.label} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.06 }}>
-                    <Link
-                      to={item.path}
-                      onClick={() => setIsMenuOpen(false)}
-                      className={`block px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
-                        location.pathname === item.path
-                          ? "text-emerald-400 bg-emerald-900/20"
-                          : "text-slate-300 hover:text-emerald-400 hover:bg-slate-800"
-                      }`}
-                    >
-                      {item.label}
-                    </Link>
+                    {isExternal(item.path) ? (
+                      <a
+                        href={item.path}
+                        onClick={() => setIsMenuOpen(false)}
+                        className="block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-slate-300 hover:text-emerald-400 hover:bg-slate-800"
+                      >
+                        {item.label}
+                      </a>
+                    ) : (
+                      <Link
+                        to={item.path}
+                        onClick={() => setIsMenuOpen(false)}
+                        className={`block px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
+                          location.pathname === item.path
+                            ? "text-emerald-400 bg-emerald-900/20"
+                            : "text-slate-300 hover:text-emerald-400 hover:bg-slate-800"
+                        }`}
+                      >
+                        {item.label}
+                      </Link>
+                    )}
                   </motion.div>
                 ))}
               </div>
@@ -377,101 +403,6 @@ const LocalHeader: React.FC = () => {
     </motion.header>
   );
 };
-
-/* --------------------------- BACKGROUND (PERF-TUNED) -------------------------- */
-
-const Starfield: React.FC = () => (
-  <>
-    <style>{`
-      :root { --mx: 0px; --my: 0px; }
-      @keyframes twinkleA { 0%{opacity:1;transform:translateY(0)}50%{opacity:.6;transform:translateY(-.6px)}100%{opacity:1;transform:translateY(0)} }
-      @keyframes twinkleB { 0%{opacity:.9;transform:translateY(0)}50%{opacity:.5;transform:translateY(.6px)}100%{opacity:.9;transform:translateY(0)} }
-      @keyframes auroraShift { 0%{background-position:0% 50%,100% 50%;opacity:.55}50%{background-position:100% 50%,0% 50%;opacity:.85}100%{background-position:0% 50%,100% 50%;opacity:.55} }
-      @keyframes pulseNebula { 0%{opacity:.22;transform:scale(1)}50%{opacity:.6;transform:scale(1.04)}100%{opacity:.22;transform:scale(1)} }
-      @keyframes shimmerNoise { 0% { opacity:.15; } 50% { opacity:.35; } 100% { opacity:.15; } }
-      @keyframes orbit-rotate { 0%{transform:rotate(0)}100%{transform:rotate(360deg)} }
-      @keyframes orbit-rotate-reverse { 0%{transform:rotate(0)}100%{transform:rotate(-360deg)} }
-      @media (prefers-reduced-motion: reduce) {
-        .anim { animation: none !important; }
-        .parallax { transform: none !important; }
-      }
-    `}</style>
-
-    <div className="absolute inset-0 bg-[#02020a]" />
-
-    {/* stars */}
-    <div
-      className="absolute inset-0 anim parallax"
-      style={{
-        animation: "twinkleA 9s ease-in-out infinite",
-        backgroundImage: `
-          radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,0.9), transparent 60%),
-          radial-gradient(1.7px 1.7px at 25% 75%, rgba(255,255,255,0.75), transparent 60%),
-          radial-gradient(1.5px 1.5px at 80% 15%, rgba(255,255,255,0.8), transparent 60%),
-          radial-gradient(2.3px 2.3px at 65% 60%, rgba(255,255,255,0.9), transparent 60%),
-          radial-gradient(1.3px 1.3px at 45% 45%, rgba(255,255,255,0.65), transparent 60%),
-          radial-gradient(1.1px 1.1px at 92% 42%, rgba(255,255,255,0.65), transparent 60%)`,
-        backgroundRepeat: "no-repeat",
-        filter: "drop-shadow(0 0 2px rgba(255,255,255,0.55))",
-        transform: "translate3d(calc(var(--mx) * 0.06), calc(var(--my) * 0.06), 0)",
-        willChange: "transform",
-      }}
-    />
-    <div
-      className="absolute inset-0 anim parallax"
-      style={{
-        animation: "twinkleB 11s ease-in-out infinite",
-        backgroundImage: `
-          radial-gradient(2.8px 2.8px at 15% 35%, rgba(255,255,255,0.9), transparent 60%),
-          radial-gradient(2.4px 2.4px at 70% 25%, rgba(255,255,255,0.85), transparent 60%),
-          radial-gradient(2.2px 2.2px at 30% 85%, rgba(255,255,255,0.85), transparent 60%),
-          radial-gradient(1.9px 1.9px at 88% 65%, rgba(255,255,255,0.8), transparent 60%)`,
-        backgroundRepeat: "no-repeat",
-        transform: "translate3d(calc(var(--mx) * 0.1), calc(var(--my) * 0.1), 0)",
-        willChange: "transform",
-      }}
-    />
-
-    {/* shimmer + aurora + nebula */}
-    <div
-      className="absolute inset-0 anim pointer-events-none"
-      style={{
-        animation: "shimmerNoise 7.5s ease-in-out infinite",
-        backgroundImage:
-          "repeating-conic-gradient(from 0deg, rgba(255,255,255,0.025) 0deg 10deg, transparent 10deg 20deg)",
-        mixBlendMode: "screen",
-      }}
-    />
-    <div
-      className="absolute inset-0 anim parallax"
-      style={{
-        background:
-          "radial-gradient(1000px 520px at 8% 18%, rgba(0,255,220,0.26), transparent 60%), radial-gradient(900px 500px at 85% 28%, rgba(170,100,255,0.30), transparent 60%), radial-gradient(900px 500px at 40% 85%, rgba(0,160,255,0.26), transparent 60%)",
-        mixBlendMode: "screen",
-        animation: "auroraShift 28s ease-in-out infinite",
-        transform: "translate3d(calc(var(--mx) * 0.035), calc(var(--my) * 0.035), 0)",
-        willChange: "transform",
-      }}
-    />
-    <div
-      className="absolute inset-0 anim parallax"
-      style={{
-        background:
-          "radial-gradient(650px 650px at 70% 18%, rgba(255,0,200,0.22), transparent 72%), radial-gradient(720px 720px at 18% 80%, rgba(0,120,255,0.22), transparent 72%)",
-        mixBlendMode: "screen",
-        filter: "blur(1.5px)",
-        animation: "pulseNebula 12s ease-in-out infinite",
-        transform: "translate3d(calc(var(--mx) * 0.018), calc(var(--my) * 0.018), 0)",
-        willChange: "transform",
-      }}
-    />
-
-    {/* NOTE: Shooting stars removed for performance */}
-    {/* color spots + vignette */}
-    <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_55%_10%,rgba(56,189,248,0.3),transparent_62%),radial-gradient(circle_at_82%_24%,rgba(168,85,247,0.3),transparent_62%),radial-gradient(circle_at_20%_78%,rgba(34,197,94,0.22),transparent_62%)]" />
-    <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_60%,rgba(0,0,0,0.58)_100%)]" />
-  </>
-);
 
 /* ---------------------------------- PAGE --------------------------------- */
 
@@ -500,36 +431,13 @@ const Pricing: React.FC = () => {
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  // mouse parallax control (throttled with rAF)
-  useEffect(() => {
-    let raf = 0;
-    const max = 20; // reduce movement range for less layout work
-    const handle = (e: MouseEvent) => {
-      if (raf) return;
-      raf = requestAnimationFrame(() => {
-        raf = 0;
-        const cx = window.innerWidth / 2;
-        const cy = window.innerHeight / 2;
-        const mx = Math.max(-max, Math.min(max, ((e.clientX - cx) / cx) * max));
-        const my = Math.max(-max, Math.min(max, ((e.clientY - cy) / cy) * max));
-        document.documentElement.style.setProperty("--mx", `${mx}px`);
-        document.documentElement.style.setProperty("--my", `${my}px`);
-      });
-    };
-    if (!isMobile) window.addEventListener("mousemove", handle, { passive: true });
-    return () => {
-      if (!isMobile) window.removeEventListener("mousemove", handle as any);
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, [isMobile]);
-
   const len = orderedPlans.length;
   const current = orderedPlans[index];
 
   const next = () => setIndex((i) => (i + 1) % len);
   const prev = () => setIndex((i) => (i - 1 + len) % len);
 
-  // mobile auto-slide with pause logic
+  // mobile auto-slide (unchanged)
   const carouselRef = useRef<HTMLDivElement | null>(null);
   const inViewRef = useRef<boolean>(true);
   const [inView, setInView] = useState(true);
@@ -585,21 +493,7 @@ const Pricing: React.FC = () => {
     }, ms) as unknown as number;
   };
 
-  const swipe = useSwipe(
-    () => {
-      pauseForInteraction();
-      next();
-    },
-    () => {
-      pauseForInteraction();
-      prev();
-    }
-  );
-
-  const planets = orderedPlans.map((p, i) => ({ plan: p, i })).filter(({ i }) => i !== index);
-  const angleForSlot = (slotIndex: number, totalSlots: number) => (360 / totalSlots) * slotIndex;
-
-  // scroll hint (shows until user scrolls a bit or reaches bottom)
+  // scroll hint
   const [showScrollHint, setShowScrollHint] = useState(true);
   useEffect(() => {
     const onScroll = () => {
@@ -613,14 +507,22 @@ const Pricing: React.FC = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Reduced-motion support: pause orbit if user prefers it
+  const [animEnabled, setAnimEnabled] = useState(true);
+  useEffect(() => {
+    const q = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setAnimEnabled(!q.matches);
+    update();
+    q.addEventListener?.("change", update);
+    return () => q.removeEventListener?.("change", update);
+  }, []);
+
   return (
     <div className="relative min-h-screen text-white overflow-hidden">
       <LocalHeader />
 
-      {/* background */}
-      <div className="absolute inset-0 -z-10" style={{ willChange: "transform", transform: "translateZ(0)" }}>
-        <Starfield />
-      </div>
+      {/* lightweight background */}
+      <StaticSpaceBG />
 
       <main className="pt-24">
         {/* top controls */}
@@ -677,16 +579,13 @@ const Pricing: React.FC = () => {
           </div>
         )}
 
-        {/* MOBILE CAROUSEL */}
+        {/* MOBILE CAROUSEL (unchanged visuals) */}
         <div className="relative z-0 sm:hidden px-4 pb-6">
           <div
             className="w-full"
             ref={carouselRef}
-            onTouchStart={(e) => {
-              pauseForInteraction();
-              swipe.onTouchStart(e);
-            }}
-            onTouchEnd={(e) => swipe.onTouchEnd(e)}
+            onTouchStart={() => pauseForInteraction()}
+            onTouchEnd={() => {}}
           >
             <div className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur p-6 shadow-[0_0_30px_rgba(255,255,255,0.08)]">
               <div className="text-xs uppercase tracking-widest text-white/70 mb-2 text-center">In focus</div>
@@ -731,8 +630,13 @@ const Pricing: React.FC = () => {
           </div>
         </div>
 
-        {/* DESKTOP ORBIT */}
+        {/* DESKTOP ORBIT (single animation, lightweight) */}
         <div className="relative z-0 hidden sm:flex items-center justify-center pt-6 pb-8 sm:pb-12">
+          <style>{`
+            @keyframes orbit-rotate { 0%{transform:rotate(0)}100%{transform:rotate(360deg)} }
+            @keyframes orbit-rotate-reverse { 0%{transform:rotate(0)}100%{transform:rotate(-360deg)} }
+          `}</style>
+
           <div className="relative w-[92vw] max-w-[1120px] aspect-square" style={{ willChange: "transform", transform: "translateZ(0)" }}>
             {/* Center orb */}
             <div className="absolute inset-0 flex items-center justify-center">
@@ -760,48 +664,59 @@ const Pricing: React.FC = () => {
               </div>
             </div>
 
-            {/* Plan planets — tighter orbit, larger, spin + readable labels */}
-            <div className="absolute inset-0" style={{ animation: "orbit-rotate 32s linear infinite", willChange: "transform" }}>
-              {planets.map(({ plan, i: planIndex }, slot) => {
-                const totalSlots = planets.length;
-                const angle = angleForSlot(slot, totalSlots);
-                const radius = "34%"; // tight orbit
-                return (
-                  <button
-                    key={plan.key}
-                    onClick={() => setIndex(planIndex)}
-                    className="absolute -translate-x-1/2 -translate-y-1/2"
-                    style={{
-                      left: `calc(50% + ${radius} * cos(${angle}deg))`,
-                      top: `calc(50% + ${radius} * sin(${angle}deg))`,
-                      willChange: "transform",
-                      transform: "translateZ(0)",
-                    }}
-                    title={plan.name}
-                    aria-label={plan.name}
-                  >
-                    <div
-                      className={`relative w-[5.5rem] h-[5.5rem] overflow-hidden rounded-full bg-white/10 border border-white/15 backdrop-blur-sm ring-2 ${
-                        plan.spotlightColor || "ring-cyan-400"
-                      } hover:scale-105 transition-transform shadow-[0_0_24px_rgba(255,255,255,0.14)]`}
-                      style={{ animation: "orbit-rotate 16s linear infinite", willChange: "transform" }} // planet spins
+            {/* Plan planets: only the ORBIT container rotates.
+               Inner label block counter-rotates (same duration) so text stays upright. */}
+            <div
+              className="absolute inset-0"
+              style={{
+                animation: animEnabled ? "orbit-rotate 32s linear infinite" : "none",
+                willChange: "transform",
+              }}
+            >
+              {orderedPlans
+                .map((p, i) => ({ plan: p, i }))
+                .filter(({ i }) => i !== index)
+                .map(({ plan, i: planIndex }, slotIdx, arr) => {
+                  const angle = (360 / arr.length) * slotIdx;
+                  const radius = "34%";
+                  return (
+                    <button
+                      key={plan.key}
+                      onClick={() => setIndex(planIndex)}
+                      className="absolute -translate-x-1/2 -translate-y-1/2"
+                      style={{
+                        left: `calc(50% + ${radius} * cos(${angle}deg))`,
+                        top: `calc(50% + ${radius} * sin(${angle}deg))`,
+                        willChange: "transform",
+                        transform: "translateZ(0)",
+                      }}
+                      title={plan.name}
+                      aria-label={plan.name}
                     >
-                      <div className="absolute inset-0 rounded-full bg-black/30" />
-                      {/* counter-rotate text so it stays upright */}
                       <div
-                        className="absolute inset-0 flex flex-col items-center justify-center text-center px-1 leading-tight"
-                        style={{ animation: "orbit-rotate-reverse 16s linear infinite", willChange: "transform" }}
+                        className={`relative w-[5.5rem] h-[5.5rem] overflow-hidden rounded-full bg-white/10 border border-white/15 backdrop-blur-sm ring-2 ${
+                          plan.spotlightColor || "ring-cyan-400"
+                        } hover:scale-105 transition-transform shadow-[0_0_24px_rgba(255,255,255,0.14)]`}
                       >
-                        <div className="text-[10px] uppercase tracking-wider text-white/70">Plan</div>
-                        <div className="text-[12px] font-semibold break-words text-center px-1">{plan.name}</div>
-                        <div className="text-[11px] text-white/80 text-center">
-                          {plan.price} <span className="opacity-70">{plan.cadence}</span>
+                        <div className="absolute inset-0 rounded-full bg-black/30" />
+                        {/* Counter-rotate text only */}
+                        <div
+                          className="absolute inset-0 flex flex-col items-center justify-center text-center px-1 leading-tight"
+                          style={{
+                            animation: animEnabled ? "orbit-rotate-reverse 32s linear infinite" : "none",
+                            willChange: "transform",
+                          }}
+                        >
+                          <div className="text-[10px] uppercase tracking-wider text-white/70">Plan</div>
+                          <div className="text-[12px] font-semibold break-words text-center px-1">{plan.name}</div>
+                          <div className="text-[11px] text-white/80 text-center">
+                            {plan.price} <span className="opacity-70">{plan.cadence}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </button>
-                );
-              })}
+                    </button>
+                  );
+                })}
             </div>
 
             {/* arrows */}
@@ -875,9 +790,6 @@ const Pricing: React.FC = () => {
                     </ul>
                   </>
                 )}
-
-                {/* Removed plan-specific Add Ons to avoid duplicates.
-                    Universal add-ons appear in the section below. */}
               </div>
             </div>
 
@@ -899,7 +811,7 @@ const Pricing: React.FC = () => {
               </ul>
               <div className="mt-4 text-xs text-white/60">Large ecommerce and complex data migrations require a quote.</div>
 
-              {/* MOBILE-ONLY: keep top selection in sync when tapping Next/Previous down here */}
+              {/* MOBILE-ONLY nav */}
               <div className="mt-6 flex sm:hidden items-center justify-end gap-2">
                 <button
                   onClick={() => {
