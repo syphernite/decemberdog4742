@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState, useEffect } from "react";
-// ⬇️ Change this import if your Header is in a different folder
+// ⬇️ Adjust this path if your Header lives somewhere else
 import Header from "../components/Header";
 
 /**
@@ -12,7 +12,7 @@ import Header from "../components/Header";
  * - Desktop orbit (30s) using rotate→translate (no cos/sin) + counter-rotate labels
  * - Mobile carousel with auto-slide (5s) + swipe
  * - Auto-slide pauses when carousel is off-screen or after user interaction; resumes on return/idle
- * - Uses your site Header (logo, nav, dark mode toggle)
+ * - Forces dark mode (no light mode)
  */
 
 type PlanKind = "core" | "optional" | "one-time" | "custom";
@@ -222,7 +222,7 @@ const PLANS_IN_ORDER: Plan[] = [
   },
 ];
 
-/** Orbit order (matches what you asked for) */
+/** Orbit order (your requested flow) */
 const ORDER_KEYS = [
   "startup",
   "basic",
@@ -382,26 +382,12 @@ const Starfield: React.FC = () => (
 );
 
 const Pricing: React.FC = () => {
-  // ======== DARK MODE for header (matches your site toggle) ========
-  const [darkMode, setDarkMode] = useState<boolean>(() => {
-    try {
-      const saved = localStorage.getItem("theme");
-      if (saved) return saved === "dark";
-      return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-    } catch {
-      return true;
-    }
-  });
+  // ======== Force dark mode (no light mode) ========
   useEffect(() => {
     const root = document.documentElement;
-    if (darkMode) {
-      root.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      root.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [darkMode]);
+    root.classList.add("dark");
+    try { localStorage.setItem("theme", "dark"); } catch {}
+  }, []);
 
   // ======== Plans/order ========
   const orderedPlans = useMemo(
@@ -437,8 +423,8 @@ const Pricing: React.FC = () => {
   const len = orderedPlans.length;
   const current = orderedPlans[index];
 
-  function next() { setIndex((i) => (i + 1) % len); }
-  function prev() { setIndex((i) => (i - 1 + len) % len); }
+  const next = () => setIndex((i) => (i + 1) % len);
+  const prev = () => setIndex((i) => (i - 1 + len) % len);
 
   // ======== Mobile carousel: pause/resume logic ========
   const carouselRef = useRef<HTMLDivElement | null>(null);
@@ -488,12 +474,11 @@ const Pricing: React.FC = () => {
       resumeTimerRef.current = null;
     }
     resumeTimerRef.current = window.setTimeout(() => {
-      // Resume only if carousel is visible
       if (inViewRef.current) setUserInteracting(false);
     }, ms) as unknown as number;
   };
 
-  // Swipe helper (works for both views—mobile matters most)
+  // Swipe helper (mobile focus)
   const swipe = useSwipe(
     () => { pauseForInteraction(); next(); },
     () => { pauseForInteraction(); prev(); }
@@ -502,7 +487,7 @@ const Pricing: React.FC = () => {
   // exclude the focused plan from orbiting planets for desktop
   const planets = orderedPlans.map((p, i) => ({ plan: p, i })).filter(({ i }) => i !== index);
 
-  // utility: compute angle per slot
+  // utility: compute angle per slot (degrees)
   function angleForSlot(slotIndex: number, totalSlots: number) {
     const step = 360 / totalSlots;
     return step * slotIndex;
@@ -510,8 +495,8 @@ const Pricing: React.FC = () => {
 
   return (
     <div className="relative min-h-screen text-white overflow-hidden">
-      {/* Header from your homepage */}
-      <Header darkMode={darkMode} toggleDarkMode={() => setDarkMode((d) => !d)} />
+      {/* Your site header (toggle hidden/ignored in header file) */}
+      <Header darkMode={true} toggleDarkMode={() => {}} />
 
       {/* Galaxy Background */}
       <div className="absolute inset-0 -z-10">
@@ -520,9 +505,9 @@ const Pricing: React.FC = () => {
 
       {/* Content wrapper with top padding (header height ~80px) */}
       <main className="pt-24">
-        {/* Top controls row (legend button + plan buttons on desktop) */}
+        {/* Top controls row */}
         <div className="relative z-10 flex items-center justify-between px-4 sm:px-6 py-2">
-          <div /> {/* spacer to keep header as the only brand on left */}
+          <div /> {/* spacer */}
           <div className="flex items-center gap-3">
             <button
               className="sm:hidden inline-flex items-center px-3 py-2 rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 transition"
@@ -577,8 +562,8 @@ const Pricing: React.FC = () => {
           <div
             className="w-full"
             ref={carouselRef}
-            onTouchStart={() => pauseForInteraction()}
-            {...swipe}
+            onTouchStart={(e) => { pauseForInteraction(); swipe.onTouchStart(e); }}
+            onTouchEnd={(e) => swipe.onTouchEnd(e)}
           >
             <div className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur p-6 shadow-[0_0_40px_rgba(255,255,255,0.10)]">
               <div className="text-xs uppercase tracking-widest text-white/70 mb-2 text-center">
