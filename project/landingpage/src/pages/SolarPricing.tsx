@@ -210,8 +210,7 @@ const ORDER_KEYS = [
 
 /* --------------------------- SIMPLE STATIC BG --------------------------- */
 
-const BG_URL =
-  "/assets/pricing-stars.jpg";
+const BG_URL = "/assets/pricing-stars.jpg";
 
 const StaticSpaceBG: React.FC = () => (
   <>
@@ -661,20 +660,22 @@ const Pricing: React.FC = () => {
               </div>
             </div>
 
-            {/* Plan planets — DO NOT filter out the focused one now */}
+            {/* Plan planets — evenly spaced, centered ring */}
             <div
               className="absolute inset-0"
               style={{
                 animation: animEnabled ? "orbit-rotate 32s linear infinite" : "none",
                 willChange: "transform",
+                transformOrigin: "50% 50%", // ensure perfect center rotation
               }}
             >
               {orderedPlans
                 .map((p, i) => ({ plan: p, i }))
-                // removed: .filter(({ i }) => i !== index)
                 .map(({ plan, i: planIndex }, slotIdx, arr) => {
-                  const angle = (360 / arr.length) * slotIdx;
-                  const radius = "34%";
+                  const total = arr.length;
+                  const startAngle = -90; // start at top (12 o'clock) for visual symmetry
+                  const angle = startAngle + (360 / total) * slotIdx;
+                  const radius = "34%"; // distance from container center to planet center
                   return (
                     <button
                       key={plan.key}
