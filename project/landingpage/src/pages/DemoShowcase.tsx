@@ -12,19 +12,22 @@ import {
 
 /**
  * DemoShowcase (interactive, scrollable previews)
- * - 9 demos (Photography, Barbershop, Detailer, Food Truck, Blue Collar/Trades, Tattoo, Lawn Care, Ecommerce, Influencer/Creator)
- * - Live, scrollable iframes (no full overlay so users can scroll and interact)
- * - “See details” button routes to internal page; “Open Live Demo” opens external URL in a new tab
- * - Lazy-load iframes when cards are in view; graceful fallback if embedding is blocked
+ * - 9 demos (Photography, Barbershop, Detailer, Food Truck, Trades, Tattoo, Landscaping, Ecommerce, Creator)
+ * - Live, scrollable iframes
+ * - Selective “See Pricing” (only where it maps 1:1 nicely)
+ * - “Contact Us” passes query params so Contact page can prefill
+ * - Search includes title, badge, tagline, keywords, features
  */
 
 type Demo = {
   title: string;
   slug: string;
-  externalUrl: string; // live demo URL (can be placeholder for now)
-  internalPath: string; // where your internal page lives (e.g. "/demos/photography")
+  externalUrl: string; // live demo URL (can be placeholder)
   badge?: string;
   tagline?: string;
+  keywords?: string[];
+  features?: string[];
+  pricingPlanKey?: string; // optional: if set, show "See Pricing" CTA -> /pricing?plan=<key>
 };
 
 const DEMOS: Demo[] = [
@@ -32,18 +35,21 @@ const DEMOS: Demo[] = [
   {
     title: "Photography",
     slug: "photography",
-    externalUrl: "https://demos.built4you.org/photography", // replace when ready
-    internalPath: "/demos/photography",
+    externalUrl: "https://built4you.org/photography",
     badge: "Portfolio",
     tagline: "Visual-first galleries with booking.",
+    keywords: ["gallery", "portfolio", "booking", "lightbox", "photographer"],
+    features: ["responsive", "contact form", "seo", "image grid", "hero slideshow"],
   },
   {
     title: "Barbershop",
     slug: "barbershop",
-    externalUrl: "https://demos.built4you.org/barbershop",
-    internalPath: "/demos/barbershop",
+    externalUrl: "https://built4you.org/barbershop",
     badge: "Services",
     tagline: "Appointments, pricing tables, reviews.",
+    keywords: ["barber", "appointments", "pricing", "reviews", "map"],
+    features: ["mobile-first", "contact form", "maps", "social links"],
+    // no pricingPlanKey: not a 1:1 mapping you requested
   },
 
   // Not completed (placeholders for now)
@@ -51,61 +57,68 @@ const DEMOS: Demo[] = [
     title: "Detailer",
     slug: "detailer",
     externalUrl: "https://demos.built4you.org/detailer",
-    internalPath: "/demos/detailer",
     badge: "Auto",
     tagline: "Before/after gallery, service tiers, mobile-first.",
+    keywords: ["auto", "detailing", "before/after", "packages", "mobile"],
+    features: ["gallery", "contact form", "pricing tiers"],
   },
   {
     title: "Food Truck",
     slug: "food-truck",
     externalUrl: "https://demos.built4you.org/food-truck",
-    internalPath: "/demos/food-truck",
     badge: "Hospitality",
     tagline: "Menu, schedule, locations, events.",
+    keywords: ["menu", "events", "schedule", "locations", "truck"],
+    features: ["map", "contact form", "social links"],
+    pricingPlanKey: "basic", // per your instruction: Basic (one page)
   },
   {
     title: "Blue Collar / Trades",
     slug: "trades",
     externalUrl: "https://demos.built4you.org/trades",
-    internalPath: "/demos/trades",
     badge: "Professional",
     tagline: "Trust-building, licensing, quotes, service areas.",
+    keywords: ["plumber", "electrician", "contractor", "quote", "service area"],
+    features: ["contact form", "badges", "testimonials"],
   },
   {
     title: "Tattoo",
     slug: "tattoo",
     externalUrl: "https://demos.built4you.org/tattoo",
-    internalPath: "/demos/tattoo",
     badge: "Portfolio",
     tagline: "Artist profiles, galleries, booking forms.",
+    keywords: ["tattoo", "artists", "portfolio", "booking", "instagram"],
+    features: ["gallery", "contact form", "profiles"],
   },
   {
-    title: "Lawn Care",
-    slug: "lawn-care",
-    externalUrl: "https://demos.built4you.org/lawn-care",
-    internalPath: "/demos/lawn-care",
+    title: "Landscaping",
+    slug: "landscaping",
+    externalUrl: "https://demos.built4you.org/landscaping",
     badge: "Home Services",
     tagline: "Seasonal promos, service plans, before/after.",
+    keywords: ["landscaping", "lawn", "before/after", "seasonal", "services"],
+    features: ["gallery", "contact form", "pricing tiers"],
   },
   {
     title: "Ecommerce",
     slug: "ecommerce",
     externalUrl: "https://demos.built4you.org/ecommerce",
-    internalPath: "/demos/ecommerce",
     badge: "Store",
     tagline: "Products, cart, checkout, promos.",
+    keywords: ["store", "cart", "checkout", "stripe", "shopify"],
+    features: ["products", "search", "filters", "checkout"],
+    pricingPlanKey: "ecom-starter", // 1:1 mapping
   },
   {
     title: "Influencer / Creator",
     slug: "creator",
     externalUrl: "https://demos.built4you.org/creator",
-    internalPath: "/demos/creator",
     badge: "Personal Brand",
     tagline: "Link hub, content, email capture, offers.",
+    keywords: ["creator", "influencer", "newsletter", "links", "offers"],
+    features: ["email capture", "social links", "landing page"],
   },
 ];
-
-/* ------------------------------ Utilities ------------------------------ */
 
 const useInView = (options?: IntersectionObserverInit) => {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -125,15 +138,11 @@ const useInView = (options?: IntersectionObserverInit) => {
   return { ref, inView };
 };
 
-const IFramePreview: React.FC<{
-  url: string;
-  interactiveHint?: boolean;
-}> = ({ url, interactiveHint = true }) => {
+const IFramePreview: React.FC<{ url: string }> = ({ url }) => {
   const { ref, inView } = useInView();
   const [loaded, setLoaded] = useState(false);
   const [blocked, setBlocked] = useState(false);
 
-  // If we don't complete loading in time (CSP / X-Frame-Options), show fallback UI
   useEffect(() => {
     if (!inView) return;
     const t = setTimeout(() => {
@@ -147,16 +156,11 @@ const IFramePreview: React.FC<{
       ref={ref}
       className="relative rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur"
     >
-      {/* Top gradient strip to soften hard edges with bright sites */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-slate-900/15 to-transparent z-10" />
-
-      {/* “Interactive” hint – does not block scrolling/clicks */}
-      {interactiveHint && (
-        <div className="pointer-events-none absolute right-3 top-3 z-20 inline-flex items-center gap-1.5 rounded-full bg-slate-900/60 text-[11px] text-white/90 px-2 py-1 backdrop-blur">
-          <Info className="h-3.5 w-3.5" />
-          Live preview
-        </div>
-      )}
+      <div className="pointer-events-none absolute right-3 top-3 z-20 inline-flex items-center gap-1.5 rounded-full bg-slate-900/60 text-[11px] text-white/90 px-2 py-1 backdrop-blur">
+        <Info className="h-3.5 w-3.5" />
+        Live preview
+      </div>
 
       {!inView ? (
         <div className="h-[520px] w-full flex items-center justify-center">
@@ -183,7 +187,6 @@ const IFramePreview: React.FC<{
             loading="lazy"
             className="h-[520px] w-full relative z-0"
             onLoad={() => setLoaded(true)}
-            // Allow scroll/interaction while keeping it safe
             sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-popups"
           />
         </>
@@ -192,19 +195,32 @@ const IFramePreview: React.FC<{
   );
 };
 
-/* --------------------------------- Page --------------------------------- */
-
 const DemoShowcase: React.FC = () => {
-  const navigate = useNavigate();
   const [query, setQuery] = useState("");
 
-  const filtered = DEMOS.filter((d) =>
-    [d.title, d.badge, d.tagline].filter(Boolean).join(" ").toLowerCase().includes(query.toLowerCase())
-  );
+  const filtered = DEMOS.filter((d) => {
+    const haystack = [
+      d.title,
+      d.badge,
+      d.tagline,
+      ...(d.keywords || []),
+      ...(d.features || []),
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+    return haystack.includes(query.toLowerCase());
+  });
 
-  const go = (path: string) => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    navigate(path);
+  const pricingURLFor = (demo: Demo) =>
+    demo.pricingPlanKey ? `/pricing?plan=${encodeURIComponent(demo.pricingPlanKey)}` : null;
+
+  const contactURLFor = (demo: Demo) => {
+    const params = new URLSearchParams();
+    params.set("demo", demo.slug);
+    if (demo.pricingPlanKey) params.set("plan", demo.pricingPlanKey);
+    params.set("source", "demos");
+    return `/contact?${params.toString()}`;
   };
 
   return (
@@ -216,7 +232,7 @@ const DemoShowcase: React.FC = () => {
             Demo Showcase
           </h1>
           <p className="max-w-2xl text-base sm:text-lg text-gray-600 dark:text-gray-300">
-            Live, scrollable previews. Click a card’s buttons to view details or open the live demo in a new tab.
+            Live, scrollable previews. Use the CTAs to see pricing (where it applies) or contact us with details prefilled.
           </p>
 
           {/* Search */}
@@ -229,7 +245,7 @@ const DemoShowcase: React.FC = () => {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search industry, title, features..."
+                placeholder="Search industry, title, features (e.g., bookings, Stripe, gallery)..."
                 className="w-full pl-9 pr-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur text-sm outline-none focus:ring-2 focus:ring-emerald-500"
               />
             </div>
@@ -279,23 +295,44 @@ const DemoShowcase: React.FC = () => {
               </div>
 
               {/* Actions */}
-              <div className="px-4 pb-4 pt-3 flex items-center justify-between">
-                <button
-                  onClick={() => go(d.internalPath)}
-                  className="inline-flex items-center gap-2 text-sm font-medium text-indigo-700 dark:text-indigo-300 hover:underline"
-                >
-                  See details <ArrowRight className="h-4 w-4" />
-                </button>
-
+              <div className="px-4 pb-4 pt-3 flex items-center justify-between flex-wrap gap-3">
                 <a
                   href={d.externalUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                  className="inline-flex items-center gap-1.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                   title="Open the live demo in a new tab"
                 >
                   Open Live Demo <ExternalLink className="h-4 w-4" />
                 </a>
+
+                <div className="flex items-center gap-3 ml-auto">
+                  {/* Selective pricing button (only when pricingPlanKey exists) */}
+                  {pricingURLFor(d) && (
+                    <Link
+                      to={pricingURLFor(d)!}
+                      className="inline-flex items-center gap-2 text-sm font-medium text-indigo-700 dark:text-indigo-300 hover:underline"
+                      title={
+                        d.pricingPlanKey === "basic"
+                          ? "See Pricing (Basic • 1 page)"
+                          : "See Pricing"
+                      }
+                    >
+                      See Pricing
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  )}
+
+                  {/* Contact button always present; pre-fills form via query params */}
+                  <Link
+                    to={contactURLFor(d)}
+                    className="inline-flex items-center gap-2 text-sm font-medium text-emerald-700 dark:text-emerald-300 hover:underline"
+                    title="Contact us with this demo prefilled"
+                  >
+                    Contact Us
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
               </div>
             </motion.article>
           ))}
