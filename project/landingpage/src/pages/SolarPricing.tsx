@@ -1,11 +1,14 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef, useState, useEffect } from "react";
 
 /**
  * Route: /pricing
  * Stack: React + Tailwind
  * Single-file drop in. No new files created.
  *
- * Changes: Neon glow space background in Starfield
+ * Adds:
+ * - Slow elegant desktop orbit (30s revolution)
+ * - Mobile carousel with auto-slide (5s) + swipe
+ * - Neon galaxy starfield (animated stars, aurora, nebula)
  */
 
 type PlanKind = "core" | "optional" | "one-time" | "custom";
@@ -261,6 +264,10 @@ const Starfield: React.FC = () => (
         50% { transform: translate3d(2%, 2%, 0); }
         100% { transform: translate3d(-2%, -2%, 0); }
       }
+      @keyframes orbit-rotate {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
 
       /* star layers */
       .twinkle::before, .twinkle::after {
@@ -268,19 +275,19 @@ const Starfield: React.FC = () => (
         position: absolute;
         inset: 0;
         background-image:
-          radial-gradient(2.2px 2.2px at 18% 30%, rgba(255,255,255,0.95), transparent 62%),
-          radial-gradient(1.8px 1.8px at 82% 18%, rgba(255,255,255,0.9), transparent 60%),
-          radial-gradient(1.6px 1.6px at 62% 74%, rgba(255,255,255,0.8), transparent 58%),
-          radial-gradient(2.6px 2.6px at 28% 78%, rgba(255,255,255,0.95), transparent 60%),
-          radial-gradient(1.4px 1.4px at 48% 48%, rgba(255,255,255,0.7), transparent 60%),
+          radial-gradient(2.4px 2.4px at 18% 30%, rgba(255,255,255,0.95), transparent 62%),
+          radial-gradient(2px 2px at 82% 18%, rgba(255,255,255,0.9), transparent 60%),
+          radial-gradient(1.8px 1.8px at 62% 74%, rgba(255,255,255,0.85), transparent 58%),
+          radial-gradient(2.8px 2.8px at 28% 78%, rgba(255,255,255,0.95), transparent 60%),
+          radial-gradient(1.6px 1.6px at 48% 48%, rgba(255,255,255,0.8), transparent 60%),
           radial-gradient(1.2px 1.2px at 12% 64%, rgba(255,255,255,0.7), transparent 60%),
           radial-gradient(1.2px 1.2px at 92% 42%, rgba(255,255,255,0.7), transparent 60%);
         animation: twinkle 7s infinite ease-in-out;
-        filter: drop-shadow(0 0 2px rgba(255,255,255,0.5));
+        filter: drop-shadow(0 0 2px rgba(255,255,255,0.6));
       }
       .twinkle::after {
         animation-delay: 3.5s;
-        opacity: 0.7;
+        opacity: 0.75;
       }
 
       /* neon aurora bands that shift left to right */
@@ -288,9 +295,9 @@ const Starfield: React.FC = () => (
         position: absolute;
         inset: -10%;
         background:
-          radial-gradient(1200px 600px at 10% 20%, rgba(0,255,200,0.18), transparent 60%),
-          radial-gradient(900px 500px at 85% 30%, rgba(160,100,255,0.20), transparent 60%),
-          radial-gradient(900px 500px at 40% 85%, rgba(0,150,255,0.18), transparent 60%);
+          radial-gradient(1200px 600px at 10% 20%, rgba(0,255,200,0.22), transparent 60%),
+          radial-gradient(900px 500px at 85% 30%, rgba(160,100,255,0.24), transparent 60%),
+          radial-gradient(900px 500px at 40% 85%, rgba(0,150,255,0.22), transparent 60%);
         mix-blend-mode: screen;
         animation: drift 24s ease-in-out infinite alternate;
         pointer-events: none;
@@ -301,8 +308,8 @@ const Starfield: React.FC = () => (
         position: absolute;
         inset: 0;
         background:
-          linear-gradient(115deg, rgba(0,255,180,0.10), rgba(140,0,255,0.12), rgba(0,160,255,0.10)),
-          linear-gradient(245deg, rgba(255,0,180,0.08), rgba(0,255,200,0.08));
+          linear-gradient(115deg, rgba(0,255,180,0.12), rgba(140,0,255,0.16), rgba(0,160,255,0.12)),
+          linear-gradient(245deg, rgba(255,0,180,0.10), rgba(0,255,200,0.10));
         background-size: 200% 200%, 200% 200%;
         animation: auroraShift 30s ease-in-out infinite;
         mix-blend-mode: screen;
@@ -314,8 +321,8 @@ const Starfield: React.FC = () => (
         position: absolute;
         inset: -20%;
         background:
-          radial-gradient(600px 600px at 70% 20%, rgba(255,0,200,0.10), transparent 70%),
-          radial-gradient(700px 700px at 20% 80%, rgba(0,120,255,0.10), transparent 70%);
+          radial-gradient(600px 600px at 70% 20%, rgba(255,0,200,0.14), transparent 70%),
+          radial-gradient(700px 700px at 20% 80%, rgba(0,120,255,0.14), transparent 70%);
         mix-blend-mode: screen;
         animation: pulseNebula 12s ease-in-out infinite;
         filter: blur(2px);
@@ -326,19 +333,19 @@ const Starfield: React.FC = () => (
       .vignette {
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle at 50% 50%, transparent 60%, rgba(0,0,0,0.45) 100%);
+        background: radial-gradient(circle at 50% 50%, transparent 60%, rgba(0,0,0,0.5) 100%);
         pointer-events: none;
       }
     `}</style>
 
     {/* deep base with stars */}
-    <div className="absolute inset-0 bg-[#050611] twinkle" />
+    <div className="absolute inset-0 bg-[#04040b] twinkle" />
     {/* neon layers */}
     <div className="neon-shift" />
     <div className="aurora" />
     <div className="nebula" />
     {/* soft color spots like distant galaxies */}
-    <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_55%_10%,rgba(56,189,248,0.18),transparent_60%),radial-gradient(circle_at_82%_24%,rgba(168,85,247,0.18),transparent_60%),radial-gradient(circle_at_20%_78%,rgba(34,197,94,0.14),transparent_60%)]" />
+    <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_55%_10%,rgba(56,189,248,0.22),transparent_60%),radial-gradient(circle_at_82%_24%,rgba(168,85,247,0.22),transparent_60%),radial-gradient(circle_at_20%_78%,rgba(34,197,94,0.18),transparent_60%)]" />
     <div className="vignette" />
   </>
 );
@@ -347,6 +354,22 @@ const Pricing: React.FC = () => {
   const orderedPlans = useMemo(() => PLANS_IN_ORDER, []);
   const [index, setIndex] = useState(0);
   const [legendOpen, setLegendOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // detect mobile for carousel mode
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  // auto-slide on mobile every 5s
+  useEffect(() => {
+    if (!isMobile) return;
+    const id = setInterval(() => setIndex((i) => (i + 1) % orderedPlans.length), 5000);
+    return () => clearInterval(id);
+  }, [isMobile, orderedPlans.length]);
 
   const len = orderedPlans.length;
   const current = orderedPlans[index];
@@ -355,6 +378,8 @@ const Pricing: React.FC = () => {
   function prev() { setIndex((i) => (i - 1 + len) % len); }
 
   const swipe = useSwipe(next, prev);
+
+  // exclude the focused plan from orbiting planets
   const planets = orderedPlans.map((p, i) => ({ plan: p, i })).filter(({ i }) => i !== index);
 
   return (
@@ -416,12 +441,59 @@ const Pricing: React.FC = () => {
         </div>
       )}
 
-      {/* Orbit stage */}
-      <div className="relative z-0 flex items-center justify-center pt-6 pb-8 sm:pb-12">
+      {/* MOBILE CAROUSEL (sm:hidden) */}
+      <div className="relative z-0 sm:hidden px-4 pb-6">
+        <div className="w-full">
+          <div className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur p-6 shadow-[0_0_40px_rgba(255,255,255,0.10)]">
+            <div className="text-xs uppercase tracking-widest text-white/70 mb-2 text-center">In focus</div>
+            <h2 className="text-2xl font-bold text-center">{current.name}</h2>
+            <div className="mt-1 text-lg font-semibold text-center">
+              {current.price} <span className="text-white/70">{current.cadence}</span>
+            </div>
+            <ul className="mt-3 space-y-1 text-sm text-white/80">
+              {current.shortBullets.map((b, idx) => (
+                <li key={idx} className="flex items-center justify-center gap-2">
+                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-white/70" />
+                  {b}
+                </li>
+              ))}
+            </ul>
+            {current.cta && (
+              <a
+                href={current.cta.href}
+                className="mt-4 mx-auto w-full inline-flex items-center justify-center px-4 py-2 rounded-xl bg-white text-black font-semibold hover:bg-white/90 transition shadow"
+              >
+                {current.cta.label}
+              </a>
+            )}
+
+            {/* Carousel dots */}
+            <div className="mt-5 flex items-center justify-center gap-1.5">
+              {orderedPlans.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setIndex(i)}
+                  className={`h-2 w-2 rounded-full transition ${
+                    i === index ? "bg-cyan-400" : "bg-white/30 hover:bg-white/60"
+                  }`}
+                  aria-label={`Go to ${orderedPlans[i].name}`}
+                />
+              ))}
+            </div>
+
+            {/* Swipe hint */}
+            <div className="mt-3 text-center text-xs text-white/60">Auto slides. Swipe to change.</div>
+          </div>
+        </div>
+      </div>
+
+      {/* DESKTOP ORBIT (hidden on mobile) */}
+      <div className="relative z-0 hidden sm:flex items-center justify-center pt-6 pb-8 sm:pb-12">
         <div className="relative w-[92vw] max-w-[1050px] aspect-square">
+          {/* Rotating ring */}
           <div
             className="absolute inset-0 rounded-full border border-white/10"
-            style={{ animation: "orbit-rotate 40s linear infinite" }}
+            style={{ animation: "orbit-rotate 30s linear infinite" }}
           />
 
           {/* Center orb spotlight */}
@@ -456,8 +528,8 @@ const Pricing: React.FC = () => {
             </div>
           </div>
 
-          {/* Orbiting planets */}
-          <div className="absolute inset-0" style={{ animation: "orbit-rotate 60s linear infinite" }}>
+          {/* Orbiting planets (container rotates; items positioned radially) */}
+          <div className="absolute inset-0" style={{ animation: "orbit-rotate 30s linear infinite" }}>
             {planets.map(({ plan, i: planIndex }, slot) => {
               const totalSlots = planets.length;
               const angle = angleForSlot(slot, totalSlots);
@@ -466,19 +538,23 @@ const Pricing: React.FC = () => {
                 <button
                   key={plan.key}
                   onClick={() => setIndex(planIndex)}
-                  className="absolute -translate-x-1/2 -translate-y-1/2"
+                  className="absolute"
                   style={{
                     left: `calc(50% + ${radius} * cos(${angle}deg))`,
                     top: `calc(50% + ${radius} * sin(${angle}deg))`,
+                    transform: "translate(-50%, -50%)",
                   }}
                   title={plan.name}
                 >
                   <div
                     className={`relative w-28 h-28 rounded-full bg-white/10 border border-white/15 backdrop-blur-sm ring-2 ${plan.spotlightColor || "ring-cyan-400"} hover:scale-105 transition-transform`}
-                    style={{ transform: "translate(-50%, -50%)" }}
                   >
                     <div className="absolute inset-0 rounded-full bg-black/30" />
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-2">
+                    {/* Counter-rotate label to stay upright */}
+                    <div
+                      className="absolute inset-0 flex flex-col items-center justify-center text-center px-2"
+                      style={{ transform: "rotate(-0deg)" }}
+                    >
                       <div className="text-[10px] uppercase tracking-wider text-white/70">Plan</div>
                       <div className="text-sm font-bold">{plan.name}</div>
                       <div className="text-xs text-white/80">
