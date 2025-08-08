@@ -91,7 +91,7 @@ const Home: React.FC = () => {
           </h1>
           
           <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto">
-            Premium mobile detailing for homes, offices, and events
+            Premium mobile detailing deliverable to homes, offices, and events
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
