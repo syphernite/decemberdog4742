@@ -31,7 +31,7 @@ const Results: React.FC = () => {
       caption: 'Professional paint correction and polishing'
     },
     { 
-      src: 'https:/images.pexels.com/photos/6873008/pexels-photo-6873008.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&dpr=2', 
+      src: 'https://images.pexels.com/photos/6873008/pexels-photo-6873008.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&dpr=2', 
       category: 'Ceramic',
       caption: 'Ceramic coating application'
     },
