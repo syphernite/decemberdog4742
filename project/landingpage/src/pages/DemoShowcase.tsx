@@ -15,7 +15,7 @@ import {
  * - 9 demos (Photography, Barbershop, Detailer, Food Truck, Trades, Tattoo, Landscaping, Ecommerce, Creator)
  * - Live, scrollable iframes
  * - Selective “See Pricing” (only where it maps 1:1 nicely)
- * - “Contact Us” passes query params so Contact page can prefill
+ * - “Start Your Project” passes query params so Contact page can prefill
  * - Search includes title, badge, tagline, keywords, features
  */
 
@@ -64,8 +64,8 @@ const DEMOS: Demo[] = [
   },
   {
     title: "Food Truck",
-    slug: "food-truck",
-    externalUrl: "https://demos.built4you.org/food-truck",
+    slug: "foodtruck", // use foodtruck (no hyphen) to match your preference
+    externalUrl: "https://demos.built4you.org/foodtruck", // fixed: no hyphen
     badge: "Hospitality",
     tagline: "Menu, schedule, locations, events.",
     keywords: ["menu", "events", "schedule", "locations", "truck"],
@@ -218,6 +218,7 @@ const DemoShowcase: React.FC = () => {
   const contactURLFor = (demo: Demo) => {
     const params = new URLSearchParams();
     params.set("demo", demo.slug);
+    params.set("demoName", demo.title); // include readable name for your form
     if (demo.pricingPlanKey) params.set("plan", demo.pricingPlanKey);
     params.set("source", "demos");
     return `/contact?${params.toString()}`;
@@ -277,9 +278,10 @@ const DemoShowcase: React.FC = () => {
               {/* Card Header */}
               <div className="px-4 pt-4 flex items-center justify-between">
                 <div className="min-w-0">
-                  <h3 className="text-lg font-semibold leading-tight truncate">{d.title}</h3>
+                  {/* removed truncate to avoid cutting off */}
+                  <h3 className="text-lg font-semibold leading-tight">{d.title}</h3>
                   {d.tagline && (
-                    <p className="text-sm text-gray-600 dark:text-gray-400 truncate">{d.tagline}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{d.tagline}</p>
                   )}
                 </div>
                 {d.badge && (
@@ -323,13 +325,13 @@ const DemoShowcase: React.FC = () => {
                     </Link>
                   )}
 
-                  {/* Contact button always present; pre-fills form via query params */}
+                  {/* Contact button (prefill) */}
                   <Link
                     to={contactURLFor(d)}
                     className="inline-flex items-center gap-2 text-sm font-medium text-emerald-700 dark:text-emerald-300 hover:underline"
-                    title="Contact us with this demo prefilled"
+                    title="We’ll prefill your message with this demo"
                   >
-                    Contact Us
+                    Start Your Project
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                 </div>
