@@ -5,11 +5,11 @@ import { motion, AnimatePresence } from "framer-motion";
 
 /**
  * /pricing — Solar orbit layout with neon galaxy background
- * Performance-focused tweaks:
- * - Performance Mode: simplifies heavy background animations on low-power devices or when user prefers reduced motion
- * - rAF-throttled mouse parallax and scroll hint handlers
- * - will-change hints on rotating elements
- * - Mobile UX unchanged
+ * - Local header (logo glow) only on this page
+ * - Dark mode forced; no light toggle
+ * - Mobile auto-slide w/ pause on interaction or when out of view
+ * - Tighter orbit, readable larger planets, outer orbit ring removed
+ * - Performance tuned: removed shooting stars, throttled parallax, reduced heavy effects
  */
 
 /* ----------------------------- TYPES & DATA ----------------------------- */
@@ -25,7 +25,7 @@ type Plan = {
   shortBullets: string[];
   features: string[];
   notIncluded?: string[];
-  addOns?: string[]; // kept in data, but not rendered in Details
+  addOns?: string[]; // kept in data, but we won't render plan-specific add-ons in Details anymore
   spotlightColor?: string;
   cta?: { label: string; href: string };
 };
@@ -236,15 +236,7 @@ const LocalHeader: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    let ticking = false;
-    const handleScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        setIsScrolled(window.scrollY > 50);
-        ticking = false;
-      });
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -265,6 +257,7 @@ const LocalHeader: React.FC = () => {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
+      style={{ willChange: "transform" }}
     >
       {/* logo glow */}
       <style>{`
@@ -277,21 +270,22 @@ const LocalHeader: React.FC = () => {
           <Link to="/" className="flex-shrink-0 group">
             <motion.div className="relative flex items-center space-x-3" whileHover={{ scale: 1.05 }}>
               <div
-                className="absolute -inset-4 rounded-2xl opacity-60 blur-2xl pointer-events-none"
+                className="absolute -inset-4 rounded-2xl opacity-50 blur-xl pointer-events-none"
                 style={{
                   background:
-                    "conic-gradient(from 0deg, rgba(16,185,129,.45), rgba(59,130,246,.45), rgba(168,85,247,.45), rgba(16,185,129,.45))",
-                  animation: "logoOrbit 10s linear infinite",
+                    "conic-gradient(from 0deg, rgba(16,185,129,.35), rgba(59,130,246,.35), rgba(168,85,247,.35), rgba(16,185,129,.35))",
+                  animation: "logoOrbit 12s linear infinite",
                   willChange: "transform",
+                  transform: "translateZ(0)",
                 }}
               />
               <div
-                className="absolute -inset-2 rounded-2xl bg-emerald-400/15 blur-xl pointer-events-none"
-                style={{ animation: "logoPulse 4.5s ease-in-out infinite" }}
+                className="absolute -inset-2 rounded-2xl bg-emerald-400/10 blur-lg pointer-events-none"
+                style={{ animation: "logoPulse 5s ease-in-out infinite", willChange: "transform", transform: "translateZ(0)" }}
               />
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-blue-600 rounded-xl blur-lg opacity-40 group-hover:opacity-60 transition-opacity"></div>
-                <div className="relative bg-gradient-to-r from-emerald-600 to-blue-600 p-2 rounded-xl shadow-lg shadow-emerald-500/25">
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-blue-600 rounded-xl blur-md opacity-40 group-hover:opacity-60 transition-opacity"></div>
+                <div className="relative bg-gradient-to-r from-emerald-600 to-blue-600 p-2 rounded-xl shadow-lg shadow-emerald-500/20">
                   <Code className="h-8 w-8 text-white" />
                 </div>
               </div>
@@ -384,23 +378,17 @@ const LocalHeader: React.FC = () => {
   );
 };
 
-/* --------------------------- BACKGROUND (CRAZY) -------------------------- */
+/* --------------------------- BACKGROUND (PERF-TUNED) -------------------------- */
 
-const Starfield: React.FC<{ perfMode: boolean }> = ({ perfMode }) => (
+const Starfield: React.FC = () => (
   <>
     <style>{`
       :root { --mx: 0px; --my: 0px; }
-      @keyframes twinkleA { 0%{opacity:1;transform:translateY(0)}50%{opacity:.55;transform:translateY(-.8px)}100%{opacity:1;transform:translateY(0)} }
-      @keyframes twinkleB { 0%{opacity:.9;transform:translateY(0)}50%{opacity:.4;transform:translateY(.8px)}100%{opacity:.9;transform:translateY(0)} }
-      @keyframes auroraShift { 0%{background-position:0% 50%,100% 50%;opacity:.6}50%{background-position:100% 50%,0% 50%;opacity:.95}100%{background-position:0% 50%,100% 50%;opacity:.6} }
-      @keyframes pulseNebula { 0%{opacity:.25;transform:scale(1)}50%{opacity:.7;transform:scale(1.06)}100%{opacity:.25;transform:scale(1)} }
-      @keyframes shimmerNoise { 0% { opacity:.2; } 50% { opacity:.45; } 100% { opacity:.2; } }
-      @keyframes shoot {
-        0%   { transform: translate3d(-10vw,-10vh,0) rotate(45deg); opacity: 0; }
-        5%   { opacity: 1; }
-        70%  { opacity: .9; }
-        100% { transform: translate3d(120vw,120vh,0) rotate(45deg); opacity: 0; }
-      }
+      @keyframes twinkleA { 0%{opacity:1;transform:translateY(0)}50%{opacity:.6;transform:translateY(-.6px)}100%{opacity:1;transform:translateY(0)} }
+      @keyframes twinkleB { 0%{opacity:.9;transform:translateY(0)}50%{opacity:.5;transform:translateY(.6px)}100%{opacity:.9;transform:translateY(0)} }
+      @keyframes auroraShift { 0%{background-position:0% 50%,100% 50%;opacity:.55}50%{background-position:100% 50%,0% 50%;opacity:.85}100%{background-position:0% 50%,100% 50%;opacity:.55} }
+      @keyframes pulseNebula { 0%{opacity:.22;transform:scale(1)}50%{opacity:.6;transform:scale(1.04)}100%{opacity:.22;transform:scale(1)} }
+      @keyframes shimmerNoise { 0% { opacity:.15; } 50% { opacity:.35; } 100% { opacity:.15; } }
       @keyframes orbit-rotate { 0%{transform:rotate(0)}100%{transform:rotate(360deg)} }
       @keyframes orbit-rotate-reverse { 0%{transform:rotate(0)}100%{transform:rotate(-360deg)} }
       @media (prefers-reduced-motion: reduce) {
@@ -415,97 +403,73 @@ const Starfield: React.FC<{ perfMode: boolean }> = ({ perfMode }) => (
     <div
       className="absolute inset-0 anim parallax"
       style={{
-        animation: perfMode ? "twinkleA 12s ease-in-out infinite" : "twinkleA 7s ease-in-out infinite",
+        animation: "twinkleA 9s ease-in-out infinite",
         backgroundImage: `
-          radial-gradient(2.2px 2.2px at 10% 20%, rgba(255,255,255,0.95), transparent 60%),
-          radial-gradient(1.8px 1.8px at 25% 75%, rgba(255,255,255,0.8), transparent 60%),
-          radial-gradient(1.6px 1.6px at 80% 15%, rgba(255,255,255,0.85), transparent 60%),
-          radial-gradient(2.4px 2.4px at 65% 60%, rgba(255,255,255,0.95), transparent 60%)`,
+          radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,0.9), transparent 60%),
+          radial-gradient(1.7px 1.7px at 25% 75%, rgba(255,255,255,0.75), transparent 60%),
+          radial-gradient(1.5px 1.5px at 80% 15%, rgba(255,255,255,0.8), transparent 60%),
+          radial-gradient(2.3px 2.3px at 65% 60%, rgba(255,255,255,0.9), transparent 60%),
+          radial-gradient(1.3px 1.3px at 45% 45%, rgba(255,255,255,0.65), transparent 60%),
+          radial-gradient(1.1px 1.1px at 92% 42%, rgba(255,255,255,0.65), transparent 60%)`,
         backgroundRepeat: "no-repeat",
-        filter: "drop-shadow(0 0 3px rgba(255,255,255,0.7))",
-        transform: "translate3d(calc(var(--mx) * 0.08), calc(var(--my) * 0.08), 0)",
+        filter: "drop-shadow(0 0 2px rgba(255,255,255,0.55))",
+        transform: "translate3d(calc(var(--mx) * 0.06), calc(var(--my) * 0.06), 0)",
         willChange: "transform",
       }}
     />
-    {!perfMode && (
-      <div
-        className="absolute inset-0 anim parallax"
-        style={{
-          animation: "twinkleB 9s ease-in-out infinite",
-          backgroundImage: `
-            radial-gradient(3px 3px at 15% 35%, rgba(255,255,255,0.95), transparent 60%),
-            radial-gradient(2.6px 2.6px at 70% 25%, rgba(255,255,255,0.9), transparent 60%),
-            radial-gradient(2.4px 2.4px at 30% 85%, rgba(255,255,255,0.9), transparent 60%),
-            radial-gradient(2px 2px at 88% 65%, rgba(255,255,255,0.85), transparent 60%)`,
-          backgroundRepeat: "no-repeat",
-          transform: "translate3d(calc(var(--mx) * 0.15), calc(var(--my) * 0.15), 0)",
-          willChange: "transform",
-        }}
-      />
-    )}
-
-    {/* shimmer + aurora + nebula */}
-    {!perfMode && (
-      <div
-        className="absolute inset-0 anim pointer-events-none"
-        style={{
-          animation: "shimmerNoise 6s ease-in-out infinite",
-          backgroundImage: "repeating-conic-gradient(from 0deg, rgba(255,255,255,0.03) 0deg 10deg, transparent 10deg 20deg)",
-          mixBlendMode: "screen",
-        }}
-      />
-    )}
     <div
       className="absolute inset-0 anim parallax"
       style={{
-        background: perfMode
-          ? "radial-gradient(900px 480px at 12% 22%, rgba(0,255,220,0.22), transparent 60%), radial-gradient(820px 480px at 75% 28%, rgba(170,100,255,0.26), transparent 60%)"
-          : "radial-gradient(1200px 600px at 8% 18%, rgba(0,255,220,0.30), transparent 60%), radial-gradient(1000px 520px at 85% 28%, rgba(170,100,255,0.34), transparent 60%), radial-gradient(1000px 520px at 40% 85%, rgba(0,160,255,0.30), transparent 60%)",
-        mixBlendMode: "screen",
-        animation: perfMode ? "auroraShift 36s ease-in-out infinite" : "auroraShift 30s ease-in-out infinite",
-        transform: "translate3d(calc(var(--mx) * 0.04), calc(var(--my) * 0.04), 0)",
+        animation: "twinkleB 11s ease-in-out infinite",
+        backgroundImage: `
+          radial-gradient(2.8px 2.8px at 15% 35%, rgba(255,255,255,0.9), transparent 60%),
+          radial-gradient(2.4px 2.4px at 70% 25%, rgba(255,255,255,0.85), transparent 60%),
+          radial-gradient(2.2px 2.2px at 30% 85%, rgba(255,255,255,0.85), transparent 60%),
+          radial-gradient(1.9px 1.9px at 88% 65%, rgba(255,255,255,0.8), transparent 60%)`,
+        backgroundRepeat: "no-repeat",
+        transform: "translate3d(calc(var(--mx) * 0.1), calc(var(--my) * 0.1), 0)",
         willChange: "transform",
       }}
     />
-    {!perfMode && (
-      <div
-        className="absolute inset-0 anim parallax"
-        style={{
-          background:
-            "radial-gradient(700px 700px at 70% 18%, rgba(255,0,200,0.25), transparent 72%), radial-gradient(800px 800px at 18% 80%, rgba(0,120,255,0.25), transparent 72%)",
-          mixBlendMode: "screen",
-          filter: "blur(2px)",
-          animation: "pulseNebula 12s ease-in-out infinite",
-          transform: "translate3d(calc(var(--mx) * 0.02), calc(var(--my) * 0.02), 0)",
-          willChange: "transform",
-        }}
-      />
-    )}
 
-    {/* shooting stars */}
-    {Array.from({ length: perfMode ? 2 : 7 }).map((_, i) => (
-      <div
-        key={i}
-        className="absolute pointer-events-none anim"
-        style={{
-          top: `${-12 - i * 5}vh`,
-          left: `${-14 - (i % 3) * 12}vw`,
-          width: "22vmin",
-          height: "2px",
-          background:
-            "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 30%, rgba(0,255,255,0.8) 70%, rgba(255,0,255,0) 100%)",
-          boxShadow: "0 0 12px rgba(255,255,255,0.8)",
-          transform: "rotate(45deg)",
-          animation: `shoot ${12 + i * 2}s linear ${i * 2.3}s infinite`,
-          opacity: 0,
-          willChange: "transform, opacity",
-        }}
-      />
-    ))}
+    {/* shimmer + aurora + nebula */}
+    <div
+      className="absolute inset-0 anim pointer-events-none"
+      style={{
+        animation: "shimmerNoise 7.5s ease-in-out infinite",
+        backgroundImage:
+          "repeating-conic-gradient(from 0deg, rgba(255,255,255,0.025) 0deg 10deg, transparent 10deg 20deg)",
+        mixBlendMode: "screen",
+      }}
+    />
+    <div
+      className="absolute inset-0 anim parallax"
+      style={{
+        background:
+          "radial-gradient(1000px 520px at 8% 18%, rgba(0,255,220,0.26), transparent 60%), radial-gradient(900px 500px at 85% 28%, rgba(170,100,255,0.30), transparent 60%), radial-gradient(900px 500px at 40% 85%, rgba(0,160,255,0.26), transparent 60%)",
+        mixBlendMode: "screen",
+        animation: "auroraShift 28s ease-in-out infinite",
+        transform: "translate3d(calc(var(--mx) * 0.035), calc(var(--my) * 0.035), 0)",
+        willChange: "transform",
+      }}
+    />
+    <div
+      className="absolute inset-0 anim parallax"
+      style={{
+        background:
+          "radial-gradient(650px 650px at 70% 18%, rgba(255,0,200,0.22), transparent 72%), radial-gradient(720px 720px at 18% 80%, rgba(0,120,255,0.22), transparent 72%)",
+        mixBlendMode: "screen",
+        filter: "blur(1.5px)",
+        animation: "pulseNebula 12s ease-in-out infinite",
+        transform: "translate3d(calc(var(--mx) * 0.018), calc(var(--my) * 0.018), 0)",
+        willChange: "transform",
+      }}
+    />
 
+    {/* NOTE: Shooting stars removed for performance */}
     {/* color spots + vignette */}
-    <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_55%_10%,rgba(56,189,248,0.35),transparent_62%),radial-gradient(circle_at_82%_24%,rgba(168,85,247,0.35),transparent_62%),radial-gradient(circle_at_20%_78%,rgba(34,197,94,0.26),transparent_62%)]" />
-    <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_60%,rgba(0,0,0,0.62)_100%)]" />
+    <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_55%_10%,rgba(56,189,248,0.3),transparent_62%),radial-gradient(circle_at_82%_24%,rgba(168,85,247,0.3),transparent_62%),radial-gradient(circle_at_20%_78%,rgba(34,197,94,0.22),transparent_62%)]" />
+    <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_60%,rgba(0,0,0,0.58)_100%)]" />
   </>
 );
 
@@ -515,7 +479,9 @@ const Pricing: React.FC = () => {
   // force dark
   useEffect(() => {
     document.documentElement.classList.add("dark");
-    try { localStorage.setItem("theme", "dark"); } catch {}
+    try {
+      localStorage.setItem("theme", "dark");
+    } catch {}
   }, []);
 
   const orderedPlans = useMemo(
@@ -530,57 +496,32 @@ const Pricing: React.FC = () => {
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
     check();
-    window.addEventListener("resize", check);
+    window.addEventListener("resize", check, { passive: true });
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  // Prefer reduced motion / performance heuristics
-  const [prefersReduced, setPrefersReduced] = useState(false);
-  const [perfMode, setPerfMode] = useState(false);
-
+  // mouse parallax control (throttled with rAF)
   useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const apply = () => setPrefersReduced(!!mq.matches);
-    apply();
-    mq.addEventListener?.("change", apply);
-    return () => mq.removeEventListener?.("change", apply);
-  }, []);
-
-  useEffect(() => {
-    const lowCores = typeof navigator.hardwareConcurrency === "number" && navigator.hardwareConcurrency <= 4;
-    // Keep mobile visuals as-is, but still allow background simplification on very low-power devices
-    setPerfMode(prefersReduced || lowCores);
-  }, [prefersReduced]);
-
-  // mouse parallax control (rAF throttled)
-  useEffect(() => {
-    if (isMobile || perfMode) return; // skip on mobile or perf mode
-    let rafId: number | null = null;
-    let lastMx = 0, lastMy = 0;
-
-    const onMove = (e: MouseEvent) => {
-      const run = () => {
+    let raf = 0;
+    const max = 20; // reduce movement range for less layout work
+    const handle = (e: MouseEvent) => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
         const cx = window.innerWidth / 2;
         const cy = window.innerHeight / 2;
-        const mx = Math.max(-30, Math.min(30, ((e.clientX - cx) / cx) * 30));
-        const my = Math.max(-30, Math.min(30, ((e.clientY - cy) / cy) * 30));
-        // Only write to CSS vars if movement changed meaningfully
-        if (Math.abs(mx - lastMx) > 0.8 || Math.abs(my - lastMy) > 0.8) {
-          document.documentElement.style.setProperty("--mx", `${mx.toFixed(1)}px`);
-          document.documentElement.style.setProperty("--my", `${my.toFixed(1)}px`);
-          lastMx = mx; lastMy = my;
-        }
-        rafId = null;
-      };
-      if (rafId == null) rafId = requestAnimationFrame(run);
+        const mx = Math.max(-max, Math.min(max, ((e.clientX - cx) / cx) * max));
+        const my = Math.max(-max, Math.min(max, ((e.clientY - cy) / cy) * max));
+        document.documentElement.style.setProperty("--mx", `${mx}px`);
+        document.documentElement.style.setProperty("--my", `${my}px`);
+      });
     };
-
-    window.addEventListener("mousemove", onMove, { passive: true });
+    if (!isMobile) window.addEventListener("mousemove", handle, { passive: true });
     return () => {
-      window.removeEventListener("mousemove", onMove);
-      if (rafId) cancelAnimationFrame(rafId);
+      if (!isMobile) window.removeEventListener("mousemove", handle as any);
+      if (raf) cancelAnimationFrame(raf);
     };
-  }, [isMobile, perfMode]);
+  }, [isMobile]);
 
   const len = orderedPlans.length;
   const current = orderedPlans[index];
@@ -613,9 +554,9 @@ const Pricing: React.FC = () => {
 
   useEffect(() => {
     if (!isMobile) return;
-    const shouldRun = inView && !userInteracting;
+    const shouldRun = inView && !userInteracting && document.visibilityState === "visible";
     if (shouldRun) {
-      intervalRef.current = window.setInterval(() => setIndex((i) => (i + 1) % len), 5000) as unknown as number;
+      intervalRef.current = window.setInterval(() => setIndex((i) => (i + 1) % len), 5200) as unknown as number;
     }
     return () => {
       if (intervalRef.current) {
@@ -625,42 +566,51 @@ const Pricing: React.FC = () => {
     };
   }, [isMobile, inView, userInteracting, len]);
 
+  useEffect(() => {
+    const onVis = () => {
+      if (document.visibilityState !== "visible" && intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+    document.addEventListener("visibilitychange", onVis);
+    return () => document.removeEventListener("visibilitychange", onVis);
+  }, []);
+
   const pauseForInteraction = (ms = 6000) => {
     setUserInteracting(true);
     if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
     resumeTimerRef.current = window.setTimeout(() => {
-      if (inViewRef.current) setUserInteracting(false);
+      if (inViewRef.current && document.visibilityState === "visible") setUserInteracting(false);
     }, ms) as unknown as number;
   };
 
   const swipe = useSwipe(
-    () => { pauseForInteraction(); next(); },
-    () => { pauseForInteraction(); prev(); }
+    () => {
+      pauseForInteraction();
+      next();
+    },
+    () => {
+      pauseForInteraction();
+      prev();
+    }
   );
 
   const planets = orderedPlans.map((p, i) => ({ plan: p, i })).filter(({ i }) => i !== index);
   const angleForSlot = (slotIndex: number, totalSlots: number) => (360 / totalSlots) * slotIndex;
 
-  // scroll hint (rAF throttled)
+  // scroll hint (shows until user scrolls a bit or reaches bottom)
   const [showScrollHint, setShowScrollHint] = useState(true);
   useEffect(() => {
-    let rafId: number | null = null;
     const onScroll = () => {
-      if (rafId != null) return;
-      rafId = requestAnimationFrame(() => {
-        const scrolledPast = window.scrollY > 120;
-        const doc = document.documentElement || document.body;
-        const nearBottom = window.innerHeight + window.scrollY >= (doc.scrollHeight) - 120;
-        setShowScrollHint(!(scrolledPast || nearBottom));
-        rafId = null;
-      });
+      const scrolledPast = window.scrollY > 120;
+      const doc = document.documentElement;
+      const nearBottom = window.innerHeight + window.scrollY >= (doc.scrollHeight || document.body.scrollHeight) - 120;
+      setShowScrollHint(!(scrolledPast || nearBottom));
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      if (rafId) cancelAnimationFrame(rafId);
-    };
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
@@ -668,8 +618,8 @@ const Pricing: React.FC = () => {
       <LocalHeader />
 
       {/* background */}
-      <div className="absolute inset-0 -z-10">
-        <Starfield perfMode={perfMode} />
+      <div className="absolute inset-0 -z-10" style={{ willChange: "transform", transform: "translateZ(0)" }}>
+        <Starfield />
       </div>
 
       <main className="pt-24">
@@ -688,7 +638,10 @@ const Pricing: React.FC = () => {
               {orderedPlans.map((p, i) => (
                 <button
                   key={p.key}
-                  onClick={() => { pauseForInteraction(); setIndex(i); }}
+                  onClick={() => {
+                    pauseForInteraction();
+                    setIndex(i);
+                  }}
                   className={`px-3 py-1 rounded-lg text-sm border transition ${
                     i === index ? "border-white/60 bg-white/10" : "border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10"
                   }`}
@@ -708,7 +661,11 @@ const Pricing: React.FC = () => {
               {orderedPlans.map((p, i) => (
                 <button
                   key={p.key}
-                  onClick={() => { pauseForInteraction(); setIndex(i); setLegendOpen(false); }}
+                  onClick={() => {
+                    pauseForInteraction();
+                    setIndex(i);
+                    setLegendOpen(false);
+                  }}
                   className={`w-full px-3 py-2 rounded-xl text-left text-sm border transition ${
                     i === index ? "border-white/60 bg-white/10" : "border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10"
                   }`}
@@ -720,15 +677,18 @@ const Pricing: React.FC = () => {
           </div>
         )}
 
-        {/* MOBILE CAROUSEL (unchanged UX) */}
+        {/* MOBILE CAROUSEL */}
         <div className="relative z-0 sm:hidden px-4 pb-6">
           <div
             className="w-full"
             ref={carouselRef}
-            onTouchStart={(e) => { pauseForInteraction(); swipe.onTouchStart(e); }}
+            onTouchStart={(e) => {
+              pauseForInteraction();
+              swipe.onTouchStart(e);
+            }}
             onTouchEnd={(e) => swipe.onTouchEnd(e)}
           >
-            <div className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur p-6 shadow-[0_0_40px_rgba(255,255,255,0.10)]">
+            <div className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur p-6 shadow-[0_0_30px_rgba(255,255,255,0.08)]">
               <div className="text-xs uppercase tracking-widest text-white/70 mb-2 text-center">In focus</div>
               <h2 className="text-2xl font-bold text-center">{current.name}</h2>
               <div className="mt-1 text-lg font-semibold text-center">
@@ -756,7 +716,10 @@ const Pricing: React.FC = () => {
                 {orderedPlans.map((_, i) => (
                   <button
                     key={i}
-                    onClick={() => { pauseForInteraction(); setIndex(i); }}
+                    onClick={() => {
+                      pauseForInteraction();
+                      setIndex(i);
+                    }}
                     className={`h-2 w-2 rounded-full transition ${i === index ? "bg-cyan-400" : "bg-white/30 hover:bg-white/60"}`}
                     aria-label={`Go to ${orderedPlans[i].name}`}
                   />
@@ -770,15 +733,15 @@ const Pricing: React.FC = () => {
 
         {/* DESKTOP ORBIT */}
         <div className="relative z-0 hidden sm:flex items-center justify-center pt-6 pb-8 sm:pb-12">
-          <div className="relative w-[92vw] max-w-[1120px] aspect-square" style={{ willChange: "transform" }}>
+          <div className="relative w-[92vw] max-w-[1120px] aspect-square" style={{ willChange: "transform", transform: "translateZ(0)" }}>
             {/* Center orb */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div
                 className={`relative w-[46vw] max-w-[400px] aspect-square rounded-full bg-white/5 backdrop-blur-sm border ${
                   current.spotlightColor || "ring-cyan-400"
-                } ring-2 ring-inset border-white/10 shadow-[0_0_60px_rgba(0,255,255,0.28)]`}
+                } ring-2 ring-inset border-white/10 shadow-[0_0_40px_rgba(0,255,255,0.2)]`}
               >
-                <div className="absolute inset-[10%] rounded-full bg-black/30 blur-2xl" />
+                <div className="absolute inset-[10%] rounded-full bg-black/30 blur-xl" />
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
                   <div className="text-xs uppercase tracking-widest text-white/70 mb-2">In focus</div>
                   <h2 className="text-2xl sm:text-3xl font-bold drop-shadow">{current.name}</h2>
@@ -797,11 +760,8 @@ const Pricing: React.FC = () => {
               </div>
             </div>
 
-            {/* Plan planets — orbit */}
-            <div
-              className="absolute inset-0"
-              style={{ animation: "orbit-rotate 30s linear infinite", willChange: "transform" }}
-            >
+            {/* Plan planets — tighter orbit, larger, spin + readable labels */}
+            <div className="absolute inset-0" style={{ animation: "orbit-rotate 32s linear infinite", willChange: "transform" }}>
               {planets.map(({ plan, i: planIndex }, slot) => {
                 const totalSlots = planets.length;
                 const angle = angleForSlot(slot, totalSlots);
@@ -815,6 +775,7 @@ const Pricing: React.FC = () => {
                       left: `calc(50% + ${radius} * cos(${angle}deg))`,
                       top: `calc(50% + ${radius} * sin(${angle}deg))`,
                       willChange: "transform",
+                      transform: "translateZ(0)",
                     }}
                     title={plan.name}
                     aria-label={plan.name}
@@ -822,19 +783,17 @@ const Pricing: React.FC = () => {
                     <div
                       className={`relative w-[5.5rem] h-[5.5rem] overflow-hidden rounded-full bg-white/10 border border-white/15 backdrop-blur-sm ring-2 ${
                         plan.spotlightColor || "ring-cyan-400"
-                      } hover:scale-105 transition-transform shadow-[0_0_30px_rgba(255,255,255,0.18)]`}
-                      style={{ animation: "orbit-rotate 14s linear infinite", willChange: "transform" }}
+                      } hover:scale-105 transition-transform shadow-[0_0_24px_rgba(255,255,255,0.14)]`}
+                      style={{ animation: "orbit-rotate 16s linear infinite", willChange: "transform" }} // planet spins
                     >
                       <div className="absolute inset-0 rounded-full bg-black/30" />
-                      {/* counter-rotate text */}
+                      {/* counter-rotate text so it stays upright */}
                       <div
                         className="absolute inset-0 flex flex-col items-center justify-center text-center px-1 leading-tight"
-                        style={{ animation: "orbit-rotate-reverse 14s linear infinite", willChange: "transform" }}
+                        style={{ animation: "orbit-rotate-reverse 16s linear infinite", willChange: "transform" }}
                       >
                         <div className="text-[10px] uppercase tracking-wider text-white/70">Plan</div>
-                        <div className="text-[12px] font-semibold break-words text-center px-1">
-                          {plan.name}
-                        </div>
+                        <div className="text-[12px] font-semibold break-words text-center px-1">{plan.name}</div>
                         <div className="text-[11px] text-white/80 text-center">
                           {plan.price} <span className="opacity-70">{plan.cadence}</span>
                         </div>
@@ -869,7 +828,7 @@ const Pricing: React.FC = () => {
 
         {/* DETAILS */}
         <div className="relative z-10 mx-auto w-full max-w-4xl px-4 sm:px-6 pb-16">
-          <div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur p-6 sm:p-8 shadow-[0_0_40px_rgba(255,255,255,0.10)]">
+          <div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur p-6 sm:p-8 shadow-[0_0_30px_rgba(255,255,255,0.08)]">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <h3 className="text-xl sm:text-2xl font-bold">{current.name} Details</h3>
@@ -917,31 +876,46 @@ const Pricing: React.FC = () => {
                   </>
                 )}
 
-                {/* no plan-specific add-ons here; universal listed below */}
+                {/* Removed plan-specific Add Ons to avoid duplicates.
+                    Universal add-ons appear in the section below. */}
               </div>
             </div>
 
             <div className="mt-8 pt-6 border-t border-white/10">
               <div className="text-sm uppercase tracking-wider text-white/70 mb-2">Universal Add Ons</div>
               <ul className="grid sm:grid-cols-2 gap-2 list-none">
-                <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-white/70" /> Extra Page - $50 per page</li>
-                <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-white/70" /> Logo Design - $75 one time</li>
-                <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-white/70" /> Hosting Only - $30 per month</li>
-                <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-white/70" /> Rush Delivery 48 hours - +$100</li>
+                <li className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-white/70" /> Extra Page - $50 per page
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-white/70" /> Logo Design - $75 one time
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-white/70" /> Hosting Only - $30 per month
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-white/70" /> Rush Delivery 48 hours - +$100
+                </li>
               </ul>
               <div className="mt-4 text-xs text-white/60">Large ecommerce and complex data migrations require a quote.</div>
 
               {/* MOBILE-ONLY: keep top selection in sync when tapping Next/Previous down here */}
               <div className="mt-6 flex sm:hidden items-center justify-end gap-2">
                 <button
-                  onClick={() => { pauseForInteraction(); prev(); }}
+                  onClick={() => {
+                    pauseForInteraction();
+                    prev();
+                  }}
                   className="px-3 py-2 rounded-lg border border-white/15 bg-white/10 hover:bg-white/20"
                   title="Previous"
                 >
                   Previous
                 </button>
                 <button
-                  onClick={() => { pauseForInteraction(); next(); }}
+                  onClick={() => {
+                    pauseForInteraction();
+                    next();
+                  }}
                   className="px-3 py-2 rounded-lg border border-white/15 bg-white/10 hover:bg-white/20"
                   title="Next"
                 >
