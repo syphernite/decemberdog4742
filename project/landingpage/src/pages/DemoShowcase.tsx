@@ -76,11 +76,11 @@ const IFramePreview: React.FC<{ url: string }> = ({ url }) => {
       </div>
 
       {!inView ? (
-        <div className="h-[520px] w-full flex items-center justify-center">
+        <div className="h-[460px] sm:h-[520px] w-full flex items-center justify-center">
           <div className="h-6 w-6 rounded-full border-2 border-slate-400/60 border-t-transparent animate-spin" />
         </div>
       ) : blocked ? (
-        <div className="h-[520px] w-full flex flex-col items-center justify-center text-center p-6">
+        <div className="h-[460px] sm:h-[520px] w-full flex flex-col items-center justify-center text-center p-6">
           <MonitorSmartphone className="h-8 w-8 text-slate-400 mb-2" />
           <p className="text-slate-600 dark:text-slate-300 text-sm">
             Preview unavailable (site blocks embedding). Use “Open Live Demo”.
@@ -98,7 +98,7 @@ const IFramePreview: React.FC<{ url: string }> = ({ url }) => {
             title="Live preview"
             src={url}
             loading="lazy"
-            className="h-[520px] w-full relative z-0"
+            className="h-[460px] sm:h-[520px] w-full relative z-0"
             onLoad={() => setLoaded(true)}
             sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-popups"
           />
@@ -143,7 +143,9 @@ const DemoShowcase: React.FC = () => {
           <p className="max-w-2xl text-base sm:text-lg text-gray-600 dark:text-gray-300">
             Live, scrollable previews. Use the CTAs to contact us with details prefilled.
           </p>
-          <div className="w-full max-w-md">
+
+          {/* Search kept in code but hidden so nothing else breaks */}
+          <div className="w-full max-w-md hidden">
             <label className="sr-only" htmlFor="demo-search">Search demos</label>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
@@ -157,6 +159,7 @@ const DemoShowcase: React.FC = () => {
               />
             </div>
           </div>
+
           <div className="mt-2">
             <Link
               to="/contact"
@@ -169,7 +172,8 @@ const DemoShowcase: React.FC = () => {
       </section>
 
       <section className="px-4 sm:px-6 lg:px-8 pb-20">
-        <div className="max-w-7xl mx-auto grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        {/* grid-cols-1 ensures a clean single column on mobile */}
+        <div className="max-w-7xl mx-auto grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((d) => (
             <motion.article
               key={d.slug}
@@ -217,12 +221,6 @@ const DemoShowcase: React.FC = () => {
               </div>
             </motion.article>
           ))}
-
-          {filtered.length === 0 && (
-            <div className="col-span-full text-center text-sm text-gray-600 dark:text-gray-300">
-              No demos match your search.
-            </div>
-          )}
         </div>
       </section>
     </main>
