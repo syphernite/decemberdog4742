@@ -862,7 +862,7 @@ const Pricing: React.FC = () => {
               <ul className="grid sm:grid-cols-2 gap-2">
                 <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-white/70" /> Extra Page - $50 per page</li>
                 <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-white/70" /> Logo Design - $75 one time</li>
-                <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-white/70" /> Hosting Only for Custom builds - $30 per month</li>
+                <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-white/70" /> Hosting Only - $30 per month</li>
                 <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-white/70" /> Rush Delivery 48 hours - +$100</li>
               </ul>
               <div className="mt-4 text-xs text-white/60">Large ecommerce and complex data migrations require a quote.</div>
