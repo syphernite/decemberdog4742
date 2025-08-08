@@ -8,9 +8,10 @@ import Header from "../components/Header";
  * Single-file drop in. No new files created.
  *
  * Adds:
- * - CRAZY neon galaxy starfield (multi-layer stars, aurora, pulsing nebula, parallax)
- * - Slow elegant desktop orbit (30s revolution) using rotate→translate (no cos/sin)
+ * - CRAZY neon galaxy background (dense & sparse stars, shimmer, aurora, pulsing nebula, shooting stars, parallax)
+ * - Desktop orbit (30s) using rotate→translate (no cos/sin) + counter-rotate labels
  * - Mobile carousel with auto-slide (5s) + swipe
+ * - Auto-slide pauses when carousel is off-screen or after user interaction; resumes on return/idle
  * - Uses your site Header (logo, nav, dark mode toggle)
  */
 
@@ -256,58 +257,38 @@ function useSwipe(onLeft: () => void, onRight: () => void) {
   return { onTouchStart, onTouchEnd };
 }
 
-/** CRAZY Neon Galaxy Background (with parallax + reduced-motion guard) */
+/** CRAZY Neon Galaxy Background (sparkles, shimmers, shooting stars, parallax) */
 const Starfield: React.FC = () => (
   <>
     <style>{`
-      :root {
-        --mx: 0px;  /* mouse parallax X */
-        --my: 0px;  /* mouse parallax Y */
+      :root { --mx: 0px; --my: 0px; }
+
+      @keyframes twinkleA { 0%{opacity:1;transform:translateY(0)}50%{opacity:.55;transform:translateY(-.8px)}100%{opacity:1;transform:translateY(0)} }
+      @keyframes twinkleB { 0%{opacity:.9;transform:translateY(0)}50%{opacity:.4;transform:translateY(.8px)}100%{opacity:.9;transform:translateY(0)} }
+      @keyframes auroraShift { 0%{background-position:0% 50%,100% 50%;opacity:.6}50%{background-position:100% 50%,0% 50%;opacity:.95}100%{background-position:0% 50%,100% 50%;opacity:.6} }
+      @keyframes pulseNebula { 0%{opacity:.25;transform:scale(1)}50%{opacity:.7;transform:scale(1.06)}100%{opacity:.25;transform:scale(1)} }
+      @keyframes orbit-rotate { 0%{transform:rotate(0)}100%{transform:rotate(360deg)} }
+      @keyframes orbit-rotate-reverse { 0%{transform:rotate(0)}100%{transform:rotate(-360deg)} }
+      @keyframes shimmerNoise { 0% { opacity:.25; } 50% { opacity:.45; } 100% { opacity:.25; } }
+      @keyframes shoot {
+        0%   { transform: translate3d(-10vw,-10vh,0) rotate(45deg); opacity: 0; }
+        5%   { opacity: 1; }
+        70%  { opacity: .9; }
+        100% { transform: translate3d(120vw,120vh,0) rotate(45deg); opacity: 0; }
       }
 
-      @keyframes twinkleA {
-        0% { opacity: 1; transform: translateY(0); }
-        50% { opacity: 0.55; transform: translateY(-0.8px); }
-        100% { opacity: 1; transform: translateY(0); }
-      }
-      @keyframes twinkleB {
-        0% { opacity: 0.9; transform: translateY(0); }
-        50% { opacity: 0.4; transform: translateY(0.8px); }
-        100% { opacity: 0.9; transform: translateY(0); }
-      }
-      @keyframes auroraShift {
-        0%   { background-position: 0% 50%, 100% 50%; opacity: 0.6; }
-        50%  { background-position: 100% 50%, 0% 50%; opacity: 0.95; }
-        100% { background-position: 0% 50%, 100% 50%; opacity: 0.6; }
-      }
-      @keyframes pulseNebula {
-        0% { opacity: 0.25; transform: scale(1); }
-        50% { opacity: 0.7; transform: scale(1.06); }
-        100% { opacity: 0.25; transform: scale(1); }
-      }
-
-      @keyframes orbit-rotate {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-      @keyframes orbit-rotate-reverse {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(-360deg); }
-      }
-
-      /* Reduced motion respect */
       @media (prefers-reduced-motion: reduce) {
-        .anim, .twinkleA, .twinkleB { animation: none !important; }
+        .anim { animation: none !important; }
         .parallax { transform: none !important; }
       }
     `}</style>
 
-    {/* Star Layers & Neon Effects */}
-    <div className="absolute inset-0 bg-[#03030a]" />
+    {/* deep base */}
+    <div className="absolute inset-0 bg-[#02020a]" />
 
     {/* Dense stars */}
     <div
-      className="absolute inset-0 anim twinkleA parallax"
+      className="absolute inset-0 anim parallax"
       style={{
         animation: "twinkleA 7s ease-in-out infinite",
         backgroundImage: `
@@ -322,9 +303,10 @@ const Starfield: React.FC = () => (
         transform: "translate3d(calc(var(--mx) * 0.08), calc(var(--my) * 0.08), 0)",
       }}
     />
+
     {/* Sparse bright stars */}
     <div
-      className="absolute inset-0 anim twinkleB parallax"
+      className="absolute inset-0 anim parallax"
       style={{
         animation: "twinkleB 9s ease-in-out infinite",
         backgroundImage: `
@@ -337,12 +319,23 @@ const Starfield: React.FC = () => (
       }}
     />
 
+    {/* Shimmer grain overlay */}
+    <div
+      className="absolute inset-0 anim pointer-events-none"
+      style={{
+        animation: "shimmerNoise 6s ease-in-out infinite",
+        backgroundImage:
+          "repeating-conic-gradient(from 0deg, rgba(255,255,255,0.03) 0deg 10deg, transparent 10deg 20deg)",
+        mixBlendMode: "screen",
+      }}
+    />
+
     {/* Aurora bands */}
     <div
       className="absolute inset-0 anim parallax"
       style={{
         background:
-          "radial-gradient(1200px 600px at 8% 18%, rgba(0,255,220,0.25), transparent 60%), radial-gradient(1000px 520px at 85% 28%, rgba(170,100,255,0.28), transparent 60%), radial-gradient(1000px 520px at 40% 85%, rgba(0,160,255,0.25), transparent 60%)",
+          "radial-gradient(1200px 600px at 8% 18%, rgba(0,255,220,0.28), transparent 60%), radial-gradient(1000px 520px at 85% 28%, rgba(170,100,255,0.32), transparent 60%), radial-gradient(1000px 520px at 40% 85%, rgba(0,160,255,0.28), transparent 60%)",
         mixBlendMode: "screen",
         animation: "auroraShift 30s ease-in-out infinite",
         transform: "translate3d(calc(var(--mx) * 0.04), calc(var(--my) * 0.04), 0)",
@@ -354,7 +347,7 @@ const Starfield: React.FC = () => (
       className="absolute inset-0 anim parallax"
       style={{
         background:
-          "radial-gradient(700px 700px at 70% 18%, rgba(255,0,200,0.18), transparent 72%), radial-gradient(800px 800px at 18% 80%, rgba(0,120,255,0.18), transparent 72%)",
+          "radial-gradient(700px 700px at 70% 18%, rgba(255,0,200,0.22), transparent 72%), radial-gradient(800px 800px at 18% 80%, rgba(0,120,255,0.22), transparent 72%)",
         mixBlendMode: "screen",
         filter: "blur(2px)",
         animation: "pulseNebula 12s ease-in-out infinite",
@@ -362,9 +355,29 @@ const Starfield: React.FC = () => (
       }}
     />
 
+    {/* Shooting stars (several, staggered) */}
+    {Array.from({ length: 6 }).map((_, i) => (
+      <div
+        key={i}
+        className="absolute pointer-events-none anim"
+        style={{
+          top: `${-10 - i * 5}vh`,
+          left: `${-10 - (i % 3) * 12}vw`,
+          width: "22vmin",
+          height: "2px",
+          background:
+            "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 30%, rgba(0,255,255,0.8) 70%, rgba(255,0,255,0) 100%)",
+          boxShadow: "0 0 12px rgba(255,255,255,0.8)",
+          transform: "rotate(45deg)",
+          animation: `shoot ${12 + i * 2}s linear ${i * 2.5}s infinite`,
+          opacity: 0,
+        }}
+      />
+    ))}
+
     {/* Color spots + vignette */}
-    <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_55%_10%,rgba(56,189,248,0.28),transparent_62%),radial-gradient(circle_at_82%_24%,rgba(168,85,247,0.28),transparent_62%),radial-gradient(circle_at_20%_78%,rgba(34,197,94,0.2),transparent_62%)]" />
-    <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_60%,rgba(0,0,0,0.55)_100%)]" />
+    <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_55%_10%,rgba(56,189,248,0.32),transparent_62%),radial-gradient(circle_at_82%_24%,rgba(168,85,247,0.32),transparent_62%),radial-gradient(circle_at_20%_78%,rgba(34,197,94,0.24),transparent_62%)]" />
+    <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_60%,rgba(0,0,0,0.6)_100%)]" />
   </>
 );
 
@@ -410,7 +423,6 @@ const Pricing: React.FC = () => {
   // Parallax: track mouse (desktop only)
   useEffect(() => {
     const handle = (e: MouseEvent) => {
-      // normalize to -30..30px
       const cx = window.innerWidth / 2;
       const cy = window.innerHeight / 2;
       const mx = Math.max(-30, Math.min(30, ((e.clientX - cx) / cx) * 30));
@@ -422,26 +434,72 @@ const Pricing: React.FC = () => {
     return () => window.removeEventListener("mousemove", handle);
   }, [isMobile]);
 
-  // auto-slide on mobile every 5s
-  useEffect(() => {
-    if (!isMobile) return;
-    const id = setInterval(() => setIndex((i) => (i + 1) % orderedPlans.length), 5000);
-    return () => clearInterval(id);
-  }, [isMobile, orderedPlans.length]);
-
   const len = orderedPlans.length;
   const current = orderedPlans[index];
 
-  function next() {
-    setIndex((i) => (i + 1) % len);
-  }
-  function prev() {
-    setIndex((i) => (i - 1 + len) % len);
-  }
+  function next() { setIndex((i) => (i + 1) % len); }
+  function prev() { setIndex((i) => (i - 1 + len) % len); }
 
-  const swipe = useSwipe(next, prev);
+  // ======== Mobile carousel: pause/resume logic ========
+  const carouselRef = useRef<HTMLDivElement | null>(null);
+  const inViewRef = useRef<boolean>(true);
+  const [inView, setInView] = useState(true);
+  const [userInteracting, setUserInteracting] = useState(false);
+  const intervalRef = useRef<number | null>(null);
+  const resumeTimerRef = useRef<number | null>(null);
 
-  // exclude the focused plan from orbiting planets
+  // Observe whether the carousel card is on screen
+  useEffect(() => {
+    if (!carouselRef.current) return;
+    const el = carouselRef.current;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        const vis = entries[0].isIntersecting;
+        inViewRef.current = vis;
+        setInView(vis);
+      },
+      { root: null, threshold: 0.4 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  // Auto-slide on mobile when in view and not interacting
+  useEffect(() => {
+    if (!isMobile) return;
+    const shouldRun = inView && !userInteracting;
+    if (shouldRun) {
+      intervalRef.current = window.setInterval(() => {
+        setIndex((i) => (i + 1) % len);
+      }, 5000) as unknown as number;
+    }
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [isMobile, inView, userInteracting, len]);
+
+  const pauseForInteraction = (ms = 6000) => {
+    setUserInteracting(true);
+    if (resumeTimerRef.current) {
+      clearTimeout(resumeTimerRef.current);
+      resumeTimerRef.current = null;
+    }
+    resumeTimerRef.current = window.setTimeout(() => {
+      // Resume only if carousel is visible
+      if (inViewRef.current) setUserInteracting(false);
+    }, ms) as unknown as number;
+  };
+
+  // Swipe helper (works for both views—mobile matters most)
+  const swipe = useSwipe(
+    () => { pauseForInteraction(); next(); },
+    () => { pauseForInteraction(); prev(); }
+  );
+
+  // exclude the focused plan from orbiting planets for desktop
   const planets = orderedPlans.map((p, i) => ({ plan: p, i })).filter(({ i }) => i !== index);
 
   // utility: compute angle per slot
@@ -456,17 +514,15 @@ const Pricing: React.FC = () => {
       <Header darkMode={darkMode} toggleDarkMode={() => setDarkMode((d) => !d)} />
 
       {/* Galaxy Background */}
-      <div className="absolute inset-0 -z-10">{/* keeps it behind everything */}
+      <div className="absolute inset-0 -z-10">
         <Starfield />
       </div>
 
       {/* Content wrapper with top padding (header height ~80px) */}
-      <main className="pt-24" {...swipe}>
+      <main className="pt-24">
         {/* Top controls row (legend button + plan buttons on desktop) */}
         <div className="relative z-10 flex items-center justify-between px-4 sm:px-6 py-2">
-          {/* Left spacer so header remains the only "branding" */}
-          <div />
-
+          <div /> {/* spacer to keep header as the only brand on left */}
           <div className="flex items-center gap-3">
             <button
               className="sm:hidden inline-flex items-center px-3 py-2 rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 transition"
@@ -480,7 +536,7 @@ const Pricing: React.FC = () => {
               {orderedPlans.map((p, i) => (
                 <button
                   key={p.key}
-                  onClick={() => setIndex(i)}
+                  onClick={() => { pauseForInteraction(); setIndex(i); }}
                   className={`px-3 py-1 rounded-lg text-sm border transition ${
                     i === index
                       ? "border-white/60 bg-white/10"
@@ -502,10 +558,7 @@ const Pricing: React.FC = () => {
               {orderedPlans.map((p, i) => (
                 <button
                   key={p.key}
-                  onClick={() => {
-                    setIndex(i);
-                    setLegendOpen(false);
-                  }}
+                  onClick={() => { pauseForInteraction(); setIndex(i); setLegendOpen(false); }}
                   className={`w-full px-3 py-2 rounded-xl text-left text-sm border transition ${
                     i === index
                       ? "border-white/60 bg-white/10"
@@ -521,7 +574,12 @@ const Pricing: React.FC = () => {
 
         {/* MOBILE CAROUSEL */}
         <div className="relative z-0 sm:hidden px-4 pb-6">
-          <div className="w-full">
+          <div
+            className="w-full"
+            ref={carouselRef}
+            onTouchStart={() => pauseForInteraction()}
+            {...swipe}
+          >
             <div className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur p-6 shadow-[0_0_40px_rgba(255,255,255,0.10)]">
               <div className="text-xs uppercase tracking-widest text-white/70 mb-2 text-center">
                 In focus
@@ -542,6 +600,7 @@ const Pricing: React.FC = () => {
                 <a
                   href={current.cta.href}
                   className="mt-4 mx-auto w-full inline-flex items-center justify-center px-4 py-2 rounded-xl bg-white text-black font-semibold hover:bg-white/90 transition shadow"
+                  onClick={() => pauseForInteraction()}
                 >
                   {current.cta.label}
                 </a>
@@ -552,7 +611,7 @@ const Pricing: React.FC = () => {
                 {orderedPlans.map((_, i) => (
                   <button
                     key={i}
-                    onClick={() => setIndex(i)}
+                    onClick={() => { pauseForInteraction(); setIndex(i); }}
                     className={`h-2 w-2 rounded-full transition ${
                       i === index ? "bg-cyan-400" : "bg-white/30 hover:bg-white/60"
                     }`}
@@ -611,8 +670,7 @@ const Pricing: React.FC = () => {
               </div>
             </div>
 
-            {/* Orbiting planets — container rotates; each planet is positioned with rotate→translate.
-                Inner label runs a reverse rotation so text stays upright */}
+            {/* Orbiting planets — rotate→translate; inner label counter-rotates to stay upright */}
             <div className="absolute inset-0" style={{ animation: "orbit-rotate 30s linear infinite" }}>
               {planets.map(({ plan, i: planIndex }, slot) => {
                 const totalSlots = planets.length;
