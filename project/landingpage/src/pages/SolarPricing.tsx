@@ -666,16 +666,16 @@ const Pricing: React.FC = () => {
               style={{
                 animation: animEnabled ? "orbit-rotate 32s linear infinite" : "none",
                 willChange: "transform",
-                transformOrigin: "50% 50%", // ensure perfect center rotation
+                transformOrigin: "50% 50%", // keep the orbit rotation perfectly centered
               }}
             >
               {orderedPlans
                 .map((p, i) => ({ plan: p, i }))
                 .map(({ plan, i: planIndex }, slotIdx, arr) => {
                   const total = arr.length;
-                  const startAngle = -90; // start at top (12 o'clock) for visual symmetry
+                  const startAngle = -90; // 12 o'clock
                   const angle = startAngle + (360 / total) * slotIdx;
-                  const radius = "34%"; // distance from container center to planet center
+                  const radius = "38%"; // slightly larger so the ring clears the center orb → looks evenly spaced
                   return (
                     <button
                       key={plan.key}
