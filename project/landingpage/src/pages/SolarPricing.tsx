@@ -1,19 +1,17 @@
 import React, { useMemo, useRef, useState, useEffect } from "react";
-// ⬇️ Adjust this path if your Header lives somewhere else
-import Header from "../components/Header";
+import { Link, useLocation } from "react-router-dom";
+import { Menu, X, Code } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 /**
- * Route: /pricing
- * Stack: React + Tailwind
- * Single-file drop in. No new files created.
- *
- * Adds:
- * - CRAZY neon galaxy background (dense & sparse stars, shimmer, aurora, pulsing nebula, shooting stars, parallax)
- * - Desktop orbit (30s) using rotate→translate (no cos/sin) + counter-rotate labels
- * - Mobile carousel with auto-slide (5s) + swipe
- * - Auto-slide pauses when carousel is off-screen or after user interaction; resumes on return/idle
- * - Forces dark mode (no light mode)
+ * /pricing — Solar orbit layout with CRAZY neon galaxy background
+ * Notes:
+ * - LocalHeader is scoped to this file only (your other pages keep their header).
+ * - Dark mode forced; no theme toggle.
+ * - Mobile carousel auto-slides, pauses on interaction or when scrolled out of view.
  */
+
+/* ----------------------------- TYPES & DATA ----------------------------- */
 
 type PlanKind = "core" | "optional" | "one-time" | "custom";
 
@@ -57,12 +55,7 @@ const PLANS_IN_ORDER: Plan[] = [
     cadence: "One-Time",
     kind: "core",
     shortBullets: ["1 Page Site", "Responsive", "Contact Form"],
-    features: [
-      "1 Page Website",
-      "Mobile Responsive",
-      "Contact Form",
-      "Basic SEO Setup",
-    ],
+    features: ["1 Page Website", "Mobile Responsive", "Contact Form", "Basic SEO Setup"],
     notIncluded: ["Hosting", "Edits after delivery", "Extra pages"],
     spotlightColor: "ring-emerald-400",
     cta: { label: "Order Basic", href: "#contact" },
@@ -81,11 +74,7 @@ const PLANS_IN_ORDER: Plan[] = [
       "Custom Domain Setup",
     ],
     notIncluded: ["Hosting", "Ongoing support", "Advanced integrations"],
-    addOns: [
-      "Extra Page - $50",
-      "Logo Design - $75",
-      "Rush Delivery 48 hours - +$100",
-    ],
+    addOns: ["Extra Page - $50", "Logo Design - $75", "Rush Delivery 48 hours - +$100"],
     spotlightColor: "ring-cyan-400",
     cta: { label: "Order Pro", href: "#contact" },
   },
@@ -106,17 +95,8 @@ const PLANS_IN_ORDER: Plan[] = [
       "1 Week of Post-Launch Support",
       "SEO Foundations: headers, meta, structure",
     ],
-    notIncluded: [
-      "Hosting and domain unless added",
-      "Ongoing edits after 1 week",
-      "Booking or store setups",
-    ],
-    addOns: [
-      "Hosting Only - $30 per month",
-      "Logo Design - $75",
-      "Rush Delivery 48 hours - +$100",
-      "Extra Page - $50 per page",
-    ],
+    notIncluded: ["Hosting and domain unless added", "Ongoing edits after 1 week", "Booking or store setups"],
+    addOns: ["Hosting Only - $30 per month", "Logo Design - $75", "Rush Delivery 48 hours - +$100", "Extra Page - $50 per page"],
     spotlightColor: "ring-yellow-400",
     cta: { label: "Get Elite Build", href: "#contact" },
   },
@@ -172,11 +152,7 @@ const PLANS_IN_ORDER: Plan[] = [
       "1 Edit Batch per Month",
       "Basic Support",
     ],
-    notIncluded: [
-      "Subscriptions",
-      "Advanced filtering",
-      "Shipping calculators",
-    ],
+    notIncluded: ["Subscriptions", "Advanced filtering", "Shipping calculators"],
     spotlightColor: "ring-rose-400",
     cta: { label: "Start Ecommerce", href: "#contact" },
   },
@@ -195,10 +171,7 @@ const PLANS_IN_ORDER: Plan[] = [
       "Socials, Reviews, Google Business Management",
       "Dedicated Account Manager",
     ],
-    notIncluded: [
-      "Large ecommerce without quote",
-      "Complex data migrations without quote",
-    ],
+    notIncluded: ["Large ecommerce without quote", "Complex data migrations without quote"],
     spotlightColor: "ring-amber-400",
     cta: { label: "Start VIP Flex", href: "#contact" },
   },
@@ -222,7 +195,6 @@ const PLANS_IN_ORDER: Plan[] = [
   },
 ];
 
-/** Orbit order (your requested flow) */
 const ORDER_KEYS = [
   "startup",
   "basic",
@@ -235,7 +207,8 @@ const ORDER_KEYS = [
   "custom",
 ];
 
-/** Swipe helper */
+/* ------------------------------- UTILITIES ------------------------------ */
+
 function useSwipe(onLeft: () => void, onRight: () => void) {
   const startX = useRef<number | null>(null);
   const startY = useRef<number | null>(null);
@@ -247,46 +220,193 @@ function useSwipe(onLeft: () => void, onRight: () => void) {
     if (startX.current == null || startY.current == null) return;
     const dx = e.changedTouches[0].clientX - startX.current;
     const dy = e.changedTouches[0].clientY - startY.current;
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
-      if (dx < 0) onLeft();
-      else onRight();
-    }
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) (dx < 0 ? onLeft : onRight)();
     startX.current = null;
     startY.current = null;
   }
   return { onTouchStart, onTouchEnd };
 }
 
-/** CRAZY Neon Galaxy Background (sparkles, shimmers, shooting stars, parallax) */
+/* ------------------------- LOCAL PAGE-ONLY HEADER ------------------------ */
+
+const LocalHeader: React.FC = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const navItems = [
+    { label: "Home", path: "/" },
+    { label: "Services", path: "/services" },
+    { label: "About", path: "/about" },
+    { label: "Our Mission", path: "/why-we-exist" },
+    { label: "Contact", path: "/contact" },
+  ];
+
+  return (
+    <motion.header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        isScrolled ? "bg-slate-900/80 backdrop-blur-xl shadow-2xl border-b border-slate-700/20" : "bg-transparent"
+      }`}
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+    >
+      {/* neon logo glow (page-only) */}
+      <style>{`
+        @keyframes logoPulse { 0%{opacity:.35;transform:scale(1)} 50%{opacity:.85;transform:scale(1.07)} 100%{opacity:.35;transform:scale(1)} }
+        @keyframes logoOrbit { 0%{transform:rotate(0)} 100%{transform:rotate(360deg)} }
+      `}</style>
+
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-20">
+          <Link to="/" className="flex-shrink-0 group">
+            <motion.div className="relative flex items-center space-x-3" whileHover={{ scale: 1.05 }}>
+              {/* outer orbit halo */}
+              <div
+                className="absolute -inset-4 rounded-2xl opacity-60 blur-2xl pointer-events-none"
+                style={{
+                  background:
+                    "conic-gradient(from 0deg, rgba(16,185,129,.45), rgba(59,130,246,.45), rgba(168,85,247,.45), rgba(16,185,129,.45))",
+                  animation: "logoOrbit 10s linear infinite",
+                }}
+              />
+              {/* core pulse */}
+              <div
+                className="absolute -inset-2 rounded-2xl bg-emerald-400/15 blur-xl pointer-events-none"
+                style={{ animation: "logoPulse 4.5s ease-in-out infinite" }}
+              />
+              {/* icon */}
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-blue-600 rounded-xl blur-lg opacity-40 group-hover:opacity-60 transition-opacity"></div>
+                <div className="relative bg-gradient-to-r from-emerald-600 to-blue-600 p-2 rounded-xl shadow-lg shadow-emerald-500/25">
+                  <Code className="h-8 w-8 text-white" />
+                </div>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-2xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
+                  Built4You
+                </span>
+                <span className="text-xs text-slate-300/80 font-medium tracking-wider">WEB SOLUTIONS</span>
+              </div>
+            </motion.div>
+          </Link>
+
+          {/* desktop nav */}
+          <nav className="hidden lg:flex items-center space-x-1">
+            {navItems.map((item) => (
+              <Link
+                key={item.label}
+                to={item.path}
+                className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                  location.pathname === item.path
+                    ? "text-emerald-400 bg-emerald-900/20"
+                    : "text-slate-300 hover:text-emerald-400 hover:bg-slate-800/50"
+                }`}
+              >
+                {item.label}
+                {location.pathname === item.path && (
+                  <motion.div
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-emerald-600 to-blue-600 rounded-full"
+                    layoutId="activeTab"
+                    transition={{ duration: 0.3 }}
+                  />
+                )}
+              </Link>
+            ))}
+          </nav>
+
+          {/* mobile menu button */}
+          <div className="lg:hidden">
+            <motion.button
+              onClick={() => setIsMenuOpen((v) => !v)}
+              className="p-2 rounded-lg text-slate-200 hover:bg-slate-800/60 transition-colors"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <AnimatePresence mode="wait">
+                {isMenuOpen ? (
+                  <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}>
+                    <X className="h-6 w-6" />
+                  </motion.div>
+                ) : (
+                  <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }}>
+                    <Menu className="h-6 w-6" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.button>
+          </div>
+        </div>
+
+        {/* mobile nav */}
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div
+              className="lg:hidden bg-slate-900/95 border-t border-slate-700/20 shadow-xl backdrop-blur-xl"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="px-4 py-6 space-y-2">
+                {navItems.map((item, i) => (
+                  <motion.div key={item.label} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.06 }}>
+                    <Link
+                      to={item.path}
+                      onClick={() => setIsMenuOpen(false)}
+                      className={`block px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
+                        location.pathname === item.path
+                          ? "text-emerald-400 bg-emerald-900/20"
+                          : "text-slate-300 hover:text-emerald-400 hover:bg-slate-800"
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.header>
+  );
+};
+
+/* --------------------------- BACKGROUND (CRAZY) -------------------------- */
+
 const Starfield: React.FC = () => (
   <>
     <style>{`
       :root { --mx: 0px; --my: 0px; }
-
       @keyframes twinkleA { 0%{opacity:1;transform:translateY(0)}50%{opacity:.55;transform:translateY(-.8px)}100%{opacity:1;transform:translateY(0)} }
       @keyframes twinkleB { 0%{opacity:.9;transform:translateY(0)}50%{opacity:.4;transform:translateY(.8px)}100%{opacity:.9;transform:translateY(0)} }
       @keyframes auroraShift { 0%{background-position:0% 50%,100% 50%;opacity:.6}50%{background-position:100% 50%,0% 50%;opacity:.95}100%{background-position:0% 50%,100% 50%;opacity:.6} }
       @keyframes pulseNebula { 0%{opacity:.25;transform:scale(1)}50%{opacity:.7;transform:scale(1.06)}100%{opacity:.25;transform:scale(1)} }
-      @keyframes orbit-rotate { 0%{transform:rotate(0)}100%{transform:rotate(360deg)} }
-      @keyframes orbit-rotate-reverse { 0%{transform:rotate(0)}100%{transform:rotate(-360deg)} }
-      @keyframes shimmerNoise { 0% { opacity:.25; } 50% { opacity:.45; } 100% { opacity:.25; } }
+      @keyframes shimmerNoise { 0% { opacity:.2; } 50% { opacity:.45; } 100% { opacity:.2; } }
       @keyframes shoot {
         0%   { transform: translate3d(-10vw,-10vh,0) rotate(45deg); opacity: 0; }
         5%   { opacity: 1; }
         70%  { opacity: .9; }
         100% { transform: translate3d(120vw,120vh,0) rotate(45deg); opacity: 0; }
       }
-
+      @keyframes orbit-rotate { 0%{transform:rotate(0)}100%{transform:rotate(360deg)} }
+      @keyframes orbit-rotate-reverse { 0%{transform:rotate(0)}100%{transform:rotate(-360deg)} }
       @media (prefers-reduced-motion: reduce) {
         .anim { animation: none !important; }
         .parallax { transform: none !important; }
       }
     `}</style>
 
-    {/* deep base */}
     <div className="absolute inset-0 bg-[#02020a]" />
 
-    {/* Dense stars */}
+    {/* star layers */}
     <div
       className="absolute inset-0 anim parallax"
       style={{
@@ -303,8 +423,6 @@ const Starfield: React.FC = () => (
         transform: "translate3d(calc(var(--mx) * 0.08), calc(var(--my) * 0.08), 0)",
       }}
     />
-
-    {/* Sparse bright stars */}
     <div
       className="absolute inset-0 anim parallax"
       style={{
@@ -319,7 +437,7 @@ const Starfield: React.FC = () => (
       }}
     />
 
-    {/* Shimmer grain overlay */}
+    {/* shimmer + aurora + nebula */}
     <div
       className="absolute inset-0 anim pointer-events-none"
       style={{
@@ -329,25 +447,21 @@ const Starfield: React.FC = () => (
         mixBlendMode: "screen",
       }}
     />
-
-    {/* Aurora bands */}
     <div
       className="absolute inset-0 anim parallax"
       style={{
         background:
-          "radial-gradient(1200px 600px at 8% 18%, rgba(0,255,220,0.28), transparent 60%), radial-gradient(1000px 520px at 85% 28%, rgba(170,100,255,0.32), transparent 60%), radial-gradient(1000px 520px at 40% 85%, rgba(0,160,255,0.28), transparent 60%)",
+          "radial-gradient(1200px 600px at 8% 18%, rgba(0,255,220,0.30), transparent 60%), radial-gradient(1000px 520px at 85% 28%, rgba(170,100,255,0.34), transparent 60%), radial-gradient(1000px 520px at 40% 85%, rgba(0,160,255,0.30), transparent 60%)",
         mixBlendMode: "screen",
         animation: "auroraShift 30s ease-in-out infinite",
         transform: "translate3d(calc(var(--mx) * 0.04), calc(var(--my) * 0.04), 0)",
       }}
     />
-
-    {/* Nebula pulse */}
     <div
       className="absolute inset-0 anim parallax"
       style={{
         background:
-          "radial-gradient(700px 700px at 70% 18%, rgba(255,0,200,0.22), transparent 72%), radial-gradient(800px 800px at 18% 80%, rgba(0,120,255,0.22), transparent 72%)",
+          "radial-gradient(700px 700px at 70% 18%, rgba(255,0,200,0.25), transparent 72%), radial-gradient(800px 800px at 18% 80%, rgba(0,120,255,0.25), transparent 72%)",
         mixBlendMode: "screen",
         filter: "blur(2px)",
         animation: "pulseNebula 12s ease-in-out infinite",
@@ -355,50 +469,51 @@ const Starfield: React.FC = () => (
       }}
     />
 
-    {/* Shooting stars (several, staggered) */}
-    {Array.from({ length: 6 }).map((_, i) => (
+    {/* random shooting stars */}
+    {Array.from({ length: 7 }).map((_, i) => (
       <div
         key={i}
         className="absolute pointer-events-none anim"
         style={{
-          top: `${-10 - i * 5}vh`,
-          left: `${-10 - (i % 3) * 12}vw`,
+          top: `${-12 - i * 5}vh`,
+          left: `${-14 - (i % 3) * 12}vw`,
           width: "22vmin",
           height: "2px",
           background:
             "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 30%, rgba(0,255,255,0.8) 70%, rgba(255,0,255,0) 100%)",
           boxShadow: "0 0 12px rgba(255,255,255,0.8)",
           transform: "rotate(45deg)",
-          animation: `shoot ${12 + i * 2}s linear ${i * 2.5}s infinite`,
+          animation: `shoot ${12 + i * 2}s linear ${i * 2.3}s infinite`,
           opacity: 0,
         }}
       />
     ))}
 
-    {/* Color spots + vignette */}
-    <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_55%_10%,rgba(56,189,248,0.32),transparent_62%),radial-gradient(circle_at_82%_24%,rgba(168,85,247,0.32),transparent_62%),radial-gradient(circle_at_20%_78%,rgba(34,197,94,0.24),transparent_62%)]" />
-    <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_60%,rgba(0,0,0,0.6)_100%)]" />
+    {/* wide soft spots */}
+    <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_55%_10%,rgba(56,189,248,0.35),transparent_62%),radial-gradient(circle_at_82%_24%,rgba(168,85,247,0.35),transparent_62%),radial-gradient(circle_at_20%_78%,rgba(34,197,94,0.26),transparent_62%)]" />
+    {/* vignette */}
+    <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_60%,rgba(0,0,0,0.62)_100%)]" />
   </>
 );
 
+/* ---------------------------------- PAGE --------------------------------- */
+
 const Pricing: React.FC = () => {
-  // ======== Force dark mode (no light mode) ========
+  // force dark (site-wide theme remains untouched elsewhere)
   useEffect(() => {
-    const root = document.documentElement;
-    root.classList.add("dark");
+    document.documentElement.classList.add("dark");
     try { localStorage.setItem("theme", "dark"); } catch {}
   }, []);
 
-  // ======== Plans/order ========
   const orderedPlans = useMemo(
     () => ORDER_KEYS.map((k) => PLANS_IN_ORDER.find((p) => p.key === k)!).filter(Boolean),
     []
   );
+
   const [index, setIndex] = useState(0);
   const [legendOpen, setLegendOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  // detect mobile for carousel mode
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
     check();
@@ -406,7 +521,7 @@ const Pricing: React.FC = () => {
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  // Parallax: track mouse (desktop only)
+  // mouse parallax control for bg
   useEffect(() => {
     const handle = (e: MouseEvent) => {
       const cx = window.innerWidth / 2;
@@ -426,7 +541,7 @@ const Pricing: React.FC = () => {
   const next = () => setIndex((i) => (i + 1) % len);
   const prev = () => setIndex((i) => (i - 1 + len) % len);
 
-  // ======== Mobile carousel: pause/resume logic ========
+  // mobile auto-slide with pause logic
   const carouselRef = useRef<HTMLDivElement | null>(null);
   const inViewRef = useRef<boolean>(true);
   const [inView, setInView] = useState(true);
@@ -434,7 +549,6 @@ const Pricing: React.FC = () => {
   const intervalRef = useRef<number | null>(null);
   const resumeTimerRef = useRef<number | null>(null);
 
-  // Observe whether the carousel card is on screen
   useEffect(() => {
     if (!carouselRef.current) return;
     const el = carouselRef.current;
@@ -450,14 +564,11 @@ const Pricing: React.FC = () => {
     return () => obs.disconnect();
   }, []);
 
-  // Auto-slide on mobile when in view and not interacting
   useEffect(() => {
     if (!isMobile) return;
     const shouldRun = inView && !userInteracting;
     if (shouldRun) {
-      intervalRef.current = window.setInterval(() => {
-        setIndex((i) => (i + 1) % len);
-      }, 5000) as unknown as number;
+      intervalRef.current = window.setInterval(() => setIndex((i) => (i + 1) % len), 5000) as unknown as number;
     }
     return () => {
       if (intervalRef.current) {
@@ -469,45 +580,34 @@ const Pricing: React.FC = () => {
 
   const pauseForInteraction = (ms = 6000) => {
     setUserInteracting(true);
-    if (resumeTimerRef.current) {
-      clearTimeout(resumeTimerRef.current);
-      resumeTimerRef.current = null;
-    }
+    if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
     resumeTimerRef.current = window.setTimeout(() => {
       if (inViewRef.current) setUserInteracting(false);
     }, ms) as unknown as number;
   };
 
-  // Swipe helper (mobile focus)
   const swipe = useSwipe(
     () => { pauseForInteraction(); next(); },
     () => { pauseForInteraction(); prev(); }
   );
 
-  // exclude the focused plan from orbiting planets for desktop
   const planets = orderedPlans.map((p, i) => ({ plan: p, i })).filter(({ i }) => i !== index);
 
-  // utility: compute angle per slot (degrees)
-  function angleForSlot(slotIndex: number, totalSlots: number) {
-    const step = 360 / totalSlots;
-    return step * slotIndex;
-  }
+  const angleForSlot = (slotIndex: number, totalSlots: number) => (360 / totalSlots) * slotIndex;
 
   return (
     <div className="relative min-h-screen text-white overflow-hidden">
-      {/* Your site header (toggle hidden/ignored in header file) */}
-      <Header darkMode={true} toggleDarkMode={() => {}} />
+      {/* Page-only header with glow */}
+      <LocalHeader />
 
-      {/* Galaxy Background */}
+      {/* background */}
       <div className="absolute inset-0 -z-10">
         <Starfield />
       </div>
 
-      {/* Content wrapper with top padding (header height ~80px) */}
       <main className="pt-24">
-        {/* Top controls row */}
-        <div className="relative z-10 flex items-center justify-between px-4 sm:px-6 py-2">
-          <div /> {/* spacer */}
+        {/* top controls */}
+        <div className="relative z-10 flex items-center justify-end px-4 sm:px-6 py-2">
           <div className="flex items-center gap-3">
             <button
               className="sm:hidden inline-flex items-center px-3 py-2 rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 transition"
@@ -523,9 +623,7 @@ const Pricing: React.FC = () => {
                   key={p.key}
                   onClick={() => { pauseForInteraction(); setIndex(i); }}
                   className={`px-3 py-1 rounded-lg text-sm border transition ${
-                    i === index
-                      ? "border-white/60 bg-white/10"
-                      : "border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10"
+                    i === index ? "border-white/60 bg-white/10" : "border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10"
                   }`}
                   title={p.name}
                 >
@@ -536,7 +634,7 @@ const Pricing: React.FC = () => {
           </div>
         </div>
 
-        {/* Mobile legend list */}
+        {/* mobile legend */}
         {legendOpen && (
           <div className="relative z-10 sm:hidden px-4 pb-2">
             <div className="rounded-2xl border border-white/10 bg-black/40 backdrop-blur p-2 grid grid-cols-2 gap-2">
@@ -545,9 +643,7 @@ const Pricing: React.FC = () => {
                   key={p.key}
                   onClick={() => { pauseForInteraction(); setIndex(i); setLegendOpen(false); }}
                   className={`w-full px-3 py-2 rounded-xl text-left text-sm border transition ${
-                    i === index
-                      ? "border-white/60 bg-white/10"
-                      : "border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10"
+                    i === index ? "border-white/60 bg-white/10" : "border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10"
                   }`}
                 >
                   {p.name}
@@ -566,9 +662,7 @@ const Pricing: React.FC = () => {
             onTouchEnd={(e) => swipe.onTouchEnd(e)}
           >
             <div className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur p-6 shadow-[0_0_40px_rgba(255,255,255,0.10)]">
-              <div className="text-xs uppercase tracking-widest text-white/70 mb-2 text-center">
-                In focus
-              </div>
+              <div className="text-xs uppercase tracking-widest text-white/70 mb-2 text-center">In focus</div>
               <h2 className="text-2xl font-bold text-center">{current.name}</h2>
               <div className="mt-1 text-lg font-semibold text-center">
                 {current.price} <span className="text-white/70">{current.cadence}</span>
@@ -591,42 +685,43 @@ const Pricing: React.FC = () => {
                 </a>
               )}
 
-              {/* Carousel dots */}
               <div className="mt-5 flex items-center justify-center gap-1.5">
                 {orderedPlans.map((_, i) => (
                   <button
                     key={i}
                     onClick={() => { pauseForInteraction(); setIndex(i); }}
-                    className={`h-2 w-2 rounded-full transition ${
-                      i === index ? "bg-cyan-400" : "bg-white/30 hover:bg-white/60"
-                    }`}
+                    className={`h-2 w-2 rounded-full transition ${i === index ? "bg-cyan-400" : "bg-white/30 hover:bg-white/60"}`}
                     aria-label={`Go to ${orderedPlans[i].name}`}
                   />
                 ))}
               </div>
 
-              <div className="mt-3 text-center text-xs text-white/60">
-                Auto slides. Swipe to change.
-              </div>
+              <div className="mt-3 text-center text-xs text-white/60">Auto slides. Swipe to change.</div>
             </div>
           </div>
         </div>
 
         {/* DESKTOP ORBIT */}
         <div className="relative z-0 hidden sm:flex items-center justify-center pt-6 pb-8 sm:pb-12">
-          <div className="relative w-[92vw] max-w-[1050px] aspect-square">
-            {/* Orbit ring (rotates slowly) */}
+          <div className="relative w-[92vw] max-w-[1120px] aspect-square">
+            {/* Orbit ring (glow boosted) */}
             <div
-              className="absolute inset-0 rounded-full border border-white/10"
-              style={{ animation: "orbit-rotate 30s linear infinite" }}
+              className="absolute inset-0 rounded-full"
+              style={{
+                animation: "orbit-rotate 30s linear infinite",
+                boxShadow: "inset 0 0 40px rgba(0,255,255,0.25), 0 0 120px rgba(99,102,241,0.18)",
+                border: "1px solid rgba(255,255,255,0.08)",
+                background:
+                  "radial-gradient(circle at center, rgba(0,255,255,0.12) 0%, rgba(0,0,0,0) 55%)",
+              }}
             />
 
-            {/* Center orb spotlight */}
+            {/* Center orb */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div
-                className={`relative w-[64vw] max-w-[520px] aspect-square rounded-full bg-white/5 backdrop-blur-sm border ${
+                className={`relative w-[56vw] max-w-[480px] aspect-square rounded-full bg-white/5 backdrop-blur-sm border ${
                   current.spotlightColor || "ring-cyan-400"
-                } ring-2 ring-inset border-white/10 shadow-[0_0_50px_rgba(0,255,255,0.25)]`}
+                } ring-2 ring-inset border-white/10 shadow-[0_0_60px_rgba(0,255,255,0.28)]`}
               >
                 <div className="absolute inset-[10%] rounded-full bg-black/30 blur-2xl" />
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
@@ -643,49 +738,38 @@ const Pricing: React.FC = () => {
                       </li>
                     ))}
                   </ul>
-                  {current.cta && (
-                    <a
-                      href={current.cta.href}
-                      className="mt-4 inline-flex items-center px-4 py-2 rounded-xl bg-white text-black font-semibold hover:bg-white/90 transition shadow"
-                    >
-                      {current.cta.label}
-                    </a>
-                  )}
                 </div>
               </div>
             </div>
 
-            {/* Orbiting planets — rotate→translate; inner label counter-rotates to stay upright */}
+            {/* Plan planets — more spacing (radius 60%), smaller chips */}
             <div className="absolute inset-0" style={{ animation: "orbit-rotate 30s linear infinite" }}>
               {planets.map(({ plan, i: planIndex }, slot) => {
                 const totalSlots = planets.length;
                 const angle = angleForSlot(slot, totalSlots);
-                const radius = "42%"; // distance from center
+                const radius = "60%";
                 return (
                   <button
                     key={plan.key}
                     onClick={() => setIndex(planIndex)}
                     className="absolute left-1/2 top-1/2"
-                    style={{
-                      transform: `translate(-50%, -50%) rotate(${angle}deg) translate(${radius})`,
-                    }}
+                    style={{ transform: `translate(-50%, -50%) rotate(${angle}deg) translate(${radius})` }}
                     title={plan.name}
                     aria-label={plan.name}
                   >
                     <div
-                      className={`relative w-28 h-28 rounded-full bg-white/10 border border-white/15 backdrop-blur-sm ring-2 ${
+                      className={`relative w-24 h-24 rounded-full bg-white/10 border border-white/15 backdrop-blur-sm ring-2 ${
                         plan.spotlightColor || "ring-cyan-400"
                       } hover:scale-105 transition-transform shadow-[0_0_30px_rgba(255,255,255,0.18)]`}
                     >
                       <div className="absolute inset-0 rounded-full bg-black/30" />
-                      {/* Counter-rotate text */}
                       <div
                         className="absolute inset-0 flex flex-col items-center justify-center text-center px-2"
                         style={{ animation: "orbit-rotate-reverse 30s linear infinite" }}
                       >
                         <div className="text-[10px] uppercase tracking-wider text-white/70">Plan</div>
-                        <div className="text-sm font-bold">{plan.name}</div>
-                        <div className="text-xs text-white/80">
+                        <div className="text-[13px] font-bold">{plan.name}</div>
+                        <div className="text-[11px] text-white/80">
                           {plan.price} <span className="opacity-70">{plan.cadence}</span>
                         </div>
                       </div>
@@ -695,7 +779,7 @@ const Pricing: React.FC = () => {
               })}
             </div>
 
-            {/* Desktop arrows */}
+            {/* arrows */}
             <div className="hidden sm:block">
               <button
                 onClick={prev}
@@ -717,7 +801,7 @@ const Pricing: React.FC = () => {
           </div>
         </div>
 
-        {/* Details panel */}
+        {/* DETAILS */}
         <div className="relative z-10 mx-auto w-full max-w-4xl px-4 sm:px-6 pb-16">
           <div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur p-6 sm:p-8 shadow-[0_0_40px_rgba(255,255,255,0.10)]">
             <div className="flex items-start justify-between gap-4">
@@ -729,19 +813,11 @@ const Pricing: React.FC = () => {
               </div>
               <div className="hidden sm:flex items-center gap-2">
                 {index > 0 && (
-                  <button
-                    onClick={prev}
-                    className="px-3 py-2 rounded-lg border border-white/15 bg-white/10 hover:bg-white/20"
-                    title="Previous"
-                  >
+                  <button onClick={prev} className="px-3 py-2 rounded-lg border border-white/15 bg-white/10 hover:bg-white/20" title="Previous">
                     Previous
                   </button>
                 )}
-                <button
-                  onClick={next}
-                  className="px-3 py-2 rounded-lg border border-white/15 bg-white/10 hover:bg-white/20"
-                  title="Next"
-                >
+                <button onClick={next} className="px-3 py-2 rounded-lg border border-white/15 bg-white/10 hover:bg-white/20" title="Next">
                   Next
                 </button>
               </div>
@@ -791,26 +867,15 @@ const Pricing: React.FC = () => {
               </div>
             </div>
 
-            {/* Universal Add Ons */}
             <div className="mt-8 pt-6 border-t border-white/10">
               <div className="text-sm uppercase tracking-wider text-white/70 mb-2">Universal Add Ons</div>
               <ul className="grid sm:grid-cols-2 gap-2">
-                <li className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-white/70" /> Extra Page - $50 per page
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-white/70" /> Logo Design - $75 one time
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-white/70" /> Hosting Only for Custom builds - $30 per month
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-white/70" /> Rush Delivery 48 hours - +$100
-                </li>
+                <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-white/70" /> Extra Page - $50 per page</li>
+                <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-white/70" /> Logo Design - $75 one time</li>
+                <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-white/70" /> Hosting Only for Custom builds - $30 per month</li>
+                <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-white/70" /> Rush Delivery 48 hours - +$100</li>
               </ul>
-              <div className="mt-4 text-xs text-white/60">
-                Large ecommerce and complex data migrations require a quote.
-              </div>
+              <div className="mt-4 text-xs text-white/60">Large ecommerce and complex data migrations require a quote.</div>
             </div>
           </div>
         </div>
