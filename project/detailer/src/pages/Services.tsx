@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { CheckCircle, Phone, MessageSquare, Instagram, Clock, MapPin, Zap } from 'lucide-react';
@@ -7,17 +7,48 @@ import BookingForm from '../components/BookingForm';
 const Services: React.FC = () => {
   const [packagesRef, packagesInView] = useInView({ threshold: 0.1, triggerOnce: true });
   const [formRef, formInView] = useInView({ threshold: 0.1, triggerOnce: true });
-  
+
   useEffect(() => {
-    // Handle anchor navigation
-    const hash = window.location.hash;
-    if (hash) {
-      const element = document.querySelector(hash);
-      if (element) {
-        setTimeout(() => {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
+    // Robust anchor handling for HashRouter and query params
+    // Works with:
+    //   /#/services#book
+    //   /#/services#packages
+    //   /#/services (no scroll)
+    //   /#/services?scroll=book
+    //   /#/services?scroll=packages
+    try {
+      const hash = window.location.hash || ''; // e.g. "#/services#book" or "#book"
+      const search = window.location.search || ''; // e.g. "?scroll=book"
+
+      let targetId: string | null = null;
+
+      // If query param exists, it wins
+      if (search) {
+        const params = new URLSearchParams(search);
+        const v = params.get('scroll');
+        if (v && (v === 'book' || v === 'packages')) {
+          targetId = v;
+        }
       }
+
+      // Otherwise, try to derive from the last #fragment
+      if (!targetId && hash) {
+        // Take the part after the final '#'
+        const afterLastHash = hash.split('#').pop(); // "services" | "book" | "packages"
+        if (afterLastHash && (afterLastHash === 'book' || afterLastHash === 'packages')) {
+          targetId = afterLastHash;
+        }
+      }
+
+      if (targetId) {
+        // Defer so the section exists in DOM
+        setTimeout(() => {
+          const el = document.getElementById(targetId!);
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }, 120);
+      }
+    } catch {
+      // no-op: never let anchor logic crash the page
     }
   }, []);
 
