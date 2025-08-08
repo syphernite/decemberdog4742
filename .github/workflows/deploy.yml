@@ -1,31 +1,14 @@
+# File: .github/workflows/deploy.yml
 name: 🚀 Build & Deploy All Clients
 
 on:
-  # Run after the auto-prepare workflow completes (so we deploy the patched commit)
-  workflow_run:
-    workflows: ["🛠 Auto-prepare project subfolders (GH Pages)"]
-    types: [completed]
-
-  # Allow manual runs anytime
-  workflow_dispatch:
-
-  # Also deploy on pushes that DON'T touch project/**
-  # (root changes like 404.html, README, or workflow edits)
   push:
     branches: [ main ]
-    paths-ignore:
-      - 'project/**'
-
-concurrency:
-  group: deploy-${{ github.ref }}
-  cancel-in-progress: true
+  workflow_dispatch:
 
 jobs:
   pages:
-    # Skip if the auto-prepare workflow failed; also ignore bot loops on direct pushes
-    if: (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success') && github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
-
     steps:
       # 1) Checkout code
       - uses: actions/checkout@v4
@@ -38,21 +21,48 @@ jobs:
       # 3) Build each client demo (skip landingpage)
       - name: Build demos
         run: |
+          set -e
           for dir in project/*/; do
             slug=$(basename "$dir")
             if [ "$slug" = "landingpage" ]; then
               continue
             fi
-            echo "🔨 Building demo: $slug"
+
+            echo "🔨 Considering demo: $slug"
+
+            # Must have package.json
+            if [ ! -f "$dir/package.json" ]; then
+              echo "➡️  Skipping $slug (no package.json)"
+              continue
+            fi
+
+            echo "🔧 Installing deps for: $slug"
             cd "$dir"
-            npm ci
-            npm run build
+            if [ -f package-lock.json ]; then
+              npm ci
+            else
+              npm install --no-audit --no-fund
+            fi
+
+            echo "🏗  Building: $slug"
+            # Try project's build script; if missing/fails, fall back to vite build
+            if npm run -s build; then
+              echo "✅ Built with npm run build"
+            else
+              echo "ℹ️  Falling back to npx vite build for $slug"
+              npx vite build
+            fi
+
             cd ../../
 
-            # Copy dist into its own folder
-            rm -rf "$slug"
-            mkdir -p "$slug"
-            cp -r "project/$slug/dist/." "$slug/"
+            # Copy dist into its own folder if present
+            if [ -d "project/$slug/dist" ]; then
+              rm -rf "$slug"
+              mkdir -p "$slug"
+              cp -r "project/$slug/dist/." "$slug/"
+            else
+              echo "⚠️  $slug built but no dist/ found — skipping copy"
+            fi
           done
 
       # 4) Build & copy landing page into root

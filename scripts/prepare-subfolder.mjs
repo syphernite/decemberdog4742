@@ -4,7 +4,7 @@
 // 2) Ensure index.html uses relative paths for favicon + main script
 // 3) Ensure HashRouter wraps <App /> in src/main.(tsx|jsx|ts|js)
 // 4) Remove BrowserRouter wrapper in src/App.(tsx|jsx|ts|js)
-// If a required file (index.html or vite.config) is missing, it will create a minimal one.
+// 5) **NEW**: Ensure package.json has "build": "vite build" when Vite is present
 //
 // It does NOT change your UI/content — only subfolder/deploy plumbing.
 
@@ -66,7 +66,6 @@ async function ensureViteConfig(dir, slug) {
   let file = (await exists(tsPath)) ? tsPath : (await exists(jsPath)) ? jsPath : null;
 
   if (!file) {
-    // create vite.config.ts
     const tpl = `import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
@@ -89,8 +88,7 @@ export default defineConfig({
   } else if (/defineConfig\s*\(\s*\{/.test(src)) {
     src = src.replace(/defineConfig\s*\(\s*\{/, (m) => `${m}\n  ${baseLine},`);
   } else {
-    // fallback: append
-    src += `\n\n// Injected by prepare-subfolder\nexport const __base='/${slug}/'\n`;
+    src += `\n// Injected by prepare-subfolder\nexport const __base='/${slug}/'\n`;
   }
 
   await fs.writeFile(file, src, enc);
@@ -105,7 +103,7 @@ async function fixIndexHtmlPaths(indexPath) {
   // favicon → relative
   src = src.replace(/href=["']\/vite\.svg["']/g, 'href="./vite.svg"');
 
-  // script main → relative (any /src/main.*)
+  // script main → relative
   src = src.replace(
     /(<script[^>]+src=["'])\/src\/main\.(t|j)sx?(["'][^>]*><\/script>)/g,
     "$1./src/main.$2x$3"
@@ -134,7 +132,6 @@ async function ensureHashRouterInMain(dir) {
   if (!hasImportLine) {
     src = `import { HashRouter } from 'react-router-dom';\n` + src;
   } else if (!hasHash) {
-    // add HashRouter to existing named import
     src = src.replace(
       /import\s+\{([^}]+)\}\s+from\s+['"]react-router-dom['"];/,
       (m, g1) => {
@@ -145,9 +142,7 @@ async function ensureHashRouterInMain(dir) {
     );
   }
 
-  // Wrap <App /> if not wrapped
   if (!/<HashRouter>[\s\S]*<\/HashRouter>/.test(src)) {
-    // handle <App /> or <App/>
     src = src.replace(/<App\s*\/>/, "<HashRouter><App /></HashRouter>");
     src = src.replace(/<App\/>/, "<HashRouter><App /></HashRouter>");
   }
@@ -171,11 +166,9 @@ async function removeBrowserRouterInApp(dir) {
   let src = await fs.readFile(appPath, enc);
   const before = src;
 
-  // Strip <BrowserRouter> tags
   src = src.replace(/<BrowserRouter[^>]*>/g, "");
   src = src.replace(/<\/BrowserRouter>/g, "");
 
-  // Remove BrowserRouter from import list (but keep others)
   src = src.replace(
     /import\s+\{([^}]+)\}\s+from\s+['"]react-router-dom['"];/g,
     (m, g1) => {
@@ -185,7 +178,7 @@ async function removeBrowserRouterInApp(dir) {
         .filter((n) => n && n !== "BrowserRouter");
       return names.length
         ? `import { ${names.join(", ")} } from 'react-router-dom';`
-        : ""; // remove import if it had only BrowserRouter
+        : "";
     }
   );
 
@@ -194,6 +187,25 @@ async function removeBrowserRouterInApp(dir) {
     console.log(`✔ removed BrowserRouter in ${path.relative(ROOT, appPath)}`);
   }
   return appPath;
+}
+
+async function ensureBuildScript(dir) {
+  const pkgPath = path.join(dir, "package.json");
+  if (!(await exists(pkgPath))) return;
+
+  const pkg = JSON.parse(await fs.readFile(pkgPath, enc));
+  const scripts = pkg.scripts || {};
+  const deps = { ...(pkg.dependencies || {}), ...(pkg.devDependencies || {}) };
+
+  const hasBuild = typeof scripts.build === "string" && scripts.build.trim().length > 0;
+  const hasVite = "vite" in deps;
+
+  if (!hasBuild && hasVite) {
+    scripts.build = "vite build";
+    pkg.scripts = scripts;
+    await fs.writeFile(pkgPath, JSON.stringify(pkg, null, 2) + "\n", enc);
+    console.log(`✔ added "build": "vite build" to ${path.relative(ROOT, pkgPath)}`);
+  }
 }
 
 (async () => {
@@ -206,15 +218,15 @@ async function removeBrowserRouterInApp(dir) {
   for (const { slug, dir } of dirs) {
     if (slug === "landingpage") continue;
 
-    const looksLikeVite = await exists(path.join(dir, "package.json"));
-    if (!looksLikeVite) continue;
+    const hasPkg = await exists(path.join(dir, "package.json"));
+    if (!hasPkg) continue;
 
-    // Ensure baseline files exist/are fixed
     const indexPath = await ensureIndexHtml(dir);
     await ensureViteConfig(dir, slug);
     await fixIndexHtmlPaths(indexPath);
     await ensureHashRouterInMain(dir);
     await removeBrowserRouterInApp(dir);
+    await ensureBuildScript(dir); // <-- new auto-add step
   }
 
   console.log("Done preparing subfolders.");
