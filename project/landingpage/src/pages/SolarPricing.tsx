@@ -1,15 +1,19 @@
-import React, { useMemo, useRef, useState, useEffect } from "react";
+// src/pages/SolarPricing.tsx
+import React, { useMemo, useRef, useState, useEffect, useLayoutEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Code } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
+// 👉 Put your image at: src/assets/space-bg.jpg
+// (You can rename it; just update this import.)
+import spaceBg from "../assets/space-bg.jpg";
+
 /**
  * /pricing — Solar orbit layout (performance-optimized)
  * - Local header with “Our Work” link
- * - Static star background (no animated gradients)
- * - Single orbit animation; removed per-planet spin
- * - Counter-rotate labels to stay upright only once
- * - Removed mouse parallax and heavy starfield layers
+ * - Static galaxy background (imported image)
+ * - Single orbit animation; labels counter-rotate to stay upright
+ * - Even spacing: positions computed in JS using the container’s pixel size
  */
 
 /* ----------------------------- TYPES & DATA ----------------------------- */
@@ -208,9 +212,7 @@ const ORDER_KEYS = [
   "custom",
 ];
 
-/* --------------------------- SIMPLE STATIC BG --------------------------- */
-
-const BG_URL = "/assets/pricing-stars.jpg";
+/* --------------------------- STATIC BG --------------------------- */
 
 const StaticSpaceBG: React.FC = () => (
   <>
@@ -218,7 +220,7 @@ const StaticSpaceBG: React.FC = () => (
       className="absolute inset-0 -z-10"
       style={{
         backgroundColor: "#060616",
-        backgroundImage: `url('${BG_URL}')`,
+        backgroundImage: `url(${spaceBg})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -503,7 +505,7 @@ const Pricing: React.FC = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Reduced-motion support: pause orbit if user prefers it
+  // Reduced-motion support
   const [animEnabled, setAnimEnabled] = useState(true);
   useEffect(() => {
     const q = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -513,11 +515,32 @@ const Pricing: React.FC = () => {
     return () => q.removeEventListener?.("change", update);
   }, []);
 
+  /* ---------- EVEN SPACING WITH PIXEL POSITIONS ---------- */
+  const orbitRef = useRef<HTMLDivElement | null>(null);
+  const [orbitSize, setOrbitSize] = useState({ w: 0, h: 0 });
+
+  useLayoutEffect(() => {
+    const measure = () => {
+      if (!orbitRef.current) return;
+      const rect = orbitRef.current.getBoundingClientRect();
+      setOrbitSize({ w: rect.width, h: rect.height });
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    if (orbitRef.current) ro.observe(orbitRef.current);
+    window.addEventListener("resize", measure, { passive: true });
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, []);
+
+  const total = orderedPlans.length;
+  const startAngle = -90; // start at top
+
   return (
     <div className="relative min-h-screen text-white overflow-hidden">
       <LocalHeader />
-
-      {/* lightweight background */}
       <StaticSpaceBG />
 
       <main className="pt-24">
@@ -575,14 +598,9 @@ const Pricing: React.FC = () => {
           </div>
         )}
 
-        {/* MOBILE CAROUSEL (unchanged visuals) */}
+        {/* MOBILE CAROUSEL */}
         <div className="relative z-0 sm:hidden px-4 pb-6">
-          <div
-            className="w-full"
-            ref={carouselRef}
-            onTouchStart={() => pauseForInteraction()}
-            onTouchEnd={() => {}}
-          >
+          <div className="w-full" ref={carouselRef} onTouchStart={() => pauseForInteraction()} onTouchEnd={() => {}}>
             <div className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur p-6 shadow-[0_0_30px_rgba(255,255,255,0.08)]">
               <div className="text-xs uppercase tracking-widest text-white/70 mb-2 text-center">In focus</div>
               <h2 className="text-2xl font-bold text-center">{current.name}</h2>
@@ -626,14 +644,18 @@ const Pricing: React.FC = () => {
           </div>
         </div>
 
-        {/* DESKTOP ORBIT (single animation, lightweight) */}
+        {/* DESKTOP ORBIT (even spacing via pixel math) */}
         <div className="relative z-0 hidden sm:flex items-center justify-center pt-6 pb-8 sm:pb-12">
           <style>{`
             @keyframes orbit-rotate { 0%{transform:rotate(0)}100%{transform:rotate(360deg)} }
             @keyframes orbit-rotate-reverse { 0%{transform:rotate(0)}100%{transform:rotate(-360deg)} }
           `}</style>
 
-          <div className="relative w-[92vw] max-w-[1120px] aspect-square" style={{ willChange: "transform", transform: "translateZ(0)" }}>
+          <div
+            ref={orbitRef}
+            className="relative w-[92vw] max-w-[1120px] aspect-square"
+            style={{ willChange: "transform", transform: "translateZ(0)" }}
+          >
             {/* Center orb */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div
@@ -660,59 +682,65 @@ const Pricing: React.FC = () => {
               </div>
             </div>
 
-            {/* Plan planets — evenly spaced, centered ring */}
+            {/* Orbit ring: container rotates, labels counter-rotate.
+               Coordinates are computed in JS for perfect spacing. */}
             <div
               className="absolute inset-0"
               style={{
                 animation: animEnabled ? "orbit-rotate 32s linear infinite" : "none",
                 willChange: "transform",
-                transformOrigin: "50% 50%", // keep the orbit rotation perfectly centered
+                transformOrigin: "50% 50%",
               }}
             >
-              {orderedPlans
-                .map((p, i) => ({ plan: p, i }))
-                .map(({ plan, i: planIndex }, slotIdx, arr) => {
-                  const total = arr.length;
-                  const startAngle = -90; // 12 o'clock
-                  const angle = startAngle + (360 / total) * slotIdx;
-                  const radius = "38%"; // slightly larger so the ring clears the center orb → looks evenly spaced
-                  return (
-                    <button
-                      key={plan.key}
-                      onClick={() => setIndex(planIndex)}
-                      className="absolute -translate-x-1/2 -translate-y-1/2"
-                      style={{
-                        left: `calc(50% + ${radius} * cos(${angle}deg))`,
-                        top: `calc(50% + ${radius} * sin(${angle}deg))`,
-                        willChange: "transform",
-                        transform: "translateZ(0)",
-                      }}
-                      title={plan.name}
-                      aria-label={plan.name}
+              {orderedPlans.map((plan, slotIdx) => {
+                const angleDeg = startAngle + (360 / total) * slotIdx;
+                const angle = (angleDeg * Math.PI) / 180;
+
+                // Use 34% of container width as radius to mirror your visual
+                const radius = orbitSize.w * 0.34;
+                const cx = orbitSize.w / 2;
+                const cy = orbitSize.h / 2;
+
+                const left = cx + radius * Math.cos(angle);
+                const top = cy + radius * Math.sin(angle);
+
+                return (
+                  <button
+                    key={plan.key}
+                    onClick={() => setIndex(slotIdx)}
+                    className="absolute -translate-x-1/2 -translate-y-1/2"
+                    style={{
+                      left: `${left}px`,
+                      top: `${top}px`,
+                      willChange: "transform",
+                      transform: "translateZ(0)",
+                    }}
+                    title={plan.name}
+                    aria-label={plan.name}
+                  >
+                    <div
+                      className={`relative w-[5.5rem] h-[5.5rem] overflow-hidden rounded-full bg-white/10 border border-white/15 backdrop-blur-sm ring-2 ${
+                        plan.spotlightColor || "ring-cyan-400"
+                      } hover:scale-105 transition-transform shadow-[0_0_24px_rgba(255,255,255,0.14)]`}
                     >
+                      <div className="absolute inset-0 rounded-full bg-black/30" />
                       <div
-                        className={`relative w-[5.5rem] h-[5.5rem] overflow-hidden rounded-full bg-white/10 border border-white/15 backdrop-blur-sm ring-2 ${
-                          plan.spotlightColor || "ring-cyan-400"
-                        } hover:scale-105 transition-transform shadow-[0_0_24px_rgba(255,255,255,0.14)]`}
+                        className="absolute inset-0 flex flex-col items-center justify-center text-center px-1 leading-tight"
+                        style={{
+                          animation: animEnabled ? "orbit-rotate-reverse 32s linear infinite" : "none",
+                          willChange: "transform",
+                        }}
                       >
-                        <div className="absolute inset-0 rounded-full bg-black/30" />
-                        <div
-                          className="absolute inset-0 flex flex-col items-center justify-center text-center px-1 leading-tight"
-                          style={{
-                            animation: animEnabled ? "orbit-rotate-reverse 32s linear infinite" : "none",
-                            willChange: "transform",
-                          }}
-                        >
-                          <div className="text-[10px] uppercase tracking-wider text-white/70">Plan</div>
-                          <div className="text-[12px] font-semibold break-words text-center px-1">{plan.name}</div>
-                          <div className="text-[11px] text-white/80 text-center">
-                            {plan.price} <span className="opacity-70">{plan.cadence}</span>
-                          </div>
+                        <div className="text-[10px] uppercase tracking-wider text-white/70">Plan</div>
+                        <div className="text-[12px] font-semibold break-words text-center px-1">{plan.name}</div>
+                        <div className="text-[11px] text-white/80 text-center">
+                          {plan.price} <span className="opacity-70">{plan.cadence}</span>
                         </div>
                       </div>
-                    </button>
-                  );
-                })}
+                    </div>
+                  </button>
+                );
+              })}
             </div>
 
             {/* arrows */}
