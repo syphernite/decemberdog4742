@@ -1,57 +1,47 @@
-✅ Built4You: Add New Client Checklist (Drop at Project Root)
+# HOW TO ADD NEW DEMOS TO BUILT4YOU.ORG
 
-1️⃣  Create Folder in /project/
-----------------------------------
-- Name it after your client (e.g. barbershop)
-- Paste Bolt export inside (src/, index.html, etc.)
+========================================================
+MULTI-PAGE SITE (with sub-routes like /services, /about)
+========================================================
+1) Create folder: project/<folder>  (lowercase, no spaces)
 
-2️⃣  Fix vite.config.ts
-----------------------------------
-Create or replace vite.config.ts in the client folder with:
+2) Inside that folder, open vite.config.ts and set:
+   base: '/<folder>/'
 
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+3) In src/main.tsx:
+   - Use <HashRouter> from react-router-dom (NOT BrowserRouter)
+   - Example:
+       import { HashRouter } from 'react-router-dom';
+       ReactDOM.createRoot(document.getElementById('root')).render(
+         <HashRouter>
+           <App />
+         </HashRouter>
+       );
 
-export default defineConfig({
-  plugins: [react()],
-  base: '/clientfoldername/', // change this to match folder name
-})
+4) All internal routes in App.tsx use relative paths:
+   path="/services"  (NOT /<folder>/services)
 
-3️⃣  Fix index.html Paths
-----------------------------------
-In index.html, change:
-  <script type="module" src="/src/main.tsx"></script>
-To:
-  <script type="module" src="./src/main.tsx"></script>
+5) Commit & push — deploy.yml will build it to built4you.org/<folder>/...
 
-4️⃣  Add HashRouter (ONLY if multipage)
-----------------------------------
-In src/main.tsx, replace contents with:
 
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import { HashRouter } from 'react-router-dom';
-import App from './App.tsx';
-import './index.css';
+========================================================
+SINGLE-PAGE SITE (one main page, no sub-routes)
+========================================================
+1) Create folder: project/<folder>  (lowercase, no spaces)
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <HashRouter basename="/">
-      <App />
-    </HashRouter>
-  </StrictMode>
-);
+2) Inside that folder, create vite.config.ts:
+   import { defineConfig } from 'vite';
+   import react from '@vitejs/plugin-react';
+   export default defineConfig({
+     plugins: [react()],
+     base: '/<folder>/',
+   });
 
-(If one-page only, skip this step)
+3) In index.html:
+   - Make favicon relative: href="./vite.svg"
+   - Make main script relative: src="./src/main.tsx"
 
-5️⃣  Test & Push
-----------------------------------
-cd project/clientfolder
-npm install
-npm run build
-git add .
-git commit -m "add client site"
-git push
+4) Internal links are section IDs only (#about, #services)
+   — No separate /services or /about pages.
 
-✅ Done! GitHub Actions will deploy to:
-https://built4you.org/clientfolder
+5) Commit & push — deploy.yml will build it to built4you.org/<folder>/...
