@@ -74,7 +74,7 @@ const DEMOS: Demo[] = [
 
   // Placeholders (keep as-is)
   {
-    title: "Blue Collar / Trades",
+    title: "Contractor",
     slug: "trades",
     externalUrl: "https://demos.built4you.org/trades",
     badge: "Professional",
