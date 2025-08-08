@@ -4,8 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Code } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// 👉 Put your image at: src/assets/space-bg.jpg
-// (You can rename it; just update this import.)
+// Put your image at: src/assets/space-bg.jpg (or update this import)
 import spaceBg from "../assets/space-bg.jpg";
 
 /**
@@ -13,7 +12,7 @@ import spaceBg from "../assets/space-bg.jpg";
  * - Local header with “Our Work” link
  * - Static galaxy background (imported image)
  * - Single orbit animation; labels counter-rotate to stay upright
- * - Even spacing: positions computed in JS using the container’s pixel size
+ * - EVEN SPACING: planets are placed by pixel math at a fixed gap from the center orb’s edge
  */
 
 /* ----------------------------- TYPES & DATA ----------------------------- */
@@ -435,7 +434,7 @@ const Pricing: React.FC = () => {
   const next = () => setIndex((i) => (i + 1) % len);
   const prev = () => setIndex((i) => (i - 1 + len) % len);
 
-  // mobile auto-slide (unchanged)
+  // mobile auto-slide
   const carouselRef = useRef<HTMLDivElement | null>(null);
   const inViewRef = useRef<boolean>(true);
   const [inView, setInView] = useState(true);
@@ -505,7 +504,7 @@ const Pricing: React.FC = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Reduced-motion support
+  // Reduced-motion
   const [animEnabled, setAnimEnabled] = useState(true);
   useEffect(() => {
     const q = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -515,28 +514,45 @@ const Pricing: React.FC = () => {
     return () => q.removeEventListener?.("change", update);
   }, []);
 
-  /* ---------- EVEN SPACING WITH PIXEL POSITIONS ---------- */
+  /* ---------- EVEN SPACING BY PIXEL MEASUREMENT ---------- */
   const orbitRef = useRef<HTMLDivElement | null>(null);
+  const centerRef = useRef<HTMLDivElement | null>(null);
   const [orbitSize, setOrbitSize] = useState({ w: 0, h: 0 });
+  const [centerRadius, setCenterRadius] = useState(0);
 
   useLayoutEffect(() => {
     const measure = () => {
-      if (!orbitRef.current) return;
-      const rect = orbitRef.current.getBoundingClientRect();
-      setOrbitSize({ w: rect.width, h: rect.height });
+      if (orbitRef.current) {
+        const r = orbitRef.current.getBoundingClientRect();
+        setOrbitSize({ w: r.width, h: r.height });
+      }
+      if (centerRef.current) {
+        const r = centerRef.current.getBoundingClientRect();
+        setCenterRadius(r.width / 2);
+      }
     };
     measure();
-    const ro = new ResizeObserver(measure);
-    if (orbitRef.current) ro.observe(orbitRef.current);
+    const roOrbit = new ResizeObserver(measure);
+    const roCenter = new ResizeObserver(measure);
+    if (orbitRef.current) roOrbit.observe(orbitRef.current);
+    if (centerRef.current) roCenter.observe(centerRef.current);
     window.addEventListener("resize", measure, { passive: true });
     return () => {
-      ro.disconnect();
+      roOrbit.disconnect();
+      roCenter.disconnect();
       window.removeEventListener("resize", measure);
     };
   }, []);
 
+  // planet visual size in px (5.5rem ~= 88px with 16px root font)
+  const PLANET_DIAMETER = 5.5 * 16;
+  const planetRadius = PLANET_DIAMETER / 2;
+
+  // fixed gap (distance between center orb edge and planet edge)
+  const GAP_BETWEEN = 56; // tweak this to your taste
+
   const total = orderedPlans.length;
-  const startAngle = -90; // start at top
+  const startAngle = -90; // start at 12 o'clock
 
   return (
     <div className="relative min-h-screen text-white overflow-hidden">
@@ -644,7 +660,7 @@ const Pricing: React.FC = () => {
           </div>
         </div>
 
-        {/* DESKTOP ORBIT (even spacing via pixel math) */}
+        {/* DESKTOP ORBIT (even spacing from center orb edge) */}
         <div className="relative z-0 hidden sm:flex items-center justify-center pt-6 pb-8 sm:pb-12">
           <style>{`
             @keyframes orbit-rotate { 0%{transform:rotate(0)}100%{transform:rotate(360deg)} }
@@ -659,6 +675,7 @@ const Pricing: React.FC = () => {
             {/* Center orb */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div
+                ref={centerRef}
                 className={`relative w-[46vw] max-w-[400px] aspect-square rounded-full bg-white/5 backdrop-blur-sm border ${
                   current.spotlightColor || "ring-cyan-400"
                 } ring-2 ring-inset border-white/10 shadow-[0_0_40px_rgba(0,255,255,0.2)]`}
@@ -682,8 +699,7 @@ const Pricing: React.FC = () => {
               </div>
             </div>
 
-            {/* Orbit ring: container rotates, labels counter-rotate.
-               Coordinates are computed in JS for perfect spacing. */}
+            {/* Orbit ring */}
             <div
               className="absolute inset-0"
               style={{
@@ -696,10 +712,13 @@ const Pricing: React.FC = () => {
                 const angleDeg = startAngle + (360 / total) * slotIdx;
                 const angle = (angleDeg * Math.PI) / 180;
 
-                // Use 34% of container width as radius to mirror your visual
-                const radius = orbitSize.w * 0.34;
+                // distance from container center:
                 const cx = orbitSize.w / 2;
                 const cy = orbitSize.h / 2;
+
+                // radius from center point to planet center:
+                // = centerOrbRadius + gap + planetRadius
+                const radius = centerRadius + GAP_BETWEEN + planetRadius;
 
                 const left = cx + radius * Math.cos(angle);
                 const top = cy + radius * Math.sin(angle);
