@@ -1,6 +1,6 @@
 // src/pages/DemoShowcase.tsx
 import React, { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ExternalLink,
@@ -15,7 +15,7 @@ import {
  * - 9 demos (Photography, Barbershop, Detailer, Food Truck, Trades, Tattoo, Landscaping, Ecommerce, Creator)
  * - Live, scrollable iframes
  * - Selective “See Pricing” (only where it maps 1:1 nicely)
- * - “Start Your Project” passes query params so Contact page can prefill
+ * - Contact CTA passes query params so Contact page can prefill
  * - Search includes title, badge, tagline, keywords, features
  */
 
@@ -49,14 +49,13 @@ const DEMOS: Demo[] = [
     tagline: "Appointments, pricing tables, reviews.",
     keywords: ["barber", "appointments", "pricing", "reviews", "map"],
     features: ["mobile-first", "contact form", "maps", "social links"],
-    // no pricingPlanKey: not a 1:1 mapping you requested
   },
 
-  // Not completed (placeholders for now)
+  // New prod links for testing
   {
     title: "Detailer",
     slug: "detailer",
-    externalUrl: "https://demos.built4you.org/detailer",
+    externalUrl: "https://built4you.org/detailer",
     badge: "Auto",
     tagline: "Before/after gallery, service tiers, mobile-first.",
     keywords: ["auto", "detailing", "before/after", "packages", "mobile"],
@@ -64,14 +63,16 @@ const DEMOS: Demo[] = [
   },
   {
     title: "Food Truck",
-    slug: "foodtruck", // use foodtruck (no hyphen) to match your preference
-    externalUrl: "https://demos.built4you.org/foodtruck", // fixed: no hyphen
+    slug: "foodtruck", // no hyphen
+    externalUrl: "https://built4you.org/foodtruck",
     badge: "Hospitality",
     tagline: "Menu, schedule, locations, events.",
     keywords: ["menu", "events", "schedule", "locations", "truck"],
     features: ["map", "contact form", "social links"],
-    pricingPlanKey: "basic", // per your instruction: Basic (one page)
+    pricingPlanKey: "basic", // one-page
   },
+
+  // Placeholders (keep as-is)
   {
     title: "Blue Collar / Trades",
     slug: "trades",
@@ -107,7 +108,7 @@ const DEMOS: Demo[] = [
     tagline: "Products, cart, checkout, promos.",
     keywords: ["store", "cart", "checkout", "stripe", "shopify"],
     features: ["products", "search", "filters", "checkout"],
-    pricingPlanKey: "ecom-starter", // 1:1 mapping
+    pricingPlanKey: "ecom-starter",
   },
   {
     title: "Influencer / Creator",
@@ -218,7 +219,6 @@ const DemoShowcase: React.FC = () => {
   const contactURLFor = (demo: Demo) => {
     const params = new URLSearchParams();
     params.set("demo", demo.slug);
-    params.set("demoName", demo.title); // include readable name for your form
     if (demo.pricingPlanKey) params.set("plan", demo.pricingPlanKey);
     params.set("source", "demos");
     return `/contact?${params.toString()}`;
@@ -278,7 +278,6 @@ const DemoShowcase: React.FC = () => {
               {/* Card Header */}
               <div className="px-4 pt-4 flex items-center justify-between">
                 <div className="min-w-0">
-                  {/* removed truncate to avoid cutting off */}
                   <h3 className="text-lg font-semibold leading-tight">{d.title}</h3>
                   {d.tagline && (
                     <p className="text-sm text-gray-600 dark:text-gray-400">{d.tagline}</p>
@@ -309,7 +308,6 @@ const DemoShowcase: React.FC = () => {
                 </a>
 
                 <div className="flex items-center gap-3 ml-auto">
-                  {/* Selective pricing button (only when pricingPlanKey exists) */}
                   {pricingURLFor(d) && (
                     <Link
                       to={pricingURLFor(d)!}
@@ -325,11 +323,10 @@ const DemoShowcase: React.FC = () => {
                     </Link>
                   )}
 
-                  {/* Contact button (prefill) */}
                   <Link
                     to={contactURLFor(d)}
                     className="inline-flex items-center gap-2 text-sm font-medium text-emerald-700 dark:text-emerald-300 hover:underline"
-                    title="We’ll prefill your message with this demo"
+                    title="Contact us with this demo prefilled"
                   >
                     Start Your Project
                     <ArrowRight className="h-4 w-4" />
