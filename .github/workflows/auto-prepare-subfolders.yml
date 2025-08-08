@@ -23,8 +23,10 @@ permissions:
 
 jobs:
   prepare:
-    # Avoid loops and run only when useful
-    if: ${{ github.actor != 'github-actions[bot]' && (github.event_name != 'push' || !contains(github.event.head_commit.message, 'chore(bot): auto-prepare')) }}
+    # Avoid loops (don’t rerun on the bot’s auto-commit)
+    if: >-
+      ${{ github.actor != 'github-actions[bot]' &&
+          !contains(github.event.head_commit.message, 'chore(bot): auto-prepare') }}
     runs-on: ubuntu-latest
 
     steps:
