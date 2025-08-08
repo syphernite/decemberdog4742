@@ -15,8 +15,6 @@ import spaceBg from "../assets/space-bg.jpg";
  * - R = centerOrbRadius + GAP + planetRadius (measured from actual element)
  */
 
-/* ----------------------------- TYPES & DATA ----------------------------- */
-
 type PlanKind = "core" | "optional" | "one-time" | "custom";
 
 type Plan = {
@@ -380,7 +378,6 @@ const LocalHeader: React.FC = () => {
 /* ---------------------------------- PAGE --------------------------------- */
 
 const Pricing: React.FC = () => {
-  // force dark
   useEffect(() => {
     document.documentElement.classList.add("dark");
     try {
@@ -520,9 +517,7 @@ const Pricing: React.FC = () => {
     };
   }, []);
 
-  // fixed gap (distance between center orb edge and planet edge)
   const GAP_BETWEEN = 56; // px — tweak to move the ring in/out
-
   const total = orderedPlans.length;
   const startAngle = -90; // 12 o'clock
 
@@ -705,7 +700,14 @@ const Pricing: React.FC = () => {
                       } hover:scale-105 transition-transform shadow-[0_0_24px_rgba(255,255,255,0.14)]`}
                     >
                       <div className="absolute inset-0 rounded-full bg-black/30" />
-                      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-1 leading-tight">
+                      {/* Counter-rotate inner content so it stays upright while the ring orbits */}
+                      <div
+                        className="absolute inset-0 flex flex-col items-center justify-center text-center px-1 leading-tight"
+                        style={{
+                          animation: animEnabled ? "orbit-rotate-reverse 32s linear infinite" : "none",
+                          willChange: "transform",
+                        }}
+                      >
                         <div className="text-[10px] uppercase tracking-wider text-white/70">Plan</div>
                         <div className="text-[12px] font-semibold break-words text-center px-1">{plan.name}</div>
                         <div className="text-[11px] text-white/80 text-center">
