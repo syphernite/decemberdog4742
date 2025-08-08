@@ -8,11 +8,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import spaceBg from "../assets/space-bg.jpg";
 
 /**
- * /pricing — Solar orbit layout (performance-optimized)
- * - Local header with “Our Work” link
- * - Static galaxy background (imported image)
- * - Single orbit animation; labels counter-rotate to stay upright
- * - EVEN SPACING: planets are placed by pixel math at a fixed gap from the center orb’s edge
+ * SolarPricing — Even-radius orbit
+ * - Every planet is the SAME distance from the center orb at all times.
+ * - Implemented via transform chain:
+ *   translate(-50%,-50%) rotate(A) translateX(R) rotate(-A)
+ * - R = centerOrbRadius + GAP + planetRadius (measured from actual element)
  */
 
 /* ----------------------------- TYPES & DATA ----------------------------- */
@@ -272,25 +272,8 @@ const LocalHeader: React.FC = () => {
         <div className="flex justify-between items-center h-20">
           <Link to="/" className="flex-shrink-0 group">
             <motion.div className="relative flex items-center space-x-3" whileHover={{ scale: 1.05 }}>
-              <div
-                className="absolute -inset-4 rounded-2xl opacity-50 blur-xl pointer-events-none"
-                style={{
-                  background:
-                    "conic-gradient(from 0deg, rgba(16,185,129,.35), rgba(59,130,246,.35), rgba(168,85,247,.35), rgba(16,185,129,.35))",
-                  animation: "logoOrbit 12s linear infinite",
-                  willChange: "transform",
-                  transform: "translateZ(0)",
-                }}
-              />
-              <div
-                className="absolute -inset-2 rounded-2xl bg-emerald-400/10 blur-lg pointer-events-none"
-                style={{ animation: "logoPulse 5s ease-in-out infinite", willChange: "transform", transform: "translateZ(0)" }}
-              />
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-blue-600 rounded-xl blur-md opacity-40 group-hover:opacity-60 transition-opacity"></div>
-                <div className="relative bg-gradient-to-r from-emerald-600 to-blue-600 p-2 rounded-xl shadow-lg shadow-emerald-500/20">
-                  <Code className="h-8 w-8 text-white" />
-                </div>
+              <div className="relative bg-gradient-to-r from-emerald-600 to-blue-600 p-2 rounded-xl shadow-lg shadow-emerald-500/20">
+                <Code className="h-8 w-8 text-white" />
               </div>
               <div className="flex flex-col">
                 <span className="text-2xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
@@ -322,13 +305,6 @@ const LocalHeader: React.FC = () => {
                   }`}
                 >
                   {item.label}
-                  {location.pathname === item.path && (
-                    <motion.div
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-emerald-600 to-blue-600 rounded-full"
-                      layoutId="activeTab"
-                      transition={{ duration: 0.3 }}
-                    />
-                  )}
                 </Link>
               )
             )}
@@ -514,45 +490,41 @@ const Pricing: React.FC = () => {
     return () => q.removeEventListener?.("change", update);
   }, []);
 
-  /* ---------- EVEN SPACING BY PIXEL MEASUREMENT ---------- */
+  /* ---------- EVEN SPACING (MEASURE + TRANSFORM CHAIN) ---------- */
   const orbitRef = useRef<HTMLDivElement | null>(null);
   const centerRef = useRef<HTMLDivElement | null>(null);
-  const [orbitSize, setOrbitSize] = useState({ w: 0, h: 0 });
-  const [centerRadius, setCenterRadius] = useState(0);
+  const samplePlanetRef = useRef<HTMLDivElement | null>(null);
 
+  const [centerRadius, setCenterRadius] = useState(0);
+  const [planetRadius, setPlanetRadius] = useState(44); // fallback ≈ 5.5rem / 2
   useLayoutEffect(() => {
     const measure = () => {
-      if (orbitRef.current) {
-        const r = orbitRef.current.getBoundingClientRect();
-        setOrbitSize({ w: r.width, h: r.height });
-      }
       if (centerRef.current) {
         const r = centerRef.current.getBoundingClientRect();
         setCenterRadius(r.width / 2);
       }
+      if (samplePlanetRef.current) {
+        setPlanetRadius(samplePlanetRef.current.offsetWidth / 2);
+      }
     };
     measure();
-    const roOrbit = new ResizeObserver(measure);
-    const roCenter = new ResizeObserver(measure);
-    if (orbitRef.current) roOrbit.observe(orbitRef.current);
-    if (centerRef.current) roCenter.observe(centerRef.current);
+    const ro1 = new ResizeObserver(measure);
+    const ro2 = new ResizeObserver(measure);
+    if (centerRef.current) ro1.observe(centerRef.current);
+    if (orbitRef.current) ro2.observe(orbitRef.current);
     window.addEventListener("resize", measure, { passive: true });
     return () => {
-      roOrbit.disconnect();
-      roCenter.disconnect();
+      ro1.disconnect();
+      ro2.disconnect();
       window.removeEventListener("resize", measure);
     };
   }, []);
 
-  // planet visual size in px (5.5rem ~= 88px with 16px root font)
-  const PLANET_DIAMETER = 5.5 * 16;
-  const planetRadius = PLANET_DIAMETER / 2;
-
   // fixed gap (distance between center orb edge and planet edge)
-  const GAP_BETWEEN = 56; // tweak this to your taste
+  const GAP_BETWEEN = 56; // px — tweak to move the ring in/out
 
   const total = orderedPlans.length;
-  const startAngle = -90; // start at 12 o'clock
+  const startAngle = -90; // 12 o'clock
 
   return (
     <div className="relative min-h-screen text-white overflow-hidden">
@@ -660,7 +632,7 @@ const Pricing: React.FC = () => {
           </div>
         </div>
 
-        {/* DESKTOP ORBIT (even spacing from center orb edge) */}
+        {/* DESKTOP ORBIT (even spacing via transform chain) */}
         <div className="relative z-0 hidden sm:flex items-center justify-center pt-6 pb-8 sm:pb-12">
           <style>{`
             @keyframes orbit-rotate { 0%{transform:rotate(0)}100%{transform:rotate(360deg)} }
@@ -699,7 +671,7 @@ const Pricing: React.FC = () => {
               </div>
             </div>
 
-            {/* Orbit ring */}
+            {/* Rotating wrapper */}
             <div
               className="absolute inset-0"
               style={{
@@ -710,46 +682,30 @@ const Pricing: React.FC = () => {
             >
               {orderedPlans.map((plan, slotIdx) => {
                 const angleDeg = startAngle + (360 / total) * slotIdx;
-                const angle = (angleDeg * Math.PI) / 180;
-
-                // distance from container center:
-                const cx = orbitSize.w / 2;
-                const cy = orbitSize.h / 2;
-
-                // radius from center point to planet center:
-                // = centerOrbRadius + gap + planetRadius
                 const radius = centerRadius + GAP_BETWEEN + planetRadius;
-
-                const left = cx + radius * Math.cos(angle);
-                const top = cy + radius * Math.sin(angle);
 
                 return (
                   <button
                     key={plan.key}
                     onClick={() => setIndex(slotIdx)}
-                    className="absolute -translate-x-1/2 -translate-y-1/2"
+                    className="absolute"
                     style={{
-                      left: `${left}px`,
-                      top: `${top}px`,
+                      left: "50%",
+                      top: "50%",
+                      transform: `translate(-50%, -50%) rotate(${angleDeg}deg) translateX(${radius}px) rotate(${-angleDeg}deg)`,
                       willChange: "transform",
-                      transform: "translateZ(0)",
                     }}
                     title={plan.name}
                     aria-label={plan.name}
                   >
                     <div
+                      ref={slotIdx === 0 ? samplePlanetRef : undefined}
                       className={`relative w-[5.5rem] h-[5.5rem] overflow-hidden rounded-full bg-white/10 border border-white/15 backdrop-blur-sm ring-2 ${
                         plan.spotlightColor || "ring-cyan-400"
                       } hover:scale-105 transition-transform shadow-[0_0_24px_rgba(255,255,255,0.14)]`}
                     >
                       <div className="absolute inset-0 rounded-full bg-black/30" />
-                      <div
-                        className="absolute inset-0 flex flex-col items-center justify-center text-center px-1 leading-tight"
-                        style={{
-                          animation: animEnabled ? "orbit-rotate-reverse 32s linear infinite" : "none",
-                          willChange: "transform",
-                        }}
-                      >
+                      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-1 leading-tight">
                         <div className="text-[10px] uppercase tracking-wider text-white/70">Plan</div>
                         <div className="text-[12px] font-semibold break-words text-center px-1">{plan.name}</div>
                         <div className="text-[11px] text-white/80 text-center">
