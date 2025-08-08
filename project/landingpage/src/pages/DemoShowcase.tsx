@@ -141,7 +141,7 @@ const DemoShowcase: React.FC = () => {
             Demo Showcase
           </h1>
           <p className="max-w-2xl text-base sm:text-lg text-gray-600 dark:text-gray-300">
-            Live, scrollable previews. Use the CTAs to contact us with details prefilled.
+            Live, scrollable previews. 
           </p>
 
           {/* Search kept in code but hidden so nothing else breaks */}
