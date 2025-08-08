@@ -211,8 +211,7 @@ const ORDER_KEYS = [
 /* --------------------------- SIMPLE STATIC BG --------------------------- */
 
 const BG_URL =
-  // Prefer your provided stars image; update path if you place it elsewhere:
-  "/assets/pricing-stars.jpg"; // fallback-safe; leave as-is if you don't add the file
+  "/assets/pricing-stars.jpg";
 
 const StaticSpaceBG: React.FC = () => (
   <>
@@ -226,7 +225,6 @@ const StaticSpaceBG: React.FC = () => (
         backgroundRepeat: "no-repeat",
       }}
     />
-    {/* vignette for depth */}
     <div className="absolute inset-0 -z-10 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_60%,rgba(0,0,0,0.65)_100%)]" />
   </>
 );
@@ -249,7 +247,6 @@ const LocalHeader: React.FC = () => {
     { label: "Services", path: "/services" },
     { label: "About", path: "/about" },
     { label: "Our Mission", path: "/why-we-exist" },
-    // NEW: Our Work link
     { label: "Our Work", path: "https://built4you.org/#/demos" },
     { label: "Contact", path: "/contact" },
   ];
@@ -664,8 +661,7 @@ const Pricing: React.FC = () => {
               </div>
             </div>
 
-            {/* Plan planets: only the ORBIT container rotates.
-               Inner label block counter-rotates (same duration) so text stays upright. */}
+            {/* Plan planets — DO NOT filter out the focused one now */}
             <div
               className="absolute inset-0"
               style={{
@@ -675,7 +671,7 @@ const Pricing: React.FC = () => {
             >
               {orderedPlans
                 .map((p, i) => ({ plan: p, i }))
-                .filter(({ i }) => i !== index)
+                // removed: .filter(({ i }) => i !== index)
                 .map(({ plan, i: planIndex }, slotIdx, arr) => {
                   const angle = (360 / arr.length) * slotIdx;
                   const radius = "34%";
@@ -699,7 +695,6 @@ const Pricing: React.FC = () => {
                         } hover:scale-105 transition-transform shadow-[0_0_24px_rgba(255,255,255,0.14)]`}
                       >
                         <div className="absolute inset-0 rounded-full bg-black/30" />
-                        {/* Counter-rotate text only */}
                         <div
                           className="absolute inset-0 flex flex-col items-center justify-center text-center px-1 leading-tight"
                           style={{
