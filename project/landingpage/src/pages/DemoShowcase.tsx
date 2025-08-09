@@ -22,15 +22,91 @@ type Demo = {
 };
 
 const DEMOS: Demo[] = [
-  { title: "Photography", slug: "photography", externalUrl: "https://built4you.org/photography", badge: "Portfolio", tagline: "Visual-first galleries with booking.", keywords: ["gallery", "portfolio", "booking", "lightbox", "photographer"], features: ["responsive", "contact form", "seo", "image grid", "hero slideshow"] },
-  { title: "Barbershop", slug: "barbershop", externalUrl: "https://built4you.org/barbershop", badge: "Services", tagline: "Appointments, pricing tables, reviews.", keywords: ["barber", "appointments", "pricing", "reviews", "map"], features: ["mobile-first", "contact form", "maps", "social links"] },
-  { title: "Detailer", slug: "detailer", externalUrl: "https://built4you.org/detailer", badge: "Auto", tagline: "Before/after gallery, service tiers, mobile-first.", keywords: ["auto", "detailing", "before/after", "packages", "mobile"], features: ["gallery", "contact form", "pricing tiers"] },
-  { title: "Food Truck", slug: "foodtruck", externalUrl: "https://built4you.org/foodtruck", badge: "Food", tagline: "Menu, schedule, locations, events.", keywords: ["menu", "events", "schedule", "locations", "truck"], features: ["map", "contact form", "social links"], pricingPlanKey: "basic" },
-  { title: "Contractor", slug: "trades", externalUrl: "https://demos.built4you.org/trades", badge: "Professional", tagline: "Trust-building, licensing, quotes, service areas.", keywords: ["plumber", "electrician", "contractor", "quote", "service area"], features: ["contact form", "badges", "testimonials"] },
-  { title: "Tattoo", slug: "tattoo", externalUrl: "https://demos.built4you.org/tattoo", badge: "Portfolio", tagline: "Artist profiles, galleries, booking forms.", keywords: ["tattoo", "artists", "portfolio", "booking", "instagram"], features: ["gallery", "contact form", "profiles"] },
-  { title: "Pest Control", slug: "pestcontrol", externalUrl: "https://demos.built4you.org/pestcontrol", badge: "Home Services", tagline: "Instant service requests.", keywords: ["pest", "bugs", "seasonal", "services"], features: ["service plans", "contact form", "pricing tiers"] },
-  { title: "Ecommerce", slug: "ecommerce", externalUrl: "https://demos.built4you.org/ecommerce", badge: "Online Store", tagline: "Products, cart, checkout, promos.", keywords: ["store", "cart", "checkout", "stripe", "shopify"], features: ["products", "search", "filters", "checkout"], pricingPlanKey: "ecom-starter" },
-  { title: "Influencer / Creator", slug: "creator", externalUrl: "https://demos.built4you.org/creator", badge: "Personal Brand", tagline: "Link hub, content, email capture, offers.", keywords: ["creator", "influencer", "newsletter", "links", "offers"], features: ["email capture", "social links", "landing page"] },
+  {
+    title: "Photography",
+    slug: "photography",
+    externalUrl: "https://built4you.org/photography",
+    badge: "Portfolio",
+    tagline: "Visual-first galleries with booking.",
+    keywords: ["gallery", "portfolio", "booking", "lightbox", "photographer"],
+    features: ["responsive", "contact form", "seo", "image grid", "hero slideshow"],
+  },
+  {
+    title: "Barbershop",
+    slug: "barbershop",
+    externalUrl: "https://built4you.org/barbershop",
+    badge: "Services",
+    tagline: "Appointments, pricing tables, reviews.",
+    keywords: ["barber", "appointments", "pricing", "reviews", "map"],
+    features: ["mobile-first", "contact form", "maps", "social links"],
+  },
+  {
+    title: "Detailer",
+    slug: "detailer",
+    externalUrl: "https://built4you.org/detailer",
+    badge: "Auto",
+    tagline: "Before/after gallery, service tiers, mobile-first.",
+    keywords: ["auto", "detailing", "before/after", "packages", "mobile"],
+    features: ["gallery", "contact form", "pricing tiers"],
+  },
+  {
+    title: "Food Truck",
+    slug: "foodtruck",
+    externalUrl: "https://built4you.org/foodtruck",
+    badge: "Food",
+    tagline: "Menu, schedule, locations, events.",
+    keywords: ["menu", "events", "schedule", "locations", "truck"],
+    features: ["map", "contact form", "social links"],
+    pricingPlanKey: "basic",
+  },
+
+  // Updated to same-origin paths
+  {
+    title: "Contractor",
+    slug: "trades",
+    externalUrl: "https://built4you.org/trades",
+    badge: "Professional",
+    tagline: "Trust-building, licensing, quotes, service areas.",
+    keywords: ["plumber", "electrician", "contractor", "quote", "service area"],
+    features: ["contact form", "badges", "testimonials"],
+  },
+  {
+    title: "Tattoo",
+    slug: "tattooshop",
+    externalUrl: "https://built4you.org/tattooshop",
+    badge: "Portfolio",
+    tagline: "Artist profiles, galleries, booking forms.",
+    keywords: ["tattoo", "artists", "portfolio", "booking", "instagram"],
+    features: ["gallery", "contact form", "profiles"],
+  },
+  {
+    title: "Pest Control",
+    slug: "pestcontrol",
+    externalUrl: "https://built4you.org/pestcontrol",
+    badge: "Home Services",
+    tagline: "Instant service requests.",
+    keywords: ["pest", "bugs", "seasonal", "services"],
+    features: ["service plans", "contact form", "pricing tiers"],
+  },
+  {
+    title: "Ecommerce",
+    slug: "ecommerce",
+    externalUrl: "https://built4you.org/ecommerce",
+    badge: "Online Store",
+    tagline: "Products, cart, checkout, promos.",
+    keywords: ["store", "cart", "checkout", "stripe", "shopify"],
+    features: ["products", "search", "filters", "checkout"],
+    pricingPlanKey: "ecom-starter",
+  },
+  {
+    title: "Influencer / Creator",
+    slug: "creator",
+    externalUrl: "https://built4you.org/creator",
+    badge: "Personal Brand",
+    tagline: "Link hub, content, email capture, offers.",
+    keywords: ["creator", "influencer", "newsletter", "links", "offers"],
+    features: ["email capture", "social links", "landing page"],
+  },
 ];
 
 const useInView = (options?: IntersectionObserverInit) => {
@@ -141,12 +217,14 @@ const DemoShowcase: React.FC = () => {
             Demo Showcase
           </h1>
           <p className="max-w-2xl text-base sm:text-lg text-gray-600 dark:text-gray-300">
-            Live, scrollable previews. 
+            Live, scrollable previews.
           </p>
 
           {/* Search kept in code but hidden so nothing else breaks */}
           <div className="w-full max-w-md hidden">
-            <label className="sr-only" htmlFor="demo-search">Search demos</label>
+            <label className="sr-only" htmlFor="demo-search">
+              Search demos
+            </label>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
               <input
@@ -172,7 +250,6 @@ const DemoShowcase: React.FC = () => {
       </section>
 
       <section className="px-4 sm:px-6 lg:px-8 pb-20">
-        {/* grid-cols-1 ensures a clean single column on mobile */}
         <div className="max-w-7xl mx-auto grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((d) => (
             <motion.article

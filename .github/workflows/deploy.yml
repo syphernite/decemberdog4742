@@ -1,3 +1,4 @@
+# File: .github/workflows/deploy.yml
 name: 🚀 Build & Deploy All Clients
 
 on:
@@ -5,359 +6,87 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
-  build-and-deploy:
+  pages:
     runs-on: ubuntu-latest
-
     steps:
-      - name: 🛎️ Checkout
-        uses: actions/checkout@v4
+      # 1) Checkout code
+      - uses: actions/checkout@v4
 
-      - name: 🔧 Setup Node.js 20
-        uses: actions/setup-node@v4
+      # 2) Setup Node.js
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: 'npm'
+          node-version: 18
 
-      - name: 🗂️ Prepare scripts directory
-        run: mkdir -p .github/scripts
-
-      - name: ✍️ Write project normalizer (vite base + index paths + router-safe handling)
-        shell: bash
+      # 3) Build each client demo (skip landingpage)
+      - name: Build demos
         run: |
-          cat <<-'EOF' > .github/scripts/normalize.mjs
-          import fs from 'fs';
-          import fsp from 'fs/promises';
-          import path from 'path';
+          for dir in project/*/; do
+            slug=$(basename "$dir")
+            if [ "$slug" = "landingpage" ]; then
+              continue
+            fi
+            echo "🔨 Building demo: $slug"
+            cd "$dir"
+            npm ci
+            npm run build
+            cd ../../
 
-          const repoRoot = process.cwd();
-          const projectsDir = path.join(repoRoot, 'project');
+            # Copy dist into its own folder
+            rm -rf "$slug"
+            mkdir -p "$slug"
+            cp -r "project/$slug/dist/." "$slug/"
+          done
 
-          const exists = async p => !!(await fsp.stat(p).catch(() => null));
-          const isDir = async p => (await exists(p)) && (await fsp.stat(p)).isDirectory();
-          const read = p => fsp.readFile(p, 'utf8');
-          const write = (p, s) => fsp.writeFile(p, s);
+      # 4) Build & copy landing page into root
+      - name: Build landing page
+        run: |
+          cd project/landingpage
+          npm ci
+          npm run build
+          cd ../../
+          cp -r project/landingpage/dist/* .
 
-          function listDirs(dir) {
-            if (!fs.existsSync(dir)) return [];
-            return fs.readdirSync(dir, { withFileTypes: true })
-              .filter(d => d.isDirectory())
-              .map(d => d.name);
-          }
-
-          function patchIndexHtmlToRelative(html) {
-            html = html.replace(/(src|href)=["']\/(?!\/)/g, '$1="./');
-            return html;
-          }
-
-          function injectHashBootstrap(html, base, defaultHash = '/') {
-            if (html.includes('window.__HASH_BOOTSTRAP__')) return html;
-            const script = `
-    <script>
-      // window.__HASH_BOOTSTRAP__
-      (function() {
-        try {
-          var base = ${JSON.stringify(base)};
-          var hasHash = location.hash && location.hash.length > 1;
-          var atBase = location.pathname.startsWith(base);
-          if (atBase && !hasHash) {
-            var dest = String(${JSON.stringify(defaultHash)});
-            if (dest && dest !== '/' && !dest.startsWith('#')) dest = '#/' + dest.replace(/^\\/?/, '');
-            else dest = '#/';
-            location.replace(base.replace(/\\/$/, '') + '/index.html' + dest);
-          }
-        } catch(e) { console.error(e); }
-      })();
-    </script>`;
-            if (html.includes('</head>')) return html.replace('</head>', script + '\n  </head>');
-            return script + '\n' + html;
-          }
-
-          function detectReactRouterImports(source) {
-            return /from\s+['"]react-router-dom['"]|require\(['"]react-router-dom['"]\)/.test(source);
-          }
-
-          function detectAnyRouterUsage(source) {
-            if (/<\s*(BrowserRouter|HashRouter)\b/.test(source)) return true;
-            if (/<\s*RouterProvider\b/.test(source)) return true;
-            if (/<\s*Router[\s/>]/.test(source)) return true;
-            if (/create(Browser|Hash|Memory)Router\s*\(/.test(source)) return true;
-            return false;
-          }
-
-          function computeDefaultRouteFromRoutes(source) {
-            const rx = /<Route[^>]*\bpath\s*=\s*{?\s*["'`]([^"'`]+)["'`]\s*}?/g;
-            let m, candidates = [];
-            while ((m = rx.exec(source)) !== null) {
-              const p = m[1];
-              if (!p || p === '*' || p === '/*') continue;
-              candidates.push(p);
-            }
-            const nonRoot = candidates.find(p => p !== '/' && p !== './' && p !== '#/');
-            return (nonRoot || '/').replace(/^\/+/, '');
-          }
-
-          async function patchViteConfig(projectRoot, slug) {
-            const ts = path.join(projectRoot, 'vite.config.ts');
-            const js = path.join(projectRoot, 'vite.config.js');
-            let cfgPath = (await exists(ts)) ? ts : (await exists(js)) ? js : null;
-
-            let hasReactPlugin = false;
-            const pkgPath = path.join(projectRoot, 'package.json');
-            if (await exists(pkgPath)) {
-              try {
-                const pkg = JSON.parse(await read(pkgPath));
-                const deps = { ...(pkg.dependencies||{}), ...(pkg.devDependencies||{}) };
-                hasReactPlugin = !!deps['@vitejs/plugin-react'] || !!deps['@vitejs/plugin-react-swc'];
-              } catch {}
-            }
-
-            if (!cfgPath) {
-              cfgPath = ts;
-              const body = `import { defineConfig } from 'vite'${hasReactPlugin ? ";\nimport react from '@vitejs/plugin-react'" : ''}\n\nexport default defineConfig({\n  base: '/${slug}/',${hasReactPlugin ? "\n  plugins: [react()]," : ''}\n});\n`;
-              await write(cfgPath, body);
-              return;
-            }
-
-            let src = await read(cfgPath);
-            if (/\bbase\s*:\s*['"`][^'"`]+['"`]/.test(src)) {
-              src = src.replace(/\bbase\s*:\s*(['"`])[^'"`]+\1/, `base: '/${slug}/'`);
-            } else {
-              const defRe = /defineConfig\s*\(\s*\{/m;
-              if (defRe.test(src)) {
-                src = src.replace(defRe, m => m + `\n  base: '/${slug}/',`);
+      # 5) Dynamic SPA fallback for ALL paths
+      - name: Create smart 404.html
+        run: |
+          cat > 404.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head><meta charset="utf-8"><title>Redirecting…</title></head>
+          <body>
+            <script>
+              // Split path segments
+              const parts = location.pathname.split('/').filter(Boolean)
+              if (parts.length > 0) {
+                // first segment is the demo slug
+                const slug = parts[0]
+                // rest after slug
+                const rest = parts.slice(1).join('/')
+                // build target URL: /<slug>/index.html#/<rest>
+                const hash = rest ? '#/' + rest : ''
+                window.location.replace(/${slug}/index.html${hash})
               } else {
-                src = `import { defineConfig } from 'vite';\n` + src + `\n\nexport default defineConfig({ base: '/${slug}/' });\n`;
+                // no slug → root landing page
+                window.location.replace('/index.html')
               }
-            }
-            await write(cfgPath, src);
-          }
-
-          async function wrapAppWithHashRouter(mainPath) {
-            let code = await read(mainPath);
-            if (/<HashRouter\b/.test(code)) return false;
-            if (!/<App\s*\/>/.test(code)) return false;
-
-            if (/from\s+['"]react-router-dom['"]/.test(code)) {
-              code = code.replace(
-                /import\s*\{([^}]*)\}\s*from\s*['"]react-router-dom['"]\s*;?/,
-                (m, g1) => {
-                  const names = g1.split(',').map(s => s.trim()).filter(Boolean);
-                  if (!names.includes('HashRouter')) names.push('HashRouter');
-                  return `import { ${[...new Set(names)].join(', ')} } from 'react-router-dom';`;
-                }
-              );
-            } else {
-              return false;
-            }
-
-            code = code.replace(/(<App\s*\/>)/, '<HashRouter>$1</HashRouter>');
-            await write(mainPath, code);
-            return true;
-          }
-
-          async function processProject(slug) {
-            const projectRoot = path.join(projectsDir, slug);
-            if (!(await isDir(projectRoot))) return;
-
-            const srcDir = path.join(projectRoot, 'src');
-            const indexHtmlPath = path.join(projectRoot, 'index.html');
-
-            const mainCandidates = ['main.tsx','main.jsx','main.ts','main.js'].map(f => path.join(srcDir, f));
-            const appCandidates  = ['App.tsx','App.jsx','App.ts','App.js'].map(f => path.join(srcDir, f));
-
-            const mainPath = (await Promise.all(mainCandidates.map(exists))).map((ok,i)=>ok?mainCandidates[i]:null).find(Boolean);
-            const appPath  = (await Promise.all(appCandidates.map(exists))).map((ok,i)=>ok?appCandidates[i]:null).find(Boolean);
-
-            await patchViteConfig(projectRoot, slug);
-
-            if (await exists(indexHtmlPath)) {
-              let html = await read(indexHtmlPath);
-              html = patchIndexHtmlToRelative(html);
-              await write(indexHtmlPath, html);
-            }
-
-            let hasRRImport = false;
-            let hasAnyRouter = false;
-
-            const probePaths = [];
-            if (mainPath) probePaths.push(mainPath);
-            if (appPath)  probePaths.push(appPath);
-
-            if (await isDir(srcDir)) {
-              for (const name of fs.readdirSync(srcDir)) {
-                if (/^routes\.(t|j)sx?$/.test(name)) probePaths.push(path.join(srcDir, name));
-              }
-            }
-
-            for (const p of probePaths) {
-              const s = await read(p);
-              if (detectReactRouterImports(s)) hasRRImport = true;
-              if (detectAnyRouterUsage(s)) hasAnyRouter = true;
-            }
-
-            let usedHashRouter = false;
-            let defaultHash = '/';
-
-            if (hasRRImport && !hasAnyRouter && mainPath) {
-              usedHashRouter = await wrapAppWithHashRouter(mainPath);
-              let combined = '';
-              if (appPath && await exists(appPath)) combined += await read(appPath);
-              if (mainPath && await exists(mainPath)) combined += '\n' + await read(mainPath);
-              defaultHash = computeDefaultRouteFromRoutes(combined);
-            }
-
-            if (usedHashRouter && (await exists(indexHtmlPath))) {
-              const base = `/${slug}/`;
-              let html = await read(indexHtmlPath);
-              html = injectHashBootstrap(html, base, defaultHash);
-              await write(indexHtmlPath, html);
-            }
-
-            return { slug, usedHashRouter, defaultHash };
-          }
-
-          async function main() {
-            if (!(await isDir(projectsDir))) {
-              console.log('No project/ directory found. Skipping.');
-              await fsp.writeFile('.github/scripts/manifest.json', '[]');
-              return;
-            }
-            const slugs = listDirs(projectsDir);
-            const results = [];
-            for (const slug of slugs) {
-              const res = await processProject(slug);
-              if (res) {
-                results.push(res);
-                console.log(`[normalize] ${slug}:`, res);
-              }
-            }
-            await fsp.writeFile('.github/scripts/manifest.json', JSON.stringify(results, null, 2));
-          }
-
-          await main();
+            </script>
+            <p>Redirecting…</p>
+          </body>
+          </html>
           EOF
 
-      - name: 🧹 Normalize all projects (routing + base + index paths)
-        shell: bash
-        run: node .github/scripts/normalize.mjs
-
-      - name: 🏗️ Build each demo under project/<slug>
-        shell: bash
-        run: |
-          set -euo pipefail
-          rm -rf out
-          mkdir -p out
-          if [ -d project ]; then
-            for dir in project/*/ ; do
-              [ -d "$dir" ] || continue
-              slug="$(basename "$dir")"
-              echo "---- Building $slug ----"
-              if [ -f "$dir/package.json" ]; then
-                pushd "$dir" >/dev/null
-                if [ -f package-lock.json ]; then
-                  npm ci --no-audit --no-fund
-                else
-                  npm install --no-audit --no-fund
-                fi
-                npm run build
-                popd >/dev/null
-                if [ -d "$dir/dist" ]; then
-                  if [ "$slug" != "landingpage" ]; then
-                    mkdir -p "out/$slug"
-                    rsync -a --delete "$dir/dist/" "out/$slug/"
-                  else
-                    mkdir -p "out/__landing__"
-                    rsync -a --delete "$dir/dist/" "out/__landing__/"
-                  fi
-                else
-                  echo "WARN: No dist/ for $slug"
-                fi
-              else
-                echo "WARN: No package.json in $dir, skipping build"
-              fi
-            done
-          else
-            echo "No project directory present."
-          fi
-
-      - name: 🏠 Build landing page if at repo root
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [ -f package.json ]; then
-            echo "Building root landing page"
-            npm ci --no-audit --no-fund
-            npm run build
-            mkdir -p out
-            rsync -a --delete dist/ out/ || true
-          fi
-
-      - name: 🧩 Use project/landingpage as root if present
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [ -d out/__landing__ ]; then
-            echo "Using project/landingpage build for site root"
-            rsync -a --delete "out/__landing__"/* out/
-            rm -rf out/__landing__
-          fi
-
-      - name: 🚦 Create smart 404.html for deep-links (no heredoc)
-        shell: bash
-        run: |
-          node -e "
-            const fs = require('fs');
-            fs.mkdirSync('out', { recursive: true });
-            const html = `<!doctype html>
-          <html>
-            <head>
-              <meta charset='utf-8'>
-              <meta name='viewport' content='width=device-width,initial-scale=1'>
-              <title>Redirecting…</title>
-              <script>
-                (function() {
-                  try {
-                    var path = location.pathname;
-                    var m = path.match(/^\\/([^\\/]+)(?:\\/(.*))?$/);
-                    if (m) {
-                      var slug = m[1];
-                      var rest = m[2] || '';
-                      if (!slug || slug === 'index.html') { location.replace('/'); return; }
-                      var hash = rest ? '#/' + rest.replace(/^\\/?/, '') : '';
-                      var target = '/' + slug + '/index.html' + hash;
-                      location.replace(target);
-                    } else {
-                      location.replace('/');
-                    }
-                  } catch(e) {
-                    console.error(e);
-                    location.replace('/');
-                  }
-                })();
-              </script>
-              <noscript><meta http-equiv='refresh' content='0; url=/' /></noscript>
-            </head>
-            <body></body>
-          </html>`;
-            fs.writeFileSync('out/404.html', html);
-          "
-
-      - name: 🔎 Show publish directory
-        shell: bash
+      # 6) Debug: list everything that will be published
+      - name: Show publish directory
         run: |
           echo "=== publish contents ==="
-          ls -la out
-          echo
-          find out -maxdepth 2 -type d -print
+          ls -R .
           echo "========================"
 
-      - name: 📤 Deploy to GitHub Pages
+      # 7) Deploy to GitHub Pages (gh-pages branch)
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: out
-          force_orphan: true
+          publish_branch: gh-pages
+          publish_dir: ./
