@@ -22,7 +22,7 @@ const Portfolio: React.FC = () => {
   const portfolioItems: PortfolioItem[] = [
     {
       id: 1,
-      image: "https://images.pexels.com/photos/1319459/pexels-photo-1319459.jpeg?auto=compress&cs=tinysrgb&w=800",
+      image: "https://images.pexels.com/photos/2183131/pexels-photo-2183131.jpeg?auto=compress&cs=tinysrgb&w=800",
       title: "Dragon Sleeve",
       artist: "Marcus Chen",
       style: "Traditional",
@@ -30,77 +30,35 @@ const Portfolio: React.FC = () => {
     },
     {
       id: 2,
-      image: "https://images.pexels.com/photos/1010519/pexels-photo-1010519.jpeg?auto=compress&cs=tinysrgb&w=800",
-      title: "Rose Portrait",
+      image: "https://images.pexels.com/photos/8182253/pexels-photo-8182253.jpeg?auto=compress&cs=tinysrgb&w=800",
+      title: "Rose",
       artist: "Sofia Rivera",
-      style: "Color Realism",
-      category: "portrait"
+      style: "Flower",
+      category: "flower"
     },
     {
       id: 3,
-      image: "https://images.pexels.com/photos/1738986/pexels-photo-1738986.jpeg?auto=compress&cs=tinysrgb&w=800",
-      title: "Geometric Wolf",
+      image: "https://images.pexels.com/photos/4123890/pexels-photo-4123890.jpeg?auto=compress&cs=tinysrgb&w=800",
+      title: "Shoulder Flower",
       artist: "Jake Morrison",
-      style: "Blackwork",
-      category: "animal"
+      style: "Flower",
+      category: "flower"
     },
     {
       id: 4,
-      image: "https://images.pexels.com/photos/3586091/pexels-photo-3586091.jpeg?auto=compress&cs=tinysrgb&w=800",
+      image: "https://images.pexels.com/photos/4839724/pexels-photo-4839724.jpeg?auto=compress&cs=tinysrgb&w=800",
       title: "Mandala Design",
       artist: "Jake Morrison",
-      style: "Geometric",
-      category: "geometric"
-    },
-    {
-      id: 5,
-      image: "https://images.pexels.com/photos/3760263/pexels-photo-3760263.jpeg?auto=compress&cs=tinysrgb&w=800",
-      title: "Floral Piece",
-      artist: "Sofia Rivera",
-      style: "Fine Line",
-      category: "floral"
-    },
-    {
-      id: 6,
-      image: "https://images.pexels.com/photos/3785077/pexels-photo-3785077.jpeg?auto=compress&cs=tinysrgb&w=800",
-      title: "Traditional Eagle",
-      artist: "Marcus Chen",
-      style: "Traditional",
-      category: "animal"
-    },
-    {
-      id: 7,
-      image: "https://images.pexels.com/photos/1319459/pexels-photo-1319459.jpeg?auto=compress&cs=tinysrgb&w=800",
-      title: "Japanese Koi",
-      artist: "Marcus Chen",
-      style: "Japanese",
-      category: "animal"
-    },
-    {
-      id: 8,
-      image: "https://images.pexels.com/photos/1010519/pexels-photo-1010519.jpeg?auto=compress&cs=tinysrgb&w=800",
-      title: "Abstract Lines",
-      artist: "Jake Morrison",
-      style: "Minimalist",
-      category: "abstract"
-    },
-    {
-      id: 9,
-      image: "https://images.pexels.com/photos/1738986/pexels-photo-1738986.jpeg?auto=compress&cs=tinysrgb&w=800",
-      title: "Realistic Portrait",
-      artist: "Sofia Rivera",
-      style: "Color Realism",
-      category: "portrait"
+      style: "Realistic",
+      category: "realistic"
     }
   ];
 
   const filters = [
     { key: 'all', label: 'All Work' },
     { key: 'Traditional', label: 'Traditional' },
-    { key: 'Color Realism', label: 'Color Realism' },
-    { key: 'Blackwork', label: 'Blackwork' },
-    { key: 'Geometric', label: 'Geometric' },
-    { key: 'Fine Line', label: 'Fine Line' },
+    { key: 'Flower', label: 'Flower' },
+    { key: 'Realistic', label: 'Realistic' },
     { key: 'Marcus Chen', label: 'Marcus Chen' },
     { key: 'Sofia Rivera', label: 'Sofia Rivera' },
     { key: 'Jake Morrison', label: 'Jake Morrison' }

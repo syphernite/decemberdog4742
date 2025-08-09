@@ -9,16 +9,12 @@ import { Cart } from './pages/Cart';
 import { Checkout } from './pages/Checkout';
 import { About } from './pages/About';
 import { Help } from './pages/Help';
+import { Wishlist } from './pages/Wishlist';
+import { Account } from './pages/Account';
+import { NewArrivals } from './pages/NewArrivals';
 import './index.css';
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      gcTime: 10 * 60 * 1000, // 10 minutes
-    },
-  },
-});
+const queryClient = new QueryClient();
 
 function App() {
   return (
@@ -30,8 +26,9 @@ function App() {
           <Route path="products/:id" element={<ProductDetail />} />
           <Route path="cart" element={<Cart />} />
           <Route path="checkout" element={<Checkout />} />
-          <Route path="account" element={<div>Account</div>} />
-          <Route path="wishlist" element={<div>Wishlist</div>} />
+          <Route path="new-arrivals" element={<NewArrivals />} />
+          <Route path="wishlist" element={<Wishlist />} />
+          <Route path="account" element={<Account />} />
           <Route path="about" element={<About />} />
           <Route path="help" element={<Help />} />
         </Route>
