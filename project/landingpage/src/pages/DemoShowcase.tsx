@@ -2,13 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import {
-  ExternalLink,
-  ArrowRight,
-  MonitorSmartphone,
-  Search,
-  Info,
-} from "lucide-react";
+import { ExternalLink, ArrowRight, MonitorSmartphone, Search, Info } from "lucide-react";
 
 type Demo = {
   title: string;
@@ -21,98 +15,25 @@ type Demo = {
   pricingPlanKey?: string;
 };
 
-const DEMOS: Demo[] = [
-  {
-    title: "Photography",
-    slug: "photography",
-    externalUrl: "https://built4you.org/photography",
-    badge: "Portfolio",
-    tagline: "Visual-first galleries with booking.",
-    keywords: ["gallery", "portfolio", "booking", "lightbox", "photographer"],
-    features: ["responsive", "contact form", "seo", "image grid", "hero slideshow"],
-  },
-  {
-    title: "Barbershop",
-    slug: "barbershop",
-    externalUrl: "https://built4you.org/barbershop",
-    badge: "Services",
-    tagline: "Appointments, pricing tables, reviews.",
-    keywords: ["barber", "appointments", "pricing", "reviews", "map"],
-    features: ["mobile-first", "contact form", "maps", "social links"],
-  },
-  {
-    title: "Detailer",
-    slug: "detailer",
-    externalUrl: "https://built4you.org/detailer",
-    badge: "Auto",
-    tagline: "Before/after gallery, service tiers, mobile-first.",
-    keywords: ["auto", "detailing", "before/after", "packages", "mobile"],
-    features: ["gallery", "contact form", "pricing tiers"],
-  },
-  {
-    title: "Food Truck",
-    slug: "foodtruck",
-    externalUrl: "https://built4you.org/foodtruck",
-    badge: "Food",
-    tagline: "Menu, schedule, locations, events.",
-    keywords: ["menu", "events", "schedule", "locations", "truck"],
-    features: ["map", "contact form", "social links"],
-    pricingPlanKey: "basic",
-  },
+const withTrailingSlash = (u: string) => (u.endsWith("/") ? u : u + "/");
 
-  // Updated to same-origin paths
-  {
-    title: "Contractor",
-    slug: "trades",
-    externalUrl: "https://built4you.org/plumbing",
-    badge: "Professional",
-    tagline: "Trust-building, licensing, quotes, service areas.",
-    keywords: ["plumber", "electrician", "contractor", "quote", "service area"],
-    features: ["contact form", "badges", "testimonials"],
-  },
-  {
-    title: "Tattoo",
-    slug: "tattooshop",
-    externalUrl: "https://built4you.org/tattooshop",
-    badge: "Portfolio",
-    tagline: "Artist profiles, galleries, booking forms.",
-    keywords: ["tattoo", "artists", "portfolio", "booking", "instagram"],
-    features: ["gallery", "contact form", "profiles"],
-  },
-  {
-    title: "Pest Control",
-    slug: "pestcontrol",
-    externalUrl: "https://built4you.org/pestcontrol",
-    badge: "Home Services",
-    tagline: "Instant service requests.",
-    keywords: ["pest", "bugs", "seasonal", "services"],
-    features: ["service plans", "contact form", "pricing tiers"],
-  },
-  {
-    title: "Ecommerce",
-    slug: "ecommerce",
-    externalUrl: "https://built4you.org/ecommerce",
-    badge: "Online Store",
-    tagline: "Products, cart, checkout, promos.",
-    keywords: ["store", "cart", "checkout", "stripe", "shopify"],
-    features: ["products", "search", "filters", "checkout"],
-    pricingPlanKey: "ecom-starter",
-  },
-  {
-    title: "Influencer / Creator",
-    slug: "creator",
-    externalUrl: "https://built4you.org/creator",
-    badge: "Personal Brand",
-    tagline: "Link hub, content, email capture, offers.",
-    keywords: ["creator", "influencer", "newsletter", "links", "offers"],
-    features: ["email capture", "social links", "landing page"],
-  },
+const DEMOS: Demo[] = [
+  { title: "Photography", slug: "photography", externalUrl: "https://built4you.org/photography/", badge: "Portfolio", tagline: "Visual-first galleries with booking.", keywords: ["gallery","portfolio","booking","lightbox","photographer"], features: ["responsive","contact form","seo","image grid","hero slideshow"] },
+  { title: "Barbershop", slug: "barbershop", externalUrl: "https://built4you.org/barbershop/", badge: "Services", tagline: "Appointments, pricing tables, reviews.", keywords: ["barber","appointments","pricing","reviews","map"], features: ["mobile-first","contact form","maps","social links"] },
+  { title: "Detailer", slug: "detailer", externalUrl: "https://built4you.org/detailer/", badge: "Auto", tagline: "Before/after gallery, service tiers, mobile-first.", keywords: ["auto","detailing","before/after","packages","mobile"], features: ["gallery","contact form","pricing tiers"] },
+  { title: "Food Truck", slug: "foodtruck", externalUrl: "https://built4you.org/foodtruck/", badge: "Food", tagline: "Menu, schedule, locations, events.", keywords: ["menu","events","schedule","locations","truck"], features: ["map","contact form","social links"], pricingPlanKey: "basic" },
+
+  // Same-origin demos
+  { title: "Contractor", slug: "trades", externalUrl: "https://built4you.org/trades/", badge: "Professional", tagline: "Trust-building, licensing, quotes, service areas.", keywords: ["plumber","electrician","contractor","quote","service area"], features: ["contact form","badges","testimonials"] },
+  { title: "Tattoo", slug: "tattooshop", externalUrl: "https://built4you.org/tattooshop/", badge: "Portfolio", tagline: "Artist profiles, galleries, booking forms.", keywords: ["tattoo","artists","portfolio","booking","instagram"], features: ["gallery","contact form","profiles"] },
+  { title: "Pest Control", slug: "pestcontrol", externalUrl: "https://built4you.org/pestcontrol/", badge: "Home Services", tagline: "Instant service requests.", keywords: ["pest","bugs","seasonal","services"], features: ["service plans","contact form","pricing tiers"] },
+  { title: "Ecommerce", slug: "ecommerce", externalUrl: "https://built4you.org/ecommerce/", badge: "Online Store", tagline: "Products, cart, checkout, promos.", keywords: ["store","cart","checkout","stripe","shopify"], features: ["products","search","filters","checkout"], pricingPlanKey: "ecom-starter" },
+  { title: "Influencer / Creator", slug: "creator", externalUrl: "https://built4you.org/creator/", badge: "Personal Brand", tagline: "Link hub, content, email capture, offers.", keywords: ["creator","influencer","newsletter","links","offers"], features: ["email capture","social links","landing page"] }
 ];
 
 const useInView = (options?: IntersectionObserverInit) => {
   const ref = useRef<HTMLDivElement | null>(null);
   const [inView, setInView] = useState(false);
-
   useEffect(() => {
     if (!ref.current) return;
     const el = ref.current;
@@ -123,7 +44,6 @@ const useInView = (options?: IntersectionObserverInit) => {
     obs.observe(el);
     return () => obs.disconnect();
   }, [options]);
-
   return { ref, inView };
 };
 
@@ -136,9 +56,11 @@ const IFramePreview: React.FC<{ url: string }> = ({ url }) => {
     if (!inView) return;
     const t = setTimeout(() => {
       if (!loaded) setBlocked(true);
-    }, 4500);
+    }, 8000);
     return () => clearTimeout(t);
   }, [inView, loaded]);
+
+  const src = withTrailingSlash(url);
 
   return (
     <div
@@ -170,13 +92,14 @@ const IFramePreview: React.FC<{ url: string }> = ({ url }) => {
             </div>
           )}
           <iframe
-            key={url}
+            key={src}
             title="Live preview"
-            src={url}
-            loading="lazy"
+            src={src}
+            loading="eager"
             className="h-[460px] sm:h-[520px] w-full relative z-0"
             onLoad={() => setLoaded(true)}
-            sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-popups"
+            onError={() => setBlocked(true)}
+            allow="fullscreen; clipboard-read; clipboard-write; geolocation *; camera *; microphone *; web-share"
           />
         </>
       )}
@@ -213,18 +136,14 @@ const DemoShowcase: React.FC = () => {
     <main className="min-h-screen bg-gradient-to-b from-white to-slate-100 dark:from-gray-950 dark:to-gray-900 text-gray-900 dark:text-white">
       <section className="px-4 sm:px-6 lg:px-8 pt-20 pb-8">
         <div className="max-w-7xl mx-auto flex flex-col items-center text-center gap-4">
-          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight">
-            Demo Showcase
-          </h1>
+          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight">Demo Showcase</h1>
           <p className="max-w-2xl text-base sm:text-lg text-gray-600 dark:text-gray-300">
             Live, scrollable previews.
           </p>
 
           {/* Search kept in code but hidden so nothing else breaks */}
           <div className="w-full max-w-md hidden">
-            <label className="sr-only" htmlFor="demo-search">
-              Search demos
-            </label>
+            <label className="sr-only" htmlFor="demo-search">Search demos</label>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
               <input
@@ -239,10 +158,7 @@ const DemoShowcase: React.FC = () => {
           </div>
 
           <div className="mt-2">
-            <Link
-              to="/contact"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition"
-            >
+            <Link to="/contact" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition">
               Start a project <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -263,9 +179,7 @@ const DemoShowcase: React.FC = () => {
               <div className="px-4 pt-4 flex items-center justify-between">
                 <div className="min-w-0">
                   <h3 className="text-lg font-semibold leading-tight">{d.title}</h3>
-                  {d.tagline && (
-                    <p className="text-sm text-gray-600 dark:text-gray-400">{d.tagline}</p>
-                  )}
+                  {d.tagline && <p className="text-sm text-gray-600 dark:text-gray-400">{d.tagline}</p>}
                 </div>
                 {d.badge && (
                   <span className="ml-3 shrink-0 inline-flex items-center rounded-full border border-emerald-500/30 text-emerald-600 dark:text-emerald-300 bg-emerald-500/10 px-2 py-0.5 text-xs">
@@ -280,7 +194,7 @@ const DemoShowcase: React.FC = () => {
 
               <div className="px-4 pb-4 pt-3 flex items-center justify-between flex-wrap gap-3">
                 <a
-                  href={d.externalUrl}
+                  href={withTrailingSlash(d.externalUrl)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
@@ -292,8 +206,7 @@ const DemoShowcase: React.FC = () => {
                   to={contactURLFor(d)}
                   className="inline-flex items-center gap-2 text-sm font-medium text-emerald-700 dark:text-emerald-300 hover:underline"
                 >
-                  Start Your Project
-                  <ArrowRight className="h-4 w-4" />
+                  Start Your Project <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
             </motion.article>
