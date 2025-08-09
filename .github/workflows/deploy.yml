@@ -18,19 +18,51 @@ jobs:
         with:
           node-version: 18
 
-      # 3) Build each client demo (skip landingpage)
-      - name: Build demos
+      # 3) Pre-normalize each project for GH Pages subfolders
+      #    - Fix index.html to use relative paths
+      #    - Ensure vite.config.* has base: '/<slug>/'
+      - name: Pre-normalize projects
+        shell: bash
         run: |
           set -e
           for dir in project/*/; do
             slug=$(basename "$dir")
-            if [ "$slug" = "landingpage" ]; then
-              continue
+            [ "$slug" = "landingpage" ] && continue
+            echo "🧹 Normalizing: $slug"
+
+            # A) Make index.html use relative paths
+            if [ -f "$dir/index.html" ]; then
+              sed -i 's|href="/vite.svg"|href="./vite.svg"|g' "$dir/index.html" || true
+              sed -i 's|src="/src/main|src="./src/main|g' "$dir/index.html" || true
             fi
 
-            echo "🔨 Considering demo: $slug"
+            # B) Ensure vite config has base '/<slug>/'
+            cfg="$dir/vite.config.ts"
+            [ -f "$dir/vite.config.js" ] && cfg="$dir/vite.config.js"
+            if [ ! -f "$cfg" ] || ! grep -q "base: '/$slug/'" "$cfg"; then
+              echo "✍️  Writing vite.config.ts with base '/$slug/'"
+              printf "%s\n" \
+                "import { defineConfig } from 'vite';" \
+                "import react from '@vitejs/plugin-react';" \
+                "" \
+                "export default defineConfig({" \
+                "  plugins: [react()], " \
+                "  base: '/$slug/'," \
+                "  optimizeDeps: { exclude: ['lucide-react'] }," \
+                "});" > "$dir/vite.config.ts"
+            fi
+          done
 
-            # Must have package.json
+      # 4) Build each client demo (skip landingpage)
+      - name: Build demos
+        shell: bash
+        run: |
+          set -e
+          for dir in project/*/; do
+            slug=$(basename "$dir")
+            [ "$slug" = "landingpage" ] && continue
+
+            echo "🔨 Considering demo: $slug"
             if [ ! -f "$dir/package.json" ]; then
               echo "➡️  Skipping $slug (no package.json)"
               continue
@@ -45,7 +77,7 @@ jobs:
             fi
 
             echo "🏗  Building: $slug"
-            # Try project's build script; if missing/fails, fall back to vite build
+            # Try project's build script; if missing/fails, fall back to vite
             if npm run -s build; then
               echo "✅ Built with npm run build"
             else
@@ -55,7 +87,6 @@ jobs:
 
             cd ../../
 
-            # Copy dist into its own folder if present
             if [ -d "project/$slug/dist" ]; then
               rm -rf "$slug"
               mkdir -p "$slug"
@@ -65,8 +96,9 @@ jobs:
             fi
           done
 
-      # 4) Build & copy landing page into root
+      # 5) Build & copy landing page into root
       - name: Build landing page
+        shell: bash
         run: |
           cd project/landingpage
           npm ci
@@ -74,43 +106,21 @@ jobs:
           cd ../../
           cp -r project/landingpage/dist/* .
 
-      # 5) Dynamic SPA fallback for ALL paths
+      # 6) Dynamic SPA fallback for ALL paths (single-line echo, no template strings)
       - name: Create smart 404.html
+        shell: bash
         run: |
-          cat > 404.html << 'EOF'
-          <!DOCTYPE html>
-          <html>
-          <head><meta charset="utf-8"><title>Redirecting…</title></head>
-          <body>
-            <script>
-              // Split path segments
-              const parts = location.pathname.split('/').filter(Boolean)
-              if (parts.length > 0) {
-                // first segment is the demo slug
-                const slug = parts[0]
-                // rest after slug
-                const rest = parts.slice(1).join('/')
-                // build target URL: /<slug>/index.html#/<rest>
-                const hash = rest ? '#/' + rest : ''
-                window.location.replace(`/${slug}/index.html${hash}`)
-              } else {
-                // no slug → root landing page
-                window.location.replace('/index.html')
-              }
-            </script>
-            <p>Redirecting…</p>
-          </body>
-          </html>
-          EOF
+          echo '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Redirecting</title></head><body><script>var p=location.pathname.split("/").filter(Boolean);if(p.length>0){var s=p[0];var r=p.slice(1).join("/");var h=r?"#/"+r:"";window.location.replace("/"+s+"/index.html"+h);}else{window.location.replace("/index.html");}</script><p>Redirecting...</p></body></html>' > 404.html
 
-      # 6) Debug: list everything that will be published
+      # 7) Debug: list everything that will be published
       - name: Show publish directory
+        shell: bash
         run: |
           echo "=== publish contents ==="
           ls -R .
           echo "========================"
 
-      # 7) Deploy to GitHub Pages (gh-pages branch)
+      # 8) Deploy to GitHub Pages (gh-pages branch)
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
