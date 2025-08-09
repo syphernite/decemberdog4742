@@ -12,14 +12,15 @@ jobs:
       # 1) Checkout code
       - uses: actions/checkout@v4
 
-      # 2) Setup Node.js
+      # 2) Setup Node.js (React Router 7 needs >=20)
       - uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
-      # 3) Pre-normalize each project for GH Pages subfolders
-      #    - Fix index.html to use relative paths
+      # 3) Pre-normalize for GH Pages subfolders
+      #    - Fix index.html paths
       #    - Ensure vite.config.* has base: '/<slug>/'
+      #    - Inject a tiny script that forces "#/" on initial load
       - name: Pre-normalize projects
         shell: bash
         run: |
@@ -29,10 +30,14 @@ jobs:
             [ "$slug" = "landingpage" ] && continue
             echo "🧹 Normalizing: $slug"
 
-            # A) Make index.html use relative paths
+            # A) Make index.html use relative paths + inject hash bootstrap
             if [ -f "$dir/index.html" ]; then
               sed -i 's|href="/vite.svg"|href="./vite.svg"|g' "$dir/index.html" || true
               sed -i 's|src="/src/main|src="./src/main|g' "$dir/index.html" || true
+              # Inject once: if no marker yet, add a tiny script that ensures location.hash exists
+              if ! grep -q "__hashbootstrap__" "$dir/index.html"; then
+                perl -0777 -i -pe 's|<body>|<body><script id="__hashbootstrap__">(function(){try{if(!location.hash){location.replace(location.pathname+location.search+"#/");}}catch(e){}})();</script>|i' "$dir/index.html"
+              fi
             fi
 
             # B) Ensure vite config has base '/<slug>/'
@@ -88,26 +93,21 @@ jobs:
           };
 
           const addHashImportIfMissing = (src) => {
-            if (!/from ['"]react-router-dom['"]/.test(src)) {
-              // If project doesn't import router at all, skip outside
-              return src;
-            }
-            if (!/HashRouter/.test(src)) {
-              return ensureHashImport(src);
-            }
+            if (!/from ['"]react-router-dom['"]/.test(src)) return src;
+            if (!/HashRouter/.test(src)) return ensureHashImport(src);
             return src;
           };
 
           const wrapAppWithHashRouter = (src) => {
             if (/<HashRouter>[\s\S]*<\/HashRouter>/.test(src)) return src;
-            if (!/from ['"]react-router-dom['"]/.test(src)) return src; // don't change non-router apps
+            if (!/from ['"]react-router-dom['"]/.test(src)) return src;
             return src
               .replace(/<App\s*\/>/, '<HashRouter><App /></HashRouter>')
               .replace(/<App\/>/, '<HashRouter><App /></HashRouter>');
           };
 
           const stripBrowserRouter = (src) => {
-            if (!/from ['"]react-router-dom['"]/.test(src)) return src; // non-router app
+            if (!/from ['"]react-router-dom['"]/.test(src)) return src;
             let out = src.replace(/<BrowserRouter[^>]*>/g, '')
                          .replace(/<\/BrowserRouter>/g, '');
             out = out.replace(
@@ -133,7 +133,6 @@ jobs:
               const mainPath = await findFirst(dir, ['src/main.tsx','src/main.jsx','src/main.ts','src/main.js']);
               const appPath  = await findFirst(dir, ['src/App.tsx','src/App.jsx','src/App.ts','src/App.js']);
 
-              // Only proceed if project already references react-router-dom in either file
               let usesRouter = false;
               if (mainPath && /react-router-dom/.test(await read(mainPath))) usesRouter = true;
               if (!usesRouter && appPath && /react-router-dom/.test(await read(appPath))) usesRouter = true;
@@ -232,7 +231,7 @@ jobs:
           ls -R .
           echo "========================"
 
-      # 9) Deploy to GitHub Pages (gh-pages branch)
+      # 9) Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
