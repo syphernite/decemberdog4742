@@ -28,26 +28,21 @@ const ensureHashImport = (src) => {
 };
 
 const addHashImportIfMissing = (src) => {
-  if (!/from ['"]react-router-dom['"]/.test(src)) {
-    // If project doesn't import router at all, skip outside
-    return src;
-  }
-  if (!/HashRouter/.test(src)) {
-    return ensureHashImport(src);
-  }
+  if (!/from ['"]react-router-dom['"]/.test(src)) return src;
+  if (!/HashRouter/.test(src)) return ensureHashImport(src);
   return src;
 };
 
 const wrapAppWithHashRouter = (src) => {
   if (/<HashRouter>[\s\S]*<\/HashRouter>/.test(src)) return src;
-  if (!/from ['"]react-router-dom['"]/.test(src)) return src; // don't change non-router apps
+  if (!/from ['"]react-router-dom['"]/.test(src)) return src;
   return src
     .replace(/<App\s*\/>/, '<HashRouter><App /></HashRouter>')
     .replace(/<App\/>/, '<HashRouter><App /></HashRouter>');
 };
 
 const stripBrowserRouter = (src) => {
-  if (!/from ['"]react-router-dom['"]/.test(src)) return src; // non-router app
+  if (!/from ['"]react-router-dom['"]/.test(src)) return src;
   let out = src.replace(/<BrowserRouter[^>]*>/g, '')
                .replace(/<\/BrowserRouter>/g, '');
   out = out.replace(
@@ -73,7 +68,6 @@ const run = async () => {
     const mainPath = await findFirst(dir, ['src/main.tsx','src/main.jsx','src/main.ts','src/main.js']);
     const appPath  = await findFirst(dir, ['src/App.tsx','src/App.jsx','src/App.ts','src/App.js']);
 
-    // Only proceed if project already references react-router-dom in either file
     let usesRouter = false;
     if (mainPath && /react-router-dom/.test(await read(mainPath))) usesRouter = true;
     if (!usesRouter && appPath && /react-router-dom/.test(await read(appPath))) usesRouter = true;
