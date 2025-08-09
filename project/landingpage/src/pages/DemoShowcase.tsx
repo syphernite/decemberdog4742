@@ -64,7 +64,7 @@ const DEMOS: Demo[] = [
   {
     title: "Contractor",
     slug: "trades",
-    externalUrl: "https://built4you.org/trades",
+    externalUrl: "https://built4you.org/plumbing",
     badge: "Professional",
     tagline: "Trust-building, licensing, quotes, service areas.",
     keywords: ["plumber", "electrician", "contractor", "quote", "service area"],
