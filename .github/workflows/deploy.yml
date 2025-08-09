@@ -12,7 +12,7 @@ jobs:
       # 1) Checkout code
       - uses: actions/checkout@v4
 
-      # 2) Setup Node.js (React Router 7 needs >=20)
+      # 2) Setup Node.js (React Router 7 prefers >=20)
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -20,7 +20,7 @@ jobs:
       # 3) Pre-normalize for GH Pages subfolders
       #    - Fix index.html paths
       #    - Ensure vite.config.* has base: '/<slug>/'
-      #    - Inject a tiny script that forces "#/" on initial load
+      #    - Inject bootstrap with a __DEFAULT_HASH__ placeholder (filled later)
       - name: Pre-normalize projects
         shell: bash
         run: |
@@ -30,13 +30,13 @@ jobs:
             [ "$slug" = "landingpage" ] && continue
             echo "🧹 Normalizing: $slug"
 
-            # A) Make index.html use relative paths + inject hash bootstrap
+            # A) Make index.html use relative paths + inject hash bootstrap (with placeholder)
             if [ -f "$dir/index.html" ]; then
               sed -i 's|href="/vite.svg"|href="./vite.svg"|g' "$dir/index.html" || true
               sed -i 's|src="/src/main|src="./src/main|g' "$dir/index.html" || true
-              # Inject once: if no marker yet, add a tiny script that ensures location.hash exists
               if ! grep -q "__hashbootstrap__" "$dir/index.html"; then
-                perl -0777 -i -pe 's|<body>|<body><script id="__hashbootstrap__">(function(){try{if(!location.hash){location.replace(location.pathname+location.search+"#/");}}catch(e){}})();</script>|i' "$dir/index.html"
+                # Add bootstrap that redirects to /#/__DEFAULT_HASH__ (or /#/) if there is no hash
+                perl -0777 -i -pe 's|<body>|<body><script id="__hashbootstrap__">(function(){try{var d="__DEFAULT_HASH__";if(!location.hash){var suf=d?("#/"+d):"#/";location.replace(location.pathname+location.search+suf);}}catch(e){}})();</script>|i' "$dir/index.html"
               fi
             fi
 
@@ -165,7 +165,75 @@ jobs:
 
           node normalize-router.mjs
 
-      # 5) Build each client demo (skip landingpage)
+      # 5) Detect first route and set default hash target for each project
+      - name: Detect routes and set default hash
+        shell: bash
+        run: |
+          set -e
+          cat > detect-routes.mjs <<'JS'
+          import { promises as fs } from 'fs';
+          import path from 'path';
+
+          const ROOT = process.cwd();
+          const PROJECTS = path.join(ROOT, 'project');
+
+          const exists = async p => !!(await fs.stat(p).catch(() => null));
+          const read = p => fs.readFile(p, 'utf-8');
+
+          const routeRegexes = [
+            /<Route[^>]*\spath=["']([^"']+)["'][^>]*>/g,                        // <Route path="x" ...>
+            /path\s*:\s*["']([^"']+)["']/g,                                     // path: 'x'
+            /createBrowserRouter\(\s*\[\s*\{\s*path:\s*["']([^"']+)["']/g,      // createBrowserRouter([{ path: 'x'
+            /createHashRouter\(\s*\[\s*\{\s*path:\s*["']([^"']+)["']/g          // createHashRouter([{ path: 'x'
+          ];
+
+          const bad = new Set(['', '/', '*']);
+          const pickFirstRoute = (code) => {
+            for (const rx of routeRegexes) {
+              rx.lastIndex = 0;
+              const m = rx.exec(code);
+              if (m && m[1] && !bad.has(m[1])) return m[1].replace(/^\//,''); // drop leading slash
+            }
+            return ''; // no specific route → use '/'
+          };
+
+          const run = async () => {
+            const slugs = await fs.readdir(PROJECTS).catch(() => []);
+            for (const slug of slugs) {
+              if (slug === 'landingpage') continue;
+              const dir = path.join(PROJECTS, slug);
+              const stat = await fs.stat(dir).catch(() => null);
+              if (!stat || !stat.isDirectory()) continue;
+
+              // read all src files we care about
+              const candidates = [
+                'src/App.tsx','src/App.jsx','src/App.ts','src/App.js',
+                'src/main.tsx','src/main.jsx','src/main.ts','src/main.js',
+                'src/routes.tsx','src/routes.jsx','src/routes.ts','src/routes.js'
+              ].map(f => path.join(dir, f));
+
+              let combined = '';
+              for (const p of candidates) {
+                if (await exists(p)) combined += await read(p) + '\n';
+              }
+
+              const def = pickFirstRoute(combined);
+              const idx = path.join(dir, 'index.html');
+              if (await exists(idx)) {
+                let html = await read(idx);
+                html = html.replace(/__DEFAULT_HASH__/g, def);
+                await fs.writeFile(idx, html, 'utf-8');
+                console.log(`✔ ${slug} default route: ${def || '(root)'}`);
+              }
+            }
+          };
+
+          run().catch(err => { console.error(err); process.exit(0); });
+          JS
+
+          node detect-routes.mjs
+
+      # 6) Build each client demo (skip landingpage)
       - name: Build demos
         shell: bash
         run: |
@@ -207,7 +275,7 @@ jobs:
             fi
           done
 
-      # 6) Build & copy landing page into root
+      # 7) Build & copy landing page into root
       - name: Build landing page
         shell: bash
         run: |
@@ -217,13 +285,13 @@ jobs:
           cd ../../
           cp -r project/landingpage/dist/* .
 
-      # 7) Dynamic SPA fallback for ALL paths (single-line echo)
+      # 8) Dynamic SPA fallback for ALL paths
       - name: Create smart 404.html
         shell: bash
         run: |
           echo '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Redirecting</title></head><body><script>var p=location.pathname.split("/").filter(Boolean);if(p.length>0){var s=p[0];var r=p.slice(1).join("/");var h=r?"#/"+r:"";window.location.replace("/"+s+"/index.html"+h);}else{window.location.replace("/index.html");}</script><p>Redirecting...</p></body></html>' > 404.html
 
-      # 8) Debug: list everything that will be published
+      # 9) Debug: list everything that will be published
       - name: Show publish directory
         shell: bash
         run: |
@@ -231,7 +299,7 @@ jobs:
           ls -R .
           echo "========================"
 
-      # 9) Deploy to GitHub Pages
+      # 10) Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
