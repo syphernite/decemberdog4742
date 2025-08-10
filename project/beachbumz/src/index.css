@@ -118,3 +118,68 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--ocean-blue); 
 @keyframes wave-scroll-1{0%{transform:translateX(0)}100%{transform:translateX(-33.33%)}}
 @keyframes wave-scroll-2{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 @keyframes wave-scroll-3{0%{transform:translateX(0)}100%{transform:translateX(-66.66%)}}
+
+/* ===== Extra beach theme elements (lightweight) ===== */
+
+/* Parallax sun */
+.sun-flare{
+  position:absolute; top:8vh; right:12vw; width:120px; height:120px; border-radius:50%;
+  background: radial-gradient(circle at 35% 35%, rgba(255,255,255,.85), rgba(255,255,255,.35) 35%, transparent 60%),
+              radial-gradient(circle, rgba(255,176,46,.55), rgba(255,106,61,.35) 60%, transparent 70%);
+  filter: blur(2px);
+  animation: sunPulse 6s ease-in-out infinite;
+}
+@keyframes sunPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+
+/* Clouds */
+.clouds{ position:absolute; inset:0; overflow:hidden; pointer-events:none; }
+.cloud{
+  position:absolute; top:10vh; width:240px; height:70px; opacity:.18; filter: blur(1px);
+  background:
+    radial-gradient(circle at 20% 60%, #fff 20%, transparent 21%),
+    radial-gradient(circle at 40% 40%, #fff 24%, transparent 25%),
+    radial-gradient(circle at 60% 55%, #fff 22%, transparent 23%),
+    radial-gradient(circle at 80% 45%, #fff 18%, transparent 19%);
+  background-repeat:no-repeat;
+  animation: cloudDrift 60s linear infinite;
+}
+.c1{ left:-260px; top:12vh; animation-duration: 65s; }
+.c2{ left:-340px; top:18vh; animation-duration: 75s; transform: scale(1.1); }
+.c3{ left:-420px; top:8vh;  animation-duration: 90s; transform: scale(.9); }
+@keyframes cloudDrift{ 0%{ transform: translateX(0) } 100%{ transform: translateX(130vw) } }
+
+/* Shoreline divider */
+.shoreline{
+  position:relative; height:140px; overflow:hidden; background:
+    linear-gradient(to bottom, #e7d7ad 0%, #f5deB3 35%, #f0d9a8 60%, #e9d29d 100%);
+}
+.foam{
+  position:absolute; left:-20%; width:140%; height:30px; border-radius:50%;
+  background: radial-gradient(circle, rgba(255,255,255,.75), rgba(255,255,255,.35) 60%, transparent 70%);
+  filter: blur(3px); opacity:.85;
+}
+.f1{ bottom:84px; animation: foamRoll1 10s ease-in-out infinite; }
+.f2{ bottom:48px; animation: foamRoll2 12s ease-in-out infinite; opacity:.7 }
+.f3{ bottom:18px; animation: foamRoll3 14s ease-in-out infinite; opacity:.6 }
+@keyframes foamRoll1{ 0%,100%{ transform: translateX(0) } 50%{ transform: translateX(-6%) } }
+@keyframes foamRoll2{ 0%,100%{ transform: translateX(0) } 50%{ transform: translateX(5%) } }
+@keyframes foamRoll3{ 0%,100%{ transform: translateX(0) } 50%{ transform: translateX(-4%) } }
+
+/* Tropical beach gradient section */
+.beach-gradient{
+  background-image:
+    linear-gradient(180deg, rgba(17,18,20,.35) 0%, rgba(17,18,20,0) 18%),
+    radial-gradient(1200px 400px at 50% -120px, rgba(255,176,46,.18), transparent 60%),
+    linear-gradient(0deg, #0b0c10 0%, #111214 45%, #111214 100%);
+  position:relative;
+}
+.beach-gradient::before{
+  content:''; position:absolute; inset:0; pointer-events:none; opacity:.08;
+  background-image: radial-gradient(#fff 1px, transparent 1px);
+  background-size: 100px 100px;
+}
+
+/* Keep bubbles visible */
+.floating-bubbles{ position:absolute; inset:0; overflow:hidden; pointer-events:none; display:block }
+
+/* CTA gradient already defined as .cta-bg */
