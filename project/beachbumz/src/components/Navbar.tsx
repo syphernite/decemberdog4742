@@ -1,10 +1,10 @@
-// project/beachbumz/src/components/Navbar.tsx
 import React, { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { Menu, X, Phone } from "lucide-react";
 
-/** Always resolves under /beachbumz/ on Pages */
-const logoUrl = import.meta.env.BASE_URL + "beachbumz-logo.png";
+// Use public/ and BASE_URL. Auto-fallback to .jpg if .png missing.
+const PNG = import.meta.env.BASE_URL + "beachbumz-logo.png";
+const JPG = import.meta.env.BASE_URL + "beachbumz-logo.jpg";
 
 const NAV = [
   { to: "/", label: "Home" },
@@ -16,12 +16,10 @@ const NAV = [
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [src, setSrc] = useState(PNG);
   const { pathname } = useLocation();
 
-  // close drawer on route change
   useEffect(() => setOpen(false), [pathname]);
-
-  // add bg+shadow when scrolling
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -29,8 +27,9 @@ export default function Navbar() {
   }, []);
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
-    `px-3 py-2 rounded-md text-sm font-medium transition
-     ${isActive ? "text-turquoise underline underline-offset-4" : "text-white/90 hover:text-white"}`;
+    `px-3 py-2 rounded-md text-sm font-medium transition ${
+      isActive ? "text-turquoise underline underline-offset-4" : "text-white/90 hover:text-white"
+    }`;
 
   return (
     <header
@@ -40,23 +39,19 @@ export default function Navbar() {
       style={{ height: "64px" }}
     >
       <div className="mx-auto max-w-6xl h-full px-4 flex items-center justify-between">
-        {/* Brand */}
         <Link to="/" className="flex items-center gap-3 min-w-0">
           <img
-            src={logoUrl}
+            src={src}
             alt="Beach Bumz Pub & Pizzaria"
             className="h-8 w-auto md:h-10 object-contain"
-            loading="eager"
+            onError={() => setSrc((prev) => (prev.endsWith(".png") ? JPG : prev))}
           />
           <div className="hidden sm:flex flex-col leading-tight">
-            <span className="text-white font-extrabold tracking-wide text-sm md:text-base">
-              BEACH BUMZ
-            </span>
+            <span className="text-white font-extrabold tracking-wide text-sm md:text-base">BEACH BUMZ</span>
             <span className="text-turquoise text-[10px] md:text-xs">PUB & PIZZARIA</span>
           </div>
         </Link>
 
-        {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-2">
           {NAV.map((n) => (
             <NavLink key={n.to} to={n.to} className={linkClass}>
@@ -72,17 +67,11 @@ export default function Navbar() {
           </a>
         </nav>
 
-        {/* Mobile toggle */}
-        <button
-          className="md:hidden p-2 text-white"
-          aria-label="Toggle menu"
-          onClick={() => setOpen((v) => !v)}
-        >
+        <button className="md:hidden p-2 text-white" aria-label="Toggle menu" onClick={() => setOpen((v) => !v)}>
           {open ? <X /> : <Menu />}
         </button>
       </div>
 
-      {/* Mobile drawer */}
       <div
         className={`md:hidden transition-[max-height] duration-300 overflow-hidden ${
           open ? "max-h-80" : "max-h-0"
@@ -102,10 +91,7 @@ export default function Navbar() {
               {n.label}
             </NavLink>
           ))}
-          <a
-            href="tel:+12527267800"
-            className="mt-1 rounded-md px-3 py-2 text-base text-white/90 hover:bg-white/10 inline-flex items-center gap-2"
-          >
+          <a href="tel:+12527267800" className="mt-1 rounded-md px-3 py-2 text-base text-white/90 hover:bg-white/10 inline-flex items-center gap-2">
             <Phone className="h-4 w-4" />
             (252) 726-7800
           </a>
