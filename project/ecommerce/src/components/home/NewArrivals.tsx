@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ProductCard } from '../product/ProductCard';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../../lib/api';
+import { Link } from 'react-router-dom';
 
 export function NewArrivals() {
   const { data: products = [] } = useQuery({
@@ -53,9 +54,12 @@ export function NewArrivals() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="text-center mt-12"
         >
-          <button className="text-champagne hover:text-champagne/80 font-medium underline underline-offset-4">
+          <Link
+            to="/new-arrivals"
+            className="text-champagne hover:text-champagne/80 font-medium underline underline-offset-4"
+          >
             View All New Arrivals
-          </button>
+          </Link>
         </motion.div>
       </div>
     </section>
