@@ -85,7 +85,7 @@ const Home = () => {
             >
               Order on DoorDash <ExternalLink className="h-4 w-4" />
             </a>
-            <a href="https://maps.google.com/?q=Beach+Bumz+Pub+%26+Pizzeria" className="btn btn-outline">
+            <a href="https://www.google.com/maps/place/Beach+Bumz+Pub+%26+Pizzaria/@34.5987081,-77.7381177,9z/data=!4m10!1m2!2m1!1sBeach+Bumz+Pub+%26+Pizzeria!3m6!1s0x89a89114c3f408e1:0xa9f8802177627012!8m2!3d34.7206039!4d-76.7096405!15sChlCZWFjaCBCdW16IFB1YiAmIFBpenplcmlhWhsiGWJlYWNoIGJ1bXogcHViICYgcGl6emVyaWGSARJpdGFsaWFuX3Jlc3RhdXJhbnSqAWEQASodIhliZWFjaCBidW16IHB1YiAmIHBpenplcmlhKAAyHxABIhtQRlrDEC_1CuKkSEw4o1Sq-ob81ebASE70naoyHRACIhliZWFjaCBidW16IHB1YiAmIHBpenplcmlh4AEA!16s%2Fg%2F1trch8ny?entry=ttu&g_ep=EgoyMDI1MDgwNi4wIKXMDSoASAFQAw%3D%3D" className="btn btn-outline">
               Find Us
             </a>
           </div>
