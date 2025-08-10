@@ -2,10 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="./favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Beach Bumz Pub & Pizzeria - Morehead City, NC | Pizza, Subs, Wings & More</title>
-    <meta name="description" content="Beach Bumz Pub & Pizzeria ...nd craft drinks. Now with liquor license! Order on DoorDash." />
+    <meta name="description" content="Beach Bumz Pub & Pizzeria in Morehead City, NC - serving fresh pizza, subs, wings, pasta and craft drinks. Now with liquor license! Order on DoorDash." />
     <meta name="keywords" content="pizza, pub, Morehead City, NC, restaurant, wings, subs, pasta, seafood, beach dining" />
     
     <!-- Open Graph -->
@@ -13,22 +13,36 @@
     <meta property="og:description" content="Bold coastal pub serving pizza, subs, wings & more in Morehead City, NC" />
     <meta property="og:type" content="restaurant" />
     <meta property="og:url" content="https://beachbumzpub.com" />
-    <!-- (your remaining meta / JSON-LD stays exactly as in your file) -->
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Structured Data -->
     <script type="application/ld+json">
-      {
-        "@context":"https://schema.org",
-        "@type":"Restaurant",
-        "name":"Beach Bumz Pub & Pizzeria",
-        "address":{"@type":"PostalAddress","streetAddress":"5167 US-70","addressLocality":"Morehead City","addressRegion":"NC","postalCode":"28577"},
-        "telephone":"+1-252-726-7800",
-        "servesCuisine":["Pizza","American","Pub Food"],
-        "priceRange":"$$",
-        "openingHours":"Mo-Su 11:00-21:00"
-      }
+    {
+      "@context": "https://schema.org",
+      "@type": "Restaurant",
+      "name": "Beach Bumz Pub & Pizzeria",
+      "description": "Coastal pub serving pizza, subs, wings, pasta and craft drinks",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "105 South 6th Street",
+        "addressLocality": "Morehead City",
+        "addressRegion": "NC",
+        "postalCode": "28577"
+      },
+      "telephone": "+1-252-726-7800",
+      "email": "beachbumzofmcinc@gmail.com",
+      "servesCuisine": ["Pizza", "American", "Pub Food"],
+      "priceRange": "$$",
+      "openingHours": "Mo-Su 11:00-21:00"
+    }
     </script>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="./src/main.tsx"></script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
