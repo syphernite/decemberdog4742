@@ -25,15 +25,15 @@ const Artists: React.FC = () => {
     {
       id: 1,
       name: "Marcus Chen",
-      image: "https://images.pexels.com/photos/3586091/pexels-photo-3586091.jpeg?auto=compress&cs=tinysrgb&w=400",
+      image: "https://images.pexels.com/photos/3760263/pexels-photo-3760263.jpeg?auto=compress&cs=tinysrgb&w=400",
       bio: "Specializing in traditional Japanese and American traditional work with over 8 years of experience. Known for bold lines and vibrant colors.",
       styles: ["Traditional", "Neo-traditional", "Japanese"],
       hourlyRate: "$150-200",
       rating: 4.9,
       portfolioImages: [
-        "https://images.pexels.com/photos/1319459/pexels-photo-1319459.jpeg?auto=compress&cs=tinysrgb&w=300",
-        "https://images.pexels.com/photos/1010519/pexels-photo-1010519.jpeg?auto=compress&cs=tinysrgb&w=300",
-        "https://images.pexels.com/photos/1738986/pexels-photo-1738986.jpeg?auto=compress&cs=tinysrgb&w=300"
+        "https://images.pexels.com/photos/2183131/pexels-photo-2183131.jpeg?auto=compress&cs=tinysrgb&w=300",
+        "https://images.pexels.com/photos/8182253/pexels-photo-8182253.jpeg?auto=compress&cs=tinysrgb&w=300",
+        "https://images.pexels.com/photos/4123890/pexels-photo-4123890.jpeg?auto=compress&cs=tinysrgb&w=300"
       ],
       experience: "8+ years",
       specialty: "Traditional & Japanese"
@@ -41,15 +41,15 @@ const Artists: React.FC = () => {
     {
       id: 2,
       name: "Sofia Rivera",
-      image: "https://images.pexels.com/photos/3760263/pexels-photo-3760263.jpeg?auto=compress&cs=tinysrgb&w=400",
+      image: "https://images.pexels.com/photos/3586091/pexels-photo-3586091.jpeg?auto=compress&cs=tinysrgb&w=400",
       bio: "Master of color realism and portrait work. Every piece is a photorealistic masterpiece that captures emotion and detail perfectly.",
       styles: ["Color Realism", "Portrait", "Fine Line"],
       hourlyRate: "$180-250",
       rating: 5.0,
       portfolioImages: [
-        "https://images.pexels.com/photos/1319459/pexels-photo-1319459.jpeg?auto=compress&cs=tinysrgb&w=300",
-        "https://images.pexels.com/photos/1010519/pexels-photo-1010519.jpeg?auto=compress&cs=tinysrgb&w=300",
-        "https://images.pexels.com/photos/1738986/pexels-photo-1738986.jpeg?auto=compress&cs=tinysrgb&w=300"
+        "https://images.pexels.com/photos/2183131/pexels-photo-2183131.jpeg?auto=compress&cs=tinysrgb&w=300",
+        "https://images.pexels.com/photos/8182253/pexels-photo-8182253.jpeg?auto=compress&cs=tinysrgb&w=300",
+        "https://images.pexels.com/photos/4123890/pexels-photo-4123890.jpeg?auto=compress&cs=tinysrgb&w=300"
       ],
       experience: "10+ years",
       specialty: "Color Realism & Portraits"
@@ -63,9 +63,9 @@ const Artists: React.FC = () => {
       hourlyRate: "$140-180",
       rating: 4.8,
       portfolioImages: [
-        "https://images.pexels.com/photos/1319459/pexels-photo-1319459.jpeg?auto=compress&cs=tinysrgb&w=300",
-        "https://images.pexels.com/photos/1010519/pexels-photo-1010519.jpeg?auto=compress&cs=tinysrgb&w=300",
-        "https://images.pexels.com/photos/1738986/pexels-photo-1738986.jpeg?auto=compress&cs=tinysrgb&w=300"
+        "https://images.pexels.com/photos/2183131/pexels-photo-2183131.jpeg?auto=compress&cs=tinysrgb&w=300",
+        "https://images.pexels.com/photos/8182253/pexels-photo-8182253.jpeg?auto=compress&cs=tinysrgb&w=300",
+        "https://images.pexels.com/photos/4123890/pexels-photo-4123890.jpeg?auto=compress&cs=tinysrgb&w=300"
       ],
       experience: "6+ years",
       specialty: "Blackwork & Geometric"

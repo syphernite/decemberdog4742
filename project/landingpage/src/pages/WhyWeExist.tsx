@@ -39,7 +39,7 @@ const OfferModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen
 
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [isOpen]);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -93,7 +93,7 @@ const OfferModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen
               <button
                 onClick={() => {
                   onClose();
-                  navigate('/pricing', { state: { scrollTo: 'basic' } });
+                  navigate('/pricing?plan=basic');
                 }}
                 className="hover:underline focus:outline-none focus:ring-1 rounded"
               >
@@ -103,7 +103,7 @@ const OfferModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen
               <button
                 onClick={() => {
                   onClose();
-                  navigate('/pricing', { state: { scrollTo: 'pro' } });
+                  navigate('/pricing?plan=pro');
                 }}
                 className="hover:underline focus:outline-none focus:ring-1 rounded"
               >
