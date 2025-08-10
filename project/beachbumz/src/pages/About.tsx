@@ -4,92 +4,185 @@ import { Users, Award, Heart, MapPin, Clock, Utensils } from 'lucide-react';
 const About = () => {
   useEffect(() => {
     const observer = new IntersectionObserver(
-      entries => entries.forEach(e => {
-        if (e.isIntersecting) e.target.classList.add('fade-in-up');
-      }),
-      { threshold: 0.15 }
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('fade-in-up');
+          }
+        });
+      },
+      { threshold: 0.1 }
     );
-    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+
+    const elements = document.querySelectorAll('.animate-on-scroll');
+    elements.forEach((el) => observer.observe(el));
+
     return () => observer.disconnect();
   }, []);
 
   const milestones = [
     { year: '2018', event: 'Beach Bumz Opens', description: 'Started as a small pizzeria with big dreams' },
-    { year: '2019', event: 'Community Favorite', description: 'Became a go to for families and game nights' },
-    { year: '2021', event: 'Menu Expansion', description: 'Wings, subs, salads, and more fan picks' },
-    { year: '2024', event: 'Liquor License', description: 'Full bar service with coastal cocktails' },
+    { year: '2019', event: 'Community Favorite', description: 'Became a local hotspot for families and friends' },
+    { year: '2021', event: 'Menu Expansion', description: 'Added wings, subs, pasta, and seafood dishes' },
+    { year: '2022', event: 'Renovation Complete', description: 'Enhanced dining experience with coastal theme' },
+    { year: '2024', event: 'Liquor License', description: 'Now serving craft cocktails and premium spirits' },
   ];
 
-  const values = [
-    { icon: <Heart className="h-5 w-5" />, title: 'Hospitality', text: 'Friendly service and honest portions' },
-    { icon: <Utensils className="h-5 w-5" />, title: 'Quality', text: 'Fresh dough, premium cheeses, real ingredients' },
-    { icon: <Award className="h-5 w-5" />, title: 'Consistency', text: 'What you loved last time tastes the same today' },
+  const team = [
+    { name: 'Mike Johnson', role: 'Head Chef', image: 'https://images.pexels.com/photos/2696064/pexels-photo-2696064.jpeg?auto=compress&cs=tinysrgb&w=400' },
+    { name: 'Sarah Davis', role: 'General Manager', image: 'https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=400' },
+    { name: 'Alex Rodriguez', role: 'Pizza Specialist', image: 'https://images.pexels.com/photos/1438081/pexels-photo-1438081.jpeg?auto=compress&cs=tinysrgb&w=400' },
+    { name: 'Jamie Chen', role: 'Bartender', image: 'https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=400' },
   ];
 
   return (
-    <div className="min-h-screen bg-ocean-blue">
-      {/* Hero */}
-      <section className="relative pt-28 pb-16 text-center">
-        <h1 className="font-display text-5xl md:text-6xl text-white mb-3 zoom-in">OUR STORY</h1>
-        <p className="text-sandy-beige text-lg md:text-xl max-w-2xl mx-auto animate-on-scroll">
-          Comfort food with a coastal soul. Beach Bumz blends pub energy with family dining so everyone feels at home.
-        </p>
-      </section>
-
-      {/* Stats */}
-      <section className="max-w-6xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-12">
-        {[
-          { icon: <Users className="h-6 w-6" />, label: 'Guests Served', value: '25k+' },
-          { icon: <Clock className="h-6 w-6" />, label: 'Years', value: '12+' },
-          { icon: <Award className="h-6 w-6" />, label: 'Rating', value: '4.8★' },
-          { icon: <MapPin className="h-6 w-6" />, label: 'City', value: 'Morehead City' },
-        ].map((s, i) => (
-          <div key={i} className="animate-on-scroll rounded-2xl bg-white/5 border border-white/10 p-5 text-center">
-            <div className="flex justify-center text-turquoise mb-2">{s.icon}</div>
-            <div className="text-2xl font-semibold text-white">{s.value}</div>
-            <div className="text-sm text-sandy-beige">{s.label}</div>
-          </div>
-        ))}
-      </section>
-
-      {/* Values */}
-      <section className="max-w-5xl mx-auto px-4 mb-16 grid md:grid-cols-3 gap-6">
-        {values.map((v, i) => (
-          <div key={i} className="animate-on-scroll rounded-2xl p-6 border border-white/10 bg-white/5">
-            <div className="flex items-center gap-2 text-turquoise mb-2">{v.icon}<span className="font-semibold text-white">{v.title}</span></div>
-            <p className="text-sandy-beige">{v.text}</p>
-          </div>
-        ))}
-      </section>
-
-      {/* Timeline */}
-      <section className="max-w-4xl mx-auto px-4 mb-20">
-        <h2 className="text-white font-display text-3xl md:text-4xl mb-6 text-center animate-on-scroll">Milestones</h2>
-        <div className="relative">
-          <div className="absolute left-1.5 md:left-1/2 md:-translate-x-px top-0 bottom-0 w-0.5 bg-white/10" />
-          <div className="space-y-8">
-            {milestones.map((m, i) => (
-              <div key={i} className="animate-on-scroll relative md:grid md:grid-cols-2 md:gap-8">
-                <div className="flex md:justify-end">
-                  <div className="text-turquoise font-semibold">{m.year}</div>
-                </div>
-                <div>
-                  <div className="text-white font-semibold">{m.event}</div>
-                  <div className="text-sandy-beige">{m.description}</div>
-                </div>
-              </div>
-            ))}
+    <div className="pt-20 min-h-screen">
+      {/* Hero Section */}
+      <section className="relative h-96 md:h-[500px] overflow-hidden">
+        <img 
+          src="https://images.pexels.com/photos/1639562/pexels-photo-1639562.jpeg?auto=compress&cs=tinysrgb&w=1200"
+          alt="Beach sunset"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-ocean-blue/80 to-transparent"></div>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center px-4 max-w-4xl mx-auto">
+            <h1 className="font-display text-5xl md:text-6xl text-white mb-6 neon-glow">
+              OUR STORY
+            </h1>
+            <p className="text-xl md:text-2xl text-sandy-beige font-light">
+              Where coastal dreams meet comfort food reality
+            </p>
           </div>
         </div>
       </section>
 
-      {/* Visit card */}
-      <section className="max-w-4xl mx-auto px-4 pb-24">
-        <div className="animate-on-scroll rounded-2xl border border-white/10 bg-white/5 p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <div className="text-white font-semibold text-xl mb-1">Visit Us</div>
-            <div className="text-sandy-beige flex items-center gap-2"><MapPin className="h-4 w-4" /> 5167 Hwy 70, Morehead City, NC</div>
-            <div className="text-sandy-beige flex items-center gap-2"><Clock className="h-4 w-4" /> Daily 11 AM to close</div>
+      {/* Story Section */}
+      <section className="py-20 bg-sandy-beige sand-texture">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="animate-on-scroll">
+              <h2 className="font-display text-4xl md:text-5xl text-ocean-blue mb-8">
+                The Beach Bumz <span className="text-sunset-orange">Journey</span>
+              </h2>
+              <p className="text-lg text-gray-700 mb-6 leading-relaxed">
+                It all started in 2018 with a simple dream: create a place where the laid-back 
+                vibes of coastal living meet the comfort of exceptional food. Located in the heart 
+                of Morehead City, Beach Bumz Pub & Pizzeria was born from a passion for bringing 
+                people together over great meals and good times.
+              </p>
+              <p className="text-lg text-gray-700 mb-6 leading-relaxed">
+                What began as a small pizzeria has grown into a beloved community hub where locals 
+                and visitors alike come to experience the perfect blend of fresh coastal flavors 
+                and classic comfort food. Every dish is crafted with care, every drink is mixed 
+                with passion, and every guest is treated like family.
+              </p>
+              <p className="text-lg text-gray-700 mb-8 leading-relaxed">
+                Now with our liquor license, we're excited to offer an even more complete 
+                dining experience, featuring craft cocktails that complement our menu perfectly. 
+                Beach Bumz isn't just a restaurant – it's where memories are made.
+              </p>
+              
+              <div className="grid grid-cols-2 gap-6">
+                <div className="text-center bg-white rounded-lg p-6 shadow-lg hover-lift beach-card tilt-on-hover">
+                  <Users className="h-8 w-8 text-turquoise mx-auto mb-2 bounce-subtle" />
+                  <h3 className="font-semibold text-ocean-blue mb-1">Community Focused</h3>
+                  <p className="text-sm text-gray-600">Supporting local families</p>
+                </div>
+                <div className="text-center bg-white rounded-lg p-6 shadow-lg hover-lift beach-card tilt-on-hover">
+                  <Utensils className="h-8 w-8 text-sunset-orange mx-auto mb-2 coconut-bounce" />
+                  <h3 className="font-semibold text-ocean-blue mb-1">Fresh Ingredients</h3>
+                  <p className="text-sm text-gray-600">Quality in every bite</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="animate-on-scroll">
+              <div className="relative">
+                <img 
+                  src="https://images.pexels.com/photos/5490915/pexels-photo-5490915.jpeg?auto=compress&cs=tinysrgb&w=800"
+                  alt="Beach Bumz team"
+                  className="rounded-lg shadow-2xl w-full h-96 object-cover hover-lift tilt-on-hover wave-animation"
+                />
+                <div className="absolute -bottom-6 -right-6 bg-turquoise text-white p-6 rounded-lg shadow-xl pulse-glow">
+                  <Award className="h-8 w-8 mb-2 starfish-spin" />
+                  <p className="font-semibold">Local Favorite</p>
+                  <p className="text-sm">Since 2018</p>
+                </div>
+              </div>
+            </div>
           </div>
-          <a
-            href="htt
+        </div>
+      </section>
+
+      {/* Timeline Section */}
+      <section className="py-20 bg-ocean-blue">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="text-center mb-16 animate-on-scroll">
+            <h2 className="font-display text-4xl md:text-5xl text-white mb-4">
+              Our <span className="text-gradient">Milestones</span>
+            </h2>
+            <p className="text-sandy-beige text-lg">The journey that brought us here</p>
+          </div>
+          
+          <div className="relative">
+            {/* Timeline line */}
+            <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-turquoise to-sunset-orange pulse-glow"></div>
+            
+            <div className="space-y-12">
+              {milestones.map((milestone, index) => (
+                <div key={milestone.year} className={`flex items-center ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} animate-on-scroll`}>
+                  <div className={`w-full md:w-5/12 ${index % 2 === 0 ? 'md:pr-12' : 'md:pl-12'}`}>
+                    <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 hover-lift beach-card tilt-on-hover">
+                      <div className="flex items-center space-x-4 mb-3">
+                        <span className="bg-gradient-to-r from-turquoise to-sunset-orange text-white font-bold px-4 py-2 rounded-full bounce-subtle">
+                          {milestone.year}
+                        </span>
+                        <h3 className="font-semibold text-white text-lg">{milestone.event}</h3>
+                      </div>
+                      <p className="text-sandy-beige">{milestone.description}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="hidden md:flex w-2/12 justify-center">
+                    <div className="w-4 h-4 bg-white rounded-full border-4 border-turquoise pulse-glow"></div>
+                  </div>
+                  
+                  <div className="w-full md:w-5/12"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Values Section */}
+      <section className="py-20 bg-gradient-to-r from-turquoise to-teal-400">
+        <div className="max-w-4xl mx-auto text-center px-4 animate-on-scroll">
+          <h2 className="font-display text-4xl md:text-5xl text-white mb-8">
+            What We Stand For
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-white/20 backdrop-blur-md rounded-lg p-6 hover-lift beach-card tilt-on-hover">
+              <Heart className="h-10 w-10 text-white mx-auto mb-4 pulse-glow" />
+              <h3 className="font-semibold text-white text-lg mb-2">Community Love</h3>
+              <p className="text-white/90">We're more than a restaurant – we're your neighbors, committed to serving our community with heart.</p>
+            </div>
+            <div className="bg-white/20 backdrop-blur-md rounded-lg p-6 hover-lift beach-card tilt-on-hover">
+              <Award className="h-10 w-10 text-white mx-auto mb-4 starfish-spin" />
+              <h3 className="font-semibold text-white text-lg mb-2">Quality First</h3>
+              <p className="text-white/90">Every ingredient is carefully selected, every dish crafted with passion and attention to detail.</p>
+            </div>
+            <div className="bg-white/20 backdrop-blur-md rounded-lg p-6 hover-lift beach-card tilt-on-hover">
+              <MapPin className="h-10 w-10 text-white mx-auto mb-4 coconut-bounce" />
+              <h3 className="font-semibold text-white text-lg mb-2">Coastal Spirit</h3>
+              <p className="text-white/90">We celebrate the laid-back, welcoming spirit of coastal Carolina in everything we do.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default About;
