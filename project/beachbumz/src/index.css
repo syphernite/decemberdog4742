@@ -5,15 +5,10 @@
 /* Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600;700&display=swap');
 
-/* Theme vars */
+/* Theme */
 :root{
-  --ocean-blue:#0A1D3A;
-  --jet-black:#000000;
-  --turquoise:#40E0D0;
-  --sunset-orange:#FF7F50;
-  --sandy-beige:#F5DEB3;
-  --coral-pink:#F88379;
-  --white:#ffffff;
+  --ocean-blue:#0A1D3A; --jet-black:#000000; --turquoise:#40E0D0;
+  --sunset-orange:#FF7F50; --sandy-beige:#F5DEB3; --coral-pink:#F88379; --white:#fff;
 }
 
 /* Base */
@@ -35,11 +30,6 @@ body{
 .text-sunset-orange{color:var(--sunset-orange)}
 .bg-ocean-blue{background-color:var(--ocean-blue)}
 .bg-sandy-beige{background-color:var(--sandy-beige)}
-.bg-white-10{background-color:rgba(255,255,255,.10)}
-.border-white-10{border-color:rgba(255,255,255,.10)}
-.from-ocean-blue{--tw-gradient-from: var(--ocean-blue) var(--tw-gradient-from-position); --tw-gradient-to: rgb(10 29 58 / 0) var(--tw-gradient-to-position); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)}
-.to-slate-900{--tw-gradient-to: rgb(15 23 42 / 1) var(--tw-gradient-to-position)}
-.via-teal-800{--tw-gradient-stops: var(--tw-gradient-from), rgb(17 94 89) var(--tw-gradient-via-position), var(--tw-gradient-to)}
 
 /* Typography */
 h1,h2,h3{letter-spacing:.02em}
@@ -48,30 +38,23 @@ h1,h2,h3{letter-spacing:.02em}
 .section-lead{color:#334155;line-height:1.75}
 
 /* Buttons */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.75rem 1.5rem;border-radius:9999px;font-weight:600;transition:transform .3s ease, box-shadow .3s ease;box-shadow:0 2px 6px rgba(0,0,0,.15);position:relative;overflow:hidden}
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.75rem 1.5rem;border-radius:9999px;font-weight:600;transition:transform .3s ease, box-shadow .3s ease;box-shadow:0 2px 6px rgba(0,0,0,.15);overflow:hidden}
 .btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,.2)}
 .btn-primary{background:var(--turquoise);color:var(--ocean-blue)}
 .btn-accent{background:var(--sunset-orange);color:#fff}
 .btn-outline{border:1px solid var(--turquoise);color:var(--turquoise);background:transparent}
 .btn-outline:hover{background:rgba(64,224,208,.1)}
-/* subtle shimmer on hover */
-.btn::after{
-  content:"";position:absolute;inset:-200% -20%;background:linear-gradient(120deg,transparent 45%,rgba(255,255,255,.35) 50%,transparent 55%);transform:translateX(-30%);opacity:0;pointer-events:none
-}
-.btn:hover::after{animation:btnShine 900ms ease forwards}
-@keyframes btnShine{to{transform:translateX(30%);opacity:1}}
+.btn-pulse{animation:btnPulse 8s ease-in-out infinite}
+@keyframes btnPulse{0%,96%,100%{transform:none} 97%{transform:scale(1.02)} 98%{transform:scale(1.04)} 99%{transform:scale(1.02)}}
+.icon-slide:hover .icon-slide-target,
+.icon-slide:hover svg{transform:translateX(3px);transition:transform .2s ease}
 
-/* Navbar link underline glide (targets typical nav links) */
-nav a, .nav-link{
-  position:relative;display:inline-block;transition:color .25s ease
-}
-nav a::after, .nav-link::after{
-  content:"";position:absolute;left:0;bottom:-4px;height:2px;width:0;background:linear-gradient(90deg,var(--turquoise),var(--sunset-orange));
-  transition:width .25s ease
-}
-nav a:hover::after, .nav-link:hover::after{width:100%}
+/* Navbar underline (if .nav-link used) */
+.nav-link{position:relative;display:inline-block}
+.nav-link::after{content:"";position:absolute;left:0;bottom:-4px;height:2px;width:0;background:linear-gradient(90deg,var(--turquoise),var(--sunset-orange));transition:width .25s ease}
+.nav-link:hover::after{width:100%}
 
-/* Feature cards, stats, info */
+/* Cards, stats, info */
 .feature-card{background:rgba(255,255,255,.10);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:1.25rem;text-align:center;transition:transform .35s cubic-bezier(.2,.6,.2,1), box-shadow .35s, border-color .35s}
 .feature-card:hover{transform:translateY(-3px) scale(1.01);box-shadow:0 10px 28px rgba(0,0,0,.25);border-color:rgba(255,255,255,.2)}
 .icon-circle{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:9999px;background:rgba(255,255,255,.10);margin-bottom:.5rem}
@@ -92,40 +75,23 @@ nav a:hover::after, .nav-link:hover::after{width:100%}
 .gallery-card:hover .gallery-img{transform:scale(1.06)}
 .gallery-card figcaption{position:absolute;left:.5rem;bottom:.5rem;font-size:.75rem;background:rgba(10,29,58,.6);padding:.25rem .5rem;border-radius:.375rem;color:#e2f8f6}
 
-/* Effects */
+/* Neon & effects */
+.neon-glow{text-shadow:0 0 6px var(--turquoise),0 0 14px var(--turquoise)}
 .pulse-glow{animation:pulseGlow 6s ease-in-out infinite}
 @keyframes pulseGlow{0%,100%{opacity:.7}50%{opacity:1}}
 
-.neon-glow{text-shadow:0 0 6px var(--turquoise),0 0 14px var(--turquoise)}
-/* Heading sheen sweep */
-h1.neon-glow{
-  position:relative;overflow:hidden
-}
-h1.neon-glow::before{
-  content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 20%,rgba(255,255,255,.15) 50%,transparent 80%);transform:translateX(-120%);pointer-events:none
-}
-h1.neon-glow:hover::before{animation:sheen 1.2s ease}
-@keyframes sheen{to{transform:translateX(120%)}}
-
-/* Single wave divider */
+/* Wave (single) + parallax bob */
 .wave-divider{position:relative;height:48px;overflow:hidden}
 .wave-divider .wave{position:absolute;left:0;bottom:0;width:200%;height:100%;background-repeat:repeat-x}
-.wave-divider .wave-front{
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 160'%3E%3Cpath d='M0 120 C 150 140 350 90 600 120 C 850 150 1050 100 1200 120 L 1200 160 L 0 160 Z' fill='%2326ccb9'/%3E%3C/svg%3E");
-  animation:wave-scroll-3 9s linear infinite;opacity:.95
-}
+.wave-divider .wave-front{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 160'%3E%3Cpath d='M0 120 C 150 140 350 90 600 120 C 850 150 1050 100 1200 120 L 1200 160 L 0 160 Z' fill='%2326ccb9'/%3E%3C/svg%3E");animation:wave-scroll-3 9s linear infinite;opacity:.95}
 @keyframes wave-scroll-3{0%{transform:translateX(0)}100%{transform:translateX(-33.33%)}}
+.parallax-bob{animation:parallaxBob 8s ease-in-out infinite}
+@keyframes parallaxBob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
 
 /* Background details */
-.water-ripple{
-  position:absolute;inset:0;
-  background:
-    radial-gradient(circle at 30% 50%, rgba(64,224,208,.12), transparent 35%),
-    radial-gradient(circle at 70% 60%, rgba(255,127,80,.11), transparent 40%);
-  mix-blend-mode:screen;animation:rippleMove 18s ease-in-out infinite
-}
+.hero-video{object-position:center center}
+.water-ripple{position:absolute;inset:0;background:radial-gradient(circle at 30% 50%, rgba(64,224,208,.12), transparent 35%),radial-gradient(circle at 70% 60%, rgba(255,127,80,.11), transparent 40%);mix-blend-mode:screen;animation:rippleMove 18s ease-in-out infinite}
 @keyframes rippleMove{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
-
 .floating-bubbles{position:absolute;inset:0;pointer-events:none}
 .bubble{position:absolute;bottom:-10%;left:10%;width:10px;height:10px;border-radius:9999px;background:rgba(64,224,208,.3);filter:blur(1px);animation:rise 10s linear infinite}
 .bubble:nth-child(2){left:30%;animation-duration:12s;width:8px;height:8px}
@@ -134,7 +100,7 @@ h1.neon-glow:hover::before{animation:sheen 1.2s ease}
 .bubble:nth-child(5){left:90%;animation-duration:13s}
 @keyframes rise{from{transform:translateY(0)}to{transform:translateY(-120%)}}
 
-/* Scroll reveal utilities (add class="animate-on-scroll" anywhere) */
+/* Scroll reveal */
 .animate-on-scroll{opacity:0;transform:translateY(10px);transition:opacity .6s ease, transform .6s ease}
 .fade-in-up{opacity:1 !important;transform:translateY(0) !important}
 .slide-in-left{animation:slideInLeft .7s ease both}
@@ -144,18 +110,42 @@ h1.neon-glow:hover::before{animation:sheen 1.2s ease}
 @keyframes slideInRight{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:translateX(0)}}
 @keyframes zoomIn{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:scale(1)}}
 
-/* Sand visuals */
-.sand-texture{
-  background-image:
-    radial-gradient(circle at 30% 30%, rgba(255,255,255,.15) 0%, rgba(255,255,255,0) 50%),
-    radial-gradient(circle at 70% 50%, rgba(255,255,255,.12) 0%, rgba(255,255,255,0) 45%);
-  background-size:cover
+/* Social proof marquee */
+.marquee{overflow:hidden;white-space:nowrap;-webkit-mask-image:linear-gradient(90deg, transparent 0, #000 5%, #000 95%, transparent 100%);mask-image:linear-gradient(90deg, transparent 0, #000 5%, #000 95%, transparent 100%)}
+.marquee-track{display:inline-flex;gap:.75rem;padding-block:.25rem;animation:marquee 22s linear infinite;will-change:transform}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.badge-pill{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:#eafdfa;padding:.5rem .75rem;border-radius:9999px;font-weight:600}
+.badge-pill:hover{background:rgba(255,255,255,.12)}
+
+/* MOBILE TWEAKS */
+@media (max-width: 640px){
+  .wave-divider{height:36px}
+  .feature-card{padding:1rem}
+  .gallery-img{height:10rem}
+  .parallax-bob{animation:none}          /* calmer footer wave on mobile */
+  .marquee-track{gap:.5rem;animation-duration:26s}
 }
-.sand-sparkle{position:relative;overflow:hidden}
-.sand-sparkle::after{
-  content:'';position:absolute;inset:0;
-  background-image:
-    radial-gradient(circle at 20% 20%, rgba(255,255,255,.08), transparent 35%),
-    radial-gradient(circle at 80% 40%, rgba(255,255,255,.06), transparent 35%);
-  pointer-events:none
+
+/* Touch devices: reduce hover transforms for stability */
+@media (hover:none){
+  .feature-card:hover,
+  .stat-pill:hover,
+  .info-card:hover,
+  .gallery-card:hover,
+  .btn:hover{transform:none;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+  .gallery-card:hover .gallery-img{transform:none}
+}
+
+/* Reduced motion: turn off most movement */
+@media (prefers-reduced-motion: reduce){
+  .btn-pulse,
+  .parallax-bob,
+  .water-ripple,
+  .bubble,
+  .marquee-track{animation:none !important}
+  .animate-on-scroll,
+  .slide-in-left,
+  .slide-in-right,
+  .zoom-in{animation:none !important;opacity:1 !important;transform:none !important}
+  .hero-video{display:none}
 }
