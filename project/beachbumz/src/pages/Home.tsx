@@ -107,7 +107,7 @@ const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center fade-in-up" style={{ animationDelay: '1.2s' }}>
             <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 hover-lift beach-card tilt-on-hover">
               <Award className="h-8 w-8 text-sunset-orange mx-auto mb-3 coconut-bounce" />
-              <h3 className="font-semibold text-white mb-2">Liquor License Now Available</h3>
+              <h3 className="font-semibold text-white mb-2">Diverse Drink Menu</h3>
               <p className="text-sandy-beige text-sm">Craft cocktails & premium spirits</p>
             </div>
             <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 hover-lift beach-card tilt-on-hover" style={{ animationDelay: '0.2s' }}>
