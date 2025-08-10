@@ -4,14 +4,12 @@ import Home from "./pages/Home";
 import Menu from "./pages/Menu";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
-import Header from "./components/Header";
 import "./index.css";
 
 export default function App() {
   return (
     <HashRouter>
       <div className="min-h-screen bg-slate-900 text-white">
-        <Header />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/menu" element={<Menu />} />
