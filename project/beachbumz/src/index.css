@@ -13,7 +13,7 @@
   --sunset-orange:#FF7F50;
   --sandy-beige:#F5DEB3;
   --coral-pink:#F88379;
-  --white: #ffffff;
+  --white:#ffffff;
 }
 
 /* Base */
@@ -28,7 +28,7 @@ body{
   color:#e8f7f6;
 }
 
-/* Helpers to backfill custom Tailwind-like classes used in JSX */
+/* Helpers */
 .text-ocean-blue{color:var(--ocean-blue)}
 .text-sandy-beige{color:var(--sandy-beige)}
 .text-turquoise{color:var(--turquoise)}
@@ -37,7 +37,6 @@ body{
 .bg-sandy-beige{background-color:var(--sandy-beige)}
 .bg-white-10{background-color:rgba(255,255,255,.10)}
 .border-white-10{border-color:rgba(255,255,255,.10)}
-/* gradient utilities compatible with Tailwind’s gradient system */
 .from-ocean-blue{--tw-gradient-from: var(--ocean-blue) var(--tw-gradient-from-position); --tw-gradient-to: rgb(10 29 58 / 0) var(--tw-gradient-to-position); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)}
 .to-slate-900{--tw-gradient-to: rgb(15 23 42 / 1) var(--tw-gradient-to-position)}
 .via-teal-800{--tw-gradient-stops: var(--tw-gradient-from), rgb(17 94 89) var(--tw-gradient-via-position), var(--tw-gradient-to)}
@@ -49,29 +48,48 @@ h1,h2,h3{letter-spacing:.02em}
 .section-lead{color:#334155;line-height:1.75}
 
 /* Buttons */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.75rem 1.5rem;border-radius:9999px;font-weight:600;transition:all .3s ease;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.75rem 1.5rem;border-radius:9999px;font-weight:600;transition:transform .3s ease, box-shadow .3s ease;box-shadow:0 2px 6px rgba(0,0,0,.15);position:relative;overflow:hidden}
 .btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,.2)}
 .btn-primary{background:var(--turquoise);color:var(--ocean-blue)}
 .btn-accent{background:var(--sunset-orange);color:#fff}
 .btn-outline{border:1px solid var(--turquoise);color:var(--turquoise);background:transparent}
 .btn-outline:hover{background:rgba(64,224,208,.1)}
+/* subtle shimmer on hover */
+.btn::after{
+  content:"";position:absolute;inset:-200% -20%;background:linear-gradient(120deg,transparent 45%,rgba(255,255,255,.35) 50%,transparent 55%);transform:translateX(-30%);opacity:0;pointer-events:none
+}
+.btn:hover::after{animation:btnShine 900ms ease forwards}
+@keyframes btnShine{to{transform:translateX(30%);opacity:1}}
+
+/* Navbar link underline glide (targets typical nav links) */
+nav a, .nav-link{
+  position:relative;display:inline-block;transition:color .25s ease
+}
+nav a::after, .nav-link::after{
+  content:"";position:absolute;left:0;bottom:-4px;height:2px;width:0;background:linear-gradient(90deg,var(--turquoise),var(--sunset-orange));
+  transition:width .25s ease
+}
+nav a:hover::after, .nav-link:hover::after{width:100%}
 
 /* Feature cards, stats, info */
-.feature-card{background:rgba(255,255,255,.10);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:1.25rem;text-align:center;transition:all .3s ease}
-.feature-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.2)}
+.feature-card{background:rgba(255,255,255,.10);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:1.25rem;text-align:center;transition:transform .35s cubic-bezier(.2,.6,.2,1), box-shadow .35s, border-color .35s}
+.feature-card:hover{transform:translateY(-3px) scale(1.01);box-shadow:0 10px 28px rgba(0,0,0,.25);border-color:rgba(255,255,255,.2)}
 .icon-circle{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:9999px;background:rgba(255,255,255,.10);margin-bottom:.5rem}
 
-.stat-pill{display:flex;align-items:center;gap:.75rem;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.10);border-radius:14px;padding:1rem}
+.stat-pill{display:flex;align-items:center;gap:.75rem;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.10);border-radius:14px;padding:1rem;transition:transform .25s ease}
+.stat-pill:hover{transform:translateY(-2px)}
 .stat-icon{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:9999px;background:rgba(255,255,255,.10)}
 .stat-value{font-size:1.125rem;font-weight:600;color:var(--ocean-blue)}
 .stat-label{font-size:.875rem;color:#64748b}
 
-.info-card{display:flex;align-items:center;gap:.75rem;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:.75rem 1rem}
+.info-card{display:flex;align-items:center;gap:.75rem;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:.75rem 1rem;transition:transform .25s ease}
+.info-card:hover{transform:translateY(-2px)}
 
 /* Gallery */
-.gallery-card{position:relative;overflow:hidden;border-radius:14px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.05)}
+.gallery-card{position:relative;overflow:hidden;border-radius:14px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.05);transform:perspective(1000px);transition:transform .35s ease}
+.gallery-card:hover{transform:perspective(1000px) rotateX(2deg) rotateY(-2deg)}
 .gallery-img{width:100%;height:11rem;object-fit:cover;transition:transform .5s ease}
-.gallery-card:hover .gallery-img{transform:scale(1.05)}
+.gallery-card:hover .gallery-img{transform:scale(1.06)}
 .gallery-card figcaption{position:absolute;left:.5rem;bottom:.5rem;font-size:.75rem;background:rgba(10,29,58,.6);padding:.25rem .5rem;border-radius:.375rem;color:#e2f8f6}
 
 /* Effects */
@@ -79,6 +97,15 @@ h1,h2,h3{letter-spacing:.02em}
 @keyframes pulseGlow{0%,100%{opacity:.7}50%{opacity:1}}
 
 .neon-glow{text-shadow:0 0 6px var(--turquoise),0 0 14px var(--turquoise)}
+/* Heading sheen sweep */
+h1.neon-glow{
+  position:relative;overflow:hidden
+}
+h1.neon-glow::before{
+  content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 20%,rgba(255,255,255,.15) 50%,transparent 80%);transform:translateX(-120%);pointer-events:none
+}
+h1.neon-glow:hover::before{animation:sheen 1.2s ease}
+@keyframes sheen{to{transform:translateX(120%)}}
 
 /* Single wave divider */
 .wave-divider{position:relative;height:48px;overflow:hidden}
@@ -107,12 +134,12 @@ h1,h2,h3{letter-spacing:.02em}
 .bubble:nth-child(5){left:90%;animation-duration:13s}
 @keyframes rise{from{transform:translateY(0)}to{transform:translateY(-120%)}}
 
-/* Reusable motion utilities */
-.fade-in-up{animation:fadeInUp .7s ease both}
+/* Scroll reveal utilities (add class="animate-on-scroll" anywhere) */
+.animate-on-scroll{opacity:0;transform:translateY(10px);transition:opacity .6s ease, transform .6s ease}
+.fade-in-up{opacity:1 !important;transform:translateY(0) !important}
 .slide-in-left{animation:slideInLeft .7s ease both}
 .slide-in-right{animation:slideInRight .7s ease both}
 .zoom-in{animation:zoomIn .8s ease both}
-@keyframes fadeInUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes slideInLeft{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
 @keyframes slideInRight{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:translateX(0)}}
 @keyframes zoomIn{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:scale(1)}}
