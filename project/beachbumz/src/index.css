@@ -32,11 +32,10 @@ nav[aria-label*="categor" i]::-webkit-scrollbar,
 .categories > *,
 nav[aria-label*="categor" i] > *,
 [data-role="categories"] > *{
-  flex:0 0 auto;               /* prevent wrapping */
+  flex:0 0 auto;
   scroll-snap-align:center;
 }
 
-/* Chip style for category items (apply via class on each chip if you want) */
 .cat-chip{
   display:inline-flex; align-items:center; justify-content:center;
   padding:.5rem .9rem; border-radius:9999px; font-weight:600;
@@ -48,7 +47,50 @@ nav[aria-label*="categor" i] > *,
 .cat-chip:hover{ transform:translateY(-1px); background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.22); }
 .cat-chip--active{ background:var(--turquoise); color:var(--ocean-blue); border-color:var(--turquoise); }
 
-/* Small screens: a bit tighter */
 @media (max-width:640px){
   .cat-chip{ padding:.45rem .8rem; }
 }
+
+/* ===== Essentials added by fix ===== */
+:root{
+  --ocean-blue:#0A1D3A;
+  --turquoise:#40E0D0;
+  --sunset-orange:#FF7F50;
+}
+
+.fade-in-up{
+  opacity:0;
+  transform:translateY(12px);
+  animation:fadeInUp .6s ease forwards;
+}
+@keyframes fadeInUp{
+  to { opacity:1; transform:none; }
+}
+
+.parallax-bob{
+  animation: bob 6s ease-in-out infinite;
+}
+@keyframes bob{
+  0%,100%{ transform: translateY(0); }
+  50%{ transform: translateY(10px); }
+}
+@media (pointer: coarse){
+  .parallax-bob{ animation: none; }
+}
+
+.wave-divider{ position:relative; height:120px; overflow:hidden; }
+.wave-svg{ position:absolute; inset:0; width:200%; height:100%; }
+.wave-layer{ position:absolute; inset:0; animation:waveScroll 18s linear infinite; opacity:.7; }
+.wave-layer--back{ animation-duration: 28s; opacity:.35; }
+@keyframes waveScroll{
+  0%{ transform: translateX(0); }
+  100%{ transform: translateX(-50%); }
+}
+
+nav.navbar-fixed{ position:fixed; inset-inline:0; top:0; z-index:9999; }
+
+.btn{ @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold border border-white/20 text-white hover:border-white/40 transition; }
+.btn-primary{ background: var(--turquoise); color:#022; border-color: transparent; }
+.btn-outline{ background: transparent; }
+
+.menu-categories{ display:flex; gap:.5rem; overflow:auto; padding:.5rem; }

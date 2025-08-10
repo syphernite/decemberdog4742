@@ -11,7 +11,6 @@ const Navbar = () => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -26,14 +25,11 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className={`fixed w-full z-50 transition-all duration-300 ${
-      isScrolled 
-        ? 'bg-ocean-blue/95 backdrop-blur-md shadow-lg' 
-        : 'bg-transparent'
+    <nav className={`navbar-fixed fixed w-full z-50 transition-all duration-300 ${
+      isScrolled ? 'bg-ocean-blue/95 backdrop-blur-md shadow-lg' : 'bg-transparent'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 md:h-20">
-          {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 group">
             <Waves className="h-8 w-8 text-turquoise group-hover:text-sunset-orange transition-colors duration-300" />
             <div className="flex flex-col">
@@ -44,16 +40,13 @@ const Navbar = () => {
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
                 className={`relative font-medium transition-all duration-300 hover:text-turquoise ${
-                  isActive(item.path) 
-                    ? 'text-turquoise' 
-                    : 'text-white'
+                  isActive(item.path) ? 'text-turquoise' : 'text-white'
                 }`}
               >
                 {item.label}
@@ -62,52 +55,30 @@ const Navbar = () => {
                 )}
               </Link>
             ))}
-            
-            {/* Phone Number */}
-            <a 
-              href="tel:252-726-7800" 
-              className="flex items-center space-x-2 text-white hover:text-turquoise transition-colors duration-300 bg-sunset-orange/20 hover:bg-sunset-orange/30 px-4 py-2 rounded-full"
-            >
+            <a href="tel:252-726-7800" className="flex items-center space-x-2 text-white hover:text-turquoise transition-colors duration-300 bg-sunset-orange/20 hover:bg-sunset-orange/30 px-4 py-2 rounded-full">
               <Phone className="h-4 w-4" />
               <span className="font-semibold">(252) 726-7800</span>
             </a>
           </div>
 
-          {/* Mobile menu button */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden text-white hover:text-turquoise transition-colors duration-300"
-            aria-label="Toggle navigation menu"
-          >
+          <button onClick={() => setIsOpen(!isOpen)} className="md:hidden text-white hover:text-turquoise transition-colors duration-300" aria-label="Toggle navigation menu">
             {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Navigation */}
       <div className={`md:hidden transition-all duration-300 overflow-hidden ${
         isOpen ? 'max-h-96 bg-ocean-blue/95 backdrop-blur-md' : 'max-h-0'
       }`}>
         <div className="px-4 pt-2 pb-6 space-y-4">
           {navItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              onClick={() => setIsOpen(false)}
-              className={`block py-2 font-medium transition-all duration-300 hover:text-turquoise hover:pl-4 ${
-                isActive(item.path) 
-                  ? 'text-turquoise pl-4 border-l-2 border-turquoise' 
-                  : 'text-white'
-              }`}
-            >
+            <Link key={item.path} to={item.path} onClick={() => setIsOpen(false)} className={`block py-2 font-medium transition-all duration-300 hover:text-turquoise hover:pl-4 ${
+              isActive(item.path) ? 'text-turquoise pl-4 border-l-2 border-turquoise' : 'text-white'
+            }`}>
               {item.label}
             </Link>
           ))}
-          
-          <a 
-            href="tel:252-726-7800" 
-            className="flex items-center space-x-2 text-white hover:text-turquoise transition-colors duration-300 py-2"
-          >
+          <a href="tel:252-726-7800" className="flex items-center space-x-2 text-white hover:text-turquoise transition-colors duration-300 py-2">
             <Phone className="h-4 w-4" />
             <span className="font-semibold">(252) 726-7800</span>
           </a>
