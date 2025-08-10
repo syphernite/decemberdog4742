@@ -1,19 +1,11 @@
-// src/pages/SolarPricing.tsx
 import React, { useMemo, useRef, useState, useEffect, useLayoutEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Code } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Put your image at: src/assets/space-bg.jpg (or update this import)
-import spaceBg from "../assets/space-bg.jpg";
-
-/**
- * SolarPricing — Even-radius orbit
- * - Every planet is the SAME distance from the center orb at all times.
- * - Implemented via transform chain:
- *   translate(-50%,-50%) rotate(A) translateX(R) rotate(-A)
- * - R = centerOrbRadius + GAP + planetRadius (measured from actual element)
- */
+// Use a direct image URL here, not an album URL.
+// Example: https://i.imgur.com/abcdefg.jpg
+const SPACE_BG_URL = "https://imgur.com/a/dxH9FGB"; // REPLACE with direct image file URL
 
 type PlanKind = "core" | "optional" | "one-time" | "custom";
 
@@ -217,7 +209,7 @@ const StaticSpaceBG: React.FC = () => (
       className="absolute inset-0 -z-10"
       style={{
         backgroundColor: "#060616",
-        backgroundImage: `url(${spaceBg})`,
+        backgroundImage: `url(${SPACE_BG_URL})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -378,6 +370,8 @@ const LocalHeader: React.FC = () => {
 /* ---------------------------------- PAGE --------------------------------- */
 
 const Pricing: React.FC = () => {
+  const location = useLocation();
+
   useEffect(() => {
     document.documentElement.classList.add("dark");
     try {
@@ -390,9 +384,24 @@ const Pricing: React.FC = () => {
     []
   );
 
-  const [index, setIndex] = useState(0);
+  // Initial focus from URL on first paint to avoid flashing "Startup"
+  const initialPlan = (() => {
+    const raw = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("plan") : null;
+    const key = raw?.toLowerCase() || "";
+    const idx = ORDER_KEYS.indexOf(key);
+    return idx >= 0 ? idx : 0;
+  })();
+
+  const [index, setIndex] = useState(initialPlan);
   const [legendOpen, setLegendOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+
+  // Update focus if query changes after load
+  useEffect(() => {
+    const q = new URLSearchParams(location.search).get("plan")?.toLowerCase() || "";
+    const idx = ORDER_KEYS.indexOf(q);
+    if (idx >= 0 && idx !== index) setIndex(idx);
+  }, [location.search]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -469,7 +478,8 @@ const Pricing: React.FC = () => {
     const onScroll = () => {
       const scrolledPast = window.scrollY > 120;
       const doc = document.documentElement;
-      const nearBottom = window.innerHeight + window.scrollY >= (doc.scrollHeight || document.body.scrollHeight) - 120;
+      const nearBottom =
+        window.innerHeight + window.scrollY >= (doc.scrollHeight || document.body.scrollHeight) - 120;
       setShowScrollHint(!(scrolledPast || nearBottom));
     };
     onScroll();
@@ -493,7 +503,7 @@ const Pricing: React.FC = () => {
   const samplePlanetRef = useRef<HTMLDivElement | null>(null);
 
   const [centerRadius, setCenterRadius] = useState(0);
-  const [planetRadius, setPlanetRadius] = useState(44); // fallback ≈ 5.5rem / 2
+  const [planetRadius, setPlanetRadius] = useState(44); // ≈ 5.5rem / 2
   useLayoutEffect(() => {
     const measure = () => {
       if (centerRef.current) {
@@ -517,7 +527,7 @@ const Pricing: React.FC = () => {
     };
   }, []);
 
-  const GAP_BETWEEN = 56; // px — tweak to move the ring in/out
+  const GAP_BETWEEN = 56; // px
   const total = orderedPlans.length;
   const startAngle = -90; // 12 o'clock
 
