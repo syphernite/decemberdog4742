@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-// Must match your subpath folder name
+// Deployed at built4you.org/beachbumz
 export default defineConfig({
   base: "/beachbumz/",
   plugins: [react()],
