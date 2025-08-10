@@ -1,175 +1,134 @@
-import React, { useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import { ExternalLink, Star, MapPin, Instagram, Clock, Award, Users } from 'lucide-react';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-const Home = () => {
-  const heroRef = useRef<HTMLElement>(null);
+/* Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600;700&display=swap');
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('fade-in-up');
-          }
-        });
-      },
-      { threshold: 0.15 }
-    );
+/* Theme vars */
+:root{
+  --ocean-blue:#0A1D3A;
+  --jet-black:#000000;
+  --turquoise:#40E0D0;
+  --sunset-orange:#FF7F50;
+  --sandy-beige:#F5DEB3;
+  --coral-pink:#F88379;
+  --white: #ffffff;
+}
 
-    const elements = document.querySelectorAll('.animate-on-scroll');
-    elements.forEach((el) => observer.observe(el));
+/* Base */
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Poppins',sans-serif;
+  background:
+    radial-gradient(1000px 600px at 20% 10%, rgba(64,224,208,.06), transparent 60%),
+    radial-gradient(1200px 700px at 80% 20%, rgba(255,127,80,.06), transparent 60%),
+    linear-gradient(180deg, var(--ocean-blue) 0%, #081529 100%);
+  color:#e8f7f6;
+}
 
-    return () => {
-      elements.forEach((el) => observer.unobserve(el));
-    };
-  }, []);
+/* Helpers to backfill custom Tailwind-like classes used in JSX */
+.text-ocean-blue{color:var(--ocean-blue)}
+.text-sandy-beige{color:var(--sandy-beige)}
+.text-turquoise{color:var(--turquoise)}
+.text-sunset-orange{color:var(--sunset-orange)}
+.bg-ocean-blue{background-color:var(--ocean-blue)}
+.bg-sandy-beige{background-color:var(--sandy-beige)}
+.bg-white-10{background-color:rgba(255,255,255,.10)}
+.border-white-10{border-color:rgba(255,255,255,.10)}
+/* gradient utilities compatible with Tailwind’s gradient system */
+.from-ocean-blue{--tw-gradient-from: var(--ocean-blue) var(--tw-gradient-from-position); --tw-gradient-to: rgb(10 29 58 / 0) var(--tw-gradient-to-position); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)}
+.to-slate-900{--tw-gradient-to: rgb(15 23 42 / 1) var(--tw-gradient-to-position)}
+.via-teal-800{--tw-gradient-stops: var(--tw-gradient-from), rgb(17 94 89) var(--tw-gradient-via-position), var(--tw-gradient-to)}
 
-  const stats = [
-    { label: 'Happy Guests', value: '25k+', icon: <Users className="h-5 w-5" /> },
-    { label: 'Years Serving', value: '12+', icon: <Clock className="h-5 w-5" /> },
-    { label: 'Top Reviews', value: '4.8★', icon: <Star className="h-5 w-5" /> },
-    { label: 'Awards', value: '8', icon: <Award className="h-5 w-5" /> },
-  ];
+/* Typography */
+h1,h2,h3{letter-spacing:.02em}
+.font-display{font-family:'Bebas Neue',sans-serif}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.75rem,3vw,2.5rem);color:var(--ocean-blue);margin-bottom:1rem}
+.section-lead{color:#334155;line-height:1.75}
 
-  const gallery = [
-    { id: 1, image: 'https://images.pexels.com/photos/1580466/pexels-photo-1580466.jpeg?auto=compress&cs=tinysrgb&w=400', caption: 'Fresh pies daily 🍕' },
-    { id: 2, image: 'https://images.pexels.com/photos/1566837/pexels-photo-1566837.jpeg?auto=compress&cs=tinysrgb&w=400', caption: 'Wings that hit different 🔥' },
-    { id: 3, image: 'https://images.pexels.com/photos/1639562/pexels-photo-1639562.jpeg?auto=compress&cs=tinysrgb&w=400', caption: 'Beachside vibes daily ✨' },
-    { id: 4, image: 'https://images.pexels.com/photos/5490915/pexels-photo-5490915.jpeg?auto=compress&cs=tinysrgb&w=400', caption: 'Cold drinks, hot food 🍻' },
-  ];
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.75rem 1.5rem;border-radius:9999px;font-weight:600;transition:all .3s ease;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,.2)}
+.btn-primary{background:var(--turquoise);color:var(--ocean-blue)}
+.btn-accent{background:var(--sunset-orange);color:#fff}
+.btn-outline{border:1px solid var(--turquoise);color:var(--turquoise);background:transparent}
+.btn-outline:hover{background:rgba(64,224,208,.1)}
 
-  return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <section ref={heroRef} className="relative h-screen flex items-center justify-center overflow-hidden">
-        {/* Animated Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-ocean-blue via-teal-800 to-slate-900">
-          <div className="water-ripple"></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-turquoise/20 to-sunset-orange/20"></div>
-          
-          {/* Floating Bubbles */}
-          <div className="floating-bubbles">
-            <span className="bubble"></span>
-            <span className="bubble"></span>
-            <span className="bubble"></span>
-            <span className="bubble"></span>
-            <span className="bubble"></span>
-          </div>
+/* Feature cards, stats, info */
+.feature-card{background:rgba(255,255,255,.10);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:1.25rem;text-align:center;transition:all .3s ease}
+.feature-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.2)}
+.icon-circle{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:9999px;background:rgba(255,255,255,.10);margin-bottom:.5rem}
 
-          {/* Ambient Glows */}
-          <div className="absolute top-1/4 left-1/5 w-40 h-40 bg-turquoise/25 rounded-full blur-3xl pulse-glow"></div>
-          <div className="absolute bottom-1/3 right-1/4 w-24 h-24 bg-sunset-orange/25 rounded-full blur-2xl pulse-glow" style={{ animationDelay: '0.6s' }}></div>
-        </div>
+.stat-pill{display:flex;align-items:center;gap:.75rem;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.10);border-radius:14px;padding:1rem}
+.stat-icon{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:9999px;background:rgba(255,255,255,.10)}
+.stat-value{font-size:1.125rem;font-weight:600;color:var(--ocean-blue)}
+.stat-label{font-size:.875rem;color:#64748b}
 
-        {/* Hero Content */}
-        <div className="relative z-10 text-center px-4 max-w-5xl mx-auto">
-          <h1 className="font-display text-5xl md:text-7xl lg:text-8xl text-white mb-6 neon-glow leading-tight zoom-in">
-            BEACH BUMZ
-          </h1>
-          <p className="font-display text-2xl md:text-3xl text-turquoise mb-4 slide-in-left" style={{ animationDelay: '0.3s' }}>
-            PUB & PIZZERIA
-          </p>
-          <p className="text-xl md:text-2xl text-sandy-beige mb-8 font-light slide-in-right" style={{ animationDelay: '0.6s' }}>
-            Where Comfort Meets the Coast
-          </p>
-          
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12 fade-in-up" style={{ animationDelay: '0.9s' }}>
-            <Link to="/menu" className="btn btn-primary">View Menu</Link>
-            <a
-              href="https://www.doordash.com/" 
-              target="_blank" 
-              rel="noreferrer"
-              className="btn btn-accent inline-flex items-center gap-2"
-            >
-              Order on DoorDash <ExternalLink className="h-4 w-4" />
-            </a>
-            <a href="https://maps.google.com/?q=Beach+Bumz+Pub+%26+Pizzeria" className="btn btn-outline">
-              Find Us
-            </a>
-          </div>
+.info-card{display:flex;align-items:center;gap:.75rem;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:.75rem 1rem}
 
-          {/* Feature Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto px-4">
-            <div className="feature-card animate-on-scroll">
-              <div className="icon-circle text-sunset-orange">🍹</div>
-              <h3>Liquor License Now Available</h3>
-              <p>Craft cocktails & premium spirits</p>
-            </div>
-            <div className="feature-card animate-on-scroll">
-              <div className="icon-circle text-turquoise">⭐</div>
-              <h3>Fan Favorites</h3>
-              <p>Pizza, wings, subs & more</p>
-            </div>
-            <div className="feature-card animate-on-scroll">
-              <div className="icon-circle text-sunset-orange">🤝</div>
-              <h3>Beach Community Hub</h3>
-              <p>Where locals & visitors unite</p>
-            </div>
-          </div>
-        </div>
-      </section>
+/* Gallery */
+.gallery-card{position:relative;overflow:hidden;border-radius:14px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.05)}
+.gallery-img{width:100%;height:11rem;object-fit:cover;transition:transform .5s ease}
+.gallery-card:hover .gallery-img{transform:scale(1.05)}
+.gallery-card figcaption{position:absolute;left:.5rem;bottom:.5rem;font-size:.75rem;background:rgba(10,29,58,.6);padding:.25rem .5rem;border-radius:.375rem;color:#e2f8f6}
 
-      {/* Wave Divider — single layer only */}
-      <div className="wave-divider">
-        <div className="wave wave-front"></div>
-      </div>
+/* Effects */
+.pulse-glow{animation:pulseGlow 6s ease-in-out infinite}
+@keyframes pulseGlow{0%,100%{opacity:.7}50%{opacity:1}}
 
-      {/* Welcome Section */}
-      <section className="py-20 bg-sandy-beige sand-texture sand-sparkle">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="animate-on-scroll slide-in-left">
-              <h2 className="section-title">Comfort Food, Coastal Vibes</h2>
-              <p className="section-lead">
-                Bold flavors, crispy wings, stacked subs, and fresh pizzas — served with a side of ocean breeze.
-              </p>
-              <div className="mt-6 grid grid-cols-2 gap-4">
-                {stats.map((s, i) => (
-                  <div key={i} className="stat-pill animate-on-scroll" style={{ animationDelay: `${i * 100}ms` }}>
-                    <span className="stat-icon">{s.icon}</span>
-                    <div>
-                      <div className="stat-value">{s.value}</div>
-                      <div className="stat-label">{s.label}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+.neon-glow{text-shadow:0 0 6px var(--turquoise),0 0 14px var(--turquoise)}
 
-            {/* Gallery */}
-            <div className="grid grid-cols-2 gap-4 animate-on-scroll slide-in-right">
-              {gallery.map((g) => (
-                <figure key={g.id} className="gallery-card">
-                  <img src={g.image} alt={g.caption} className="gallery-img" />
-                  <figcaption>{g.caption}</figcaption>
-                </figure>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+/* Single wave divider */
+.wave-divider{position:relative;height:48px;overflow:hidden}
+.wave-divider .wave{position:absolute;left:0;bottom:0;width:200%;height:100%;background-repeat:repeat-x}
+.wave-divider .wave-front{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 160'%3E%3Cpath d='M0 120 C 150 140 350 90 600 120 C 850 150 1050 100 1200 120 L 1200 160 L 0 160 Z' fill='%2326ccb9'/%3E%3C/svg%3E");
+  animation:wave-scroll-3 9s linear infinite;opacity:.95
+}
+@keyframes wave-scroll-3{0%{transform:translateX(0)}100%{transform:translateX(-33.33%)}}
 
-      {/* Info Strip */}
-      <section className="bg-ocean-blue text-white py-12">
-        <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="info-card">
-            <MapPin className="h-5 w-5 text-turquoise" />
-            <span>5167 US-70, Morehead City, NC</span>
-          </div>
-          <div className="info-card">
-            <Clock className="h-5 w-5 text-turquoise" />
-            <span>Open Daily — 11am to Close</span>
-          </div>
-          <a href="https://instagram.com" className="info-card group">
-            <Instagram className="h-5 w-5 text-turquoise group-hover:text-sunset-orange transition-colors" />
-            <span>@beachbumzpub</span>
-          </a>
-        </div>
-      </section>
-    </div>
-  );
-};
+/* Background details */
+.water-ripple{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 30% 50%, rgba(64,224,208,.12), transparent 35%),
+    radial-gradient(circle at 70% 60%, rgba(255,127,80,.11), transparent 40%);
+  mix-blend-mode:screen;animation:rippleMove 18s ease-in-out infinite
+}
+@keyframes rippleMove{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
 
-export default Home;
+.floating-bubbles{position:absolute;inset:0;pointer-events:none}
+.bubble{position:absolute;bottom:-10%;left:10%;width:10px;height:10px;border-radius:9999px;background:rgba(64,224,208,.3);filter:blur(1px);animation:rise 10s linear infinite}
+.bubble:nth-child(2){left:30%;animation-duration:12s;width:8px;height:8px}
+.bubble:nth-child(3){left:55%;animation-duration:14s;width:12px;height:12px}
+.bubble:nth-child(4){left:75%;animation-duration:11s}
+.bubble:nth-child(5){left:90%;animation-duration:13s}
+@keyframes rise{from{transform:translateY(0)}to{transform:translateY(-120%)}}
+
+/* Reusable motion utilities */
+.fade-in-up{animation:fadeInUp .7s ease both}
+.slide-in-left{animation:slideInLeft .7s ease both}
+.slide-in-right{animation:slideInRight .7s ease both}
+.zoom-in{animation:zoomIn .8s ease both}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideInLeft{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slideInRight{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:translateX(0)}}
+@keyframes zoomIn{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:scale(1)}}
+
+/* Sand visuals */
+.sand-texture{
+  background-image:
+    radial-gradient(circle at 30% 30%, rgba(255,255,255,.15) 0%, rgba(255,255,255,0) 50%),
+    radial-gradient(circle at 70% 50%, rgba(255,255,255,.12) 0%, rgba(255,255,255,0) 45%);
+  background-size:cover
+}
+.sand-sparkle{position:relative;overflow:hidden}
+.sand-sparkle::after{
+  content:'';position:absolute;inset:0;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255,255,255,.08), transparent 35%),
+    radial-gradient(circle at 80% 40%, rgba(255,255,255,.06), transparent 35%);
+  pointer-events:none
+}
