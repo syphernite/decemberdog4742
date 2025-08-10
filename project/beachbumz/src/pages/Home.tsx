@@ -2,15 +2,15 @@ import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { ExternalLink, Star, MapPin, Instagram, Clock, Award, Users } from "lucide-react";
 
-const Home = () => {
+export default function Home() {
   const heroRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const io = new IntersectionObserver(
-      (entries) => entries.forEach((e) => e.isIntersecting && e.target.classList.add("fade-in-up")),
+      entries => entries.forEach(e => e.isIntersecting && e.target.classList.add("fade-in-up")),
       { threshold: 0.12 }
     );
-    document.querySelectorAll(".animate-on-scroll").forEach((el) => io.observe(el));
+    document.querySelectorAll(".animate-on-scroll").forEach(el => io.observe(el));
     return () => io.disconnect();
   }, []);
 
@@ -25,43 +25,49 @@ const Home = () => {
 
   return (
     <div className="min-h-screen">
-      {/* one bird across the top */}
+      {/* single bird across the very top */}
       <div className="sky-bird">🕊️</div>
 
-      {/* Hero */}
+      {/* ================= Hero ================= */}
       <section ref={heroRef} className="relative h-screen flex items-center justify-center overflow-hidden">
-        {/* Background layers */}
-        <div className="absolute inset-0 bg-gradient-to-br from-ocean-blue via-black/50 to-black">
-          <div className="water-ripple"></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-turquoise/14 to-sunset-orange/14"></div>
+        {/* Parallax sky layers */}
+        <div className="absolute inset-0 bg-gradient-to-b from-ocean-blue via-[#0e1116] to-[#0b0c10]">
+          <div className="sun-flare" />
+          <div className="clouds">
+            <div className="cloud c1" />
+            <div className="cloud c2" />
+            <div className="cloud c3" />
+          </div>
+          <div className="water-ripple" />
+          <div className="absolute inset-0 bg-gradient-to-r from-turquoise/14 to-sunset-orange/14" />
 
-          {/* Floating bubbles (CSS-driven, cheap) */}
+          {/* Floating bubbles */}
           <div className="floating-bubbles">
-            <div className="bubble"></div><div className="bubble"></div><div className="bubble"></div>
-            <div className="bubble"></div><div className="bubble"></div><div className="bubble"></div>
-            <div className="bubble"></div><div className="bubble"></div><div className="bubble"></div>
-            <div className="bubble"></div><div className="bubble"></div><div className="bubble"></div>
+            <div className="bubble" /><div className="bubble" /><div className="bubble" />
+            <div className="bubble" /><div className="bubble" /><div className="bubble" />
+            <div className="bubble" /><div className="bubble" /><div className="bubble" />
+            <div className="bubble" /><div className="bubble" /><div className="bubble" />
           </div>
 
-          {/* Sand particles */}
+          {/* Sand particles near the bottom */}
           <div className="beach-particles">
-            <div className="particle"></div><div className="particle"></div><div className="particle"></div>
-            <div className="particle"></div><div className="particle"></div><div className="particle"></div>
-            <div className="particle"></div>
+            <div className="particle" /><div className="particle" /><div className="particle" />
+            <div className="particle" /><div className="particle" /><div className="particle" />
+            <div className="particle" />
           </div>
 
-          {/* Soft flares */}
-          <div className="absolute top-1/4 right-1/4 w-32 h-32 bg-sunset-orange/30 rounded-full blur-3xl pulse-glow"></div>
-          <div className="absolute bottom-1/3 left-1/4 w-24 h-24 bg-turquoise/20 rounded-full blur-2xl pulse-glow" style={{ animationDelay: "1s" }}></div>
-
-          {/* Waves */}
-          <div className="ocean-wave"></div>
+          {/* Gentle waves */}
+          <div className="ocean-wave" />
         </div>
 
-        {/* Hero content */}
+        {/* Content */}
         <div className="relative z-10 text-center px-4 max-w-5xl mx-auto">
-          <h1 className="font-display text-5xl md:text-7xl lg:text-8xl text-white mb-6 neon-glow leading-tight zoom-in">BEACH BUMZ</h1>
-          <p className="font-display text-2xl md:text-3xl text-turquoise mb-4 slide-in-left" style={{ animationDelay: "0.3s" }}>PUB & PIZZERIA</p>
+          <h1 className="font-display text-5xl md:text-7xl lg:text-8xl text-white mb-6 neon-glow leading-tight zoom-in">
+            BEACH BUMZ
+          </h1>
+          <p className="font-display text-2xl md:text-3xl text-turquoise mb-4 slide-in-left" style={{ animationDelay: "0.3s" }}>
+            PUB & PIZZERIA
+          </p>
           <p className="text-xl md:text-2xl text-sandy-beige mb-8 font-light slide-in-right" style={{ animationDelay: "0.6s" }}>
             Where Comfort Meets the Coast
           </p>
@@ -96,35 +102,32 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Wave Divider */}
-      <div className="wave-divider">
-        <div className="wave wave-back"></div>
-        <div className="wave wave-mid"></div>
-        <div className="wave wave-front"></div>
+      {/* ================= Shoreline Divider ================= */}
+      <div className="shoreline">
+        <div className="foam f1" /><div className="foam f2" /><div className="foam f3" />
       </div>
 
-      {/* Welcome */}
-      <section className="py-20 bg-sandy-beige sand-texture sand-sparkle">
+      {/* ================= Welcome ================= */}
+      <section className="py-20 beach-gradient">
         <div className="max-w-6xl mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="animate-on-scroll slide-in-left">
-              <h2 className="font-display text-4xl md:text-5xl text-ocean-blue mb-6">Welcome to Paradise</h2>
-              <p className="text-lg text-gray-700 mb-6 leading-relaxed">
+              <h2 className="font-display text-4xl md:text-5xl text-white mb-6">Welcome to Paradise</h2>
+              <p className="text-lg text-white/90 mb-6 leading-relaxed">
                 Step into Beach Bumz Pub & Pizzeria, where every meal feels like a coastal escape. Located in the heart of Morehead City,
-                we're serving up fresh pizzas, crispy wings, hearty subs, and ice-cold drinks that capture the spirit of beach living.
+                we serve fresh pizzas, crispy wings, hearty subs, and ice-cold drinks that capture the spirit of beach living.
               </p>
-              <p className="text-lg text-gray-700 mb-8 leading-relaxed">
-                Now with our liquor license, we're bringing you craft cocktails and premium spirits to complement our comfort food favorites.
-                Whether you're a local or just visiting, Beach Bumz is your home away from home.
+              <p className="text-lg text-white/90 mb-8 leading-relaxed">
+                With a full bar, enjoy craft cocktails and premium spirits alongside your favorites. Locals and visitors welcome.
               </p>
-              <div className="flex items-center space-x-6">
-                <div className="flex items-center space-x-2">
-                  <MapPin className="h-5 w-5 text-sunset-orange bounce-subtle" />
-                  <span className="font-semibold text-ocean-blue">Morehead City, NC</span>
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-5 w-5 text-turquoise bounce-subtle" />
+                  <span className="font-semibold text-white">Morehead City, NC</span>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Clock className="h-5 w-5 text-turquoise palm-sway" />
-                  <span className="font-semibold text-ocean-blue">Open Daily</span>
+                <div className="flex items-center gap-2">
+                  <Clock className="h-5 w-5 text-sunset-orange palm-sway" />
+                  <span className="font-semibold text-white">Open Daily</span>
                 </div>
               </div>
             </div>
@@ -136,14 +139,14 @@ const Home = () => {
                   alt="Beach Bumz interior"
                   className="rounded-lg shadow-2xl w-full h-80 object-cover hover-lift tilt-on-hover wave-animation"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-ocean-blue/30 to-transparent rounded-lg"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-ocean-blue/30 to-transparent rounded-lg" />
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Instagram */}
+      {/* ================= Instagram ================= */}
       <section className="py-20 bg-ocean-blue">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12 animate-on-scroll zoom-in">
@@ -180,7 +183,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* CTA with logo gradient */}
+      {/* ================= CTA ================= */}
       <section className="py-20 cta-bg">
         <div className="max-w-4xl mx-auto text-center px-4 animate-on-scroll zoom-in">
           <h2 className="font-display text-4xl md:text-5xl text-white mb-6">Ready to Dive In?</h2>
@@ -203,6 +206,4 @@ const Home = () => {
       </section>
     </div>
   );
-};
-
-export default Home;
+}
