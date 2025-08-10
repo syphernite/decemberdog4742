@@ -1,16 +1,35 @@
+/* Google Fonts must be first */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* Tailwind */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600;700&display=swap');
-
+/* Brand palette (updated to match the logo) */
 :root {
-  --ocean-blue: #0A1D3A;
+  /* dark charcoal like the logo background */
+  --ocean-blue: #111214;
   --jet-black: #000000;
-  --turquoise: #40E0D0;
-  --sunset-orange: #FF7F50;
+
+  /* warm stripes sampled from the logo */
+  --turquoise: #FFB02E;      /* amber highlight */
+  --sunset-orange: #FF6A3D;  /* orange stripe */
+  --coral-pink: #E84A8A;     /* magenta stripe */
+
+  /* keep existing neutrals */
   --sandy-beige: #F5DEB3;
-  --coral-pink: #F88379;
+}
+
+/* Minimal utilities the JSX references */
+@layer utilities {
+  .bg-ocean-blue { background-color: var(--ocean-blue); }
+  .bg-ocean-blue\/80 { background-color: color-mix(in oklab, var(--ocean-blue) 80%, transparent); }
+  .bg-ocean-blue\/95 { background-color: color-mix(in oklab, var(--ocean-blue) 95%, transparent); }
+  .text-turquoise { color: var(--turquoise); }
+  .bg-sunset-orange\/20 { background-color: color-mix(in oklab, var(--sunset-orange) 20%, transparent); }
+  .bg-sunset-orange\/30 { background-color: color-mix(in oklab, var(--sunset-orange) 30%, transparent); }
+  .scroll-mt-24 { scroll-margin-top: 6rem; }
 }
 
 * {
@@ -84,12 +103,8 @@ body {
     transform: translateY(100vh) rotate(0deg);
     opacity: 0;
   }
-  10% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 1;
-  }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
   100% {
     transform: translateY(-100px) rotate(360deg);
     opacity: 0;
@@ -148,104 +163,51 @@ body {
 .particle:nth-child(7) { left: 85%; width: 3px; height: 3px; animation-delay: 2s; }
 
 @keyframes drift {
-  0% {
-    transform: translateY(100vh) translateX(0px);
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-100px) translateX(50px);
-    opacity: 0;
-  }
+  0% { transform: translateY(100vh) translateX(0px); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-100px) translateX(50px); opacity: 0; }
 }
 
-.wave-animation {
-  position: relative;
-  overflow: hidden;
-}
-
+.wave-animation { position: relative; overflow: hidden; }
 .wave-animation::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: -100%;
-  width: 200%;
-  height: 100%;
+  top: 0; left: -100%;
+  width: 200%; height: 100%;
   background: linear-gradient(90deg, transparent, rgba(64, 224, 208, 0.1), transparent);
   animation: waveShimmer 3s infinite;
 }
+@keyframes waveShimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
-@keyframes waveShimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
+.tilt-on-hover { transition: transform 0.3s ease; }
+.tilt-on-hover:hover { transform: perspective(1000px) rotateX(5deg) rotateY(5deg) scale(1.02); }
 
-.tilt-on-hover {
-  transition: transform 0.3s ease;
-}
-
-.tilt-on-hover:hover {
-  transform: perspective(1000px) rotateX(5deg) rotateY(5deg) scale(1.02);
-}
-
-.pulse-glow {
-  animation: pulseGlow 2s ease-in-out infinite alternate;
-}
-
+.pulse-glow { animation: pulseGlow 2s ease-in-out infinite alternate; }
 @keyframes pulseGlow {
-  from {
-    box-shadow: 0 0 5px var(--turquoise), 0 0 10px var(--turquoise), 0 0 15px var(--turquoise);
-  }
-  to {
-    box-shadow: 0 0 10px var(--turquoise), 0 0 20px var(--turquoise), 0 0 30px var(--turquoise);
-  }
+  from { box-shadow: 0 0 5px var(--turquoise), 0 0 10px var(--turquoise), 0 0 15px var(--turquoise); }
+  to { box-shadow: 0 0 10px var(--turquoise), 0 0 20px var(--turquoise), 0 0 30px var(--turquoise); }
 }
 
 .ocean-wave {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 200%;
-  height: 60px;
+  position: absolute; bottom: 0; left: 0;
+  width: 200%; height: 60px;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120'%3E%3Cpath d='M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z' opacity='.25' fill='%2340E0D0'/%3E%3Cpath d='M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z' opacity='.5' fill='%2340E0D0'/%3E%3Cpath d='M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z' fill='%2340E0D0'/%3E%3C/svg%3E") repeat-x;
   animation: waveMove 10s ease-in-out infinite;
 }
+@keyframes waveMove { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-50%); } }
 
-@keyframes waveMove {
-  0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(-50%); }
-}
-
-.sand-sparkle {
-  position: relative;
-  overflow: hidden;
-}
-
+.sand-sparkle { position: relative; overflow: hidden; }
 .sand-sparkle::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: 
+  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
     radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.3) 1px, transparent 1px),
     radial-gradient(circle at 60% 70%, rgba(255, 255, 255, 0.2) 1px, transparent 1px),
     radial-gradient(circle at 80% 40%, rgba(255, 255, 255, 0.3) 1px, transparent 1px);
   background-size: 100px 100px, 150px 150px, 80px 80px;
-  animation: sparkle 4s ease-in-out infinite;
-  pointer-events: none;
+  animation: sparkle 4s ease-in-out infinite; pointer-events: none;
 }
-
-@keyframes sparkle {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 0.8; }
-}
+@keyframes sparkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
 
 .btn-primary {
   @apply bg-gradient-to-r from-turquoise to-teal-400 hover:from-sunset-orange hover:to-orange-400 
@@ -281,11 +243,7 @@ body {
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120'%3E%3Cpath d='M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z' fill='%2340E0D0'/%3E%3C/svg%3E") repeat-x;
   animation: wave 8s linear infinite;
 }
-
-@keyframes wave {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
+@keyframes wave { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
 .sand-texture {
   background-image: 
@@ -296,164 +254,53 @@ body {
 
 .water-ripple {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0; width: 100%; height: 100%;
   background: 
     radial-gradient(circle at 30% 70%, rgba(64, 224, 208, 0.1) 0%, transparent 30%),
     radial-gradient(circle at 70% 30%, rgba(64, 224, 208, 0.1) 0%, transparent 30%);
   animation: ripple 6s ease-in-out infinite;
 }
+@keyframes ripple { 0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.3; } 50% { transform: scale(1.1) rotate(180deg); opacity: 0.1; } }
 
-@keyframes ripple {
-  0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.3; }
-  50% { transform: scale(1.1) rotate(180deg); opacity: 0.1; }
-}
+.coconut-bounce { animation: coconutBounce 3s ease-in-out infinite; }
+@keyframes coconutBounce { 0%, 100% { transform: translateY(0) rotate(0deg); } 25% { transform: translateY(-10px) rotate(5deg); } 50% { transform: translateY(-5px) rotate(0deg); } 75% { transform: translateY(-15px) rotate(-5deg); } }
 
-.coconut-bounce {
-  animation: coconutBounce 3s ease-in-out infinite;
-}
+.starfish-spin { animation: starfishSpin 8s linear infinite; }
+@keyframes starfishSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-@keyframes coconutBounce {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  25% { transform: translateY(-10px) rotate(5deg); }
-  50% { transform: translateY(-5px) rotate(0deg); }
-  75% { transform: translateY(-15px) rotate(-5deg); }
-}
+.fade-in-up { animation: fadeInUp 0.6s ease forwards; }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-.starfish-spin {
-  animation: starfishSpin 8s linear infinite;
-}
+.slide-in-left { animation: slideInLeft 0.8s ease forwards; }
+@keyframes slideInLeft { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
 
-@keyframes starfishSpin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
+.slide-in-right { animation: slideInRight 0.8s ease forwards; }
+@keyframes slideInRight { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
 
-.fade-in-up {
-  animation: fadeInUp 0.6s ease forwards;
-}
+.zoom-in { animation: zoomIn 0.6s ease forwards; }
+@keyframes zoomIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+.bounce-subtle { animation: bounceSubtle 3s ease-in-out infinite; }
+@keyframes bounceSubtle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 
-.slide-in-left {
-  animation: slideInLeft 0.8s ease forwards;
-}
+.hover-lift { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.hover-lift:hover { transform: translateY(-8px) rotate(1deg); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3); }
 
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.slide-in-right {
-  animation: slideInRight 0.8s ease forwards;
-}
-
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.zoom-in {
-  animation: zoomIn 0.6s ease forwards;
-}
-
-@keyframes zoomIn {
-  from {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.bounce-subtle {
-  animation: bounceSubtle 3s ease-in-out infinite;
-}
-
-@keyframes bounceSubtle {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
-.hover-lift {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.hover-lift:hover {
-  transform: translateY(-8px) rotate(1deg);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-}
-
-.beach-card {
-  position: relative;
-  overflow: hidden;
-}
-
+.beach-card { position: relative; overflow: hidden; }
 .beach-card::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
+  content: ''; position: absolute; top: -50%; left: -50%;
+  width: 200%; height: 200%;
   background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-  transform: rotate(45deg);
-  transition: all 0.5s;
-  opacity: 0;
+  transform: rotate(45deg); transition: all 0.5s; opacity: 0;
 }
-
-.beach-card:hover::before {
-  animation: shimmer 0.8s ease-in-out;
-  opacity: 1;
-}
-
-@keyframes shimmer {
-  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-}
+.beach-card:hover::before { animation: shimmer 0.8s ease-in-out; opacity: 1; }
+@keyframes shimmer { 0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); } 100% { transform: translateX(100%) translateY(100%) rotate(45deg); } }
 
 /* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--ocean-blue);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--turquoise);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--sunset-orange);
-}
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--ocean-blue); }
+::-webkit-scrollbar-thumb { background: var(--turquoise); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--sunset-orange); }
 
 /* ========= Enhanced Wave Divider (multi-layer parallax) ========= */
 .wave-divider{
