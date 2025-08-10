@@ -2,150 +2,53 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600;700&display=swap');
+/* (…keep everything you already have in this file…) */
 
-/* Theme */
-:root{
-  --ocean-blue:#0A1D3A; --jet-black:#000000; --turquoise:#40E0D0;
-  --sunset-orange:#FF7F50; --sandy-beige:#F5DEB3; --coral-pink:#F88379; --white:#fff;
+/* ===== Mobile category strip fixes =====
+   Works if your categories container uses any of these:
+   - class="menu-categories"  (recommended)
+   - class="categories"
+   - nav aria-label containing "categor"
+   - data-role="categories"
+*/
+.menu-categories,
+.categories,
+nav[aria-label*="categor" i],
+[data-role="categories"]{
+  display:flex;
+  gap:.5rem;
+  padding:.5rem 1rem;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  scroll-snap-type:x mandatory;
+  scrollbar-width:none; /* Firefox */
+}
+.menu-categories::-webkit-scrollbar,
+.categories::-webkit-scrollbar,
+nav[aria-label*="categor" i]::-webkit-scrollbar,
+[data-role="categories"]::-webkit-scrollbar{ display:none; }
+
+.menu-categories > *,
+.categories > *,
+nav[aria-label*="categor" i] > *,
+[data-role="categories"] > *{
+  flex:0 0 auto;               /* prevent wrapping */
+  scroll-snap-align:center;
 }
 
-/* Base */
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  font-family:'Poppins',sans-serif;
-  background:
-    radial-gradient(1000px 600px at 20% 10%, rgba(64,224,208,.06), transparent 60%),
-    radial-gradient(1200px 700px at 80% 20%, rgba(255,127,80,.06), transparent 60%),
-    linear-gradient(180deg, var(--ocean-blue) 0%, #081529 100%);
-  color:#e8f7f6;
+/* Chip style for category items (apply via class on each chip if you want) */
+.cat-chip{
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:.5rem .9rem; border-radius:9999px; font-weight:600;
+  background:rgba(255,255,255,.08); color:#eafdfa;
+  border:1px solid rgba(255,255,255,.14);
+  transition:transform .2s ease, background .2s ease, border-color .2s ease;
+  white-space:nowrap; text-decoration:none;
 }
+.cat-chip:hover{ transform:translateY(-1px); background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.22); }
+.cat-chip--active{ background:var(--turquoise); color:var(--ocean-blue); border-color:var(--turquoise); }
 
-/* Helpers */
-.text-ocean-blue{color:var(--ocean-blue)}
-.text-sandy-beige{color:var(--sandy-beige)}
-.text-turquoise{color:var(--turquoise)}
-.text-sunset-orange{color:var(--sunset-orange)}
-.bg-ocean-blue{background-color:var(--ocean-blue)}
-.bg-sandy-beige{background-color:var(--sandy-beige)}
-
-/* Typography */
-h1,h2,h3{letter-spacing:.02em}
-.font-display{font-family:'Bebas Neue',sans-serif}
-.section-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.75rem,3vw,2.5rem);color:var(--ocean-blue);margin-bottom:1rem}
-.section-lead{color:#334155;line-height:1.75}
-
-/* Buttons */
-.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.75rem 1.5rem;border-radius:9999px;font-weight:600;transition:transform .3s ease, box-shadow .3s ease;box-shadow:0 2px 6px rgba(0,0,0,.15);overflow:hidden}
-.btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,.2)}
-.btn-primary{background:var(--turquoise);color:var(--ocean-blue)}
-.btn-accent{background:var(--sunset-orange);color:#fff}
-.btn-outline{border:1px solid var(--turquoise);color:var(--turquoise);background:transparent}
-.btn-outline:hover{background:rgba(64,224,208,.1)}
-.btn-pulse{animation:btnPulse 8s ease-in-out infinite}
-@keyframes btnPulse{0%,96%,100%{transform:none} 97%{transform:scale(1.02)} 98%{transform:scale(1.04)} 99%{transform:scale(1.02)}}
-.icon-slide:hover .icon-slide-target,
-.icon-slide:hover svg{transform:translateX(3px);transition:transform .2s ease}
-
-/* Navbar underline (if .nav-link used) */
-.nav-link{position:relative;display:inline-block}
-.nav-link::after{content:"";position:absolute;left:0;bottom:-4px;height:2px;width:0;background:linear-gradient(90deg,var(--turquoise),var(--sunset-orange));transition:width .25s ease}
-.nav-link:hover::after{width:100%}
-
-/* Cards, stats, info */
-.feature-card{background:rgba(255,255,255,.10);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:1.25rem;text-align:center;transition:transform .35s cubic-bezier(.2,.6,.2,1), box-shadow .35s, border-color .35s}
-.feature-card:hover{transform:translateY(-3px) scale(1.01);box-shadow:0 10px 28px rgba(0,0,0,.25);border-color:rgba(255,255,255,.2)}
-.icon-circle{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:9999px;background:rgba(255,255,255,.10);margin-bottom:.5rem}
-
-.stat-pill{display:flex;align-items:center;gap:.75rem;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.10);border-radius:14px;padding:1rem;transition:transform .25s ease}
-.stat-pill:hover{transform:translateY(-2px)}
-.stat-icon{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:9999px;background:rgba(255,255,255,.10)}
-.stat-value{font-size:1.125rem;font-weight:600;color:var(--ocean-blue)}
-.stat-label{font-size:.875rem;color:#64748b}
-
-.info-card{display:flex;align-items:center;gap:.75rem;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:.75rem 1rem;transition:transform .25s ease}
-.info-card:hover{transform:translateY(-2px)}
-
-/* Gallery */
-.gallery-card{position:relative;overflow:hidden;border-radius:14px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.05);transform:perspective(1000px);transition:transform .35s ease}
-.gallery-card:hover{transform:perspective(1000px) rotateX(2deg) rotateY(-2deg)}
-.gallery-img{width:100%;height:11rem;object-fit:cover;transition:transform .5s ease}
-.gallery-card:hover .gallery-img{transform:scale(1.06)}
-.gallery-card figcaption{position:absolute;left:.5rem;bottom:.5rem;font-size:.75rem;background:rgba(10,29,58,.6);padding:.25rem .5rem;border-radius:.375rem;color:#e2f8f6}
-
-/* Neon & effects */
-.neon-glow{text-shadow:0 0 6px var(--turquoise),0 0 14px var(--turquoise)}
-.pulse-glow{animation:pulseGlow 6s ease-in-out infinite}
-@keyframes pulseGlow{0%,100%{opacity:.7}50%{opacity:1}}
-
-/* Wave (single) + parallax bob */
-.wave-divider{position:relative;height:48px;overflow:hidden}
-.wave-divider .wave{position:absolute;left:0;bottom:0;width:200%;height:100%;background-repeat:repeat-x}
-.wave-divider .wave-front{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 160'%3E%3Cpath d='M0 120 C 150 140 350 90 600 120 C 850 150 1050 100 1200 120 L 1200 160 L 0 160 Z' fill='%2326ccb9'/%3E%3C/svg%3E");animation:wave-scroll-3 9s linear infinite;opacity:.95}
-@keyframes wave-scroll-3{0%{transform:translateX(0)}100%{transform:translateX(-33.33%)}}
-.parallax-bob{animation:parallaxBob 8s ease-in-out infinite}
-@keyframes parallaxBob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
-
-/* Background details */
-.hero-video{object-position:center center}
-.water-ripple{position:absolute;inset:0;background:radial-gradient(circle at 30% 50%, rgba(64,224,208,.12), transparent 35%),radial-gradient(circle at 70% 60%, rgba(255,127,80,.11), transparent 40%);mix-blend-mode:screen;animation:rippleMove 18s ease-in-out infinite}
-@keyframes rippleMove{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
-.floating-bubbles{position:absolute;inset:0;pointer-events:none}
-.bubble{position:absolute;bottom:-10%;left:10%;width:10px;height:10px;border-radius:9999px;background:rgba(64,224,208,.3);filter:blur(1px);animation:rise 10s linear infinite}
-.bubble:nth-child(2){left:30%;animation-duration:12s;width:8px;height:8px}
-.bubble:nth-child(3){left:55%;animation-duration:14s;width:12px;height:12px}
-.bubble:nth-child(4){left:75%;animation-duration:11s}
-.bubble:nth-child(5){left:90%;animation-duration:13s}
-@keyframes rise{from{transform:translateY(0)}to{transform:translateY(-120%)}}
-
-/* Scroll reveal */
-.animate-on-scroll{opacity:0;transform:translateY(10px);transition:opacity .6s ease, transform .6s ease}
-.fade-in-up{opacity:1 !important;transform:translateY(0) !important}
-.slide-in-left{animation:slideInLeft .7s ease both}
-.slide-in-right{animation:slideInRight .7s ease both}
-.zoom-in{animation:zoomIn .8s ease both}
-@keyframes slideInLeft{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
-@keyframes slideInRight{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:translateX(0)}}
-@keyframes zoomIn{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:scale(1)}}
-
-/* Social proof marquee */
-.marquee{overflow:hidden;white-space:nowrap;-webkit-mask-image:linear-gradient(90deg, transparent 0, #000 5%, #000 95%, transparent 100%);mask-image:linear-gradient(90deg, transparent 0, #000 5%, #000 95%, transparent 100%)}
-.marquee-track{display:inline-flex;gap:.75rem;padding-block:.25rem;animation:marquee 22s linear infinite;will-change:transform}
-@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.badge-pill{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:#eafdfa;padding:.5rem .75rem;border-radius:9999px;font-weight:600}
-.badge-pill:hover{background:rgba(255,255,255,.12)}
-
-/* MOBILE TWEAKS */
-@media (max-width: 640px){
-  .wave-divider{height:36px}
-  .feature-card{padding:1rem}
-  .gallery-img{height:10rem}
-  .parallax-bob{animation:none}          /* calmer footer wave on mobile */
-  .marquee-track{gap:.5rem;animation-duration:26s}
-}
-
-/* Touch devices: reduce hover transforms for stability */
-@media (hover:none){
-  .feature-card:hover,
-  .stat-pill:hover,
-  .info-card:hover,
-  .gallery-card:hover,
-  .btn:hover{transform:none;box-shadow:0 2px 6px rgba(0,0,0,.15)}
-  .gallery-card:hover .gallery-img{transform:none}
-}
-
-/* Reduced motion: turn off most movement */
-@media (prefers-reduced-motion: reduce){
-  .btn-pulse,
-  .parallax-bob,
-  .water-ripple,
-  .bubble,
-  .marquee-track{animation:none !important}
-  .animate-on-scroll,
-  .slide-in-left,
-  .slide-in-right,
-  .zoom-in{animation:none !important;opacity:1 !important;transform:none !important}
-  .hero-video{display:none}
+/* Small screens: a bit tighter */
+@media (max-width:640px){
+  .cat-chip{ padding:.45rem .8rem; }
 }
