@@ -1,147 +1,120 @@
-/* project/beachbumz/src/index.css */
-
-/* Import fonts first */
+/* Fonts first */
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* =====================
-   Logo-Matched Color Palette
-   ===================== */
+/* ===== Brand from logo ===== */
 :root {
-  --ocean-blue: #111214;      /* Charcoal-like dark background */
-  --jet-black: #000000;       /* Pure black for deep accents */
-  --turquoise: #FFB02E;       /* Amber-yellow from logo */
-  --sunset-orange: #FF6A3D;   /* Bright orange from logo */
-  --coral-pink: #E84A8A;      /* Magenta-pink from logo */
-  --sandy-beige: #F5DEB3;     /* Soft beige for secondary bg/text */
+  --ocean-blue: #111214;     /* charcoal */
+  --jet-black: #000000;
+  --turquoise: #FFB02E;      /* amber */
+  --sunset-orange: #FF6A3D;  /* orange */
+  --coral-pink: #E84A8A;     /* magenta */
+  --sandy-beige: #F5DEB3;
 }
 
-/* =====================
-   Tailwind Utility Layer Additions
-   ===================== */
-@layer utilities {
-  .bg-ocean-blue {
-    background-color: var(--ocean-blue);
-  }
-  .bg-ocean-blue\/80 {
-    background-color: color-mix(in oklab, var(--ocean-blue) 80%, transparent);
-  }
-  .bg-ocean-blue\/95 {
-    background-color: color-mix(in oklab, var(--ocean-blue) 95%, transparent);
-  }
-  .text-turquoise {
-    color: var(--turquoise);
-  }
-  .bg-sunset-orange\/20 {
-    background-color: color-mix(in oklab, var(--sunset-orange) 20%, transparent);
-  }
-  .bg-sunset-orange\/30 {
-    background-color: color-mix(in oklab, var(--sunset-orange) 30%, transparent);
-  }
-  .scroll-mt-24 {
-    scroll-margin-top: 6rem;
-  }
+/* Global fixes */
+html { scroll-behavior: smooth; scroll-padding-top: 80px; } /* header offset */
+
+body { font-family: 'Poppins', sans-serif; background-color: var(--ocean-blue); overflow-x: hidden; color: #fff; }
+.font-display { font-family: 'Bebas Neue', cursive; }
+
+/* Utilities used in JSX */
+@layer utilities{
+  .bg-ocean-blue{ background-color: var(--ocean-blue); }
+  .bg-ocean-blue\/80{ background-color: color-mix(in oklab, var(--ocean-blue) 80%, transparent); }
+  .bg-ocean-blue\/95{ background-color: color-mix(in oklab, var(--ocean-blue) 95%, transparent); }
+  .text-turquoise{ color: var(--turquoise); }
+  .bg-sunset-orange\/20{ background-color: color-mix(in oklab, var(--sunset-orange) 20%, transparent); }
+  .bg-sunset-orange\/30{ background-color: color-mix(in oklab, var(--sunset-orange) 30%, transparent); }
+  .scroll-mt-24{ scroll-margin-top: 6rem; }
 }
 
-/* =====================
-   Global Base Styles
-   ===================== */
-html {
-  scroll-behavior: smooth;
+/* Neon accents */
+.neon-glow{ text-shadow:0 0 5px var(--turquoise),0 0 10px var(--turquoise),0 0 15px var(--turquoise) }
+.neon-border{ box-shadow:0 0 5px var(--turquoise),0 0 10px var(--turquoise); border:1px solid var(--turquoise) }
+
+/* Animated gradient type */
+.text-gradient{
+  background: linear-gradient(135deg, var(--turquoise), var(--sunset-orange), var(--coral-pink));
+  background-size: 200% 200%;
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  animation: gradientShift 3s ease infinite;
+}
+@keyframes gradientShift{ 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+
+/* ===== Effects and décor ===== */
+
+/* Bubbles off as requested */
+.floating-bubbles{ display:none; }
+
+/* Replace 3 static seagulls with one bird flying across */
+.seagull{ display:none; }               /* hide any existing */
+.sky-bird{                               /* add <div class="sky-bird">🕊️</div> once in page */
+  position: fixed; top: 14px; left: -80px; z-index: 40;
+  font-size: 22px; opacity:.85; pointer-events:none;
+  animation: flyAcross 14s linear infinite;
+}
+@keyframes flyAcross{
+  0%{ transform: translateX(0) translateY(0) scale(.9); }
+  20%{ transform: translateX(25vw) translateY(-6px) scale(1); }
+  50%{ transform: translateX(60vw) translateY(2px) scale(1); }
+  100%{ transform: translateX(105vw) translateY(-4px) scale(.9); }
 }
 
-body {
-  font-family: 'Poppins', sans-serif;
-  background-color: var(--ocean-blue);
-  color: var(--sandy-beige);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Particles kept */
+.beach-particles{position:absolute;width:100%;height:100%;overflow:hidden;pointer-events:none}
+.particle{position:absolute;background:rgba(245,222,179,.6);border-radius:50%;animation:drift 12s infinite linear}
+.particle:nth-child(1){left:5%;width:3px;height:3px;animation-delay:0s}
+.particle:nth-child(2){left:15%;width:2px;height:2px;animation-delay:3s}
+.particle:nth-child(3){left:25%;width:4px;height:4px;animation-delay:6s}
+.particle:nth-child(4){left:45%;width:2px;height:2px;animation-delay:1s}
+.particle:nth-child(5){left:65%;width:3px;height:3px;animation-delay:4s}
+.particle:nth-child(6){left:75%;width:2px;height:2px;animation-delay:7s}
+.particle:nth-child(7){left:85%;width:3px;height:3px;animation-delay:2s}
+@keyframes drift{0%{transform:translateY(100vh) translateX(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-100px) translateX(50px);opacity:0}}
+
+.wave-animation{position:relative;overflow:hidden}
+.wave-animation::before{content:'';position:absolute;top:0;left:-100%;width:200%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);animation:waveShimmer 3s infinite}
+@keyframes waveShimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+
+.tilt-on-hover{transition:transform .3s ease}
+.tilt-on-hover:hover{transform:perspective(1000px) rotateX(5deg) rotateY(5deg) scale(1.02)}
+.pulse-glow{animation:pulseGlow 2s ease-in-out infinite alternate}
+@keyframes pulseGlow{from{box-shadow:0 0 5px var(--turquoise),0 0 10px var(--turquoise),0 0 15px var(--turquoise)}to{box-shadow:0 0 10px var(--turquoise),0 0 20px var(--turquoise),0 0 30px var(--turquoise)}}
+
+.ocean-wave{position:absolute;bottom:0;left:0;width:200%;height:60px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120'%3E%3Cpath d='M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z' opacity='.25' fill='%23FFB02E'/%3E%3Cpath d='M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z' opacity='.45' fill='%23FF6A3D'/%3E%3Cpath d='M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z' fill='%23E84A8A'/%3E%3C/svg%3E") repeat-x;animation:waveMove 10s ease-in-out infinite}
+@keyframes waveMove{0%,100%{transform:translateX(0)}50%{transform:translateX(-50%)}}
+
+/* CTA section background to match logo */
+.cta-bg{
+  background-image: linear-gradient(90deg, rgba(17,18,20,0.05), rgba(17,18,20,0.05)),
+                    linear-gradient(135deg, var(--turquoise) 0%, var(--sunset-orange) 45%, var(--coral-pink) 100%);
+  color:#fff;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Bebas Neue', cursive;
-  letter-spacing: 0.5px;
-  color: var(--turquoise);
+/* Buttons and common elements */
+.btn-primary{
+  @apply rounded-md font-semibold px-6 py-3 transition;
+  background-image: linear-gradient(90deg, var(--turquoise), var(--sunset-orange));
+  color:#111214;
 }
+.btn-primary:hover{ filter: brightness(1.05); }
+.btn-outline{
+  @apply rounded-md font-semibold px-6 py-3 border transition;
+  border-color: color-mix(in oklab, #fff 40%, transparent);
+  color:#fff;
+}
+.btn-outline:hover{ background-color: rgba(255,255,255,.08); }
 
-a {
-  color: var(--sunset-orange);
-  text-decoration: none;
-}
-
-a:hover {
-  color: var(--coral-pink);
-}
-
-/* Buttons */
-.btn-primary {
-  background-color: var(--sunset-orange);
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.375rem;
-  font-weight: 600;
-  transition: background-color 0.2s ease;
-}
-
-.btn-primary:hover {
-  background-color: var(--coral-pink);
-}
-
-/* Cards */
-.card {
-  background-color: color-mix(in oklab, var(--jet-black) 80%, transparent);
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  color: var(--sandy-beige);
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-/* Navbar */
-.navbar {
-  background-color: var(--ocean-blue);
-  color: var(--sandy-beige);
-}
-
-/* Footer */
-footer {
-  background-color: var(--jet-black);
-  color: var(--sandy-beige);
-  padding: 2rem 0;
-}
-
-/* Forms */
-input, textarea, select {
-  background-color: color-mix(in oklab, var(--jet-black) 85%, transparent);
-  color: var(--sandy-beige);
-  border: 1px solid var(--sandy-beige);
-  padding: 0.5rem;
-  border-radius: 0.25rem;
-}
-
-input:focus, textarea:focus, select:focus {
-  outline: none;
-  border-color: var(--turquoise);
-}
-
-/* Hero Section */
-.hero {
-  background: linear-gradient(135deg, var(--sunset-orange) 0%, var(--coral-pink) 100%);
-  color: white;
-}
-
-/* Animations */
-@keyframes glow {
-  0%, 100% {
-    text-shadow: 0 0 5px var(--turquoise), 0 0 10px var(--turquoise), 0 0 20px var(--turquoise);
-  }
-  50% {
-    text-shadow: 0 0 10px var(--sunset-orange), 0 0 20px var(--sunset-orange), 0 0 30px var(--sunset-orange);
-  }
-}
-
-.glow {
-  animation: glow 2s ease-in-out infinite;
-}
+/* Wave divider (kept) */
+.wave-divider{position:relative;height:160px;background:var(--sandy-beige);overflow:hidden}
+.wave-divider .wave{position:absolute;left:0;bottom:0;width:300%;height:160px;background-repeat:repeat-x;will-change:transform;opacity:.9}
+.wave-divider .wave-back{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 160'%3E%3Cpath d='M0 80 C 200 100, 400 60, 600 80 C 800 100, 1000 60, 1200 80 L1200 160 L0 160 Z' fill='%2388f1e7'/%3E%3C/svg%3E");animation:wave-scroll-1 22s linear infinite;opacity:.35;filter:blur(1px)}
+.wave-divider .wave-mid{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 160'%3E%3Cpath d='M0 100 C 200 120, 400 80, 600 100 C 800 120, 1000 80, 1200 100 L1200 160 L0 160 Z' fill='%2340E0D0'/%3E%3C/svg%3E");animation:wave-scroll-2 14s linear infinite;opacity:.55}
+.wave-divider .wave-front{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 160'%3E%3Cpath d='M0 120 C 220 140, 380 100, 600 120 C 820 140, 980 100, 1200 120 L1200 160 L0 160 Z' fill='%2326ccb9'/%3E%3C/svg%3E");animation:wave-scroll-3 9s linear infinite;opacity:.95}
+@keyframes wave-scroll-1{0%{transform:translateX(0)}100%{transform:translateX(-33.33%)}}
+@keyframes wave-scroll-2{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes wave-scroll-3{0%{transform:translateX(0)}100%{transform:translateX(-66.66%)}}
