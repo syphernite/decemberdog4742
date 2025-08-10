@@ -1,9 +1,9 @@
+// project/beachbumz/src/components/Navbar.tsx
 import React, { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Menu, X, Phone } from 'lucide-react';
 
-// Put the logo at: project/beachbumz/src/assets/beachbumz-logo.png
-const logoUrl = new URL('../assets/beachbumz-logo.png', import.meta.url).href;
+const logoUrl = import.meta.env.BASE_URL + 'beachbumz-logo.png';
 
 const items = [
   { to: '/', label: 'Home' },
@@ -31,7 +31,7 @@ export default function Navbar() {
     <header className={`fixed inset-x-0 top-0 z-50 ${scrolled ? 'bg-ocean-blue/95 backdrop-blur shadow-lg' : 'bg-ocean-blue/80 backdrop-blur'}`} style={{ height: '64px' }}>
       <div className="mx-auto max-w-6xl h-full px-4 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3 min-w-0">
-          <img src={logoUrl} alt="Beach Bumz Pub & Pizzaria" className="h-7 w-auto md:h-9 object-contain rounded-sm" />
+          <img src={logoUrl} alt="Beach Bumz Pub & Pizzaria" className="h-7 w-auto md:h-9 object-contain" />
           <div className="hidden sm:flex flex-col leading-tight">
             <span className="text-white font-extrabold tracking-wide text-sm md:text-base">BEACH BUMZ</span>
             <span className="text-turquoise text-[10px] md:text-xs">PUB & PIZZARIA</span>
