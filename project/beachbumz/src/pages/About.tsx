@@ -100,7 +100,7 @@ const About = () => {
             {/* Spine */}
             <div className="absolute left-1/2 transform -translate-x-1/2 w-1 bg-gradient-to-b from-turquoise to-sunset-orange pulse-glow"></div>
 
-            {/* Mobile single-column timeline (unchanged) */}
+            {/* Mobile single-column timeline */}
             <div className="relative sm:hidden">
               <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-turquoise via-sandy-beige to-sunset-orange opacity-60"></div>
               <div className="flex flex-col gap-6">
@@ -118,7 +118,7 @@ const About = () => {
               </div>
             </div>
 
-            {/* Desktop vertical flowchart (only change) */}
+            {/* Desktop vertical flowchart */}
             <div className="hidden sm:block">
               <div className="space-y-12">
                 {milestones.map((milestone, index) => (
@@ -144,7 +144,7 @@ const About = () => {
                       </div>
                     </div>
 
-                    {/* Optional down connector between steps for flowchart feel */}
+                    {/* Down connector */}
                     {index < milestones.length - 1 && (
                       <div className="absolute left-1/2 -translate-x-1/2 -bottom-6 h-6 w-[2px] bg-white/15" />
                     )}
@@ -165,17 +165,18 @@ const About = () => {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white/20 backdrop-blur-md rounded-lg p-6 hover-lift beach-card tilt-on-hover">
-              <Heart className="h-10 w-10 text-white mx-auto mb-4 pulse-glow" />
+              {/* removed glow and set orange */}
+              <Heart className="h-10 w-10 text-sunset-orange mx-auto mb-4" />
               <h3 className="font-semibold text-white text-lg mb-2">Community Love</h3>
-              <p className="text-white/90">We're more than a restaurant – we're your neighbors, committed to serving our community with heart.</p>
+              <p className="text-white/90">We're more than a restaurant, we're your neighbors, committed to serving our community with heart.</p>
             </div>
             <div className="bg-white/20 backdrop-blur-md rounded-lg p-6 hover-lift beach-card tilt-on-hover">
-              <Award className="h-10 w-10 text-white mx-auto mb-4 starfish-spin" />
+              <Award className="h-10 w-10 text-sunset-orange mx-auto mb-4" />
               <h3 className="font-semibold text-white text-lg mb-2">Quality First</h3>
               <p className="text-white/90">Every ingredient is carefully selected, every dish crafted with passion and attention to detail.</p>
             </div>
             <div className="bg-white/20 backdrop-blur-md rounded-lg p-6 hover-lift beach-card tilt-on-hover">
-              <MapPin className="h-10 w-10 text-white mx-auto mb-4 coconut-bounce" />
+              <MapPin className="h-10 w-10 text-sunset-orange mx-auto mb-4" />
               <h3 className="font-semibold text-white text-lg mb-2">Coastal Spirit</h3>
               <p className="text-white/90">We celebrate the laid-back, welcoming spirit of coastal Carolina in everything we do.</p>
             </div>
