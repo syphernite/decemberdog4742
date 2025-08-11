@@ -23,64 +23,53 @@ const MENU: MenuData = {
     { name: "Garlic Cheese Bread", description: "", price: "" },
   ],
   Paninis: [
-    { name: "Veggie Panini", description: "Artichoke, roasted red peppers, onions, mushrooms, black olives, provolone & roasted red pepper sauce", price: "13.95" },
-    { name: "Chicken Caesar Panini", description: "Lettuce, Swiss cheese, roasted grilled chicken & creamy Caesar dressing", price: "14.95" },
+    { name: "Veggie Panini", description: "Artichoke, roasted red peppers, black olives, provolone & roasted red pepper sauce", price: "13.95" },
+    { name: "Chicken Caesar Panini", description: "Lettuce, Swiss, grilled chicken & creamy Caesar dressing", price: "14.95" },
     { name: "Chicken Club Panini", description: "Provolone, Canadian bacon, grilled chicken, lettuce & tomatoes with red pepper sauce", price: "14.95" },
-    { name: "Buffalo Chicken Panini", description: "Chicken tossed in buffalo sauce, provolone, lettuce, tomatoes & blue cheese dressing", price: "14.95" },
-    { name: "Italian Panini", description: "Ham, salami, pepperoni, lettuce, tomatoes, black olives, onions, roasted red peppers, provolone & roasted red pepper sauce", price: "14.95" },
+    { name: "Buffalo Chicken Panini", description: "Chicken tossed in buffalo sauce with provolone, lettuce, tomatoes & blue cheese dressing", price: "14.95" },
+    { name: "Italian Panini", description: "Ham, salami, pepperoni, onion, tomatoes, banana peppers, provolone & roasted red pepper sauce", price: "14.95" },
   ],
   Pasta: [
     { name: "Spaghetti with Meatballs or Sausage", description: "", price: "15.95" },
     { name: "Bow Tie Pasta", description: "Italian sausage, mushrooms, onions & diced tomatoes in homemade Alfredo sauce", price: "16.95" },
-    { name: "Shrimp Pasta", description: "Shrimp, Canadian bacon, onions, diced tomatoes, mushrooms & bow tie pasta in roasted red pepper sauce", price: "17.95" },
+    { name: "Shrimp Pasta", description: "Shrimp, Canadian bacon, mushrooms, onions & bow tie pasta in roasted red pepper sauce", price: "17.95" },
     { name: "Baked Ziti", description: "Ziti with three cheeses and marinara sauce, topped with mozzarella, then baked", price: "15.95" },
   ],
   Seafood: [
     { name: "Flounder Basket", description: "Two pieces of fried flounder with fries or chips and homemade slaw", price: "16.95" },
     { name: "Shrimp Basket", description: "Fried shrimp with fries or chips and homemade slaw", price: "17.95" },
-    { name: "Combination of Flounder & Shrimp", description: "One piece of flounder and shrimp with fries or chips and homemade slaw", price: "18.95" },
-    { name: "Boom Boom Shrimp Tacos", description: "Two flour tortillas with fried shrimp, boom boom sauce, red cabbage slaw & cheddar cheese", price: "16.95" },
+    { name: "Combination of Flounder & Shrimp", description: "One piece of fried flounder and fried shrimp with fries or chips and homemade slaw", price: "18.95" },
+    { name: "Boom Boom Shrimp Tacos", description: "Two flour tortillas, fried shrimp, boom boom sauce, red cabbage slaw & cheddar cheese", price: "16.95" },
   ],
   Calzones: [
     { name: "Veggie Calzone", description: "Zucchini, onions, mushrooms, green peppers, ricotta & mozzarella", price: "12.95" },
-    { name: "Italian Calzone", description: "Salami, Canadian bacon, onions, green peppers, ricotta & mozzarella", price: "14.95" },
-    { name: "Godfather Calzone", description: "Salami, Italian sausage, banana peppers & cheese", price: "14.95" },
+    { name: "Italian Calzone", description: "Salami, Canadian bacon, onions, mushrooms, ricotta & mozzarella", price: "13.95" },
+    { name: "Meat Lovers Calzone", description: "Canadian bacon, pepperoni, hamburger, sausage, ricotta & mozzarella", price: "13.95" },
+    { name: "Create Your Own Calzone", description: "Includes mozzarella & ricotta", prices: { "S": "10.95", "M": "12.95", "L": "14.95" } },
   ],
-  Pizzas: [
-    { name: "Beach Bumz – Over the Top", description: "Italian sausage, pepperoni, black olives, tomatoes, mushrooms & basil", prices: { Small: "16.95", Medium: "18.95", Large: "21.95" } },
-    { name: "Shrimp Lovers Pizza", description: "Shrimp, tomatoes, garlic & fresh basil", prices: { Small: "16.95", Medium: "18.95", Large: "22.95" } },
-    { name: "Margherita Pizza", description: "Garlic, fresh basil, plum tomatoes & mozzarella", prices: { Small: "15.95", Medium: "17.95", Large: "20.95" } },
-    { name: "Roasted Veggie", description: "Green peppers, mushrooms, zucchini, red peppers & onions, mozzarella", prices: { Small: "15.95", Medium: "17.95", Large: "20.95" } },
-    { name: "California", description: "Grilled chicken, mushrooms, basil, garlic, tomatoes, black olives & mozzarella", prices: { Small: "15.95", Medium: "17.95", Large: "20.95" } },
-    { name: "Hawaiian", description: "Canadian bacon & pineapple chunks with mozzarella", prices: { Small: "15.95", Medium: "17.95", Large: "20.95" } },
-    { name: "Ultimate Cheese", description: "Mozzarella, provolone, swiss, parmesan & cheddar", prices: { Small: "15.95", Medium: "17.95", Large: "20.95" } },
-    { name: "Greek Island", description: "Feta, black olives, artichoke hearts, spinach & sun-dried tomatoes", prices: { Small: "15.95", Medium: "17.95", Large: "20.95" } },
-    { name: "BBQ Chicken", description: "Homemade BBQ sauce, grilled chicken & onions topped with mozzarella", prices: { Small: "15.95", Medium: "17.95", Large: "20.95" } },
-    { name: "Chicken Florentine", description: "Homemade pesto sauce, grilled chicken, spinach, mushrooms, mozzarella", prices: { Small: "15.95", Medium: "17.95", Large: "20.95" } },
-    { name: "Build Your Own", description: "", prices: { "Small Base": "11.95 plus $1.75/topping", "Medium Base": "14.95 plus $1.85/topping", "Large Base": "16.95 plus $2.50/topping" } },
-    { name: "Supreme", description: "Garlic, pepperoni, red pepper, green pepper, onion, olives & mushrooms", prices: { Small: "16.95", Medium: "18.95", Large: "21.95" } },
-    { name: "Meat Lovers", description: "Pepperoni, Italian sausage, Canadian bacon & salami", prices: { Small: "16.95", Medium: "18.95", Large: "21.95" } },
+  Pizza: [
+    { name: "Classic Cheese", description: "", price: "" },
+    { name: "Pepperoni", description: "", price: "" },
   ],
-  "Desserts": [
-    { name: "French Silk Pie", description: "", price: "6.95" },
-    { name: "Key Lime Pie", description: "", price: "7.95" },
-    { name: "Cheesecake", description: "", price: "8.95" },
-    { name: "Dessert Pizza", description: "Vanilla pudding base with melted chocolate chips", prices: { Small: "10.95", Medium: "12.95", Large: "14.95" } },
+  Desserts: [
+    { name: "Tiramisu", description: "", price: "" },
+    { name: "Cannoli", description: "", price: "" },
   ],
-  "Kids Menu": [
-    { name: "Spaghetti & Meatballs", description: "", price: "8.95" },
-    { name: "Mac & Cheese", description: "", price: "7.95" },
-    { name: "Personal Pizza (Cheese or Pepperoni)", description: "", price: "8.95" },
-    { name: "Grilled Cheese", description: "With fries, chips, or applesauce", price: "7.95" },
+  Drinks: [
+    { name: "Fountain Drinks", description: "", price: "" },
+    { name: "Iced Tea", description: "", price: "" },
   ],
 };
 
+const categories = Object.keys(MENU);
+
 function PriceBlock({ item }: { item: Item }) {
-  if (item.prices && Object.keys(item.prices).length > 0) {
+  if (item.prices && Object.keys(item.prices).length) {
+    const entries = Object.entries(item.prices);
     return (
-      <div className="mt-2 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 gap-2">
-        {Object.entries(item.prices).map(([size, price]) => (
-          <div key={size} className="flex justify-between rounded-md border border-white/10 bg-white/5 px-3 py-1 text-sm">
+      <div className="mt-1 grid grid-cols-2 gap-x-4 gap-y-1 text-right text-sm">
+        {entries.map(([size, price]) => (
+          <div key={size} className="flex items-center justify-between gap-3 py-1 text-sm">
             <span className="opacity-90">{size}</span>
             <span className="font-semibold">{price}</span>
           </div>
@@ -96,9 +85,12 @@ const slug = (s: string) =>
   s.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9\-]/g, "");
 
 export default function Menu() {
-  const categories = useMemo(() => Object.keys(MENU), []);
   const [active, setActive] = useState<string>(categories[0] || "");
   const sentinelsRef = useRef<Record<string, HTMLDivElement | null>>({});
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
+  const [atStart, setAtStart] = useState(true);
+  const [atEnd, setAtEnd] = useState(false);
+  const [showHint, setShowHint] = useState(true);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -122,6 +114,20 @@ export default function Menu() {
     return () => observer.disconnect();
   }, [categories]);
 
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const update = () => {
+      setShowHint(false);
+      setAtStart(el.scrollLeft <= 2);
+      setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 2);
+    };
+    el.addEventListener('scroll', update);
+    const t = setTimeout(() => setShowHint(false), 2000);
+    update();
+    return () => { el.removeEventListener('scroll', update); clearTimeout(t); };
+  }, []);
+
   const handleJump = (cat: string) => {
     const id = slug(cat);
     const el = document.getElementById(id);
@@ -129,7 +135,7 @@ export default function Menu() {
   };
 
   return (
-    <section className="min-h-screen bg-slate-900 text-white">
+    <section className="pt-20 bg-slate-900 text-white min-h-screen">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
         {/* Header row */}
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -150,8 +156,42 @@ export default function Menu() {
         {/* Sticky mobile-friendly category bar */}
         <div className="sticky top-20 z-40 mb-8 bg-slate-900/85 backdrop-blur border-b border-white/10">
           <div className="relative">
-            <nav aria-label="Menu categories" className="w-full overflow-x-auto no-scrollbar snap-x snap-mandatory">
-              <ul className="flex gap-2 sm:gap-3 whitespace-nowrap px-1 py-2">
+            {showHint && (
+              <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs text-gray-300 animate-pulse">
+                Swipe to see more
+              </div>
+            )}
+
+            {/* edge fades to hint scroll */}
+            <span className="pointer-events-none absolute left-0 top-0 h-full w-6 bg-gradient-to-r from-slate-900/85 to-transparent" />
+            <span className="pointer-events-none absolute right-0 top-0 h-full w-6 bg-gradient-to-l from-slate-900/85 to-transparent" />
+
+            {/* chevrons */}
+            {!atStart && (
+              <button
+                aria-label="Scroll left"
+                onClick={() => scrollerRef.current?.scrollBy({ left: -160, behavior: "smooth" })}
+                className="absolute left-1 top-1/2 -translate-y-1/2 p-1 rounded-full bg-black/50 hover:bg-black/70"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
+                  <path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                </svg>
+              </button>
+            )}
+            {!atEnd && (
+              <button
+                aria-label="Scroll right"
+                onClick={() => scrollerRef.current?.scrollBy({ left: 160, behavior: "smooth" })}
+                className="absolute right-1 top-1/2 -translate-y-1/2 p-1 rounded-full bg-black/50 hover:bg-black/70"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
+                  <path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/>
+                </svg>
+              </button>
+            )}
+
+            <nav aria-label="Menu categories" className="w-full overflow-x-auto no-scrollbar snap-x snap-mandatory" ref={scrollerRef}>
+              <ul className="flex gap-2 sm:gap-3 whitespace-nowrap px-1 py-2 pr-6">
                 {categories.map((cat) => {
                   const isActive = active === cat;
                   return (
@@ -172,10 +212,6 @@ export default function Menu() {
                 })}
               </ul>
             </nav>
-
-            {/* edge fades to hint scroll */}
-            <span className="pointer-events-none absolute left-0 top-0 h-full w-6 bg-gradient-to-r from-slate-900/85 to-transparent" />
-            <span className="pointer-events-none absolute right-0 top-0 h-full w-6 bg-gradient-to-l from-slate-900/85 to-transparent" />
           </div>
         </div>
 
@@ -213,12 +249,9 @@ export default function Menu() {
         ))}
 
         <div className="mt-12 flex items-center justify-between text-xs opacity-70 print:hidden">
-          <button
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="rounded-md border border-white/15 bg-white/5 px-3 py-1.5 hover:bg-white/10"
-          >
-            Back to top
-          </button>
+          <span>
+            Allergies or dietary needs? Please inform our staff before ordering.
+          </span>
           <span>Prices subject to change. Please confirm in-store.</span>
         </div>
       </div>

@@ -40,11 +40,12 @@ export default function Navbar() {
     >
       <div className="mx-auto max-w-6xl h-full px-4 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3 min-w-0">
+          {/* Transparent logo, no dark tile */}
           <img
             src={src}
+            onError={() => setSrc(JPG)}
             alt="Beach Bumz Pub & Pizzaria"
             className="h-8 w-auto md:h-10 object-contain"
-            onError={() => setSrc((prev) => (prev.endsWith(".png") ? JPG : prev))}
           />
           <div className="hidden sm:flex flex-col leading-tight">
             <span className="text-white font-extrabold tracking-wide text-sm md:text-base">BEACH BUMZ</span>
@@ -60,7 +61,7 @@ export default function Navbar() {
           ))}
           <a
             href="tel:+12527267800"
-            className="ml-2 inline-flex items-center gap-2 rounded-full border border-white/20 px-3 py-1.5 text-sm font-semibold text-white/90 hover:bg-white/10"
+            className="ml-2 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-3 py-1.5 text-sm font-semibold text-white/90 hover:bg-white/10"
           >
             <Phone className="h-4 w-4" />
             (252) 726-7800
@@ -77,21 +78,19 @@ export default function Navbar() {
           open ? "max-h-80" : "max-h-0"
         } bg-ocean-blue/95`}
       >
-        <div className="px-4 pb-4 pt-2 grid gap-1">
+        <div className="px-4 pb-3 pt-2 space-y-1">
           {NAV.map((n) => (
             <NavLink
               key={n.to}
               to={n.to}
               className={({ isActive }) =>
-                `block rounded-md px-3 py-2 text-base ${
-                  isActive ? "bg-white/10 text-turquoise" : "text-white/90 hover:bg-white/10"
-                }`
+                `block rounded-md px-3 py-2 text-white/90 hover:bg-white/10 ${isActive ? "text-turquoise" : ""}`
               }
             >
               {n.label}
             </NavLink>
           ))}
-          <a href="tel:+12527267800" className="mt-1 rounded-md px-3 py-2 text-base text-white/90 hover:bg-white/10 inline-flex items-center gap-2">
+          <a href="tel:+12527267800" className="mt-1 rounded-md px-3 py-2 bg-white/5 text-white/90 hover:bg-white/10 inline-flex items-center gap-2">
             <Phone className="h-4 w-4" />
             (252) 726-7800
           </a>
