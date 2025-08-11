@@ -1,13 +1,13 @@
 import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { ExternalLink, Star, MapPin, Instagram, Clock, Award, Users } from "lucide-react";
+import { ExternalLink, Star, MapPin, Instagram, Clock, Award, Users, Anchor } from "lucide-react";
 
 const Home = () => {
   const heroRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const io = new IntersectionObserver(
-      (entries) => entries.forEach((e) => e.isIntersecting && e.target.classList.add("fade-in-up")),
+      (entries) => entries.forEach((e) => e.isIntersecting && (e.target as HTMLElement).classList.add("fade-in-up")),
       { threshold: 0.12 }
     );
     document.querySelectorAll(".animate-on-scroll").forEach((el) => io.observe(el));
@@ -25,7 +25,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen">
-      {/* sky layer: sun, clouds, birds */}
+      {/* sky layer: clouds/birds */}
       <div className="sky-bird">🕊️</div>
       <div className="sky-bird delay-1">🕊️</div>
 
@@ -34,51 +34,51 @@ const Home = () => {
         ref={heroRef}
         className="relative overflow-hidden pt-safe min-h-[88vh] md:min-h-screen flex items-center justify-center pb-10 md:pb-16 lg:pb-20"
       >
-        {/* BACKDROP: sky → horizon → sea surface */}
+        {/* BACKDROP */}
         <div className="absolute inset-0 scene">
-          {/* sun + rays */}
-          <div className="sun-flare" />
-          <div className="god-rays" />
-          {/* moving clouds + cyclone wisp */}
+          {/* REPLACED sun with anchor */}
+          <div aria-hidden className="pointer-events-none absolute right-6 sm:right-12 top-10 sm:top-12">
+            <Anchor className="h-12 w-12 sm:h-16 sm:w-16 text-white/80 drop-shadow-[0_6px_12px_rgba(0,0,0,.35)] anchor-bob" strokeWidth={1.75} />
+          </div>
+
+          {/* clouds + cyclone */}
           <div className="clouds">
             <div className="cloud c1" /><div className="cloud c2" /><div className="cloud c3" />
             <div className="cyclone" />
           </div>
-          {/* sea surface shimmer */}
+
+          {/* sea surface */}
           <div className="caustics" />
           <div className="water-ripple" />
           <div className="surface-waves">
             <div className="crest a" /><div className="crest b" /><div className="crest c" />
           </div>
 
-          {/* BUBBLES */}
+          {/* bubbles */}
           <div className="floating-bubbles">
             {Array.from({ length: 18 }).map((_, i) => (<div key={i} className="bubble" />))}
           </div>
 
-          {/* BEACH SAND DUNE PARALLAX */}
+          {/* dunes */}
           <div className="dunes back" /><div className="dunes mid" /><div className="dunes front" />
 
-          {/* UNDERWATER SCENE OVERLAY (lower half) */}
+          {/* underwater overlay */}
           <div className="underwater">
-            {/* sea plants */}
             <div className="reef">
               <div className="kelp k1" /><div className="kelp k2" /><div className="kelp k3" />
               <div className="starfish" /><div className="shell" />
             </div>
-            {/* fish shoals */}
             <div className="shoal s1">
               {Array.from({ length: 8 }).map((_, i) => (<span key={i} className="fish f" />))}
             </div>
             <div className="shoal s2">
               {Array.from({ length: 10 }).map((_, i) => (<span key={i} className="fish f small" />))}
             </div>
-            {/* jellyfish + manta */}
             <div className="jelly j1" /><div className="jelly j2" />
             <div className="manta" />
           </div>
 
-          {/* shoreline foam at bottom */}
+          {/* shoreline foam */}
           <div className="shoreline">
             <div className="foam f1" /><div className="foam f2" /><div className="foam f3" />
           </div>
@@ -104,7 +104,6 @@ const Home = () => {
             <Link to="/contact" className="btn-outline w-full sm:w-auto">Find Us</Link>
           </div>
 
-          {/* Lift cards higher so they don’t collide with sand/waves */}
           <div
             className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 text-center fade-in-up -mb-4 md:mb-0"
             style={{ animationDelay: "0.8s" }}
@@ -128,11 +127,9 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ===== Seamless Sand Bridge + Wave Divider (no black bar) ===== */}
+      {/* Sand bridge + wave divider */}
       <div className="relative z-0 -mt-8 sm:-mt-10 md:-mt-12 lg:-mt-14">
-        {/* bridge fills any possible gap between hero-sand and divider */}
         <div className="h-10 sm:h-12 md:h-14 bg-sandy-beige" />
-        {/* pull divider up so waves overlap the bridge a bit */}
         <div className="-mt-6 sm:-mt-8 md:-mt-10">
           <div className="wave-divider">
             <div className="wave wave-back"></div>
@@ -142,7 +139,7 @@ const Home = () => {
         </div>
       </div>
 
-      {/* ===== Welcome Section ===== */}
+      {/* Welcome */}
       <section className="py-20 beach-gradient">
         <div className="max-w-6xl mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center">
@@ -183,7 +180,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ===== Instagram ===== */}
+      {/* Instagram */}
       <section className="py-20 bg-ocean-blue">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12 animate-on-scroll zoom-in">
@@ -220,7 +217,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ===== CTA ===== */}
+      {/* CTA */}
       <section className="py-20 cta-bg">
         <div className="max-w-4xl mx-auto text-center px-4 animate-on-scroll zoom-in">
           <h2 className="font-display text-4xl md:text-5xl text-white mb-6">Ready to Dive In?</h2>

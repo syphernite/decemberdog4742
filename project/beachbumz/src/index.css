@@ -344,3 +344,11 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--ocean-blue); 
 @media (prefers-reduced-motion: reduce){
   .sun-flare, .cloud, .cyclone, .sky-bird, .caustics, .crest, .bubble, .shoal, .jelly, .manta, .foam { animation: none !important }
 }
+
+/* Bobbing anchor animation */
+@keyframes anchor-bob {
+  0%   { transform: translateY(0) rotate(0deg); }
+  50%  { transform: translateY(8px) rotate(2deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+.anchor-bob { animation: anchor-bob 3.2s ease-in-out infinite; }
