@@ -88,6 +88,7 @@ export default function Menu() {
   const [active, setActive] = useState<string>(categories[0] || "");
   const sentinelsRef = useRef<Record<string, HTMLDivElement | null>>({});
   const scrollerRef = useRef<HTMLDivElement | null>(null);
+  const chipRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
   const [showHint, setShowHint] = useState(true);
@@ -128,6 +129,13 @@ export default function Menu() {
     return () => { el.removeEventListener('scroll', update); clearTimeout(t); };
   }, []);
 
+  // Mobile: keep active chip centered in the scroll view. Desktop unchanged.
+  useEffect(() => {
+    if (window.innerWidth >= 640) return; // only mobile
+    const btn = chipRefs.current[active];
+    btn?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+  }, [active]);
+
   const handleJump = (cat: string) => {
     const id = slug(cat);
     const el = document.getElementById(id);
@@ -153,50 +161,48 @@ export default function Menu() {
           </div>
         </div>
 
-        {/* Sticky mobile-friendly category bar */}
+        {/* Sticky category bar */}
         <div className="sticky top-20 z-40 mb-8 bg-slate-900/85 backdrop-blur border-b border-white/10">
           <div className="relative">
             {showHint && (
-              <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs text-gray-300 animate-pulse">
+              <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs text-gray-300 animate-pulse sm:hidden">
                 Swipe to see more
               </div>
             )}
 
-            {/* edge fades to hint scroll */}
+            {/* edge fades */}
             <span className="pointer-events-none absolute left-0 top-0 h-full w-6 bg-gradient-to-r from-slate-900/85 to-transparent" />
             <span className="pointer-events-none absolute right-0 top-0 h-full w-6 bg-gradient-to-l from-slate-900/85 to-transparent" />
 
-            {/* chevrons */}
-            {!atStart && (
-              <button
-                aria-label="Scroll left"
-                onClick={() => scrollerRef.current?.scrollBy({ left: -160, behavior: "smooth" })}
-                className="absolute left-1 top-1/2 -translate-y-1/2 p-1 rounded-full bg-black/50 hover:bg-black/70"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
-                  <path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-                </svg>
-              </button>
-            )}
-            {!atEnd && (
-              <button
-                aria-label="Scroll right"
-                onClick={() => scrollerRef.current?.scrollBy({ left: 160, behavior: "smooth" })}
-                className="absolute right-1 top-1/2 -translate-y-1/2 p-1 rounded-full bg-black/50 hover:bg-black/70"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
-                  <path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/>
-                </svg>
-              </button>
-            )}
+            {/* chevrons: hidden on mobile so they never cover text; desktop unchanged */}
+            <button
+              aria-label="Scroll left"
+              onClick={() => scrollerRef.current?.scrollBy({ left: -160, behavior: "smooth" })}
+              className="hidden sm:flex items-center justify-center absolute left-1 top-1/2 -translate-y-1/2 p-1 rounded-full bg-black/50 hover:bg-black/70"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
+                <path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+              </svg>
+            </button>
+            <button
+              aria-label="Scroll right"
+              onClick={() => scrollerRef.current?.scrollBy({ left: 160, behavior: "smooth" })}
+              className="hidden sm:flex items-center justify-center absolute right-1 top-1/2 -translate-y-1/2 p-1 rounded-full bg-black/50 hover:bg-black/70"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
+                <path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/>
+              </svg>
+            </button>
 
             <nav aria-label="Menu categories" className="w-full overflow-x-auto no-scrollbar snap-x snap-mandatory" ref={scrollerRef}>
-              <ul className="flex gap-2 sm:gap-3 whitespace-nowrap px-1 py-2 pr-6">
+              {/* add larger horizontal padding on desktop so chips never sit under chevrons */}
+              <ul className="flex gap-2 sm:gap-3 whitespace-nowrap px-2 sm:px-10 py-2">
                 {categories.map((cat) => {
                   const isActive = active === cat;
                   return (
                     <li key={cat} className="shrink-0 snap-start">
                       <button
+                        ref={(el) => (chipRefs.current[cat] = el)}
                         onClick={() => handleJump(cat)}
                         className={`px-4 py-2 rounded-full text-base sm:text-sm transition
                         ${isActive
