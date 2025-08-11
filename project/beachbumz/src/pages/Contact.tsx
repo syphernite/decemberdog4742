@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { MapPin, Phone, Mail, Clock, Instagram, Facebook, Send, CheckCircle } from 'lucide-react';
 
 const Contact = () => {
@@ -42,6 +42,21 @@ const Contact = () => {
       [e.target.name]: e.target.value
     });
   };
+
+  // --- Map: ensure centered pin on exact address; tighter zoom on desktop ---
+  const ADDRESS = '105 S 6th St, Morehead City, NC 28557';
+  const [isDesktop, setIsDesktop] = useState<boolean>(typeof window !== 'undefined' ? window.innerWidth >= 1024 : false);
+  useEffect(() => {
+    const onResize = () => setIsDesktop(window.innerWidth >= 1024);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+  const mapSrc = useMemo(() => {
+    const q = encodeURIComponent(ADDRESS);
+    const zoom = isDesktop ? 18 : 16; // desktop closer
+    // q=address with output=embed shows a centered red pin at the exact spot
+    return `https://www.google.com/maps?q=${q}&z=${zoom}&output=embed`;
+  }, [isDesktop]);
 
   return (
     <div className="pt-20 min-h-screen">
@@ -220,7 +235,7 @@ const Contact = () => {
       <section className="relative">
         <div className="relative w-full h-[400px] md:h-[500px] overflow-hidden">
           <iframe
-            src="https://www.google.com/maps?q=105%20South%206th%20Street%2C%20Morehead%20City%2C%20NC%2028577&hl=en&z=16&output=embed"
+            src={mapSrc}
             width="100%"
             height="100%"
             style={{ border: 0 }}
@@ -230,22 +245,22 @@ const Contact = () => {
             title="Beach Bumz Pub & Pizzeria Location"
             className="filter hue-rotate-15 saturate-150"
           ></iframe>
-          
-        {/* Map Overlay */}
-        <div className="absolute top-6 left-6 bg-white/95 backdrop-blur-sm rounded-lg p-4 shadow-xl beach-card pulse-glow">
-          <h4 className="font-semibold text-ocean-blue mb-2 flex items-center">
-            <MapPin className="h-5 w-5 text-turquoise mr-2 bounce-subtle" />
-            Beach Bumz Pub & Pizzeria
-          </h4>
-          <p className="text-gray-700 text-sm">105 South 6th Street</p>
-          <p className="text-gray-700 text-sm">Morehead City, NC 28577</p>
+
+          {/* Map Overlay */}
+          <div className="absolute top-6 left-6 bg-white/95 backdrop-blur-sm rounded-lg p-4 shadow-xl beach-card pulse-glow">
+            <h4 className="font-semibold text-ocean-blue mb-2 flex items-center">
+              <MapPin className="h-5 w-5 text-turquoise mr-2 bounce-subtle" />
+              Beach Bumz Pub & Pizzeria
+            </h4>
+            <p className="text-gray-700 text-sm">105 South 6th Street</p>
+            <p className="text-gray-700 text-sm">Morehead City, NC 28577</p>
+          </div>
         </div>
-      </div>
-      <div className="mt-2 text-sm text-gray-600 px-4">
-        <a href="https://www.google.com/maps/place/105+S+6th+St,+Morehead+City,+NC+28557" target="_blank" rel="noreferrer" className="text-ocean-blue underline">
-          Open in Google Maps
-        </a>
-      </div>
+        <div className="mt-2 text-sm text-gray-600 px-4">
+          <a href="https://www.google.com/maps/place/105+S+6th+St,+Morehead+City,+NC+28557" target="_blank" rel="noreferrer" className="text-ocean-blue underline">
+            Open in Google Maps
+          </a>
+        </div>
       </section>
     </div>
   );
