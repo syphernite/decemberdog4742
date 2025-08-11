@@ -17,8 +17,8 @@ const Home = () => {
   const handleOrderClick = () => window.open("https://www.doordash.com", "_blank");
 
   const instagramPosts = [
-    { id: 1, image: "https://images.pexels.com/photos/315755/pexels-photo-315755.jpeg?auto=compress&cs=tinysrgb&w=400", caption: "Fresh pizza perfection! 🍕" },
-    { id: 2, image: "https://images.pexels.com/photos/1566837/pexels-photo-1566837.jpeg?auto=compress&cs=tinysrgb&w=400", caption: "Wings that hit different 🔥" },
+    { id: 1, image: "https://images.pexels.com/photos/33406006/pexels-photo-33406006.png?auto=compress&cs=tinysrgb&w=400", caption: "Fresh pizza perfection! 🍕" },
+    { id: 2, image: "https://images.pexels.com/photos/33406008/pexels-photo-33406008.png?auto=compress&cs=tinysrgb&w=400", caption: "Wings that hit different 🔥" },
     { id: 3, image: "https://images.pexels.com/photos/1639562/pexels-photo-1639562.jpeg?auto=compress&cs=tinysrgb&w=400", caption: "Beachside vibes daily ✨" },
     { id: 4, image: "https://images.pexels.com/photos/5490915/pexels-photo-5490915.jpeg?auto=compress&cs=tinysrgb&w=400", caption: "Cold drinks, hot food 🍻" },
   ];
