@@ -187,7 +187,7 @@ const Home = () => {
             <h2 className="font-display text-4xl md:text-5xl text-white mb-4">
               Live the <span className="text-gradient">Beach Bumz</span> Life
             </h2>
-            <p className="text-sandy-beige text-lg mb-8">Follow us on Instagram for daily vibes & specials</p>
+            <p className="text-sandy-beige text-lg mb-8">Follow us on Instagram for updates</p>
             <a
               href="https://www.instagram.com/beachbumzmc"
               target="_blank"
