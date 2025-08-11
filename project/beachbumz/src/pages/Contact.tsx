@@ -231,7 +231,7 @@ const Contact = () => {
       </section>
 
       {/* Map Section */}
-      <section className="relative">
+      <section id="map" className="relative scroll-mt-24 md:scroll-mt-28">
         <div className="relative w-full h-[400px] md:h-[500px] overflow-hidden">
           <iframe
             src={mapSrc}
