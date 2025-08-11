@@ -357,3 +357,6 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--ocean-blue); 
 .fish { animation-direction: reverse; }
 
 /* if you have variants like .small, inherit automatically */
+
+/* keep path the same, flip the sprite so it faces forward */
+.fish { transform: scaleX(-1); }
