@@ -270,8 +270,4 @@ const Contact = () => {
   );
 };
 
-<p className="text-center text-sm text-gray-500 mt-6">
-  Made with ❤️ by <span className="font-semibold text-ocean-blue">Built4You</span> 🐟
-</p>
-
 export default Contact;
