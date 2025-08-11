@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Code } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Background image (direct file URL)
+/* --------------------------- BACKGROUND IMAGE --------------------------- */
 const SPACE_BG_URL = "https://i.imgur.com/EG6kbHOh.jpg";
 
 type PlanKind = "core" | "optional" | "one-time" | "custom";
@@ -173,7 +173,7 @@ const PLANS_IN_ORDER: Plan[] = [
 
 const ORDER_KEYS = ["startup", "basic", "pro", "elite", "business", "business-pro", "ecom-starter", "vip-flex", "custom"];
 
-/* --------------------------- STATIC BG --------------------------- */
+/* --------------------------- STATIC BG (NO BLUR) --------------------------- */
 const StaticSpaceBG: React.FC = () => (
   <>
     <div
@@ -184,6 +184,9 @@ const StaticSpaceBG: React.FC = () => (
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
+        imageRendering: "auto",
+        transform: "none",
+        filter: "none",
       }}
     />
     <div className="absolute inset-0 -z-10 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_60%,rgba(0,0,0,0.65)_100%)]" />
@@ -216,7 +219,7 @@ const LocalHeader: React.FC = () => {
   return (
     <motion.header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled ? "bg-slate-900/80 backdrop-blur-xl shadow-2xl border-b border-slate-700/20" : "bg-transparent"
+        isScrolled ? "bg-slate-900/80 shadow-2xl border-b border-slate-700/20" : "bg-transparent"
       }`}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
@@ -292,7 +295,7 @@ const LocalHeader: React.FC = () => {
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div
-              className="lg:hidden bg-slate-900/95 border-t border-slate-700/20 shadow-xl backdrop-blur-xl"
+              className="lg:hidden bg-slate-900/95 border-t border-slate-700/20 shadow-xl"
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
@@ -377,75 +380,8 @@ const Pricing: React.FC = () => {
   const next = () => setIndex((i) => (i + 1) % len);
   const prev = () => setIndex((i) => (i - 1 + len) % len);
 
-  // mobile auto-slide
+  // mobile carousel container ref (manual only, no auto-slide)
   const carouselRef = useRef<HTMLDivElement | null>(null);
-  const inViewRef = useRef<boolean>(true);
-  const [inView, setInView] = useState(true);
-  const [userInteracting, setUserInteracting] = useState(false);
-  const intervalRef = useRef<number | null>(null);
-  const resumeTimerRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    if (!carouselRef.current) return;
-    const el = carouselRef.current;
-    const obs = new IntersectionObserver(
-      (entries) => {
-        const vis = entries[0].isIntersecting;
-        inViewRef.current = vis;
-        setInView(vis);
-      },
-      { root: null, threshold: 0.4 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (!isMobile) return;
-    const shouldRun = inView && !userInteracting && document.visibilityState === "visible";
-    if (shouldRun) {
-      intervalRef.current = window.setInterval(() => setIndex((i) => (i + 1) % len), 5200) as unknown as number;
-    }
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-    };
-  }, [isMobile, inView, userInteracting, len]);
-
-  useEffect(() => {
-    const onVis = () => {
-      if (document.visibilityState !== "visible" && intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-    };
-    document.addEventListener("visibilitychange", onVis);
-    return () => document.removeEventListener("visibilitychange", onVis);
-  }, []);
-
-  const pauseForInteraction = (ms = 6000) => {
-    setUserInteracting(true);
-    if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
-    resumeTimerRef.current = window.setTimeout(() => {
-      if (inViewRef.current && document.visibilityState === "visible") setUserInteracting(false);
-    }, ms) as unknown as number;
-  };
-
-  // scroll hint
-  const [showScrollHint, setShowScrollHint] = useState(true);
-  useEffect(() => {
-    const onScroll = () => {
-      const scrolledPast = window.scrollY > 120;
-      const doc = document.documentElement;
-      const nearBottom = window.innerHeight + window.scrollY >= (doc.scrollHeight || document.body.scrollHeight) - 120;
-      setShowScrollHint(!(scrolledPast || nearBottom));
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   // Reduced-motion
   const [animEnabled, setAnimEnabled] = useState(true);
@@ -512,10 +448,7 @@ const Pricing: React.FC = () => {
               {orderedPlans.map((p, i) => (
                 <button
                   key={p.key}
-                  onClick={() => {
-                    pauseForInteraction();
-                    setIndex(i);
-                  }}
+                  onClick={() => setIndex(i)}
                   className={`px-3 py-1 rounded-lg text-sm border transition ${
                     i === index ? "border-white/60 bg-white/10" : "border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10"
                   }`}
@@ -531,12 +464,11 @@ const Pricing: React.FC = () => {
         {/* mobile legend */}
         {legendOpen && (
           <div className="relative z-10 sm:hidden px-4 pb-2">
-            <div className="rounded-2xl border border-white/10 bg-black/40 backdrop-blur p-2 grid grid-cols-2 gap-2">
+            <div className="rounded-2xl border border-white/10 bg-black/40 p-2 grid grid-cols-2 gap-2">
               {orderedPlans.map((p, i) => (
                 <button
                   key={p.key}
                   onClick={() => {
-                    pauseForInteraction();
                     setIndex(i);
                     setLegendOpen(false);
                   }}
@@ -551,10 +483,10 @@ const Pricing: React.FC = () => {
           </div>
         )}
 
-        {/* MOBILE CAROUSEL */}
+        {/* MOBILE CAROUSEL (manual only, no auto-slide text) */}
         <div className="relative z-0 sm:hidden px-4 pb-6">
-          <div className="w-full" ref={carouselRef} onTouchStart={() => pauseForInteraction()} onTouchEnd={() => {}}>
-            <div className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur p-6 shadow-[0_0_30px_rgba(255,255,255,0.08)]">
+          <div className="w-full" ref={carouselRef}>
+            <div className="relative rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_0_30px_rgba(255,255,255,0.08)]">
               <div className="text-xs uppercase tracking-widest text-white/70 mb-2 text-center">In focus</div>
               <h2 className="text-2xl font-bold text-center">{current.name}</h2>
               <div className="mt-1 text-lg font-semibold text-center">
@@ -572,7 +504,6 @@ const Pricing: React.FC = () => {
                 <a
                   href={current.cta.href}
                   className="mt-4 mx-auto w-full inline-flex items-center justify-center px-4 py-2 rounded-xl bg-white text-black font-semibold hover:bg-white/90 transition shadow"
-                  onClick={() => pauseForInteraction()}
                 >
                   {current.cta.label}
                 </a>
@@ -582,17 +513,12 @@ const Pricing: React.FC = () => {
                 {orderedPlans.map((_, i) => (
                   <button
                     key={i}
-                    onClick={() => {
-                      pauseForInteraction();
-                      setIndex(i);
-                    }}
+                    onClick={() => setIndex(i)}
                     className={`h-2 w-2 rounded-full transition ${i === index ? "bg-cyan-400" : "bg-white/30 hover:bg-white/60"}`}
                     aria-label={`Go to ${orderedPlans[i].name}`}
                   />
                 ))}
               </div>
-
-              <div className="mt-3 text-center text-xs text-white/60">Auto slides. Swipe to change.</div>
             </div>
           </div>
         </div>
@@ -609,11 +535,10 @@ const Pricing: React.FC = () => {
             <div className="absolute inset-0 flex items-center justify-center">
               <div
                 ref={centerRef}
-                className={`relative w-[46vw] max-w-[400px] aspect-square rounded-full bg-white/5 backdrop-blur-sm border ${
+                className={`relative w-[46vw] max-w-[400px] aspect-square rounded-full bg-white/5 border ${
                   current.spotlightColor || "ring-cyan-400"
                 } ring-2 ring-inset border-white/10 shadow-[0_0_40px_rgba(0,255,255,0.2)]`}
               >
-                <div className="absolute inset-[10%] rounded-full bg-black/30 blur-xl" />
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
                   <div className="text-xs uppercase tracking-widest text-white/70 mb-2">In focus</div>
                   <h2 className="text-2xl sm:text-3xl font-bold drop-shadow">{current.name}</h2>
@@ -661,7 +586,7 @@ const Pricing: React.FC = () => {
                   >
                     <div
                       ref={slotIdx === 0 ? samplePlanetRef : undefined}
-                      className={`relative w-[5.5rem] h-[5.5rem] overflow-hidden rounded-full bg-white/10 border border-white/15 backdrop-blur-sm ring-2 ${
+                      className={`relative w-[5.5rem] h-[5.5rem] overflow-hidden rounded-full bg-white/10 border border-white/15 ring-2 ${
                         plan.spotlightColor || "ring-cyan-400"
                       } hover:scale-105 transition-transform shadow-[0_0_24px_rgba(255,255,255,0.14)]`}
                     >
@@ -690,7 +615,7 @@ const Pricing: React.FC = () => {
             <div className="hidden sm:block">
               <button
                 onClick={prev}
-                className="absolute left-2 top-1/2 -translate-y-1/2 px-3 py-2 rounded-xl border border-white/15 bg-white/10 hover:bg-white/20 backdrop-blur-sm"
+                className="absolute left-2 top-1/2 -translate-y-1/2 px-3 py-2 rounded-xl border border-white/15 bg-white/10 hover:bg-white/20"
                 aria-label="Previous plan"
                 title="Previous plan"
               >
@@ -698,7 +623,7 @@ const Pricing: React.FC = () => {
               </button>
               <button
                 onClick={next}
-                className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-2 rounded-xl border border-white/15 bg-white/10 hover:bg-white/20 backdrop-blur-sm"
+                className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-2 rounded-xl border border-white/15 bg-white/10 hover:bg-white/20"
                 aria-label="Next plan"
                 title="Next plan"
               >
@@ -710,7 +635,7 @@ const Pricing: React.FC = () => {
 
         {/* DETAILS */}
         <div className="relative z-10 mx-auto w-full max-w-4xl px-4 sm:px-6 pb-16">
-          <div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur p-6 sm:p-8 shadow-[0_0_30px_rgba(255,255,255,0.08)]">
+          <div className="rounded-3xl border border-white/10 bg-white/5 p-6 sm:p-8 shadow-[0_0_30px_rgba(255,255,255,0.08)]">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <h3 className="text-xl sm:text-2xl font-bold">{current.name} Details</h3>
@@ -777,35 +702,18 @@ const Pricing: React.FC = () => {
                 </li>
               </ul>
 
-              {/* Monthly-only cancellation note */}
               {current.cadence.includes("/month") && (
-                <p className="mt-4 text-emerald-300 font-semibold">
-                  Monthly plans are month-to-month. Cancel anytime. No contracts.
-                </p>
+                <p className="mt-4 text-emerald-300 font-semibold">Monthly plans are month-to-month. Cancel anytime. No contracts.</p>
               )}
 
               <div className="mt-4 text-xs text-white/60">Large ecommerce and complex data migrations require a quote.</div>
 
               {/* MOBILE-ONLY nav */}
               <div className="mt-6 flex sm:hidden items-center justify-end gap-2">
-                <button
-                  onClick={() => {
-                    pauseForInteraction();
-                    prev();
-                  }}
-                  className="px-3 py-2 rounded-lg border border-white/15 bg-white/10 hover:bg-white/20"
-                  title="Previous"
-                >
+                <button onClick={prev} className="px-3 py-2 rounded-lg border border-white/15 bg-white/10 hover:bg-white/20" title="Previous">
                   Previous
                 </button>
-                <button
-                  onClick={() => {
-                    pauseForInteraction();
-                    next();
-                  }}
-                  className="px-3 py-2 rounded-lg border border-white/15 bg-white/10 hover:bg-white/20"
-                  title="Next"
-                >
+                <button onClick={next} className="px-3 py-2 rounded-lg border border-white/15 bg-white/10 hover:bg-white/20" title="Next">
                   Next
                 </button>
               </div>
@@ -813,15 +721,6 @@ const Pricing: React.FC = () => {
           </div>
         </div>
       </main>
-
-      {/* subtle scroll indicator */}
-      {showScrollHint && (
-        <div className="pointer-events-none fixed bottom-6 left-0 right-0 flex justify-center z-40">
-          <div className="px-3 py-2 rounded-full bg-black/30 backdrop-blur text-white/80 text-sm animate-bounce shadow-[0_0_20px_rgba(255,255,255,0.15)]">
-            Scroll for more ↓
-          </div>
-        </div>
-      )}
     </div>
   );
 };
