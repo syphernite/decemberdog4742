@@ -18,7 +18,6 @@ export default function Navbar() {
   const [src, setSrc] = useState(PNG);
   const { pathname } = useLocation();
 
-  // Close mobile drawer on route change
   useEffect(() => setOpen(false), [pathname]);
 
   const linkClass =
@@ -29,13 +28,13 @@ export default function Navbar() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 h-16 md:h-20">
-      {/* Solid navbar background — single, static color */}
-      <div className="absolute inset-0 bg-ocean-blue" />
+      {/* EXACT match to logo background: pure black */}
+      <div className="absolute inset-0 bg-black" />
 
       <div className="relative mx-auto max-w-6xl h-full px-4 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3 min-w-0">
-          {/* Logo wrapped with EXACT same background as navbar */}
-          <div className="bg-ocean-blue">
+          {/* Logo wrapped with same pure-black background */}
+          <div className="bg-black">
             <img
               src={src}
               onError={() => setSrc(JPG)}
@@ -58,7 +57,7 @@ export default function Navbar() {
           ))}
           <a
             href="tel:+12527267800"
-            className="ml-2 inline-flex items-center gap-2 rounded-md bg-white/5 px-3 py-1.5 text-sm font-semibold text-white/90 hover:bg-white/10"
+            className="ml-2 inline-flex items-center gap-2 rounded-md bg-white/10 px-3 py-1.5 text-sm font-semibold text-white/90 hover:bg-white/20"
           >
             <Phone className="h-4 w-4" />
             (252) 726-7800
@@ -81,14 +80,13 @@ export default function Navbar() {
             onClick={() => setOpen(false)}
           />
           <div
-            className={`absolute right-0 top-0 h-full w-72 bg-ocean-blue text-white transform transition-transform ${
+            className={`absolute right-0 top-0 h-full w-72 bg-black text-white transform transition-transform ${
               open ? "translate-x-0" : "translate-x-full"
             }`}
           >
             <div className="flex items-center justify-between p-4 border-b border-white/10">
               <div className="flex items-center gap-2">
-                {/* Keep same bg behind logo in drawer for consistency */}
-                <div className="bg-ocean-blue">
+                <div className="bg-black">
                   <img src={src} onError={() => setSrc(JPG)} alt="Logo" className="h-8 w-auto block" />
                 </div>
                 <span className="font-semibold">BEACH BUMZ</span>
@@ -105,7 +103,7 @@ export default function Navbar() {
               ))}
               <a
                 href="tel:+12527267800"
-                className="mt-1 rounded-md px-3 py-2 bg-white/5 text-white/90 hover:bg-white/10 inline-flex items-center gap-2"
+                className="mt-1 rounded-md px-3 py-2 bg-white/10 text-white/90 hover:bg-white/20 inline-flex items-center gap-2"
               >
                 <Phone className="h-4 w-4" />
                 (252) 726-7800
