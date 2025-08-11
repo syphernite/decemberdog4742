@@ -155,7 +155,7 @@ const Contact = () => {
                   <Facebook className="h-6 w-6 text-coral-pink mt-1 flex-shrink-0" />
                   <div>
                     <h3 className="font-semibold text-ocean-blue mb-2">Facebook</h3>
-                    <a href="https://facebook.com" target="_blank" rel="noreferrer" className="text-gray-700 hover:text-coral-pink transition-colors duration-300">Facebook</a>
+                    <a href="https://www.facebook.com/p/Beach-Bumz-Pub-Pizzaria-100063510343151/" target="_blank" rel="noreferrer" className="text-gray-700 hover:text-coral-pink transition-colors duration-300">Facebook</a>
                   </div>
                 </div>
               </div>
