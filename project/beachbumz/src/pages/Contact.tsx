@@ -257,7 +257,7 @@ const Contact = () => {
 
           {/* Moved "Open in Google Maps" to the opposite corner so it never sits behind the overlay */}
           <a
-            href="https://www.google.com/maps/place/105+S+6th+St,+Morehead+City,+NC+28557"
+            href="https://www.google.com/maps/place/Beach+Bumz+Pub+%26+Pizzaria/@34.720578,-76.7094583,17z/data=!4m15!1m8!3m7!1s0x89a89114b8a75b9d:0xe614351fac2e2f60!2s105+S+6th+St,+Morehead+City,+NC+28557!3b1!8m2!3d34.720578!4d-76.7094583!16s%2Fg%2F11c14l29fg!3m5!1s0x89a89114c3f408e1:0xa9f8802177627012!8m2!3d34.7206039!4d-76.7096405!16s%2Fg%2F1trch8ny?entry=ttu&g_ep=EgoyMDI1MDgwNi4wIKXMDSoASAFQAw%3D%3D"
             target="_blank"
             rel="noreferrer"
             className="absolute top-6 right-6 bg-white/95 text-ocean-blue rounded-md px-3 py-2 shadow-md hover:bg-white transition"
