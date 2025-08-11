@@ -54,7 +54,6 @@ const Contact = () => {
   const mapSrc = useMemo(() => {
     const q = encodeURIComponent(ADDRESS);
     const zoom = isDesktop ? 18 : 16; // desktop closer
-    // q=address with output=embed shows a centered red pin at the exact spot
     return `https://www.google.com/maps?q=${q}&z=${zoom}&output=embed`;
   }, [isDesktop]);
 
@@ -68,8 +67,8 @@ const Contact = () => {
           <p className="text-lg text-sandy-beige mb-8 animate-on-scroll">
             We'd love to hear from you! Come visit us in beautiful Morehead City
           </p>
-          <a 
-            href="tel:252-726-7800" 
+          <a
+            href="tel:252-726-7800"
             className="btn-secondary inline-flex items-center space-x-2"
           >
             <Phone className="h-5 w-5" />
@@ -87,7 +86,7 @@ const Contact = () => {
               <h2 className="font-display text-4xl text-ocean-blue mb-8">
                 Visit Beach Bumz
               </h2>
-              
+
               <div className="space-y-6">
                 <div className="flex items-start space-x-4 bg-white/80 backdrop-blur-md rounded-lg p-6 shadow-lg hover-lift beach-card tilt-on-hover">
                   <MapPin className="h-6 w-6 text-turquoise mt-1 flex-shrink-0 bounce-subtle" />
@@ -95,7 +94,7 @@ const Contact = () => {
                     <h3 className="font-semibold text-ocean-blue mb-2">Address</h3>
                     <p className="text-gray-700">105 South 6th Street</p>
                     <p className="text-gray-700">Morehead City, NC 28577</p>
-                    <a 
+                    <a
                       href="https://www.google.com/maps/place/105+S+6th+St,+Morehead+City,+NC+28557"
                       target="_blank"
                       rel="noreferrer"
@@ -110,8 +109,8 @@ const Contact = () => {
                   <Phone className="h-6 w-6 text-turquoise mt-1 flex-shrink-0" />
                   <div>
                     <h3 className="font-semibold text-ocean-blue mb-2">Phone</h3>
-                    <a 
-                      href="tel:252-726-7800" 
+                    <a
+                      href="tel:252-726-7800"
                       className="text-gray-700 hover:text-sunset-orange transition-colors duration-300 text-lg font-medium"
                     >
                       (252) 726-7800
@@ -123,8 +122,8 @@ const Contact = () => {
                   <Mail className="h-6 w-6 text-coral-pink mt-1 flex-shrink-0 palm-sway" />
                   <div>
                     <h3 className="font-semibold text-ocean-blue mb-2">Email</h3>
-                    <a 
-                      href="mailto:beachbumzofmcinc@gmail.com" 
+                    <a
+                      href="mailto:beachbumzofmcinc@gmail.com"
                       className="text-gray-700 hover:text-coral-pink transition-colors duration-300"
                     >
                       beachbumzofmcinc@gmail.com
@@ -255,9 +254,14 @@ const Contact = () => {
             <p className="text-gray-700 text-sm">105 South 6th Street</p>
             <p className="text-gray-700 text-sm">Morehead City, NC 28577</p>
           </div>
-        </div>
-        <div className="mt-2 text-sm text-gray-600 px-4">
-          <a href="https://www.google.com/maps/place/105+S+6th+St,+Morehead+City,+NC+28557" target="_blank" rel="noreferrer" className="text-ocean-blue underline">
+
+          {/* Moved "Open in Google Maps" to the opposite corner so it never sits behind the overlay */}
+          <a
+            href="https://www.google.com/maps/place/105+S+6th+St,+Morehead+City,+NC+28557"
+            target="_blank"
+            rel="noreferrer"
+            className="absolute top-6 right-6 bg-white/95 text-ocean-blue rounded-md px-3 py-2 shadow-md hover:bg-white transition"
+          >
             Open in Google Maps
           </a>
         </div>
