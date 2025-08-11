@@ -3,9 +3,8 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Code } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Use a direct image URL, not a page URL.
-const SPACE_BG_URL =
-  "https://images.pexels.com/photos/1169754/pexels-photo-1169754.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=1920&h=1080";
+// Background image (direct file URL)
+const SPACE_BG_URL = "https://i.imgur.com/EG6kbHOh.jpg";
 
 type PlanKind = "core" | "optional" | "one-time" | "custom";
 
@@ -175,7 +174,6 @@ const PLANS_IN_ORDER: Plan[] = [
 const ORDER_KEYS = ["startup", "basic", "pro", "elite", "business", "business-pro", "ecom-starter", "vip-flex", "custom"];
 
 /* --------------------------- STATIC BG --------------------------- */
-
 const StaticSpaceBG: React.FC = () => (
   <>
     <div
@@ -193,7 +191,6 @@ const StaticSpaceBG: React.FC = () => (
 );
 
 /* ------------------------- LOCAL PAGE-ONLY HEADER ------------------------ */
-
 const LocalHeader: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -335,7 +332,6 @@ const LocalHeader: React.FC = () => {
 };
 
 /* ---------------------------------- PAGE --------------------------------- */
-
 const Pricing: React.FC = () => {
   const location = useLocation();
 
@@ -348,7 +344,7 @@ const Pricing: React.FC = () => {
 
   const orderedPlans = useMemo(() => ORDER_KEYS.map((k) => PLANS_IN_ORDER.find((p) => p.key === k)!).filter(Boolean), []);
 
-  // Initial focus from URL on first paint to avoid flashing "Startup"
+  // Initial focus from URL
   const initialPlan = (() => {
     const raw = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("plan") : null;
     const key = raw?.toLowerCase() || "";
@@ -601,7 +597,7 @@ const Pricing: React.FC = () => {
           </div>
         </div>
 
-        {/* DESKTOP ORBIT (even spacing via transform chain) */}
+        {/* DESKTOP ORBIT */}
         <div className="relative z-0 hidden sm:flex items-center justify-center pt-6 pb-8 sm:pb-12">
           <style>{`
             @keyframes orbit-rotate { 0%{transform:rotate(0)}100%{transform:rotate(360deg)} }
@@ -670,7 +666,7 @@ const Pricing: React.FC = () => {
                       } hover:scale-105 transition-transform shadow-[0_0_24px_rgba(255,255,255,0.14)]`}
                     >
                       <div className="absolute inset-0 rounded-full bg-black/30" />
-                      {/* Counter-rotate inner content so it stays upright while the ring orbits */}
+                      {/* Counter-rotate content */}
                       <div
                         className="absolute inset-0 flex flex-col items-center justify-center text-center px-1 leading-tight"
                         style={{
@@ -781,8 +777,12 @@ const Pricing: React.FC = () => {
                 </li>
               </ul>
 
-              {/* Cancellation note */}
-              <p className="mt-4 text-emerald-300 font-semibold">Monthly plans are month-to-month. Cancel anytime. No contracts.</p>
+              {/* Monthly-only cancellation note */}
+              {current.cadence.includes("/month") && (
+                <p className="mt-4 text-emerald-300 font-semibold">
+                  Monthly plans are month-to-month. Cancel anytime. No contracts.
+                </p>
+              )}
 
               <div className="mt-4 text-xs text-white/60">Large ecommerce and complex data migrations require a quote.</div>
 
