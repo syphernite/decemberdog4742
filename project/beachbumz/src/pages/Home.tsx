@@ -189,7 +189,7 @@ const Home = () => {
             </h2>
             <p className="text-sandy-beige text-lg mb-8">Follow us on Instagram for daily vibes & specials</p>
             <a
-              href="https://instagram.com"
+              href="https://www.instagram.com/beachbumzmc"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-turquoise hover:text-sunset-orange transition-colors duration-300 bounce-subtle"
