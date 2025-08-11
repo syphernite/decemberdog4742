@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { Menu, X, Phone } from "lucide-react";
 
-// Use public/ and BASE_URL. Auto-fallback to .jpg if .png missing.
+// Assets
 const PNG = import.meta.env.BASE_URL + "beachbumz-logo.png";
 const JPG = import.meta.env.BASE_URL + "beachbumz-logo.jpg";
 
@@ -15,44 +15,41 @@ const NAV = [
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [src, setSrc] = useState(PNG);
   const { pathname } = useLocation();
 
+  // Close mobile drawer on route change
   useEffect(() => setOpen(false), [pathname]);
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
-  const linkClass = ({ isActive }: { isActive: boolean }) =>
-    `px-3 py-2 rounded-md text-sm font-medium transition ${
-      isActive ? "text-turquoise underline underline-offset-4" : "text-white/90 hover:text-white"
-    }`;
+  const linkClass =
+    ({ isActive }: { isActive: boolean }) =>
+      `px-3 py-2 rounded-md text-sm font-medium transition ${
+        isActive ? "text-turquoise underline underline-offset-4" : "text-white/90 hover:text-white"
+      }`;
 
   return (
-    <header
-      className={`fixed inset-x-0 top-0 z-50 ${
-        scrolled ? "bg-ocean-blue/95 backdrop-blur shadow-lg" : "bg-ocean-blue/80 backdrop-blur"
-      }`}
-      style={{ height: "64px" }}
-    >
-      <div className="mx-auto max-w-6xl h-full px-4 flex items-center justify-between">
+    <header className="fixed inset-x-0 top-0 z-50 h-16 md:h-20">
+      {/* Solid navbar background — single, static color */}
+      <div className="absolute inset-0 bg-ocean-blue" />
+
+      <div className="relative mx-auto max-w-6xl h-full px-4 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3 min-w-0">
-          {/* Transparent logo, no dark tile */}
-          <img
-            src={src}
-            onError={() => setSrc(JPG)}
-            alt="Beach Bumz Pub & Pizzaria"
-            className="h-8 w-auto md:h-10 object-contain"
-          />
-          <div className="hidden sm:flex flex-col leading-tight">
+          {/* Logo wrapped with EXACT same background as navbar */}
+          <div className="bg-ocean-blue">
+            <img
+              src={src}
+              onError={() => setSrc(JPG)}
+              alt="Beach Bumz Pub & Pizzaria"
+              className="block h-8 w-auto md:h-10 object-contain m-0 p-0"
+            />
+          </div>
+          <div className="hidden sm:flex flex-col leading-tight select-none">
             <span className="text-white font-extrabold tracking-wide text-sm md:text-base">BEACH BUMZ</span>
             <span className="text-turquoise text-[10px] md:text-xs">PUB & PIZZARIA</span>
           </div>
         </Link>
 
+        {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-2">
           {NAV.map((n) => (
             <NavLink key={n.to} to={n.to} className={linkClass}>
@@ -61,39 +58,60 @@ export default function Navbar() {
           ))}
           <a
             href="tel:+12527267800"
-            className="ml-2 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-3 py-1.5 text-sm font-semibold text-white/90 hover:bg-white/10"
+            className="ml-2 inline-flex items-center gap-2 rounded-md bg-white/5 px-3 py-1.5 text-sm font-semibold text-white/90 hover:bg-white/10"
           >
             <Phone className="h-4 w-4" />
             (252) 726-7800
           </a>
         </nav>
 
-        <button className="md:hidden p-2 text-white" aria-label="Toggle menu" onClick={() => setOpen((v) => !v)}>
-          {open ? <X /> : <Menu />}
+        {/* Mobile burger */}
+        <button
+          aria-label="Open menu"
+          onClick={() => setOpen(true)}
+          className="md:hidden inline-flex items-center justify-center p-2 rounded-md text-white/90 hover:bg-white/10"
+        >
+          <Menu className="h-6 w-6" />
         </button>
-      </div>
 
-      <div
-        className={`md:hidden transition-[max-height] duration-300 overflow-hidden ${
-          open ? "max-h-80" : "max-h-0"
-        } bg-ocean-blue/95`}
-      >
-        <div className="px-4 pb-3 pt-2 space-y-1">
-          {NAV.map((n) => (
-            <NavLink
-              key={n.to}
-              to={n.to}
-              className={({ isActive }) =>
-                `block rounded-md px-3 py-2 text-white/90 hover:bg-white/10 ${isActive ? "text-turquoise" : ""}`
-              }
-            >
-              {n.label}
-            </NavLink>
-          ))}
-          <a href="tel:+12527267800" className="mt-1 rounded-md px-3 py-2 bg-white/5 text-white/90 hover:bg-white/10 inline-flex items-center gap-2">
-            <Phone className="h-4 w-4" />
-            (252) 726-7800
-          </a>
+        {/* Mobile drawer */}
+        <div className={`md:hidden fixed inset-0 z-50 transition ${open ? "pointer-events-auto" : "pointer-events-none"}`}>
+          <div
+            className={`absolute inset-0 bg-black/50 transition-opacity ${open ? "opacity-100" : "opacity-0"}`}
+            onClick={() => setOpen(false)}
+          />
+          <div
+            className={`absolute right-0 top-0 h-full w-72 bg-ocean-blue text-white transform transition-transform ${
+              open ? "translate-x-0" : "translate-x-full"
+            }`}
+          >
+            <div className="flex items-center justify-between p-4 border-b border-white/10">
+              <div className="flex items-center gap-2">
+                {/* Keep same bg behind logo in drawer for consistency */}
+                <div className="bg-ocean-blue">
+                  <img src={src} onError={() => setSrc(JPG)} alt="Logo" className="h-8 w-auto block" />
+                </div>
+                <span className="font-semibold">BEACH BUMZ</span>
+              </div>
+              <button aria-label="Close menu" onClick={() => setOpen(false)} className="p-2 rounded-md hover:bg-white/10">
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+            <nav className="p-2">
+              {NAV.map((n) => (
+                <NavLink key={n.to} to={n.to} className="block px-4 py-3 rounded-md hover:bg-white/10">
+                  {n.label}
+                </NavLink>
+              ))}
+              <a
+                href="tel:+12527267800"
+                className="mt-1 rounded-md px-3 py-2 bg-white/5 text-white/90 hover:bg-white/10 inline-flex items-center gap-2"
+              >
+                <Phone className="h-4 w-4" />
+                (252) 726-7800
+              </a>
+            </nav>
+          </div>
         </div>
       </div>
     </header>
