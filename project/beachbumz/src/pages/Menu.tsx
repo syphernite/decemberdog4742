@@ -5,8 +5,8 @@ import { Link } from "react-router-dom";
 type Item = {
   name: string;
   description?: string;
-  price?: string;                 // single price
-  prices?: Record<string, string>; // size -> price
+  price?: string;
+  prices?: Record<string, string>;
 };
 
 type MenuData = Record<string, Item[]>;
@@ -82,28 +82,27 @@ function PriceBlock({ item }: { item: Item }) {
         {Object.entries(item.prices).map(([size, price]) => (
           <div key={size} className="flex justify-between rounded-md border border-white/10 bg-white/5 px-3 py-1 text-sm">
             <span className="opacity-90">{size}</span>
-            <span className="font-semibold">${price}</span>
+            <span className="font-semibold">{price}</span>
           </div>
         ))}
       </div>
     );
   }
   const p = (item.price || "").trim();
-  return p ? <div className="mt-1 font-semibold">${p}</div> : null;
+  return p ? <div className="mt-1 font-semibold">{p}</div> : null;
 }
 
-const slug = (s: string) => s.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9\-]/g, "");
+const slug = (s: string) =>
+  s.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9\-]/g, "");
 
 export default function Menu() {
   const categories = useMemo(() => Object.keys(MENU), []);
   const [active, setActive] = useState<string>(categories[0] || "");
   const sentinelsRef = useRef<Record<string, HTMLDivElement | null>>({});
 
-  // Observe sections to highlight active tab
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        // pick the entry nearest to top that's intersecting
         const visible = entries
           .filter((e) => e.isIntersecting)
           .sort((a, b) => (a.boundingClientRect.top > b.boundingClientRect.top ? 1 : -1));
@@ -112,7 +111,7 @@ export default function Menu() {
           if (id) setActive(id);
         }
       },
-      { rootMargin: "-120px 0px -70% 0px", threshold: [0, 0.1, 0.5] }
+      { rootMargin: "-96px 0px -70% 0px", threshold: [0, 0.1, 0.5] }
     );
 
     categories.forEach((c) => {
@@ -148,19 +147,22 @@ export default function Menu() {
           </div>
         </div>
 
-        {/* Sticky sub-menu */}
-        <div className="sticky top-20 z-40 mb-8 border-b border-white/10 bg-slate-900/80 backdrop-blur">
-          <div className="flex items-center justify-between py-2">
-            <nav className="w-full overflow-x-auto">
-              <ul className="flex gap-2 sm:gap-3 whitespace-nowrap px-1">
+        {/* Sticky mobile-friendly category bar */}
+        <div className="sticky top-20 z-40 mb-8 bg-slate-900/85 backdrop-blur border-b border-white/10">
+          <div className="relative">
+            <nav aria-label="Menu categories" className="w-full overflow-x-auto no-scrollbar snap-x snap-mandatory">
+              <ul className="flex gap-2 sm:gap-3 whitespace-nowrap px-1 py-2">
                 {categories.map((cat) => {
                   const isActive = active === cat;
                   return (
-                    <li key={cat}>
+                    <li key={cat} className="shrink-0 snap-start">
                       <button
                         onClick={() => handleJump(cat)}
-                        className={`px-3 py-1.5 rounded-full text-sm transition
-                          ${isActive ? "bg-turquoise text-slate-900 font-semibold" : "bg-white/5 hover:bg-white/10"}`}
+                        className={`px-4 py-2 rounded-full text-base sm:text-sm transition
+                        ${isActive
+                            ? "bg-turquoise text-slate-900 font-semibold"
+                            : "bg-white/6 hover:bg-white/12 text-white"} 
+                        border border-white/10`}
                         aria-current={isActive ? "true" : undefined}
                       >
                         {cat}
@@ -170,20 +172,27 @@ export default function Menu() {
                 })}
               </ul>
             </nav>
+
+            {/* edge fades to hint scroll */}
+            <span className="pointer-events-none absolute left-0 top-0 h-full w-6 bg-gradient-to-r from-slate-900/85 to-transparent" />
+            <span className="pointer-events-none absolute right-0 top-0 h-full w-6 bg-gradient-to-l from-slate-900/85 to-transparent" />
           </div>
         </div>
 
         {/* Sections */}
         {categories.map((section) => (
           <div key={section} className="mb-12">
-            {/* invisible sentinel for intersection tracking */}
+            {/* invisible sentinel */}
             <div
               ref={(el) => (sentinelsRef.current[section] = el)}
               data-section={section}
               aria-hidden
               className="h-px"
             />
-            <h2 id={slug(section)} className="scroll-mt-24 text-2xl font-bold mb-4">
+            <h2
+              id={slug(section)}
+              className="scroll-mt-[88px] md:scroll-mt-[110px] text-2xl font-bold mb-4"
+            >
               {section}
             </h2>
 
@@ -214,8 +223,13 @@ export default function Menu() {
         </div>
       </div>
 
-      {/* Smooth scroll for all anchors */}
-      <style>{`html { scroll-behavior: smooth; } @media print { .sticky { position: static; } }`}</style>
+      {/* local helpers for cross-browser polish */}
+      <style>{`
+        .no-scrollbar{ -ms-overflow-style:none; scrollbar-width:none }
+        .no-scrollbar::-webkit-scrollbar{ display:none }
+        html { scroll-behavior: smooth; }
+        @media print { .sticky { position: static; } }
+      `}</style>
     </section>
   );
 }
