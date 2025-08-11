@@ -173,7 +173,7 @@ const PLANS_IN_ORDER: Plan[] = [
 
 const ORDER_KEYS = ["startup", "basic", "pro", "elite", "business", "business-pro", "ecom-starter", "vip-flex", "custom"];
 
-/* --------------------------- STATIC BG (NO BLUR) --------------------------- */
+/* --------------------------- STATIC BG (BLUR RESTORED) --------------------------- */
 const StaticSpaceBG: React.FC = () => (
   <>
     <div
@@ -184,12 +184,10 @@ const StaticSpaceBG: React.FC = () => (
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
-        imageRendering: "auto",
         transform: "none",
-        filter: "none",
       }}
     />
-    <div className="absolute inset-0 -z-10 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_60%,rgba(0,0,0,0.65)_100%)]" />
+    <div className="absolute inset-0 -z-10 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_60%,rgba(0,0,0,0.65)_100%)] backdrop-blur-sm" />
   </>
 );
 
@@ -380,8 +378,26 @@ const Pricing: React.FC = () => {
   const next = () => setIndex((i) => (i + 1) % len);
   const prev = () => setIndex((i) => (i - 1 + len) % len);
 
-  // mobile carousel container ref (manual only, no auto-slide)
+  // Manual swipe handlers for mobile
   const carouselRef = useRef<HTMLDivElement | null>(null);
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    const t = e.touches[0];
+    touchStart.current = { x: t.clientX, y: t.clientY };
+  };
+
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (!touchStart.current) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - touchStart.current.x;
+    const dy = t.clientY - touchStart.current.y;
+    touchStart.current = null;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+      if (dx < 0) next();
+      else prev();
+    }
+  };
 
   // Reduced-motion
   const [animEnabled, setAnimEnabled] = useState(true);
@@ -483,9 +499,9 @@ const Pricing: React.FC = () => {
           </div>
         )}
 
-        {/* MOBILE CAROUSEL (manual only, no auto-slide text) */}
+        {/* MOBILE CAROUSEL (manual swipe, no auto-slide) */}
         <div className="relative z-0 sm:hidden px-4 pb-6">
-          <div className="w-full" ref={carouselRef}>
+          <div className="w-full" ref={carouselRef} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
             <div className="relative rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_0_30px_rgba(255,255,255,0.08)]">
               <div className="text-xs uppercase tracking-widest text-white/70 mb-2 text-center">In focus</div>
               <h2 className="text-2xl font-bold text-center">{current.name}</h2>
@@ -519,6 +535,8 @@ const Pricing: React.FC = () => {
                   />
                 ))}
               </div>
+
+              <div className="mt-3 text-center text-xs text-white/60">Swipe for next plan</div>
             </div>
           </div>
         </div>
