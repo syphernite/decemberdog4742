@@ -136,8 +136,8 @@ export default function Menu() {
           </div>
         </div>
 
-        {/* Mobile quick picker only */}
-        <div className="sm:hidden mb-3">
+        {/* Mobile quick picker only (<= md-1). Chips hidden below md. */}
+        <div className="md:hidden mb-3">
           <label htmlFor="catSelect" className="sr-only">Select category</label>
           <select
             id="catSelect"
@@ -153,8 +153,8 @@ export default function Menu() {
           </select>
         </div>
 
-        {/* Sticky category chips (desktop/tablet only). No arrows. */}
-        <div className="sticky top-20 z-40 mb-8 bg-slate-900/85 backdrop-blur border-b border-white/10 hidden sm:block">
+        {/* Sticky category chips (desktop only >= md). No arrows. */}
+        <div className="sticky top-20 z-40 mb-8 bg-slate-900/85 backdrop-blur border-b border-white/10 hidden md:block">
           <div className="relative">
             {/* edge fades */}
             <span className="pointer-events-none absolute left-0 top-0 h-full w-6 bg-gradient-to-r from-slate-900/85 to-transparent" />
