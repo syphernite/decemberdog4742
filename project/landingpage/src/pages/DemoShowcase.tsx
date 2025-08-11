@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ExternalLink, ArrowRight, MonitorSmartphone, Search, Info } from "lucide-react";
+import { ExternalLink, ArrowRight, MonitorSmartphone, Search } from "lucide-react";
 
 type Demo = {
   title: string;
@@ -68,10 +68,6 @@ const IFramePreview: React.FC<{ url: string }> = ({ url }) => {
       className="relative rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur"
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-slate-900/15 to-transparent z-10" />
-      <div className="pointer-events-none absolute right-3 top-3 z-20 inline-flex items-center gap-1.5 rounded-full bg-slate-900/60 text-[11px] text-white/90 px-2 py-1 backdrop-blur">
-        <Info className="h-3.5 w-3.5" />
-        Live preview
-      </div>
 
       {!inView ? (
         <div className="h-[460px] sm:h-[520px] w-full flex items-center justify-center">
