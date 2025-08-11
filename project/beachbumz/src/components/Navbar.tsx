@@ -107,6 +107,11 @@ export default function Navbar() {
               >
                 <Phone className="h-4 w-4" />
                 (252) 726-7800
+
+                <p className="text-center text-sm text-gray-500 mt-6">
+                Made with ❤️ by <span className="font-semibold text-ocean-blue">Built4You</span> 🐟
+                </p>
+                
               </a>
             </nav>
           </div>
