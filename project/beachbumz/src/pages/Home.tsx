@@ -128,12 +128,17 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ===== Wave Divider (below content; no overlap) ===== */}
-      <div className="relative z-0 mt-12 md:mt-16">
-        <div className="wave-divider">
-          <div className="wave wave-back"></div>
-          <div className="wave wave-mid"></div>
-          <div className="wave wave-front"></div>
+      {/* ===== Seamless Sand Bridge + Wave Divider (no black bar) ===== */}
+      <div className="relative z-0 -mt-8 sm:-mt-10 md:-mt-12 lg:-mt-14">
+        {/* bridge fills any possible gap between hero-sand and divider */}
+        <div className="h-10 sm:h-12 md:h-14 bg-sandy-beige" />
+        {/* pull divider up so waves overlap the bridge a bit */}
+        <div className="-mt-6 sm:-mt-8 md:-mt-10">
+          <div className="wave-divider">
+            <div className="wave wave-back"></div>
+            <div className="wave wave-mid"></div>
+            <div className="wave wave-front"></div>
+          </div>
         </div>
       </div>
 
