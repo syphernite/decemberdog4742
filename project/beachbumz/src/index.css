@@ -352,3 +352,8 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--ocean-blue); 
   100% { transform: translateY(0) rotate(0deg); }
 }
 .anchor-bob { animation: anchor-bob 3.2s ease-in-out infinite; }
+
+/* make all fish swim the other way */
+.fish { animation-direction: reverse; }
+
+/* if you have variants like .small, inherit automatically */
