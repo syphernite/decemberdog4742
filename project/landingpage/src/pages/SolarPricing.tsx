@@ -3,9 +3,9 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Code } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Use a direct image URL here, not an album URL.
-// Example: https://i.imgur.com/abcdefg.jpg
-const SPACE_BG_URL = "https://imgur.com/a/dxH9FGB"; // REPLACE with direct image file URL
+// Use a direct image URL, not a page URL.
+const SPACE_BG_URL =
+  "https://images.pexels.com/photos/1169754/pexels-photo-1169754.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=1920&h=1080";
 
 type PlanKind = "core" | "optional" | "one-time" | "custom";
 
@@ -31,13 +31,7 @@ const PLANS_IN_ORDER: Plan[] = [
     cadence: "/month",
     kind: "optional",
     shortBullets: ["Up to 3 Pages", "Hosting + Domain", "1 Edit Batch per Month"],
-    features: [
-      "Up to 3 Pages",
-      "Hosting and 1 Domain",
-      "1 Edit Batch per Month",
-      "Contact Form",
-      "Support within 72 hours",
-    ],
+    features: ["Up to 3 Pages", "Hosting and 1 Domain", "1 Edit Batch per Month", "Contact Form", "Support within 72 hours"],
     notIncluded: ["Unlimited edits", "Strategy calls", "SEO reports"],
     spotlightColor: "ring-blue-400",
     cta: { label: "Start Startup", href: "/contact" },
@@ -61,12 +55,7 @@ const PLANS_IN_ORDER: Plan[] = [
     cadence: "One-Time",
     kind: "core",
     shortBullets: ["Up to 5 Pages", "Gallery", "Maps + Socials"],
-    features: [
-      "Up to 5 Pages",
-      "Photo Gallery",
-      "Google Maps and Social Media Links",
-      "Custom Domain Setup",
-    ],
+    features: ["Up to 5 Pages", "Photo Gallery", "Google Maps and Social Media Links", "Custom Domain Setup"],
     notIncluded: ["Hosting", "Ongoing support", "Advanced integrations"],
     addOns: ["Extra Page - $50", "Logo Design - $75", "Rush Delivery 48 hours - +$100"],
     spotlightColor: "ring-cyan-400",
@@ -139,13 +128,7 @@ const PLANS_IN_ORDER: Plan[] = [
     cadence: "/month",
     kind: "optional",
     shortBullets: ["Store Setup", "Up to 10 Products", "Hosting + Domain"],
-    features: [
-      "Store Setup with Stripe, PayPal, or Shopify Lite",
-      "Up to 10 Products Uploaded",
-      "Hosting and 1 Domain",
-      "1 Edit Batch per Month",
-      "Basic Support",
-    ],
+    features: ["Store Setup with Stripe, PayPal, or Shopify Lite", "Up to 10 Products Uploaded", "Hosting and 1 Domain", "1 Edit Batch per Month", "Basic Support"],
     notIncluded: ["Subscriptions", "Advanced filtering", "Shipping calculators"],
     spotlightColor: "ring-rose-400",
     cta: { label: "Start Ecommerce", href: "/contact" },
@@ -189,17 +172,7 @@ const PLANS_IN_ORDER: Plan[] = [
   },
 ];
 
-const ORDER_KEYS = [
-  "startup",
-  "basic",
-  "pro",
-  "elite",
-  "business",
-  "business-pro",
-  "ecom-starter",
-  "vip-flex",
-  "custom",
-];
+const ORDER_KEYS = ["startup", "basic", "pro", "elite", "business", "business-pro", "ecom-starter", "vip-flex", "custom"];
 
 /* --------------------------- STATIC BG --------------------------- */
 
@@ -266,9 +239,7 @@ const LocalHeader: React.FC = () => {
                 <Code className="h-8 w-8 text-white" />
               </div>
               <div className="flex flex-col">
-                <span className="text-2xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
-                  Built4You
-                </span>
+                <span className="text-2xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">Built4You</span>
                 <span className="text-xs text-slate-300/80 font-medium tracking-wider">WEB SOLUTIONS</span>
               </div>
             </motion.div>
@@ -280,7 +251,7 @@ const LocalHeader: React.FC = () => {
                 <a
                   key={item.label}
                   href={item.path}
-                  className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-300 text-slate-300 hover:text-emerald-400 hover:bg-slate-800/50`}
+                  className="relative px-4 py-2 rounded-lg font-medium transition-all duration-300 text-slate-300 hover:text-emerald-400 hover:bg-slate-800/50"
                 >
                   {item.label}
                 </a>
@@ -289,9 +260,7 @@ const LocalHeader: React.FC = () => {
                   key={item.label}
                   to={item.path}
                   className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
-                    location.pathname === item.path
-                      ? "text-emerald-400 bg-emerald-900/20"
-                      : "text-slate-300 hover:text-emerald-400 hover:bg-slate-800/50"
+                    location.pathname === item.path ? "text-emerald-400 bg-emerald-900/20" : "text-slate-300 hover:text-emerald-400 hover:bg-slate-800/50"
                   }`}
                 >
                   {item.label}
@@ -348,9 +317,7 @@ const LocalHeader: React.FC = () => {
                         to={item.path}
                         onClick={() => setIsMenuOpen(false)}
                         className={`block px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
-                          location.pathname === item.path
-                            ? "text-emerald-400 bg-emerald-900/20"
-                            : "text-slate-300 hover:text-emerald-400 hover:bg-slate-800"
+                          location.pathname === item.path ? "text-emerald-400 bg-emerald-900/20" : "text-slate-300 hover:text-emerald-400 hover:bg-slate-800"
                         }`}
                       >
                         {item.label}
@@ -379,10 +346,7 @@ const Pricing: React.FC = () => {
     } catch {}
   }, []);
 
-  const orderedPlans = useMemo(
-    () => ORDER_KEYS.map((k) => PLANS_IN_ORDER.find((p) => p.key === k)!).filter(Boolean),
-    []
-  );
+  const orderedPlans = useMemo(() => ORDER_KEYS.map((k) => PLANS_IN_ORDER.find((p) => p.key === k)!).filter(Boolean), []);
 
   // Initial focus from URL on first paint to avoid flashing "Startup"
   const initialPlan = (() => {
@@ -401,7 +365,8 @@ const Pricing: React.FC = () => {
     const q = new URLSearchParams(location.search).get("plan")?.toLowerCase() || "";
     const idx = ORDER_KEYS.indexOf(q);
     if (idx >= 0 && idx !== index) setIndex(idx);
-  }, [location.search]); // eslint-disable-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search]);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -478,8 +443,7 @@ const Pricing: React.FC = () => {
     const onScroll = () => {
       const scrolledPast = window.scrollY > 120;
       const doc = document.documentElement;
-      const nearBottom =
-        window.innerHeight + window.scrollY >= (doc.scrollHeight || document.body.scrollHeight) - 120;
+      const nearBottom = window.innerHeight + window.scrollY >= (doc.scrollHeight || document.body.scrollHeight) - 120;
       setShowScrollHint(!(scrolledPast || nearBottom));
     };
     onScroll();
@@ -644,11 +608,7 @@ const Pricing: React.FC = () => {
             @keyframes orbit-rotate-reverse { 0%{transform:rotate(0)}100%{transform:rotate(-360deg)} }
           `}</style>
 
-          <div
-            ref={orbitRef}
-            className="relative w-[92vw] max-w-[1120px] aspect-square"
-            style={{ willChange: "transform", transform: "translateZ(0)" }}
-          >
+          <div ref={orbitRef} className="relative w-[92vw] max-w-[1120px] aspect-square" style={{ willChange: "transform", transform: "translateZ(0)" }}>
             {/* Center orb */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div
@@ -820,6 +780,10 @@ const Pricing: React.FC = () => {
                   <span className="h-2 w-2 rounded-full bg-white/70" /> Rush Delivery 48 hours - +$100
                 </li>
               </ul>
+
+              {/* Cancellation note */}
+              <p className="mt-4 text-emerald-300 font-semibold">Monthly plans are month-to-month. Cancel anytime. No contracts.</p>
+
               <div className="mt-4 text-xs text-white/60">Large ecommerce and complex data migrations require a quote.</div>
 
               {/* MOBILE-ONLY nav */}
