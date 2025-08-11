@@ -26,6 +26,24 @@ export default function Navbar() {
         isActive ? "text-turquoise underline underline-offset-4" : "text-white/90 hover:text-white"
       }`;
 
+  const Credit = ({ className = "" }: { className?: string }) => (
+    <div className={`text-xs text-white/60 hover:text-white transition ${className}`}>
+      <a
+        href="https://built4you.org"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-1"
+        aria-label="Built4You website"
+      >
+        <span>Made with</span>
+        <span aria-hidden>❤️</span>
+        <span>by</span>
+        <span className="font-semibold text-ocean-blue">Built4You</span>
+        <span aria-hidden>🐟</span>
+      </a>
+    </div>
+  );
+
   return (
     <header className="fixed inset-x-0 top-0 z-50 h-16 md:h-20">
       {/* EXACT match to logo background: pure black */}
@@ -62,6 +80,9 @@ export default function Navbar() {
             <Phone className="h-4 w-4" />
             (252) 726-7800
           </a>
+
+          {/* Desktop credit */}
+          <Credit className="ml-3 hidden lg:block" />
         </nav>
 
         {/* Mobile burger */}
@@ -95,24 +116,27 @@ export default function Navbar() {
                 <X className="h-6 w-6" />
               </button>
             </div>
-            <nav className="p-2">
-              {NAV.map((n) => (
-                <NavLink key={n.to} to={n.to} className="block px-4 py-3 rounded-md hover:bg-white/10">
-                  {n.label}
-                </NavLink>
-              ))}
-              <a
-                href="tel:+12527267800"
-                className="mt-1 rounded-md px-3 py-2 bg-white/10 text-white/90 hover:bg-white/20 inline-flex items-center gap-2"
-              >
-                <Phone className="h-4 w-4" />
-                (252) 726-7800
 
-                <p className="text-center text-sm text-gray-500 mt-6">
-                Made with ❤️ by <span className="font-semibold text-ocean-blue">Built4You</span> 🐟
-                </p>
-                
-              </a>
+            <nav className="p-2 flex flex-col h-[calc(100%-56px)]">
+              <div className="flex-1">
+                {NAV.map((n) => (
+                  <NavLink key={n.to} to={n.to} className="block px-4 py-3 rounded-md hover:bg-white/10">
+                    {n.label}
+                  </NavLink>
+                ))}
+                <a
+                  href="tel:+12527267800"
+                  className="mt-1 rounded-md px-3 py-2 bg-white/10 text-white/90 hover:bg-white/20 inline-flex items-center gap-2"
+                >
+                  <Phone className="h-4 w-4" />
+                  (252) 726-7800
+                </a>
+              </div>
+
+              {/* Mobile credit pinned to bottom */}
+              <div className="p-4 border-t border-white/10">
+                <Credit />
+              </div>
             </nav>
           </div>
         </div>
