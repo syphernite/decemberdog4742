@@ -28,13 +28,6 @@ const About = () => {
     { year: '2024', event: 'Liquor License', description: 'Now serving craft cocktails and premium spirits' },
   ];
 
-  const team = [
-    { name: 'Mike Johnson', role: 'Head Chef', image: 'https://images.pexels.com/photos/2696064/pexels-photo-2696064.jpeg?auto=compress&cs=tinysrgb&w=400' },
-    { name: 'Sarah Davis', role: 'General Manager', image: 'https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=400' },
-    { name: 'Alex Rodriguez', role: 'Pizza Specialist', image: 'https://images.pexels.com/photos/1438081/pexels-photo-1438081.jpeg?auto=compress&cs=tinysrgb&w=400' },
-    { name: 'Jamie Chen', role: 'Bartender', image: 'https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=400' },
-  ];
-
   return (
     <div className="pt-20 min-h-screen">
       {/* Hero Section */}
@@ -104,10 +97,10 @@ const About = () => {
           </div>
           
           <div className="relative">
-            {/* Timeline line */}
+            {/* Spine */}
             <div className="absolute left-1/2 transform -translate-x-1/2 w-1 bg-gradient-to-b from-turquoise to-sunset-orange pulse-glow"></div>
 
-            {/* Mobile single-column timeline */}
+            {/* Mobile single-column timeline (unchanged) */}
             <div className="relative sm:hidden">
               <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-turquoise via-sandy-beige to-sunset-orange opacity-60"></div>
               <div className="flex flex-col gap-6">
@@ -125,34 +118,36 @@ const About = () => {
               </div>
             </div>
 
-            {/* Desktop alternating timeline */}
+            {/* Desktop vertical flowchart (only change) */}
             <div className="hidden sm:block">
               <div className="space-y-12">
                 {milestones.map((milestone, index) => (
-                  <div key={milestone.year} className={`flex items-center justify-between ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} animate-on-scroll`}>
-                    <div className={`w-full md:w-5/12 ${index % 2 === 0 ? 'md:pr-12' : 'md:pl-12'}`}>
-                      <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 hover-lift beach-card tilt-on-hover">
-                        <div className="flex items-center space-x-4 mb-3">
-                          <span className="bg-gradient-to-r from-turquoise to-sunset-orange text-white font-bold px-4 py-2 rounded-full bounce-subtle">
-                            {milestone.year}
-                          </span>
-                          <h3 className="font-semibold text-white text-lg">{milestone.event}</h3>
-                        </div>
+                  <div key={milestone.year} className="relative grid grid-cols-12 gap-4 items-center">
+                    {/* Node on the spine */}
+                    <div className="col-span-2 col-start-6 flex items-center justify-center">
+                      <div className="relative">
+                        <div className="h-4 w-4 rounded-full bg-turquoise shadow-[0_0_0_6px_rgba(64,224,208,0.35)]" />
+                        <span className="absolute -top-7 left-1/2 -translate-x-1/2 hidden md:inline-block px-2 py-0.5 text-xs font-semibold text-white bg-ocean-blue/80 rounded">
+                          {milestone.year}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Connector elbow from spine to card */}
+                    <div className="hidden md:block col-span-1 col-start-7 h-px bg-white/20" />
+
+                    {/* Card to the right */}
+                    <div className="col-span-12 md:col-span-5 md:col-start-8">
+                      <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 border border-white/10 hover-lift beach-card tilt-on-hover">
+                        <h3 className="text-white font-semibold text-lg mb-1">{milestone.event}</h3>
                         <p className="text-sandy-beige">{milestone.description}</p>
                       </div>
                     </div>
-                    
-                    <div className="hidden md:flex w-2/12 justify-center">
-                      <div className="h-full w-1 bg-gradient-to-b from-turquoise to-sunset-orange"></div>
-                    </div>
 
-                    <div className={`w-full md:w-5/12 ${index % 2 === 0 ? 'md:pl-12' : 'md:pr-12'}`}>
-                      <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 hover-lift beach-card tilt-on-hover">
-                        <p className="text-sandy-beige">
-                          {milestone.description}
-                        </p>
-                      </div>
-                    </div>
+                    {/* Optional down connector between steps for flowchart feel */}
+                    {index < milestones.length - 1 && (
+                      <div className="absolute left-1/2 -translate-x-1/2 -bottom-6 h-6 w-[2px] bg-white/15" />
+                    )}
                   </div>
                 ))}
               </div>
