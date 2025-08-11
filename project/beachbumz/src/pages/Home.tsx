@@ -30,7 +30,10 @@ const Home = () => {
       <div className="sky-bird delay-1">🕊️</div>
 
       {/* ===== Hero Section ===== */}
-      <section ref={heroRef} className="relative overflow-hidden pt-safe min-h-[88vh] md:min-h-screen flex items-center justify-center">
+      <section
+        ref={heroRef}
+        className="relative overflow-hidden pt-safe min-h-[88vh] md:min-h-screen flex items-center justify-center pb-10 md:pb-16 lg:pb-20"
+      >
         {/* BACKDROP: sky → horizon → sea surface */}
         <div className="absolute inset-0 scene">
           {/* sun + rays */}
@@ -81,8 +84,8 @@ const Home = () => {
           </div>
         </div>
 
-        {/* CONTENT (unchanged text/structure) */}
-        <div className="relative z-10 text-center px-4 sm:px-6 max-w-5xl mx-auto">
+        {/* CONTENT */}
+        <div className="relative z-10 text-center px-4 sm:px-6 max-w-5xl mx-auto pb-24 md:pb-28 lg:pb-32">
           <h1 className="font-display leading-tight text-white mb-4 neon-glow zoom-in text-4xl sm:text-5xl md:text-7xl lg:text-8xl">
             BEACH BUMZ
           </h1>
@@ -101,7 +104,11 @@ const Home = () => {
             <Link to="/contact" className="btn-outline w-full sm:w-auto">Find Us</Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 text-center fade-in-up" style={{ animationDelay: "0.8s" }}>
+          {/* Lift cards higher so they don’t collide with sand/waves */}
+          <div
+            className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 text-center fade-in-up -mb-4 md:mb-0"
+            style={{ animationDelay: "0.8s" }}
+          >
             <div className="bg-white/10 backdrop-blur-md rounded-lg p-5 sm:p-6 hover-lift beach-card tilt-on-hover">
               <Award className="h-7 w-7 sm:h-8 sm:w-8 text-sunset-orange mx-auto mb-3 coconut-bounce" />
               <h3 className="font-semibold text-white mb-1.5 sm:mb-2">Diverse Drink Menu</h3>
@@ -121,22 +128,24 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ===== Wave Divider (kept) ===== */}
-      <div className="wave-divider">
-        <div className="wave wave-back"></div>
-        <div className="wave wave-mid"></div>
-        <div className="wave wave-front"></div>
+      {/* ===== Wave Divider (below content; no overlap) ===== */}
+      <div className="relative z-0 mt-12 md:mt-16">
+        <div className="wave-divider">
+          <div className="wave wave-back"></div>
+          <div className="wave wave-mid"></div>
+          <div className="wave wave-front"></div>
+        </div>
       </div>
 
-      {/* ===== Welcome Section (unchanged content) ===== */}
+      {/* ===== Welcome Section ===== */}
       <section className="py-20 beach-gradient">
         <div className="max-w-6xl mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center">
             <div className="animate-on-scroll slide-in-left">
               <h2 className="font-display text-4xl md:text-5xl text-white mb-6">Welcome to Paradise</h2>
               <p className="text-lg text-white/90 mb-6 leading-relaxed">
-                Step into Beach Bumz Pub & Pizzeria, where every meal feels like a coastal escape. 
-                Located in the heart of Morehead City, we serve fresh pizzas, crispy wings, hearty subs, 
+                Step into Beach Bumz Pub & Pizzeria, where every meal feels like a coastal escape.
+                Located in the heart of Morehead City, we serve fresh pizzas, crispy wings, hearty subs,
                 and ice-cold drinks that capture the spirit of beach living.
               </p>
               <p className="text-lg text-white/90 mb-8 leading-relaxed">
@@ -169,7 +178,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ===== Instagram (unchanged content) ===== */}
+      {/* ===== Instagram ===== */}
       <section className="py-20 bg-ocean-blue">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12 animate-on-scroll zoom-in">
@@ -206,7 +215,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ===== CTA (unchanged content; color via .cta-bg) ===== */}
+      {/* ===== CTA ===== */}
       <section className="py-20 cta-bg">
         <div className="max-w-4xl mx-auto text-center px-4 animate-on-scroll zoom-in">
           <h2 className="font-display text-4xl md:text-5xl text-white mb-6">Ready to Dive In?</h2>
