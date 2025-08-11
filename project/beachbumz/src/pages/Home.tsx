@@ -101,7 +101,7 @@ const Home = () => {
             <button onClick={handleOrderClick} className="btn-secondary w-full sm:w-auto inline-flex items-center justify-center gap-2">
               <span>Order on DoorDash</span><ExternalLink className="h-4 w-4" />
             </button>
-            <Link to="/contact" className="btn-outline w-full sm:w-auto">Find Us</Link>
+            <Link to="/contact#map" className="btn-outline w-full sm:w-auto">Find Us</Link>
           </div>
 
           <div
