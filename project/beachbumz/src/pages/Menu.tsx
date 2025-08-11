@@ -1,5 +1,4 @@
-// project/beachbumz/src/pages/Menu.tsx
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 type Item = {
@@ -135,7 +134,7 @@ export default function Menu() {
   };
 
   return (
-    <section className="pt-8 sm:pt-20 bg-slate-900 text-white min-h-screen">
+    <section className="pt-4 sm:pt-12 bg-slate-900 text-white min-h-screen">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
         {/* Header row */}
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -162,7 +161,7 @@ export default function Menu() {
               </div>
             )}
 
-            {/* edge fades to hint scroll */}
+            {/* edge fades */}
             <span className="pointer-events-none absolute left-0 top-0 h-full w-6 bg-gradient-to-r from-slate-900/85 to-transparent" />
             <span className="pointer-events-none absolute right-0 top-0 h-full w-6 bg-gradient-to-l from-slate-900/85 to-transparent" />
 
@@ -256,7 +255,7 @@ export default function Menu() {
         </div>
       </div>
 
-      {/* local helpers for cross-browser polish */}
+      {/* local helpers */}
       <style>{`
         .no-scrollbar{ -ms-overflow-style:none; scrollbar-width:none }
         .no-scrollbar::-webkit-scrollbar{ display:none }
