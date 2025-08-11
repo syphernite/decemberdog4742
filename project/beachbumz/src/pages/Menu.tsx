@@ -88,10 +88,6 @@ export default function Menu() {
   const [active, setActive] = useState<string>(categories[0] || "");
   const sentinelsRef = useRef<Record<string, HTMLDivElement | null>>({});
   const scrollerRef = useRef<HTMLDivElement | null>(null);
-  const chipRefs = useRef<Record<string, HTMLButtonElement | null>>({});
-  const [atStart, setAtStart] = useState(true);
-  const [atEnd, setAtEnd] = useState(false);
-  const [showHint, setShowHint] = useState(true);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -114,29 +110,6 @@ export default function Menu() {
 
     return () => observer.disconnect();
   }, []);
-
-  useEffect(() => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    const update = () => {
-      setShowHint(false);
-      setAtStart(el.scrollLeft <= 2);
-      setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 2);
-    };
-    el.addEventListener("scroll", update);
-    const t = setTimeout(() => setShowHint(false), 2000);
-    update();
-    return () => {
-      el.removeEventListener("scroll", update);
-      clearTimeout(t);
-    };
-  }, []);
-
-  // Center active chip on mobile for better reachability
-  useEffect(() => {
-    if (window.innerWidth >= 640) return;
-    chipRefs.current[active]?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
-  }, [active]);
 
   const handleJump = (cat: string) => {
     const id = slug(cat);
@@ -163,7 +136,7 @@ export default function Menu() {
           </div>
         </div>
 
-        {/* Mobile quick picker */}
+        {/* Mobile quick picker only */}
         <div className="sm:hidden mb-3">
           <label htmlFor="catSelect" className="sr-only">Select category</label>
           <select
@@ -180,49 +153,22 @@ export default function Menu() {
           </select>
         </div>
 
-        {/* Sticky category chips */}
-        <div className="sticky top-20 z-40 mb-8 bg-slate-900/85 backdrop-blur border-b border-white/10">
+        {/* Sticky category chips (desktop/tablet only). No arrows. */}
+        <div className="sticky top-20 z-40 mb-8 bg-slate-900/85 backdrop-blur border-b border-white/10 hidden sm:block">
           <div className="relative">
-            {showHint && (
-              <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs text-gray-300 animate-pulse sm:hidden">
-                Swipe to see more
-              </div>
-            )}
-
             {/* edge fades */}
             <span className="pointer-events-none absolute left-0 top-0 h-full w-6 bg-gradient-to-r from-slate-900/85 to-transparent" />
             <span className="pointer-events-none absolute right-0 top-0 h-full w-6 bg-gradient-to-l from-slate-900/85 to-transparent" />
 
-            {/* chevrons hidden on mobile so they never cover text; desktop unchanged */}
-            <button
-              aria-label="Scroll left"
-              onClick={() => scrollerRef.current?.scrollBy({ left: -160, behavior: "smooth" })}
-              className="hidden sm:flex items-center justify-center absolute left-1 top-1/2 -translate-y-1/2 p-1 rounded-full bg-black/50 hover:bg-black/70"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
-                <path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-              </svg>
-            </button>
-            <button
-              aria-label="Scroll right"
-              onClick={() => scrollerRef.current?.scrollBy({ left: 160, behavior: "smooth" })}
-              className="hidden sm:flex items-center justify-center absolute right-1 top-1/2 -translate-y-1/2 p-1 rounded-full bg-black/50 hover:bg-black/70"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
-                <path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/>
-              </svg>
-            </button>
-
-            <nav aria-label="Menu categories" className="w-full overflow-x-auto no-scrollbar snap-x snap-mandatory" ref={scrollerRef}>
-              <ul className="flex gap-2 sm:gap-3 whitespace-nowrap px-1 py-2 pr-6">
+            <nav aria-label="Menu categories" className="w-full overflow-x-auto no-scrollbar" ref={scrollerRef}>
+              <ul className="flex gap-3 whitespace-nowrap px-1 py-2 pr-6">
                 {categories.map((cat) => {
                   const isActive = active === cat;
                   return (
-                    <li key={cat} className="shrink-0 snap-start">
+                    <li key={cat} className="shrink-0">
                       <button
-                        ref={(el) => (chipRefs.current[cat] = el)}
                         onClick={() => handleJump(cat)}
-                        className={`px-4 py-2 rounded-full text-base sm:text-sm transition
+                        className={`px-4 py-2 rounded-full text-sm transition
                         ${isActive
                             ? "bg-turquoise text-slate-900 font-semibold"
                             : "bg-white/6 hover:bg-white/12 text-white"} 
