@@ -38,7 +38,7 @@ export default function Navbar() {
         <span>Made with</span>
         <span aria-hidden>❤️</span>
         <span>by</span>
-        <span className="font-semibold text-ocean-blue">Built4You</span>
+        <span className="font-semibold text-white">Built4You</span>
         <span aria-hidden>🐟</span>
       </a>
     </div>
