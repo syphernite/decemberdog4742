@@ -92,7 +92,7 @@ const Contact: React.FC = () => {
               name="company"
               value={formData.company}
               onChange={handleChange}
-              placeholder="Your Company or Name"
+              placeholder="Your Company"
               className="px-4 py-3 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
             />
           </div>
