@@ -32,7 +32,7 @@ const Home = () => {
       {/* ===== Hero Section ===== */}
       <section
         ref={heroRef}
-        className="relative overflow-hidden pt-safe min-h-[88vh] md:min-h-screen flex items-center justify-center pb-10 md:pb-16 lg:pb-20"
+        className="relative overflow-hidden pt-safe min-h-[88vh] md:min-h-screen flex items-center justify-center pb-14 md:pb-24 lg:pb-28"
       >
         {/* BACKDROP */}
         <div className="absolute inset-0 scene">
@@ -85,7 +85,7 @@ const Home = () => {
         </div>
 
         {/* CONTENT */}
-        <div className="relative z-10 text-center px-4 sm:px-6 max-w-5xl mx-auto pb-24 md:pb-28 lg:pb-32">
+        <div className="relative z-10 text-center px-4 sm:px-6 max-w-5xl mx-auto pb-32 md:pb-40 lg:pb-44">
           <h1 className="font-display leading-tight text-white mb-4 neon-glow zoom-in text-4xl sm:text-5xl md:text-7xl lg:text-8xl">
             BEACH BUMZ
           </h1>
@@ -111,24 +111,24 @@ const Home = () => {
             <div className="bg-white/10 backdrop-blur-md rounded-lg p-5 sm:p-6 hover-lift beach-card tilt-on-hover">
               <Award className="h-7 w-7 sm:h-8 sm:w-8 text-sunset-orange mx-auto mb-3 coconut-bounce" />
               <h3 className="font-semibold text-white mb-1.5 sm:mb-2">Diverse Drink Menu Coming Soon</h3>
-              <p className="text-sandy-beige text-sm">Craft cocktails & premium spirits</p>
+              <p className="text-sandy-beige text-sm">Craft cocktails and premium spirits</p>
             </div>
             <div className="bg-white/10 backdrop-blur-md rounded-lg p-5 sm:p-6 hover-lift beach-card tilt-on-hover" style={{ animationDelay: "0.2s" }}>
               <Star className="h-7 w-7 sm:h-8 sm:w-8 text-turquoise mx-auto mb-3 starfish-spin" />
               <h3 className="font-semibold text-white mb-1.5 sm:mb-2">Fan Favorites</h3>
-              <p className="text-sandy-beige text-sm">Pizza, wings, subs & more</p>
+              <p className="text-sandy-beige text-sm">Pizza, wings, subs and more</p>
             </div>
             <div className="bg-white/10 backdrop-blur-md rounded-lg p-5 sm:p-6 hover-lift beach-card tilt-on-hover" style={{ animationDelay: "0.4s" }}>
               <Users className="h-7 w-7 sm:h-8 sm:w-8 text-coral-pink mx-auto mb-3 bounce-subtle" />
               <h3 className="font-semibold text-white mb-1.5 sm:mb-2">Beach Community Hub</h3>
-              <p className="text-sandy-beige text-sm">Where locals & visitors unite</p>
+              <p className="text-sandy-beige text-sm">Where locals and visitors unite</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Sand bridge + wave divider */}
-      <div className="relative z-0 -mt-8 sm:-mt-10 md:-mt-12 lg:-mt-14">
+      <div className="relative z-0 -mt-2 sm:-mt-3 md:-mt-4 lg:-mt-6">
         <div className="h-10 sm:h-12 md:h-14 bg-sandy-beige" />
         <div className="-mt-6 sm:-mt-8 md:-mt-10">
           <div className="wave-divider">
