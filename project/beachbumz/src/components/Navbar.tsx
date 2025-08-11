@@ -1,108 +1,102 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { Menu, X, Phone } from "lucide-react";
 
-const Navbar: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const location = useLocation();
+// Use public/ and BASE_URL. Auto-fallback to .jpg if .png missing.
+const PNG = import.meta.env.BASE_URL + "beachbumz-logo.png";
+const JPG = import.meta.env.BASE_URL + "beachbumz-logo.jpg";
 
+const NAV = [
+  { to: "/", label: "Home" },
+  { to: "/menu", label: "Menu" },
+  { to: "/about", label: "About" },
+  { to: "/contact", label: "Contact" },
+];
+
+export default function Navbar() {
+  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [src, setSrc] = useState(PNG);
+  const { pathname } = useLocation();
+
+  useEffect(() => setOpen(false), [pathname]);
   useEffect(() => {
-    const onScroll = () => setIsScrolled(window.scrollY > 8);
-    window.addEventListener("scroll", onScroll);
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    setIsOpen(false);          // close on route change
-    window.scrollTo({ top: 0 }); // always go top on new page
-  }, [location.pathname]);
-
-  const navItem = (to: string, label: string) => (
-    <NavLink
-      to={to}
-      className={({ isActive }) =>
-        `relative px-2 py-1 font-medium transition-colors ${
-          isActive ? "text-turquoise" : "text-white/90 hover:text-turquoise"
-        }`
-      }
-    >
-      {label}
-    </NavLink>
-  );
+  const linkClass = ({ isActive }: { isActive: boolean }) =>
+    `px-3 py-2 rounded-md text-sm font-medium transition ${
+      isActive ? "text-turquoise underline underline-offset-4" : "text-white/90 hover:text-white"
+    }`;
 
   return (
-    <nav
-      className={`fixed inset-x-0 top-0 z-50 transition-all ${
-        isScrolled ? "bg-[#0a0f16]/95 backdrop-blur-md shadow-lg" : "bg-transparent"
+    <header
+      className={`fixed inset-x-0 top-0 z-50 ${
+        scrolled ? "bg-ocean-blue/95 backdrop-blur shadow-lg" : "bg-ocean-blue/80 backdrop-blur"
       }`}
-      role="navigation"
-      aria-label="Main"
+      style={{ height: "64px" }}
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="flex h-16 md:h-18 items-center justify-between">
-          <Link to="/" className="flex items-center gap-3 shrink-0">
-            <img
-              src="/beachbumz-logo.png"
-              alt="Beach Bumz"
-              className="nav-logo block h-7 sm:h-8 w-auto"
-            />
-            <div className="hidden sm:flex flex-col leading-none">
-              <span className="font-display text-lg text-white">BEACH BUMZ</span>
-              <span className="text-[10px] tracking-wide text-turquoise/90">PUB & PIZZERIA</span>
-            </div>
-          </Link>
-
-          <div className="hidden md:flex items-center gap-6">
-            {navItem("/", "Home")}
-            {navItem("/menu", "Menu")}
-            {navItem("/about", "About")}
-            {navItem("/contact", "Contact")}
-            <a
-              href="tel:252-726-7800"
-              className="inline-flex items-center rounded-full border border-white/15 px-3 py-1 text-white hover:text-turquoise"
-            >
-              <Phone className="mr-2 h-4 w-4" />
-              (252) 726-7800
-            </a>
+      <div className="mx-auto max-w-6xl h-full px-4 flex items-center justify-between">
+        <Link to="/" className="flex items-center gap-3 min-w-0">
+          <img
+            src={src}
+            alt="Beach Bumz Pub & Pizzaria"
+            className="h-8 w-auto md:h-10 object-contain"
+            onError={() => setSrc((prev) => (prev.endsWith(".png") ? JPG : prev))}
+          />
+          <div className="hidden sm:flex flex-col leading-tight">
+            <span className="text-white font-extrabold tracking-wide text-sm md:text-base">BEACH BUMZ</span>
+            <span className="text-turquoise text-[10px] md:text-xs">PUB & PIZZARIA</span>
           </div>
+        </Link>
 
-          <button
-            aria-label="Toggle navigation"
-            onClick={() => setIsOpen((v) => !v)}
-            className="md:hidden text-white"
+        <nav className="hidden md:flex items-center gap-2">
+          {NAV.map((n) => (
+            <NavLink key={n.to} to={n.to} className={linkClass}>
+              {n.label}
+            </NavLink>
+          ))}
+          <a
+            href="tel:+12527267800"
+            className="ml-2 inline-flex items-center gap-2 rounded-full border border-white/20 px-3 py-1.5 text-sm font-semibold text-white/90 hover:bg-white/10"
           >
-            {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
-        </div>
+            <Phone className="h-4 w-4" />
+            (252) 726-7800
+          </a>
+        </nav>
+
+        <button className="md:hidden p-2 text-white" aria-label="Toggle menu" onClick={() => setOpen((v) => !v)}>
+          {open ? <X /> : <Menu />}
+        </button>
       </div>
 
-      {/* Mobile menu */}
       <div
-        className={`md:hidden overflow-hidden transition-[max-height] duration-300 ${
-          isOpen ? "max-h-72" : "max-h-0"
-        } bg-[#0a0f16]/95 backdrop-blur`}
+        className={`md:hidden transition-[max-height] duration-300 overflow-hidden ${
+          open ? "max-h-80" : "max-h-0"
+        } bg-ocean-blue/95`}
       >
-        <div className="px-4 py-3 flex flex-col gap-2">
-          <NavLink to="/" className="py-2 text-white/90" onClick={() => setIsOpen(false)}>
-            Home
-          </NavLink>
-          <NavLink to="/menu" className="py-2 text-white/90" onClick={() => setIsOpen(false)}>
-            Menu
-          </NavLink>
-          <NavLink to="/about" className="py-2 text-white/90" onClick={() => setIsOpen(false)}>
-            About
-          </NavLink>
-          <NavLink to="/contact" className="py-2 text-white/90" onClick={() => setIsOpen(false)}>
-            Contact
-          </NavLink>
-          <a href="tel:252-726-7800" className="py-2 text-white/90">
+        <div className="px-4 pb-4 pt-2 grid gap-1">
+          {NAV.map((n) => (
+            <NavLink
+              key={n.to}
+              to={n.to}
+              className={({ isActive }) =>
+                `block rounded-md px-3 py-2 text-base ${
+                  isActive ? "bg-white/10 text-turquoise" : "text-white/90 hover:bg-white/10"
+                }`
+              }
+            >
+              {n.label}
+            </NavLink>
+          ))}
+          <a href="tel:+12527267800" className="mt-1 rounded-md px-3 py-2 text-base text-white/90 hover:bg-white/10 inline-flex items-center gap-2">
+            <Phone className="h-4 w-4" />
             (252) 726-7800
           </a>
         </div>
       </div>
-    </nav>
+    </header>
   );
-};
-
-export default Navbar;
+}
