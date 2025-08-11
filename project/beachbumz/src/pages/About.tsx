@@ -58,7 +58,7 @@ const About = () => {
       </section>
 
       {/* Story Section */}
-      <section className="py-20 bg-sandy-beige sand-texture">
+      <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="animate-on-scroll">
@@ -74,42 +74,20 @@ const About = () => {
               <p className="text-lg text-gray-700 mb-6 leading-relaxed">
                 What began as a small pizzeria has grown into a beloved community hub where locals 
                 and visitors alike come to experience the perfect blend of fresh coastal flavors 
-                and classic comfort food. Every dish is crafted with care, every drink is mixed 
-                with passion, and every guest is treated like family.
+                and classic comfort dishes. Every slice, sip, and smile is a part of our story.
               </p>
-              <p className="text-lg text-gray-700 mb-8 leading-relaxed">
-                Now with our liquor license, we're excited to offer an even more complete 
-                dining experience, featuring craft cocktails that complement our menu perfectly. 
-                Beach Bumz isn't just a restaurant – it's where memories are made.
-              </p>
-              
-              <div className="grid grid-cols-2 gap-6">
-                <div className="text-center bg-white rounded-lg p-6 shadow-lg hover-lift beach-card tilt-on-hover">
-                  <Users className="h-8 w-8 text-turquoise mx-auto mb-2 bounce-subtle" />
-                  <h3 className="font-semibold text-ocean-blue mb-1">Community Focused</h3>
-                  <p className="text-sm text-gray-600">Supporting local families</p>
-                </div>
-                <div className="text-center bg-white rounded-lg p-6 shadow-lg hover-lift beach-card tilt-on-hover">
-                  <Utensils className="h-8 w-8 text-sunset-orange mx-auto mb-2 coconut-bounce" />
-                  <h3 className="font-semibold text-ocean-blue mb-1">Fresh Ingredients</h3>
-                  <p className="text-sm text-gray-600">Quality in every bite</p>
-                </div>
-              </div>
+              <ul className="mt-6 space-y-3 text-gray-700">
+                <li className="flex items-center gap-3"><Utensils className="h-5 w-5 text-turquoise" /> Scratch-made dough and sauces</li>
+                <li className="flex items-center gap-3"><Clock className="h-5 w-5 text-turquoise" /> Consistent quality and friendly service</li>
+                <li className="flex items-center gap-3"><MapPin className="h-5 w-5 text-turquoise" /> Heart of Morehead City, NC</li>
+              </ul>
             </div>
-            
             <div className="animate-on-scroll">
-              <div className="relative">
-                <img 
-                  src="https://images.pexels.com/photos/5490915/pexels-photo-5490915.jpeg?auto=compress&cs=tinysrgb&w=800"
-                  alt="Beach Bumz team"
-                  className="rounded-lg shadow-2xl w-full h-96 object-cover hover-lift tilt-on-hover wave-animation"
-                />
-                <div className="absolute -bottom-6 -right-6 bg-turquoise text-white p-6 rounded-lg shadow-xl pulse-glow">
-                  <Award className="h-8 w-8 mb-2 starfish-spin" />
-                  <p className="font-semibold">Local Favorite</p>
-                  <p className="text-sm">Since 2018</p>
-                </div>
-              </div>
+              <img
+                src="https://images.pexels.com/photos/315755/pexels-photo-315755.jpeg?auto=compress&cs=tinysrgb&w=1200"
+                alt="Pizzeria interior"
+                className="w-full h-full object-cover rounded-xl shadow-lg"
+              />
             </div>
           </div>
         </div>
@@ -127,31 +105,59 @@ const About = () => {
           
           <div className="relative">
             {/* Timeline line */}
-            <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-turquoise to-sunset-orange pulse-glow"></div>
-            
-            <div className="space-y-12">
-              {milestones.map((milestone, index) => (
-                <div key={milestone.year} className={`flex items-center ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} animate-on-scroll`}>
-                  <div className={`w-full md:w-5/12 ${index % 2 === 0 ? 'md:pr-12' : 'md:pl-12'}`}>
-                    <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 hover-lift beach-card tilt-on-hover">
-                      <div className="flex items-center space-x-4 mb-3">
-                        <span className="bg-gradient-to-r from-turquoise to-sunset-orange text-white font-bold px-4 py-2 rounded-full bounce-subtle">
-                          {milestone.year}
-                        </span>
-                        <h3 className="font-semibold text-white text-lg">{milestone.event}</h3>
+            <div className="absolute left-1/2 transform -translate-x-1/2 w-1 bg-gradient-to-b from-turquoise to-sunset-orange pulse-glow"></div>
+
+            {/* Mobile single-column timeline */}
+            <div className="relative sm:hidden">
+              <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-turquoise via-sandy-beige to-sunset-orange opacity-60"></div>
+              <div className="flex flex-col gap-6">
+                {milestones.map((milestone) => (
+                  <div key={milestone.year} className="bg-white/10 backdrop-blur-md rounded-lg p-5 border border-white/10">
+                    <div className="flex items-center gap-3 mb-1">
+                      <span className="bg-gradient-to-r from-turquoise to-sunset-orange text-white font-bold px-3 py-1 rounded-full">
+                        {milestone.year}
+                      </span>
+                      <h3 className="font-semibold text-white text-lg">{milestone.event}</h3>
+                    </div>
+                    <p className="text-sandy-beige">{milestone.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Desktop alternating timeline */}
+            <div className="hidden sm:block">
+              <div className="space-y-12">
+                {milestones.map((milestone, index) => (
+                  <div key={milestone.year} className={`flex items-center justify-between ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} animate-on-scroll`}>
+                    <div className={`w-full md:w-5/12 ${index % 2 === 0 ? 'md:pr-12' : 'md:pl-12'}`}>
+                      <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 hover-lift beach-card tilt-on-hover">
+                        <div className="flex items-center space-x-4 mb-3">
+                          <span className="bg-gradient-to-r from-turquoise to-sunset-orange text-white font-bold px-4 py-2 rounded-full bounce-subtle">
+                            {milestone.year}
+                          </span>
+                          <h3 className="font-semibold text-white text-lg">{milestone.event}</h3>
+                        </div>
+                        <p className="text-sandy-beige">{milestone.description}</p>
                       </div>
-                      <p className="text-sandy-beige">{milestone.description}</p>
+                    </div>
+                    
+                    <div className="hidden md:flex w-2/12 justify-center">
+                      <div className="h-full w-1 bg-gradient-to-b from-turquoise to-sunset-orange"></div>
+                    </div>
+
+                    <div className={`w-full md:w-5/12 ${index % 2 === 0 ? 'md:pl-12' : 'md:pr-12'}`}>
+                      <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 hover-lift beach-card tilt-on-hover">
+                        <p className="text-sandy-beige">
+                          {milestone.description}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                  
-                  <div className="hidden md:flex w-2/12 justify-center">
-                    <div className="w-4 h-4 bg-white rounded-full border-4 border-turquoise pulse-glow"></div>
-                  </div>
-                  
-                  <div className="w-full md:w-5/12"></div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
+
           </div>
         </div>
       </section>
