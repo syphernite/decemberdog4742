@@ -147,7 +147,7 @@ const Contact = () => {
                   <Instagram className="h-6 w-6 text-coral-pink mt-1 flex-shrink-0" />
                   <div>
                     <h3 className="font-semibold text-ocean-blue mb-2">Instagram</h3>
-                    <a href="https://instagram.com" target="_blank" rel="noreferrer" className="text-gray-700 hover:text-coral-pink transition-colors duration-300">@beachbumz</a>
+                    <a href="https://www.instagram.com/beachbumzmc" target="_blank" rel="noreferrer" className="text-gray-700 hover:text-coral-pink transition-colors duration-300">@beachbumz</a>
                   </div>
                 </div>
 
