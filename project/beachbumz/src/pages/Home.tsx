@@ -25,63 +25,56 @@ const Home = () => {
 
   return (
     <div className="min-h-screen">
-      {/* sky layer: sun, clouds, birds */}
+      {/* two birds across the top */}
       <div className="sky-bird">🕊️</div>
       <div className="sky-bird delay-1">🕊️</div>
 
-      {/* ===== Hero Section ===== */}
+      {/* ===== Hero ===== */}
       <section ref={heroRef} className="relative overflow-hidden pt-safe min-h-[88vh] md:min-h-screen flex items-center justify-center">
-        {/* BACKDROP: sky → horizon → sea surface */}
+        {/* BACKDROP */}
         <div className="absolute inset-0 scene">
-          {/* sun + rays */}
+          {/* sun */}
           <div className="sun-flare" />
-          <div className="god-rays" />
-          {/* moving clouds + cyclone wisp */}
-          <div className="clouds">
-            <div className="cloud c1" /><div className="cloud c2" /><div className="cloud c3" />
-            <div className="cyclone" />
-          </div>
-          {/* sea surface shimmer */}
+          {/* surface shimmer + ripples */}
           <div className="caustics" />
           <div className="water-ripple" />
           <div className="surface-waves">
             <div className="crest a" /><div className="crest b" /><div className="crest c" />
           </div>
 
-          {/* BUBBLES */}
+          {/* Bubbles */}
           <div className="floating-bubbles">
             {Array.from({ length: 18 }).map((_, i) => (<div key={i} className="bubble" />))}
           </div>
 
-          {/* BEACH SAND DUNE PARALLAX */}
+          {/* dunes */}
           <div className="dunes back" /><div className="dunes mid" /><div className="dunes front" />
 
-          {/* UNDERWATER SCENE OVERLAY (lower half) */}
+          {/* underwater overlay */}
           <div className="underwater">
-            {/* sea plants */}
             <div className="reef">
               <div className="kelp k1" /><div className="kelp k2" /><div className="kelp k3" />
               <div className="starfish" /><div className="shell" />
             </div>
-            {/* fish shoals */}
             <div className="shoal s1">
               {Array.from({ length: 8 }).map((_, i) => (<span key={i} className="fish f" />))}
             </div>
             <div className="shoal s2">
               {Array.from({ length: 10 }).map((_, i) => (<span key={i} className="fish f small" />))}
             </div>
-            {/* jellyfish + manta */}
             <div className="jelly j1" /><div className="jelly j2" />
             <div className="manta" />
+            {/* floating anchor replacing previous rays/cyclone */}
+            <div className="anchor-float" aria-hidden>⚓</div>
           </div>
 
-          {/* shoreline foam at bottom */}
+          {/* foam */}
           <div className="shoreline">
             <div className="foam f1" /><div className="foam f2" /><div className="foam f3" />
           </div>
         </div>
 
-        {/* CONTENT (unchanged text/structure) */}
+        {/* CONTENT (unchanged) */}
         <div className="relative z-10 text-center px-4 sm:px-6 max-w-5xl mx-auto">
           <h1 className="font-display leading-tight text-white mb-4 neon-glow zoom-in text-4xl sm:text-5xl md:text-7xl lg:text-8xl">
             BEACH BUMZ
@@ -121,15 +114,15 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ===== Wave Divider (kept) ===== */}
+      {/* Waves divider */}
       <div className="wave-divider">
         <div className="wave wave-back"></div>
         <div className="wave wave-mid"></div>
         <div className="wave wave-front"></div>
       </div>
 
-      {/* ===== Welcome Section (unchanged content) ===== */}
-      <section className="py-20 beach-gradient">
+      {/* Welcome */}
+      <section className="py-20 beach-gradient section-after-hero">
         <div className="max-w-6xl mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center">
             <div className="animate-on-scroll slide-in-left">
@@ -169,7 +162,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ===== Instagram (unchanged content) ===== */}
+      {/* Instagram */}
       <section className="py-20 bg-ocean-blue">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12 animate-on-scroll zoom-in">
@@ -206,7 +199,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ===== CTA (unchanged content; color via .cta-bg) ===== */}
+      {/* CTA */}
       <section className="py-20 cta-bg">
         <div className="max-w-4xl mx-auto text-center px-4 animate-on-scroll zoom-in">
           <h2 className="font-display text-4xl md:text-5xl text-white mb-6">Ready to Dive In?</h2>
