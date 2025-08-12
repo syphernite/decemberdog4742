@@ -317,7 +317,7 @@ const Contact: React.FC = () => {
         >
           {/* Step 1 — Business, Industry, Pages (required), Plan */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <Field label="Business / Name">
+            <Field label="Business Name">
               <input
                 type="text"
                 name="company"
