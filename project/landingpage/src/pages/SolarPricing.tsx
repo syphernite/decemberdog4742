@@ -2,12 +2,14 @@
  * SolarPricing.tsx
  *
  * What changed (behavioral only; visuals intact):
- * - Plan CTA buttons now route with useNavigate to `/contact?plan=<slug>&step=2`.
+ * - Plan CTA buttons route with useNavigate to `/contact?plan=<slug>&step=2` by default.
+ * - The DETAILS section CTA now routes to `/contact?plan=<slug>&step=1` to land on the first page of the contact form.
  * - Uses each plan's `key` as the semantic slug (startup, basic, pro, elite, business, business-pro, ecom-starter, vip-flex, custom).
  * - If you want to land locked, append `&lock=1` in the navigate call.
  *
  * Acceptance checks:
- * - Clicking "Start VIP Flex" goes to /contact?plan=vip-flex&step=2 and Contact opens on step 2 with VIP Flex selected.
+ * - Clicking the DETAILS section CTA for "VIP Flex" goes to /contact?plan=vip-flex&step=1.
+ * - Other plan CTAs still go to /contact?plan=<slug>&step=2 unless overridden.
  */
 
 import React, { useMemo, useRef, useState, useEffect, useLayoutEffect } from "react";
@@ -479,9 +481,9 @@ const Pricing: React.FC = () => {
   const cardClass =
     "rounded-3xl border border-white/15 bg-black/72 backdrop-blur-md p-6 sm:p-8 shadow-[0_0_30px_rgba(0,0,0,0.35)] sm:bg-white/5 sm:backdrop-blur-0";
 
-  // Navigate to contact step 2 with plan preselected
-  const goContact = (slug: PlanKey, lock = false) => {
-    const qs = new URLSearchParams({ plan: slug, step: "2" });
+  // Navigate to contact. Default step is "2" to preserve existing behavior elsewhere.
+  const goContact = (slug: PlanKey, lock = false, step: "1" | "2" = "2") => {
+    const qs = new URLSearchParams({ plan: slug, step });
     if (lock) qs.set("lock", "1");
     navigate(`/contact?${qs.toString()}`);
   };
@@ -569,7 +571,7 @@ const Pricing: React.FC = () => {
                 ))}
               </ul>
               <button
-                onClick={() => goContact(current.key as PlanKey /* lock optional via query */)}
+                onClick={() => goContact(current.key as PlanKey /* default step=2 */)}
                 className="mt-4 mx-auto w-full inline-flex items-center justify-center px-5 sm:px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-blue-500 text-black font-semibold hover:opacity-90 transition shadow whitespace-nowrap overflow-visible leading-tight min-h-[44px]"
               >
                 {current.cta?.label ?? "Get Started"}
@@ -788,8 +790,9 @@ const Pricing: React.FC = () => {
 
               {/* CTA -> Contact with preselect */}
               <div className="mt-6 flex items-center justify-end gap-3">
+                {/* Route to the FIRST page of the contact form */}
                 <button
-                  onClick={() => goContact(current.key as PlanKey)}
+                  onClick={() => goContact(current.key as PlanKey, false, "1")}
                   className="px-4 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-blue-500 text-black font-semibold hover:opacity-90 transition shadow"
                 >
                   {current.cta?.label ?? "Get Started"}
