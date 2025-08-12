@@ -1,3 +1,4 @@
+// src/pages/WhyWeExist.tsx
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createPortal } from 'react-dom';
@@ -6,37 +7,23 @@ import { useNavigate } from 'react-router-dom';
 function useInViewAnimation(threshold = 0.3) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [isVisible, setVisible] = useState(false);
-
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => setVisible(entry.isIntersecting),
-      { threshold }
-    );
+    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { threshold });
     if (ref.current) observer.observe(ref.current);
-    return () => {
-      if (ref.current) observer.unobserve(ref.current);
-    };
+    return () => { if (ref.current) observer.unobserve(ref.current); };
   }, []);
-
   return { ref, isVisible };
 }
 
 const OfferModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-
   useEffect(() => {
     if (isOpen) {
-      const focusable = modalRef.current?.querySelectorAll<HTMLElement>(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-      );
+      const focusable = modalRef.current?.querySelectorAll<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
       focusable?.[0]?.focus();
     }
-
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-
+    const handleKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
   }, [isOpen, onClose]);
@@ -45,37 +32,17 @@ const OfferModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen
 
   return createPortal(
     <AnimatePresence>
-      <motion.div
-        className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        aria-modal
-        role="dialog"
-        tabIndex={-1}
-      >
+      <motion.div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} aria-modal role="dialog" tabIndex={-1}>
         <motion.div
           ref={modalRef}
           className="bg-white dark:bg-slate-800 rounded-xl shadow-2xl max-w-md w-full p-6 relative"
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.8, opacity: 0 }}
-          transition={{ type: 'spring', stiffness: 100 }}
+          initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }} transition={{ type: 'spring', stiffness: 100 }}
         >
-          <button
-            onClick={onClose}
-            className="absolute top-3 right-3 text-gray-500 hover:text-black dark:hover:text-white"
-            aria-label="Close modal"
-          >
-            ✕
-          </button>
-          <h2 className="text-xl font-bold mb-3 text-center text-gray-800 dark:text-white">
-            🚀 Get Online in 72 Hours
-          </h2>
+          <button onClick={onClose} className="absolute top-3 right-3 text-gray-500 hover:text-black dark:hover:text-white" aria-label="Close modal">✕</button>
+          <h2 className="text-xl font-bold mb-3 text-center text-gray-800 dark:text-white">🚀 Get Online in 72 Hours</h2>
           <p className="text-center text-gray-600 dark:text-gray-300 mb-4">
             Book your <span className="font-semibold text-blue-600">free demo call</span> and we’ll build your homepage — fast.
           </p>
-
           <div className="flex flex-col gap-3">
             <a
               onClick={() => {
@@ -90,25 +57,9 @@ const OfferModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen
               📞 Schedule My Demo
             </a>
             <div className="flex justify-center text-sm gap-2 text-gray-500 dark:text-gray-400">
-              <button
-                onClick={() => {
-                  onClose();
-                  navigate('/pricing?plan=basic');
-                }}
-                className="hover:underline focus:outline-none focus:ring-1 rounded"
-              >
-                Basic
-              </button>
+              <button onClick={() => { onClose(); navigate('/pricing?plan=basic'); }} className="hover:underline focus:outline-none focus:ring-1 rounded">Basic</button>
               <span>·</span>
-              <button
-                onClick={() => {
-                  onClose();
-                  navigate('/pricing?plan=pro');
-                }}
-                className="hover:underline focus:outline-none focus:ring-1 rounded"
-              >
-                Pro
-              </button>
+              <button onClick={() => { onClose(); navigate('/pricing?plan=pro'); }} className="hover:underline focus:outline-none focus:ring-1 rounded">Pro</button>
             </div>
           </div>
         </motion.div>
@@ -135,15 +86,15 @@ const WhyWeExist: React.FC = () => {
   }, []);
 
   return (
-    <main className="bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-white min-h-screen font-sans">
-      <section className="text-center py-20 px-6 bg-white dark:bg-slate-800 shadow">
+    <main className="relative z-10 bg-transparent text-gray-800 dark:text-white min-h-screen font-sans">
+      <section className="text-center py-20 px-6 bg-white/90 dark:bg-slate-800/80 shadow rounded-none">
         <h1 className="text-3xl md:text-5xl font-extrabold mb-4">Why We Created Built4You</h1>
-        <p className="text-lg text-gray-600 dark:text-gray-300 max-w-xl mx-auto">
+        <p className="text-lg text-gray-700 dark:text-gray-300 max-w-xl mx-auto">
           We exist to give small businesses the online edge they deserve — fast, affordable, and hassle-free.
         </p>
         <button
           onClick={() => setModalOpen(true)}
-          className="mt-8 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg relative animate-pulse focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400"
+          className="mt-8 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg relative focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400"
         >
           <span className="relative z-10">✨ Let’s Build Yours</span>
         </button>
@@ -152,23 +103,19 @@ const WhyWeExist: React.FC = () => {
       {[
         {
           title: 'Offline = Invisible in 2025',
-          content:
-            'People search online first. If they can’t find your business, they’ll find someone else. We help local legends stay visible.'
+          content: 'People search online first. If they can’t find your business, they’ll find someone else. We help local legends stay visible.'
         },
         {
           title: 'Agencies Are Too Slow + Pricey',
-          content:
-            'Small businesses can’t wait 6 weeks or pay $5K. We deliver polished sites fast — sometimes within 3 days.'
+          content: 'Small businesses can’t wait 6 weeks or pay $5K. We deliver polished sites fast — sometimes within 3 days.'
         },
         {
           title: 'Built for Real People',
-          content:
-            'Our clients are barbers, mechanics, bakers, cleaners, artists — people with hustle but no time to learn web design.'
+          content: 'Our clients are barbers, mechanics, bakers, cleaners, artists — people with hustle but no time to learn web design.'
         },
         {
           title: 'Simple. Fast. Done For You.',
-          content:
-            'Send us your info. Pick a style. We build it. You focus on your business while we make sure people can find it.'
+          content: 'Send us your info. Pick a style. We build it. You focus on your business while we make sure people can find it.'
         }
       ].map(({ title, content }, i) => {
         const { ref, isVisible } = useInViewAnimation();
@@ -181,7 +128,7 @@ const WhyWeExist: React.FC = () => {
               transition={{ duration: 0.6, ease: 'easeOut' }}
             >
               <h2 className="text-2xl md:text-3xl font-bold mb-3">{title}</h2>
-              <p className="text-gray-600 dark:text-gray-400">{content}</p>
+              <p className="text-gray-700 dark:text-gray-400">{content}</p>
             </motion.section>
           </div>
         );

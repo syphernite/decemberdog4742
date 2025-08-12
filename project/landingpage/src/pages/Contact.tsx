@@ -1,20 +1,19 @@
+// src/pages/Contact.tsx
 import React, { useState } from "react";
 
 const Contact: React.FC = () => {
-  const [formData, setFormData] = useState({
-    name: "", email: "", company: "", industry: "", pages: "", message: "",
-  });
+  const [formData, setFormData] = useState({ name: "", email: "", company: "", industry: "", pages: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const r = await fetch("https://formspree.io/f/mrblknpq", {
-        method: "POST", headers: { "Content-Type": "application/json" },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
       if (r.ok) {
@@ -25,11 +24,9 @@ const Contact: React.FC = () => {
   };
 
   return (
-    <section className="py-16 bg-transparent">
+    <section className="relative z-10 py-16 bg-transparent">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        {!submitted && (
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-8">Tell Us About Your Project</h2>
-        )}
+        {!submitted && <h2 className="text-3xl sm:text-4xl font-bold text-white mb-8">Tell Us About Your Project</h2>}
 
         {submitted ? (
           <div className="bg-white/10 border border-white/10 backdrop-blur-sm p-6 rounded-lg text-center">
@@ -60,15 +57,23 @@ const Contact: React.FC = () => {
             <div className="flex flex-col sm:col-span-2">
               <label className="text-sm font-medium text-slate-200 mb-1"># of Pages Desired</label>
               <input
-                type="number" name="pages" value={formData.pages} onChange={handleChange} placeholder="Example: 3"
+                type="number"
+                name="pages"
+                value={formData.pages}
+                onChange={handleChange}
+                placeholder="Example: 3"
                 className="px-4 py-3 rounded-md border border-white/15 bg-white/10 backdrop-blur-sm text-white placeholder-white/50 outline-none focus:ring-2 focus:ring-emerald-500"
               />
             </div>
 
             <div className="flex flex-col sm:col-span-2">
-              <label className="text-sm font-medium text-slate-2 00 mb-1">Project Details *</label>
+              <label className="text-sm font-medium text-slate-200 mb-1">Project Details *</label>
               <textarea
-                name="message" value={formData.message} onChange={handleChange} required rows={5}
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
+                required
+                rows={5}
                 placeholder="Tell us about your project, goals, timeline, and any specific requirements..."
                 className="px-4 py-3 rounded-md border border-white/15 bg-white/10 backdrop-blur-sm text-white placeholder-white/50 outline-none focus:ring-2 focus:ring-emerald-500"
               />

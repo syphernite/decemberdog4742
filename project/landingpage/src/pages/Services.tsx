@@ -1,16 +1,7 @@
 // src/pages/Services.tsx
 import React from "react";
 import { motion } from "framer-motion";
-import {
-  Code,
-  Smartphone,
-  Search,
-  ShoppingCart,
-  Zap,
-  Shield,
-  BarChart,
-  Headphones,
-} from "lucide-react";
+import { Code, Smartphone, Search, ShoppingCart, Zap, Shield, BarChart, Headphones } from "lucide-react";
 import { GlowArea, GlowCard } from "../components/Glow";
 
 const Services: React.FC = () => {
@@ -26,54 +17,27 @@ const Services: React.FC = () => {
   ];
 
   return (
-    <section className="py-24 bg-transparent">
+    <section className="relative z-10 py-24 bg-transparent">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          className="text-center mb-20"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
-            Our Services
-          </h1>
-          <p className="text-xl text-slate-200 max-w-3xl mx-auto">
-            Comprehensive web solutions designed to grow your business.
-          </p>
+        <motion.div className="text-center mb-20" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">Our Services</h1>
+          <p className="text-xl text-slate-200 max-w-3xl mx-auto">Comprehensive web solutions designed to grow your business.</p>
         </motion.div>
 
         <GlowArea glowColor="132,0,255">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 items-stretch">
             {services.map((s, i) => (
-              <motion.div
-                key={s.title}
-                className="h-full"
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.08, duration: 0.6 }}
-              >
+              <motion.div key={s.title} className="h-full" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08, duration: 0.6 }}>
                 <GlowCard className="p-8 h-full flex flex-col">
                   <div className="flex items-center justify-center mb-6">
-                    <div className={`p-4 bg-gradient-to-r ${s.gradient} rounded-2xl shadow-lg`}>
-                      <s.icon className="h-8 w-8 text-white" />
-                    </div>
+                    <div className={`p-4 bg-gradient-to-r ${s.gradient} rounded-2xl shadow-lg`}><s.icon className="h-8 w-8 text-white" /></div>
                   </div>
-
-                  <h3 className="text-xl font-bold text-white mb-3 text-center">
-                    {s.title}
-                  </h3>
-                  <p className="text-slate-200 text-center mb-6">
-                    {s.description}
-                  </p>
-
+                  <h3 className="text-xl font-bold text-white mb-3 text-center">{s.title}</h3>
+                  <p className="text-slate-200 text-center mb-6">{s.description}</p>
                   <ul className="space-y-2 mt-auto">
                     {s.features.map((f) => (
-                      <li
-                        key={f}
-                        className="text-sm text-slate-200/80 flex items-center"
-                      >
-                        <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full mr-3" />
-                        {f}
+                      <li key={f} className="text-sm text-slate-200/80 flex items-center">
+                        <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full mr-3" /> {f}
                       </li>
                     ))}
                   </ul>
