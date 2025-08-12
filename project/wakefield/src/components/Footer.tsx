@@ -92,7 +92,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 mb-4 md:mb-0">
-            © 2024 Oli Wakefield Fitness. All rights reserved.
+            © 2025 Oli Wakefield Fitness. All rights reserved.
           </p>
           
           <p className="text-gray-400 flex items-center space-x-2">
