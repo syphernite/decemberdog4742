@@ -1,88 +1,73 @@
-import React, { useEffect, useState } from "react";
+// src/components/Hero.tsx
+import React from "react";
 import { ArrowRight, Play } from "lucide-react";
 
+const scrollTo = (id: string) => {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+};
+
 const Hero: React.FC = () => {
-  const [scrollY, setScrollY] = useState(0);
-
-  useEffect(() => {
-    const onScroll = () => setScrollY(window.scrollY);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  const scrollTo = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-[78vh] flex items-center justify-center px-6"
     >
-      {/* Subtle vignette so text stays readable over the galaxy */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          transform: `translateY(${scrollY * 0.25}px)`,
-          background:
-            "radial-gradient(60% 60% at 50% 40%, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.6) 55%, rgba(0,0,0,0.8) 100%)",
-        }}
-      />
-
-      {/* Decorative soft blobs */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-emerald-200/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-200/10 rounded-full blur-3xl" />
+      {/* soft vignette + vertical gradient to clean up the background */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/15 to-transparent" />
+        <div className="absolute inset-0 bg-[radial-gradient(800px_400px_at_50%_20%,rgba(0,0,0,0.35),transparent_70%)]" />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="animate-fade-in-up">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6 leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]">
-            Custom Websites for
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-400">
-              {" "}Small Businesses
+      <div className="relative z-10 w-full max-w-5xl text-center">
+        {/* headline chip with slight blur behind text */}
+        <div className="inline-block rounded-2xl bg-black/20 backdrop-blur-sm px-5 py-2">
+          <h1 className="text-4xl md:text-6xl font-extrabold leading-tight text-white">
+            Custom Websites for{" "}
+            <span className="bg-gradient-to-r from-emerald-300 to-sky-300 bg-clip-text text-transparent">
+              Small Businesses
             </span>
           </h1>
+        </div>
 
-          <p className="text-xl sm:text-2xl text-slate-200 mb-8 max-w-3xl mx-auto leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
-            Professional, fast-loading websites that grow your business.
-            No templates, no compromises. Beautiful, custom web solutions built for you.
-          </p>
+        <p className="mt-5 text-lg md:text-xl text-slate-200/90 max-w-3xl mx-auto">
+          Professional, fast-loading websites that grow your business. No
+          templates. No compromises. Built for results.
+        </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-            <button
-              onClick={() => scrollTo("pricing")}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center space-x-2 animate-bounce"
+        {/* cta buttons */}
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <button
+            onClick={() => scrollTo("pricing")}
+            className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 text-white font-semibold hover:bg-emerald-500 transition"
+          >
+            Get Started <ArrowRight className="h-5 w-5" />
+          </button>
+
+          <button
+            onClick={() => scrollTo("why-choose-us")}
+            className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-6 py-3 text-white hover:bg-white/15 transition backdrop-blur-sm"
+          >
+            <Play className="h-5 w-5" />
+            Learn More
+          </button>
+        </div>
+
+        {/* stats on glass cards */}
+        <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto">
+          {[
+            ["50+", "Projects Delivered"],
+            ["100%", "Client Satisfaction"],
+            ["7 Days", "Average Delivery"],
+          ].map(([k, v]) => (
+            <div
+              key={k}
+              className="rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm px-5 py-4"
             >
-              <span>Get Started</span>
-              <ArrowRight className="h-5 w-5" />
-            </button>
-
-            <button
-              onClick={() => scrollTo("why-choose-us")}
-              className="group bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 border border-white/20 hover:shadow-lg flex items-center space-x-2 backdrop-blur-sm"
-            >
-              <Play className="h-5 w-5" />
-              <span>Learn More</span>
-            </button>
-          </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-2xl mx-auto">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-emerald-400">50+</div>
-              <div className="text-slate-200">Projects Delivered</div>
+              <div className="text-2xl font-bold text-emerald-300">{k}</div>
+              <div className="text-slate-200/80 text-sm">{v}</div>
             </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-emerald-400">100%</div>
-              <div className="text-slate-200">Client Satisfaction</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-emerald-400">7 Days</div>
-              <div className="text-slate-200">Average Delivery</div>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </section>
