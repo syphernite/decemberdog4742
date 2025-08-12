@@ -187,7 +187,7 @@ const StaticSpaceBG: React.FC = () => (
         transform: "none",
       }}
     />
-    <div className="absolute inset-0 -z-10 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_60%,rgba(0,0,0,0.65)_100%)] backdrop-blur-sm" />
+    <div className="absolute inset-0 -z-10 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_60%,rgba(0,0,0,0.65)_100%)]" />
   </>
 );
 
