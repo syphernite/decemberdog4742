@@ -13,16 +13,13 @@ type Item = {
 
 type MenuData = Record<string, Item[]>;
 
-/** Real menu data */
+/** Real menu data (order controls category order) */
 const MENU: MenuData = {
   Appetizers: [
     {
       name: "Wings (Market Price)",
       description: "Mild, Hot, Jamaican Jerk, Garlic, Teriyaki, or BBQ",
-      prices: {
-        "10 Wings": "$13.95",
-        "20 Wings": "$24.95",
-      },
+      prices: { "10 Wings": "$13.95", "20 Wings": "$24.95" },
     },
     {
       name: "Stuffed Mushrooms",
@@ -65,6 +62,157 @@ const MENU: MenuData = {
     },
   ],
 
+  "Soups & Salads": [
+    {
+      name: "Baby Spinach Salad",
+      description:
+        "Baby spinach, onions, fresh mushrooms, crumbled bacon, croutons & a slice of hard‑boiled egg",
+      price: "$12.95",
+    },
+    {
+      name: "Shrimp Salad",
+      description:
+        "Romaine lettuce, tomatoes, artichoke hearts & onions topped with shrimp",
+      price: "$15.95",
+    },
+    {
+      name: "Pittsburgh Salad",
+      description:
+        "Romaine lettuce, tomatoes, onions & fries topped with mozzarella cheese and grilled chicken",
+      price: "$15.95",
+    },
+    {
+      name: "Chopped Italian Salad",
+      description:
+        "Crisp romaine lettuce, tomatoes, black olives, salami, onions & artichoke hearts topped with parmesan cheese",
+      price: "$13.95",
+    },
+    {
+      name: "House Salad",
+      description:
+        "Romaine lettuce, tomatoes, onions, black olives & mushrooms topped with parmesan cheese",
+      prices: { Small: "$8.25", Large: "$9.25" },
+    },
+    {
+      name: "Greek Salad",
+      description:
+        "Romaine lettuce, tomatoes, artichoke hearts, cucumbers, onions, banana peppers, olives, topped with feta cheese",
+      price: "$13.95",
+    },
+    { name: "Caesar Salad", price: "$10.95" },
+    { name: "French Onion Soup", prices: { Cup: "$6.95", Bowl: "$8.95" } },
+  ],
+
+  Sandwiches: [
+    {
+      name: "Hawaiian Chicken Sandwich",
+      description:
+        "6 oz grilled chicken topped with caramelized pineapple, glazed asian sauce and provolone cheese",
+      price: "$14.95",
+    },
+    {
+      name: "Grilled Pesto Chicken Sandwich",
+      description:
+        "Grilled chicken, spinach, tomato, provolone cheese, topped with homemade pesto sauce & served on a brioche bun",
+      price: "$14.95",
+    },
+    {
+      name: "Grilled Chicken Sandwich",
+      description: "6 oz chicken, lettuce and tomatoes",
+      price: "$14.95",
+    },
+    {
+      name: "Beef & Lamb Gyro",
+      description: "Homemade tzatziki sauce, lettuce, tomatoes & onions",
+      price: "$15.95",
+    },
+  ],
+
+  Subs: [
+    {
+      name: "French Dip",
+      description: "Thinly sliced beef & provolone cheese served au jus for dipping",
+      price: "$15.95",
+    },
+    {
+      name: "Meatball",
+      description:
+        "Homemade meatballs covered with marinara sauce & topped with mozzarella cheese, then oven-baked to perfection",
+      price: "$14.95",
+    },
+    {
+      name: "Italian",
+      description:
+        "Ham, salami, pepperoni, black olives, onions, red peppers, & mozzarella cheese, with red pepper sauce",
+      price: "$14.95",
+    },
+    {
+      name: "Veggie",
+      description:
+        "Mushrooms, zucchini, tomatoes, onions, green peppers with red pepper sauce & mozzarella cheese",
+      price: "$13.95",
+    },
+    {
+      name: "Philly",
+      description:
+        "Shaved ribeye steak, grilled green peppers, onions & mushrooms topped with provolone cheese",
+      price: "$16.95",
+    },
+  ],
+
+  Burgers: [
+    {
+      name: "Pizza Burger",
+      description:
+        "Pepperoni, mozzarella cheese & marinara sauce on top of a thick burger",
+      price: "$15.95",
+    },
+    {
+      name: "Bacon Cheeseburger",
+      description: "Strip bacon & Swiss cheese",
+      price: "$16.95",
+    },
+    {
+      name: "Mushroom Swiss Burger",
+      description: "Fresh sautéed mushrooms and Swiss cheese",
+      price: "$16.95",
+    },
+    {
+      name: "Cheese Burger",
+      description:
+        "Your choice of American, Swiss, cheddar or provolone cheese with lettuce, tomatoes",
+      price: "$15.95",
+    },
+    {
+      name: "Texas BBQ Burger",
+      description: "BBQ sauce, cheddar cheese & angel hair onion rings",
+      price: "$15.95",
+    },
+    {
+      name: "Shrimp Burger",
+      description:
+        "A handful of large shrimp served on a brioche bun, with a side of slaw",
+      price: "$16.95",
+    },
+    {
+      name: "Black n’ Bleu Burger",
+      description:
+        "Blackened hamburger topped with chunky bleu cheese and crumbled bacon",
+      price: "$15.95",
+    },
+    {
+      name: "Bourbon Burger",
+      description:
+        "Homemade bourbon sauce, caramelized balsamic onions, topped with cheddar cheese",
+      price: "$15.95",
+    },
+    {
+      name: "Carolina Burger",
+      description: "American cheese, mustard, onions, chili & slaw",
+      price: "$16.95",
+    },
+  ],
+
   Paninis: [
     {
       name: "Veggie Panini",
@@ -74,8 +222,7 @@ const MENU: MenuData = {
     },
     {
       name: "Chicken Caesar Panini",
-      description:
-        "Lettuce, Swiss, grilled chicken & creamy Caesar dressing",
+      description: "Lettuce, Swiss, grilled chicken & creamy Caesar dressing",
       price: "14.95",
     },
     {
@@ -99,11 +246,7 @@ const MENU: MenuData = {
   ],
 
   Pasta: [
-    {
-      name: "Spaghetti with Meatballs or Sausage",
-      description: "",
-      price: "15.95",
-    },
+    { name: "Spaghetti with Meatballs or Sausage", description: "", price: "15.95" },
     {
       name: "Bow Tie Pasta",
       description:
@@ -190,8 +333,7 @@ const MENU: MenuData = {
     },
     {
       name: "Margarita Pizza",
-      description:
-        "Garlic, fresh basil, plum tomatoes & mozzarella cheese",
+      description: "Garlic, fresh basil, plum tomatoes & mozzarella cheese",
       prices: { 'Small 12"': "$15.95", 'Medium 16"': "$17.95", 'Large 18"': "$20.95" },
     },
     {
@@ -214,8 +356,7 @@ const MENU: MenuData = {
     },
     {
       name: "Ultimate Cheese",
-      description:
-        "Mozzarella, provolone, swiss, parmesan & cheddar",
+      description: "Mozzarella, provolone, swiss, parmesan & cheddar",
       prices: { 'Small 12"': "$15.95", 'Medium 16"': "$17.95", 'Large 18"': "$20.95" },
     },
     {
@@ -239,7 +380,7 @@ const MENU: MenuData = {
     {
       name: "Build Your Own Pizza",
       description:
-        'SMALL add $1.75 for each topping • MEDIUM add $2.00 for each topping • LARGE add $2.50 for each topping',
+        "SMALL add $1.75 per topping • MEDIUM add $2.00 per topping • LARGE add $2.50 per topping",
       prices: { 'Small 12"': "$11.95", 'Medium 16"': "$14.95", 'Large 18"': "$16.95" },
     },
     {
@@ -250,8 +391,7 @@ const MENU: MenuData = {
     },
     {
       name: "Meat Lovers",
-      description:
-        "Pepperoni, Italian sausage, Canadian bacon & Salami",
+      description: "Pepperoni, Italian sausage, Canadian bacon & Salami",
       prices: { 'Small 12"': "$16.95", 'Medium 16"': "$18.95", 'Large 18"': "$21.95" },
     },
   ],
@@ -271,27 +411,41 @@ const MENU: MenuData = {
   "Kids Menu": [
     { name: "Spaghetti & Meatballs", price: "$8.95" },
     { name: "Mac & Cheese", price: "$7.95" },
-    {
-      name: "Personal Pizza",
-      description: "Cheese or Pepperoni",
-      price: "$8.95",
-    },
-    {
-      name: "Grilled Cheese",
-      description: "With fries, chips or apple sauce",
-      price: "$7.95",
-    },
-    {
-      name: "Chicken Tenders",
-      description: "With fries, chips or apple sauce",
-      price: "$8.95",
-    },
-    {
-      name: "Cheeseburger",
-      description: "With fries, chips or apple sauce",
-      price: "$8.95",
-    },
+    { name: "Personal Pizza", description: "Cheese or Pepperoni", price: "$8.95" },
+    { name: "Grilled Cheese", description: "With fries, chips or apple sauce", price: "$7.95" },
+    { name: "Chicken Tenders", description: "With fries, chips or apple sauce", price: "$8.95" },
+    { name: "Cheeseburger", description: "With fries, chips or apple sauce", price: "$8.95" },
   ],
+};
+
+const SECTION_NOTES: Record<string, React.ReactNode> = {
+  "Soups & Salads": (
+    <div className="space-y-1 text-center text-xs sm:text-sm opacity-80">
+      <p>
+        All salads served with your choice of dressing: Ranch, Bleu Cheese, Creamy Caesar, Italian,
+        Honey Mustard, Thousand Island, Basil Balsamic Vinaigrette, or Raspberry Balsamic Vinaigrette.
+      </p>
+      <p>Extra Dressing $0.75 • Add Chicken to a Salad $4.00 • Add Shrimp to a Salad $6.00</p>
+    </div>
+  ),
+  Sandwiches: (
+    <div className="text-center text-xs sm:text-sm opacity-80">
+      All sandwiches come with choice of homemade sea salt chips or fries. Substitute a house side salad for $2 extra.
+    </div>
+  ),
+  Subs: (
+    <div className="text-center text-xs sm:text-sm opacity-80">
+      Served with your choice of homemade sea salt chips or fries. Substitute a house side salad for $2 extra.
+    </div>
+  ),
+  Burgers: (
+    <div className="text-center text-xs sm:text-sm opacity-80">
+      Grilled, Choice & Delicious. 1/2 lb charbroiled. Choice of lettuce or tomatoes. Choice of homemade sea salt chips or fries. Substitute a house side salad for $2 extra.
+    </div>
+  ),
+  Pizzas: (
+    <div className="text-center text-sm opacity-80">— No changes on specialty pizzas please —</div>
+  ),
 };
 
 const categories = Object.keys(MENU);
@@ -364,9 +518,7 @@ export default function Menu() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
         {/* Header row */}
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-            Menu
-          </h1>
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">Menu</h1>
           <div className="flex items-center gap-3">
             {DOORDASH_URL && (
               <a
@@ -378,10 +530,7 @@ export default function Menu() {
                 Order on DoorDash
               </a>
             )}
-            <Link
-              to="/"
-              className="text-turquoise hover:opacity-90 underline underline-offset-4"
-            >
+            <Link to="/" className="text-turquoise hover:opacity-90 underline underline-offset-4">
               ← Back to Home
             </Link>
             <button
@@ -395,9 +544,7 @@ export default function Menu() {
 
         {/* Mobile quick picker */}
         <div className="md:hidden mb-3">
-          <label htmlFor="catSelect" className="sr-only">
-            Select category
-          </label>
+          <label htmlFor="catSelect" className="sr-only">Select category</label>
           <select
             id="catSelect"
             value={active}
@@ -420,11 +567,7 @@ export default function Menu() {
           <div className="relative">
             <span className="pointer-events-none absolute left-0 top-0 h-full w-6 bg-gradient-to-r from-slate-900/85 to-transparent" />
             <span className="pointer-events-none absolute right-0 top-0 h-full w-6 bg-gradient-to-l from-slate-900/85 to-transparent" />
-            <nav
-              aria-label="Menu categories"
-              className="w-full overflow-x-auto no-scrollbar"
-              ref={scrollerRef}
-            >
+            <nav aria-label="Menu categories" className="w-full overflow-x-auto no-scrollbar" ref={scrollerRef}>
               <ul className="flex gap-3 whitespace-nowrap px-1 py-2 pr-6">
                 {categories.map((cat) => {
                   const isActive = active === cat;
@@ -433,11 +576,7 @@ export default function Menu() {
                       <button
                         onClick={() => handleJump(cat)}
                         className={`px-4 py-2 rounded-full text-sm transition
-                        ${
-                          isActive
-                            ? "bg-turquoise text-slate-900 font-semibold"
-                            : "bg-white/6 hover:bg-white/12 text-white"
-                        } 
+                        ${isActive ? "bg-turquoise text-slate-900 font-semibold" : "bg-white/6 hover:bg-white/12 text-white"} 
                         border border-white/10`}
                         aria-current={isActive ? "true" : undefined}
                       >
@@ -454,36 +593,23 @@ export default function Menu() {
         {/* Sections */}
         {categories.map((section) => (
           <div key={section} className="mb-12">
-            <div
-              ref={(el) => (sentinelsRef.current[section] = el)}
-              data-section={section}
-              aria-hidden
-              className="h-px"
-            />
-            <h2
-              id={slug(section)}
-              className="scroll-mt-[88px] md:scroll-mt-[110px] text-2xl font-bold mb-4"
-            >
+            <div ref={(el) => (sentinelsRef.current[section] = el)} data-section={section} aria-hidden className="h-px" />
+            <h2 id={slug(section)} className="scroll-mt-[88px] md:scroll-mt-[110px] text-2xl font-bold mb-3">
               {section}
             </h2>
 
-            {/* Pizzas banner note */}
-            {section === "Pizzas" && (
-              <div className="mb-4 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-center text-sm opacity-80">
-                — No changes on specialty pizzas please —
+            {/* Section notes */}
+            {SECTION_NOTES[section] ? (
+              <div className="mb-4 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+                {SECTION_NOTES[section]}
               </div>
-            )}
+            ) : null}
 
             <div className="grid md:grid-cols-2 gap-4">
               {(MENU[section] || []).map((item) => (
-                <article
-                  key={item.name}
-                  className="rounded-xl border border-white/10 bg-white/5 p-4"
-                >
+                <article key={item.name} className="rounded-xl border border-white/10 bg-white/5 p-4">
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-                    <h3 className="text-lg font-semibold break-words">
-                      {item.name}
-                    </h3>
+                    <h3 className="text-lg font-semibold break-words">{item.name}</h3>
                     <PriceBlock item={item} />
                   </div>
                   {item.description && item.description.trim().length > 0 && (
@@ -496,9 +622,7 @@ export default function Menu() {
         ))}
 
         <div className="mt-12 flex items-center justify-between text-xs opacity-70 print:hidden">
-          <span>
-            Allergies or dietary needs? Please inform our staff before ordering.
-          </span>
+          <span>Allergies or dietary needs? Please inform our staff before ordering.</span>
           <span>Prices subject to change. Please confirm in-store.</span>
         </div>
       </div>
