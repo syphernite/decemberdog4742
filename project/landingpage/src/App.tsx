@@ -23,11 +23,11 @@ export default function App() {
   return (
     <>
       {/* global animated background */}
-      <div className="fixed inset-0 -z-10">
+      <div className="absolute inset-0 bg-black" />  {/* base */}
         <Galaxy
           mouseInteraction
           mouseRepulsion
-          transparent
+          transparent={true}
           density={1.9}
           glowIntensity={0.3}
           saturation={0.9}
