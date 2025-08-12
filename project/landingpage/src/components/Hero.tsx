@@ -29,7 +29,7 @@ const Hero: React.FC = () => {
         </div>
 
         <p className="mt-5 text-lg md:text-xl text-slate-200/90 max-w-3xl mx-auto">
-          Professional, fast-loading websites that grow your business. No templates. No compromises. Built for results.
+          Professional, responsive websites that grow your business. No templates. No compromises. Built for results.
         </p>
 
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
