@@ -34,15 +34,19 @@ const ContentHub = () => {
 
           <div className="flex justify-center space-x-6 mb-12">
             {[
-              { icon: Instagram, label: 'Instagram', color: 'hover:text-pink-500' },
-              { icon: Youtube, label: 'YouTube', color: 'hover:text-red-500' },
-              { icon: Facebook, label: 'Facebook', color: 'hover:text-blue-500' },
-              { icon: MessageCircle, label: 'Threads', color: 'hover:text-purple-500' }
+              { icon: Instagram, label: 'Instagram', href: 'https://instagram.com/oliwakefieldfitness', color: 'hover:text-pink-500' },
+              { icon: Youtube, label: 'YouTube', href: 'https://www.youtube.com/channel/UCSNa_smPFrELPhS6xLbpFqA', color: 'hover:text-red-500' },
+              { icon: Facebook, label: 'Facebook', href: 'https://www.facebook.com/share/19w6RhurwL/?mibextid=wwXIfr', color: 'hover:text-blue-500' },
+              { icon: MessageCircle, label: 'Contact', href: '#contact', color: 'hover:text-purple-500' }
             ].map((social, index) => (
               <a
                 key={index}
-                href="#"
+                href={social.href}
+                target={social.href.startsWith('http') ? '_blank' : undefined}
+                rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                 className={`bg-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 ${social.color}`}
+                aria-label={social.label}
+                title={social.label}
               >
                 <social.icon className="w-8 h-8 text-gray-700" />
               </a>
