@@ -12,6 +12,8 @@ import WhyWeCreatedBuilt4You from "./pages/WhyWeExist";
 import SolarPricing from "./pages/SolarPricing";
 import DemoShowcase from "./pages/DemoShowcase";
 import Galaxy from "./components/Galaxy";
+import { WalkthroughProvider } from "./context/Walkthrough";
+import WalkthroughModal from "./components/WalkthroughModal";
 
 function ScrollToTopOnRouteChange() {
   const location = useLocation();
@@ -23,7 +25,7 @@ function ScrollToTopOnRouteChange() {
 
 export default function App() {
   return (
-    <>
+    <WalkthroughProvider>
       {/* global animated background */}
       <div className="pointer-events-none fixed inset-0 -z-10">
         <div className="absolute inset-0 bg-black" />
@@ -45,6 +47,7 @@ export default function App() {
       </div>
 
       <ScrollToTopOnRouteChange />
+
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
@@ -58,6 +61,9 @@ export default function App() {
         </Route>
         <Route path="/pricing" element={<SolarPricing />} />
       </Routes>
-    </>
+
+      {/* global walkthrough modal overlay */}
+      <WalkthroughModal />
+    </WalkthroughProvider>
   );
 }
