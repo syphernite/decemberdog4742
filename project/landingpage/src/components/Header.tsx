@@ -5,15 +5,17 @@ import { Code, Menu, X } from "lucide-react";
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
-  // Lock body scroll when mobile menu is open
+  // Lock scroll on body and html. Restore on close.
   useEffect(() => {
-    if (isMenuOpen) {
-      const prev = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
-      return () => {
-        document.body.style.overflow = prev;
-      };
-    }
+    if (!isMenuOpen) return;
+    const prevBodyOverflow = document.body.style.overflow;
+    const prevHtmlOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prevBodyOverflow;
+      document.documentElement.style.overflow = prevHtmlOverflow;
+    };
   }, [isMenuOpen]);
 
   const navigation = [
@@ -32,7 +34,7 @@ const Header: React.FC = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-blue-600 rounded-lg blur-lg opacity-30"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-blue-600 rounded-lg blur-lg opacity-30" />
               <div className="relative bg-gradient-to-r from-emerald-600 to-blue-600 p-1.5 rounded-lg">
                 <Code className="h-6 w-6 text-white" />
               </div>
@@ -60,17 +62,15 @@ const Header: React.FC = () => {
           </nav>
 
           {/* Mobile Menu Button */}
-          <div className="flex items-center">
-            <button
-              onClick={() => setIsMenuOpen(true)}
-              className="md:hidden p-2 rounded-lg bg-slate-800/60 hover:bg-slate-800 transition-colors"
-              aria-label="Open Menu"
-              aria-expanded={isMenuOpen}
-              aria-controls="mobile-menu"
-            >
-              <Menu className="h-6 w-6 text-white" />
-            </button>
-          </div>
+          <button
+            onClick={() => setIsMenuOpen(true)}
+            className="md:hidden p-2 rounded-lg bg-slate-800/60 hover:bg-slate-800 transition-colors"
+            aria-label="Open Menu"
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-menu"
+          >
+            <Menu className="h-6 w-6 text-white" />
+          </button>
         </div>
       </div>
 
@@ -80,17 +80,23 @@ const Header: React.FC = () => {
           id="mobile-menu"
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-[100] bg-slate-950 text-white"
+          className="fixed inset-0 z-[100] bg-slate-950/95 backdrop-blur-md"
+          style={{
+            // Ensure full coverage on iOS Safari
+            minHeight: "100dvh",
+            paddingTop: "calc(env(safe-area-inset-top) + 1rem)",
+            paddingBottom: "calc(env(safe-area-inset-bottom) + 1rem)",
+          }}
         >
-          <div className="flex flex-col h-full p-6">
+          <div className="flex flex-col h-full px-6">
             <div className="flex justify-between items-center">
-              <span className="text-2xl font-bold">Menu</span>
+              <span className="text-2xl font-bold text-white">Menu</span>
               <button
                 onClick={() => setIsMenuOpen(false)}
                 aria-label="Close Menu"
                 className="p-2"
               >
-                <X className="h-6 w-6" />
+                <X className="h-6 w-6 text-white" />
               </button>
             </div>
 
