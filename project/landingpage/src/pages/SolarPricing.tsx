@@ -220,9 +220,7 @@ const LocalHeader: React.FC = () => {
 
   return (
     <motion.header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled ? "bg-slate-900/80 shadow-2xl border-b border-slate-700/20" : "bg-transparent"
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? "bg-slate-900/80 shadow-2xl border-b border-slate-700/20" : "bg-transparent"}`}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
@@ -523,7 +521,8 @@ const Pricing: React.FC = () => {
         {/* MOBILE CAROUSEL (manual swipe, no auto-slide) */}
         <div className="relative z-0 sm:hidden px-4 pb-6">
           <div className="w-full" ref={carouselRef} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-            <div className="relative rounded-3xl border border-white/20 bg-black/78 backdrop-blur-md p-6 shadow-[0_0_30px_rgba(0,0,0,0.4)]">
+            {/* match Details box styles */}
+            <div className="relative rounded-3xl border border-white/15 bg-black/72 backdrop-blur-md p-6 shadow-[0_0_30px_rgba(0,0,0,0.35)]">
               <div className="text-xs uppercase tracking-widest text-white/80 mb-2 text-center">In focus</div>
               <h2
                 className="text-2xl font-bold text-center bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent"
@@ -545,7 +544,7 @@ const Pricing: React.FC = () => {
               {current.cta && (
                 <a
                   href={current.cta.href}
-                  className="mt-4 mx-auto w-full inline-flex items-center justify-center px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-blue-500 text-black font-semibold hover:opacity-90 transition shadow"
+                  className="mt-4 mx-auto w-full inline-flex items-center justify-center px-5 sm:px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-blue-500 text-black font-semibold hover:opacity-90 transition shadow whitespace-nowrap overflow-visible leading-tight min-h-[44px]"
                 >
                   {current.cta.label}
                 </a>
@@ -579,9 +578,7 @@ const Pricing: React.FC = () => {
             <div className="absolute inset-0 flex items-center justify-center">
               <div
                 ref={centerRef}
-                className={`relative w-[46vw] max-w-[400px] aspect-square rounded-full bg-white/5 border ${
-                  (orderedPlans[activeIndex]?.spotlightColor as string) || "ring-cyan-400"
-                } ring-2 ring-inset border-white/10 shadow-[0_0_40px_rgba(0,255,255,0.2)]`}
+                className={`relative w-[46vw] max-w-[400px] aspect-square rounded-full bg-white/5 border ${(orderedPlans[activeIndex]?.spotlightColor as string) || "ring-cyan-400"} ring-2 ring-inset border-white/10 shadow-[0_0_40px_rgba(0,255,255,0.2)]`}
               >
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
                   <div className="text-xs uppercase tracking-widest text-white/70 mb-2">In focus</div>
