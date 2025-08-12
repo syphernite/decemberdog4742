@@ -3,7 +3,7 @@ import { ShoppingBag } from 'lucide-react';
 
 const FloatingOrderButton = () => {
   const handleOrderClick = () => {
-    window.open('https://www.doordash.com', '_blank');
+    window.open('https://www.doordash.com/store/beach-bumz-morehead-city-31247691/44617761/?utm_source=mx_share', '_blank');
   };
 
   return (
