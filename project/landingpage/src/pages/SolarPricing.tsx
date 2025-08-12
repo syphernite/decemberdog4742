@@ -336,8 +336,6 @@ const LocalHeader: React.FC = () => {
 
 /* ---------------------------------- PAGE --------------------------------- */
 const Pricing: React.FC = () => {
-  const location = useLocation();
-
   useEffect(() => {
     document.documentElement.classList.add("dark");
     try {
@@ -351,32 +349,22 @@ const Pricing: React.FC = () => {
     [orderedPlans]
   );
 
-  // Read ?plan from search or hash (HashRouter safe on mobile)
-  const readPlanFromURL = (): PlanKey => {
-    const searchPlan = new URLSearchParams(location.search).get("plan")?.toLowerCase();
-    if (searchPlan && (ORDER_KEYS as readonly string[]).includes(searchPlan as PlanKey)) return searchPlan as PlanKey;
-    if (typeof window !== "undefined" && window.location.hash) {
-      const idx = window.location.hash.indexOf("?");
-      if (idx !== -1) {
-        const qs = window.location.hash.slice(idx + 1);
-        const hashPlan = new URLSearchParams(qs).get("plan")?.toLowerCase();
-        if (hashPlan && (ORDER_KEYS as readonly string[]).includes(hashPlan as PlanKey)) return hashPlan as PlanKey;
-      }
+  // Initialize from URL once, then state is the source of truth
+  const initialKey: PlanKey = useMemo(() => {
+    if (typeof window === "undefined") return ORDER_KEYS[0];
+    const url = new URL(window.location.href);
+    let plan = url.searchParams.get("plan")?.toLowerCase() as PlanKey | null;
+    if (!plan && window.location.hash.includes("?")) {
+      const qs = window.location.hash.slice(window.location.hash.indexOf("?") + 1);
+      plan = new URLSearchParams(qs).get("plan")?.toLowerCase() as PlanKey | null;
     }
-    return ORDER_KEYS[0];
-  };
+    return (plan && (ORDER_KEYS as readonly string[]).includes(plan)) ? plan : ORDER_KEYS[0];
+  }, []);
 
-  // Single source of truth
-  const [activeKey, setActiveKey] = useState<PlanKey>(readPlanFromURL());
+  const [activeKey, setActiveKey] = useState<PlanKey>(initialKey);
   const [legendOpen, setLegendOpen] = useState(false);
 
-  // Reflect URL changes
-  useEffect(() => {
-    const k = readPlanFromURL();
-    if (k !== activeKey) setActiveKey(k);
-  }, [location.search, location.hash]); // eslint-disable-line
-
-  // Keep URL in sync (does not rely on router updates)
+  // Write chosen plan to URL, but never re-read to avoid races
   useEffect(() => {
     if (typeof window === "undefined") return;
     const url = new URL(window.location.href);
@@ -388,14 +376,8 @@ const Pricing: React.FC = () => {
   const activeIndex = ORDER_KEYS.indexOf(activeKey);
   const current = plansByKey[activeKey];
 
-  const next = () => {
-    const i = (activeIndex + 1) % len;
-    setActiveKey(ORDER_KEYS[i]);
-  };
-  const prev = () => {
-    const i = (activeIndex - 1 + len) % len;
-    setActiveKey(ORDER_KEYS[i]);
-  };
+  const next = () => setActiveKey(ORDER_KEYS[(activeIndex + 1) % len]);
+  const prev = () => setActiveKey(ORDER_KEYS[(activeIndex - 1 + len) % len]);
 
   // Manual swipe handlers for mobile
   const carouselRef = useRef<HTMLDivElement | null>(null);
