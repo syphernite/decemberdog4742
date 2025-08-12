@@ -22,7 +22,7 @@ const RADIUS = 320;
 export function GlowArea({
   children,
   glowColor = DEFAULT_COLOR,
-  spotlight = true,
+  spotlight = false,
   className = "",
 }: GlowAreaProps) {
   const rootRef = useRef<HTMLDivElement | null>(null);
