@@ -713,7 +713,7 @@ const Pricing: React.FC = () => {
                   <span className="h-2 w-2 rounded-full bg-white/70" /> Logo Design - $75 one time
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-white/70" /> Hosting Only - $30 per month
+                  <span className="h-2 w-2 rounded-full bg-white/70" /> Hosting Only - $25 per month
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="h-2 w-2 rounded-full bg-white/70" /> Rush Delivery 48 hours - +$100
