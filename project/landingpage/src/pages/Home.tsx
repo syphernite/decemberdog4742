@@ -17,22 +17,6 @@ export default function Home() {
       {/* Hero */}
       <Hero />
 
-      {/* Magic Bento cards */}
-      <section className="py-12 flex justify-center">
-        <MagicBento
-          textAutoHide
-          enableStars
-          enableSpotlight
-          enableBorderGlow
-          enableTilt
-          enableMagnetism
-          clickEffect
-          spotlightRadius={300}
-          particleCount={12}
-          glowColor="132, 0, 255"
-        />
-      </section>
-
       {/* Pricing */}
       <section id="pricing" className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
