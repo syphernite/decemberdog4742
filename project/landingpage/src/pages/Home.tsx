@@ -13,21 +13,14 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-transparent text-white font-sans">
-      {/* Hero */}
+    <main className="relative z-10 min-h-screen bg-transparent text-white font-sans">
       <Hero />
-
-      {/* Pricing */}
       <section id="pricing" className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Pricing />
         </div>
       </section>
-
-      {/* Why Choose Us */}
       <WhyChooseUs />
-
-      {/* CTA */}
       <section className="py-20 text-center">
         <h3 className="text-4xl font-bold mb-6">Ready to Bring Your Vision to Life?</h3>
         <p className="mb-10 text-xl text-slate-200">Let’s build something effective and fast.</p>

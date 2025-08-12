@@ -1,7 +1,6 @@
 // src/App.tsx
 import React, { useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
-
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import Services from "./pages/Services";
@@ -12,32 +11,33 @@ import TermsOfService from "./pages/TermsOfService";
 import WhyWeCreatedBuilt4You from "./pages/WhyWeExist";
 import SolarPricing from "./pages/SolarPricing";
 import DemoShowcase from "./pages/DemoShowcase";
-
 import Galaxy from "./components/Galaxy";
 
 function ScrollToTopOnRouteChange() {
   const location = useLocation();
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [location.pathname]);
+  useEffect(() => { window.scrollTo(0, 0); }, [location.pathname]);
   return null;
 }
 
 export default function App() {
   return (
     <>
-      {/* global animated background (new OGL Galaxy) */}
+      {/* global animated background */}
       <div className="fixed inset-0 -z-10">
         <Galaxy
-          mouseRepulsion
           mouseInteraction
-          density={1.3}
-          glowIntensity={0.45}
-          saturation={0.7}
-          hueShift={240}
-          rotationSpeed={0.08}
-          twinkleIntensity={0.35}
+          mouseRepulsion
           transparent
+          density={1.9}
+          glowIntensity={0.3}
+          saturation={0.9}
+          hueShift={100}
+          twinkleIntensity={0.7}
+          rotationSpeed={0.25}
+          repulsionStrength={5}
+          autoCenterRepulsion={0}
+          starSpeed={0.5}
+          speed={2.1}
         />
       </div>
 
