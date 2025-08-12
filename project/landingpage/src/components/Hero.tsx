@@ -218,7 +218,6 @@ const Hero: React.FC = () => {
                 "for Hard Workers",
                 "for Restaurants",
                 "for Freelancers",
-                "for NIGGERS",
                 "for Entrepreneurs",
                 "for Anyone",
                 "Specifically Built4You",
