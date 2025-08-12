@@ -21,7 +21,7 @@ const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="bg-slate-900 dark:bg-slate-950 text-white">
+    <footer className="bg-slate-900/40 dark:bg-slate-950/40 backdrop-blur-md text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Company Info */}
@@ -41,7 +41,7 @@ const Footer: React.FC = () => {
               </div>
             </Link>
             <p className="text-slate-300 max-w-md leading-relaxed">
-              We create custom websites that help small businesses grow online. 
+              We create custom websites that help small businesses grow online.
               Professional, fast, and built specifically for your success.
             </p>
             <div className="space-y-2">
@@ -87,7 +87,7 @@ const Footer: React.FC = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-slate-800 mt-12 pt-8">
+        <div className="border-t border-slate-800/50 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-slate-400 text-sm">
               © {new Date().getFullYear()} Built4You. All rights reserved.
