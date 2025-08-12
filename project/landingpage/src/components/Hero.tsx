@@ -1,6 +1,7 @@
 // src/components/Hero.tsx
 import React from "react";
 import { ArrowRight, Play } from "lucide-react";
+import CountUp from "./CountUp";
 
 const scrollTo = (id: string) => {
   const el = document.getElementById(id);
@@ -44,7 +45,7 @@ const Hero: React.FC = () => {
             Get Started <ArrowRight className="h-5 w-5" />
           </button>
 
-          <button
+        <button
             onClick={() => scrollTo("why-choose-us")}
             className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-6 py-3 text-white hover:bg-white/15 transition backdrop-blur-sm"
           >
@@ -53,21 +54,28 @@ const Hero: React.FC = () => {
           </button>
         </div>
 
-        {/* stats on glass cards */}
+        {/* stats on glass cards (animated) */}
         <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto">
-          {[
-            ["50+", "Projects Delivered"],
-            ["100%", "Client Satisfaction"],
-            ["7 Days", "Average Delivery"],
-          ].map(([k, v]) => (
-            <div
-              key={k}
-              className="rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm px-5 py-4"
-            >
-              <div className="text-2xl font-bold text-emerald-300">{k}</div>
-              <div className="text-slate-200/80 text-sm">{v}</div>
+          <div className="rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm px-5 py-4">
+            <div className="text-2xl font-bold text-emerald-300">
+              <CountUp to={50} duration={1.2} />+
             </div>
-          ))}
+            <div className="text-slate-200/80 text-sm">Projects Delivered</div>
+          </div>
+
+          <div className="rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm px-5 py-4">
+            <div className="text-2xl font-bold text-emerald-300">
+              <CountUp to={100} duration={1.2} delay={0.15} />%
+            </div>
+            <div className="text-slate-200/80 text-sm">Client Satisfaction</div>
+          </div>
+
+          <div className="rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm px-5 py-4">
+            <div className="text-2xl font-bold text-emerald-300">
+              <CountUp to={7} duration={1.2} delay={0.3} /> Days
+            </div>
+            <div className="text-slate-200/80 text-sm">Average Delivery</div>
+          </div>
         </div>
       </div>
     </section>
