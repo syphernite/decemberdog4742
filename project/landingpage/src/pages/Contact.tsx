@@ -1,17 +1,19 @@
 /**
  * Contact.tsx
  *
- * New capabilities:
+ * Key behaviors:
  * - Reads ?plan=<slug>&step=2&lock=1 using useSearchParams.
- * - currentStep defaults to 1 but initializes from valid "step" query (1..3). Lands on step 2 when step=2.
- * - form.plan is a controlled <select> bound to a label value (e.g., "VIP Flex") resolved from semantic slugs.
+ * - currentStep defaults to 1 but initializes from valid "step" query (1..3).
+ * - Only shows the "Chosen plan" chip if the URL includes an exact known plan slug.
+ * - Normal visits (header/CTA clicks with no plan in URL) default the select to the placeholder, no chip.
+ * - form.plan is a controlled <select> bound to a label value (e.g., "VIP Flex") resolved from exact semantic slugs only.
  * - Optional lock: toggle LOCK_PLAN_FROM_QUERY to true to force-lock globally, or pass ?lock=1 to lock per-visit.
- * - Persists preselected plan to localStorage("contact.plan") on mount; loads it as a fallback on refresh.
- * - Shows an accent chip above the select: "Chosen plan: VIP Flex" when preselected.
- * - Submit payload includes both planLabel and planSlug for clean CRM ingestion.
+ * - Persists user-chosen plan to localStorage after they change it; but does NOT preload from localStorage on normal visits.
+ * - # of Pages is required (min 1). Step order: Business/Pages first, Identity second, Message third.
  *
- * Slug-to-Label resolution:
+ * Exact slug-to-label resolution (chip shows only for these slugs in the URL):
  *  startup -> "Startup"
+ *  starter -> "Startup" (alias)
  *  basic -> "Basic"
  *  pro -> "Pro"
  *  elite -> "Elite Build"
@@ -21,11 +23,6 @@
  *  vip-flex -> "VIP Flex"
  *  vip-plus -> "VIP Flex" (alias)
  *  custom -> "Custom"
- *  starter -> "Startup" (alias)
- *
- * Updates in this file:
- * - Swapped Step 1 and Step 2 so business details come first, identity second.
- * - Made "# of Pages Desired" required (min 1) and gate progress on every step.
  */
 
 import React, { useEffect, useMemo, useState, ReactNode } from "react";
@@ -55,7 +52,7 @@ const ALL_PLANS: Exclude<Plan, "">[] = [
   "Custom",
 ];
 
-// Semantic slug -> label
+// Exact semantic slug -> label
 const SLUG_TO_LABEL: Record<string, Exclude<Plan, "">> = {
   startup: "Startup",
   starter: "Startup", // alias
@@ -87,14 +84,14 @@ const INPUT =
    focus:shadow-[0_0_0_3px_rgba(34,211,238,.15),0_8px_30px_rgba(16,185,129,.18)] \
    outline-none transition";
 
-/* ================= Embedded Stepper (now accepts initialIndex) ================= */
+/* ================= Embedded Stepper (accepts initialIndex) ================= */
 type StepperProps = {
   children: ReactNode[];
   onFinish: () => void;
   getNextDisabled?: (index: number) => boolean;
   nextLabel?: string;
   backLabel?: string;
-  initialIndex?: number; // new: starting step index (0-based)
+  initialIndex?: number; // starting step index (0-based)
 };
 function EmbeddedStepper({
   children,
@@ -182,24 +179,23 @@ const initialForm = {
 const Contact: React.FC = () => {
   const [search] = useSearchParams();
 
-  // Resolve plan label from query or localStorage
-  const planFromQuery = useMemo<Plan | "">(() => {
-    const rawPlan = (search.get("plan") || search.get("pricing") || search.get("option") || search.get("tier") || "").toLowerCase().trim();
-    const guess = SLUG_TO_LABEL[rawPlan];
-    if (guess) return guess;
-    // Loose matching for non-slug inputs
-    if (!rawPlan) return "";
-    const direct = ALL_PLANS.find((p) => p.toLowerCase() === rawPlan);
-    if (direct) return direct;
-    if (rawPlan.startsWith("pro")) return "Pro";
-    if (rawPlan.startsWith("basic") || rawPlan === "starter") return "Startup";
-    if (rawPlan.startsWith("custom")) return "Custom";
-    if (rawPlan.includes("ecom")) return "Ecommerce Starter";
-    if (rawPlan.includes("vip")) return "VIP Flex";
-    if (rawPlan.includes("elite")) return "Elite Build";
-    if (rawPlan.includes("business pro")) return "Business Pro";
-    if (rawPlan.startsWith("business")) return "Business";
-    return "";
+  // Determine if URL carries an EXACT known slug (chip should show only in this case)
+  const { exactLabelFromQuery, hasExactPlanInQuery } = useMemo(() => {
+    const rawPlan = (
+      search.get("plan") ||
+      search.get("pricing") ||
+      search.get("option") ||
+      search.get("tier") ||
+      ""
+    )
+      .toLowerCase()
+      .trim();
+
+    const exactLabel = SLUG_TO_LABEL[rawPlan]; // only exact, no loose matching
+    return {
+      exactLabelFromQuery: (exactLabel as Plan) || "",
+      hasExactPlanInQuery: !!exactLabel,
+    };
   }, [search]);
 
   const lockFromQuery = (search.get("lock") || "") === "1";
@@ -207,34 +203,30 @@ const Contact: React.FC = () => {
   const initialIndex = stepFromQuery - 1;
 
   const [formData, setFormData] = useState(initialForm);
-  const [plan, setPlan] = useState<Plan>("");
-  const [preselectedLabel, setPreselectedLabel] = useState<string>("");
+  const [plan, setPlan] = useState<Plan>(""); // default to placeholder unless exact slug present
+  const [showChosenChip, setShowChosenChip] = useState(false); // controls the "Chosen plan" chip
   const [submitted, setSubmitted] = useState(false);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
-  // On mount, prefer query plan; if absent, load from localStorage
+  // On mount:
+  // - If URL has an exact plan slug, preselect it and show the chip (and optionally lock).
+  // - Otherwise, DO NOT preload from localStorage; leave as placeholder (first option).
   useEffect(() => {
-    const q = planFromQuery;
-    if (q && ALL_PLANS.includes(q as Exclude<Plan, "">)) {
-      setPlan(q);
-      setPreselectedLabel(q);
+    if (hasExactPlanInQuery && exactLabelFromQuery && ALL_PLANS.includes(exactLabelFromQuery as Exclude<Plan, "">)) {
+      setPlan(exactLabelFromQuery);
+      setShowChosenChip(true);
       try {
-        localStorage.setItem("contact.plan", q);
+        localStorage.setItem("contact.plan", exactLabelFromQuery);
       } catch {}
     } else {
-      try {
-        const stored = localStorage.getItem("contact.plan") || "";
-        if (stored && ALL_PLANS.includes(stored as Exclude<Plan, "">)) {
-          setPlan(stored as Plan);
-          setPreselectedLabel(stored);
-        }
-      } catch {}
+      setPlan(""); // placeholder
+      setShowChosenChip(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, []); // run once on mount
 
-  // Persist whenever user changes to a valid plan
+  // Persist whenever user changes to a valid plan (user-driven choice)
   useEffect(() => {
     if (plan && ALL_PLANS.includes(plan as Exclude<Plan, "">)) {
       try {
@@ -255,10 +247,10 @@ const Contact: React.FC = () => {
   const identityInvalid = !(formData.name.trim().length > 0) || !isEmail(formData.email);
   const messageInvalid = !(formData.message.trim().length > 0);
 
-  const disabledSelect = !!planFromQuery && (LOCK_PLAN_FROM_QUERY || lockFromQuery);
+  // Only lock if the selection originated from an exact plan in the URL
+  const disabledSelect = hasExactPlanInQuery && !!plan && (LOCK_PLAN_FROM_QUERY || lockFromQuery);
 
   const handleSubmit = async () => {
-    // Final guard to ensure required fields satisfied regardless of step flow
     if (pagesInvalid || identityInvalid || messageInvalid) {
       setErr("Please complete all required fields.");
       return;
@@ -281,6 +273,7 @@ const Contact: React.FC = () => {
       setSubmitted(true);
       setFormData(initialForm);
       setPlan("");
+      setShowChosenChip(false);
     } catch (e: any) {
       setErr(e?.message || "Submit failed");
     } finally {
@@ -322,7 +315,7 @@ const Contact: React.FC = () => {
           nextLabel="Next"
           backLabel="Previous"
         >
-          {/* Step 1 (was Step 2) Business, Industry, Pages (required), Plan */}
+          {/* Step 1 — Business, Industry, Pages (required), Plan */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <Field label="Business / Name">
               <input
@@ -364,18 +357,22 @@ const Contact: React.FC = () => {
             </Field>
 
             <div className="sm:col-span-1">
-              {preselectedLabel && (
+              {showChosenChip && plan && (
                 <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-300">
                   <span className="inline-block h-2 w-2 rounded-full bg-emerald-400" />
-                  Chosen plan: {preselectedLabel}
+                  Chosen plan: {plan}
                 </div>
               )}
               <Field label="Pricing Option">
                 <select
                   value={plan}
-                  onChange={(e) => setPlan(e.target.value as Plan)}
+                  onChange={(e) => {
+                    setPlan(e.target.value as Plan);
+                    // If user manually changes, hide chip because it's no longer a pure redirect preselect
+                    if (!hasExactPlanInQuery) setShowChosenChip(false);
+                  }}
                   className={INPUT}
-                  disabled={disabledSelect && !!plan}
+                  disabled={disabledSelect}
                 >
                   <option value="">Select a plan</option>
                   {ALL_PLANS.map((p) => (
@@ -397,7 +394,7 @@ const Contact: React.FC = () => {
             </p>
           </div>
 
-          {/* Step 2 (was Step 1) Name and Email */}
+          {/* Step 2 — Name and Email */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <Field label="Full Name *">
               <input
@@ -430,7 +427,7 @@ const Contact: React.FC = () => {
             </p>
           </div>
 
-          {/* Step 3 Project Details */}
+          {/* Step 3 — Project Details */}
           <div className="grid grid-cols-1 gap-6">
             <Field label="Project Details *">
               <textarea
