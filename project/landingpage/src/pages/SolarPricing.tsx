@@ -2,26 +2,28 @@ import React, { useMemo, useRef, useState, useEffect, useLayoutEffect } from "re
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Code } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import Galaxy from "../components/Galaxy";
 
 /* --------------------------- BACKGROUND LAYERS --------------------------- */
 const BackgroundLayer: React.FC = () => (
   <>
-    {/* toned-down animated galaxy */}
-    <Galaxy
-      mouseInteraction
-      mouseRepulsion
-      transparent
-      density={1.5}          // was 1.9
-      glowIntensity={0.18}   // was 0.3
-      className="absolute inset-0 -z-10"
+    {/* static gradient */}
+    <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#0a0b14] via-[#0a0f26] to-[#05060c]" />
+    {/* faint static stars */}
+    <div
+      className="absolute inset-0 -z-10 pointer-events-none opacity-25"
+      style={{
+        backgroundImage:
+          "radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.6) 0, transparent 2px),\
+           radial-gradient(1px 1px at 70% 20%, rgba(255,255,255,0.5) 0, transparent 2px),\
+           radial-gradient(1px 1px at 40% 70%, rgba(255,255,255,0.4) 0, transparent 2px),\
+           radial-gradient(1px 1px at 85% 60%, rgba(255,255,255,0.5) 0, transparent 2px),\
+           radial-gradient(1px 1px at 15% 80%, rgba(255,255,255,0.35) 0, transparent 2px)"
+      }}
     />
-    {/* faint global dark overlay to soften the whole effect */}
-    <div className="absolute inset-0 -z-10 bg-black/20 pointer-events-none" />
-    {/* global vignette */}
+    {/* vignette */}
     <div className="absolute inset-0 -z-10 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_60%,rgba(0,0,0,0.65)_100%)]" />
-    {/* mobile-only stronger scrim */}
-    <div className="absolute inset-0 -z-10 sm:hidden bg-black/80 backdrop-blur-[2px]" />
+    {/* mobile scrim */}
+    <div className="absolute inset-0 -z-10 sm:hidden bg-black/78" />
   </>
 );
 
@@ -391,7 +393,7 @@ const Pricing: React.FC = () => {
     }
   };
 
-  // Reduced-motion
+  // Reduced-motion flag controls orbit animation only
   const [animEnabled, setAnimEnabled] = useState(true);
   useEffect(() => {
     const q = window.matchMedia("(prefers-reduced-motion: reduce)");
