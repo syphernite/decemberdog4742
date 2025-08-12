@@ -1,6 +1,17 @@
-// src/pages/SolarPricing.tsx
+/**
+ * SolarPricing.tsx
+ *
+ * What changed (behavioral only; visuals intact):
+ * - Plan CTA buttons now route with useNavigate to `/contact?plan=<slug>&step=2`.
+ * - Uses each plan's `key` as the semantic slug (startup, basic, pro, elite, business, business-pro, ecom-starter, vip-flex, custom).
+ * - If you want to land locked, append `&lock=1` in the navigate call.
+ *
+ * Acceptance checks:
+ * - Clicking "Start VIP Flex" goes to /contact?plan=vip-flex&step=2 and Contact opens on step 2 with VIP Flex selected.
+ */
+
 import React, { useMemo, useRef, useState, useEffect, useLayoutEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, Code } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -31,7 +42,7 @@ const BackgroundLayer: React.FC = () => (
 type PlanKind = "core" | "optional" | "one-time" | "custom";
 
 type Plan = {
-  key: string;
+  key: string; // semantic slug used in router
   name: string;
   price: string;
   cadence: string;
@@ -41,7 +52,7 @@ type Plan = {
   notIncluded?: string[];
   addOns?: string[];
   spotlightColor?: string;
-  cta?: { label: string; href: string };
+  cta?: { label: string };
 };
 
 const PLANS_IN_ORDER: Plan[] = [
@@ -55,7 +66,7 @@ const PLANS_IN_ORDER: Plan[] = [
     features: ["Up to 3 Pages", "Hosting and 1 Domain", "1 Edit Batch per Month", "Contact Form", "Support within 72 hours"],
     notIncluded: ["Unlimited edits", "Strategy calls", "SEO reports"],
     spotlightColor: "ring-blue-400",
-    cta: { label: "Start Startup", href: "/contact" }
+    cta: { label: "Start Startup" }
   },
   {
     key: "basic",
@@ -67,7 +78,7 @@ const PLANS_IN_ORDER: Plan[] = [
     features: ["1 Page Website", "Mobile Responsive", "Contact Form", "Basic SEO Setup"],
     notIncluded: ["Hosting", "Edits after delivery", "Extra pages"],
     spotlightColor: "ring-emerald-400",
-    cta: { label: "Order Basic", href: "/contact" }
+    cta: { label: "Order Basic" }
   },
   {
     key: "pro",
@@ -80,7 +91,7 @@ const PLANS_IN_ORDER: Plan[] = [
     notIncluded: ["Hosting", "Ongoing support", "Advanced integrations"],
     addOns: ["Extra Page - $50", "Logo Design - $75", "Rush Delivery 48 hours - +$100"],
     spotlightColor: "ring-cyan-400",
-    cta: { label: "Order Pro", href: "/contact" }
+    cta: { label: "Order Pro" }
   },
   {
     key: "elite",
@@ -102,7 +113,7 @@ const PLANS_IN_ORDER: Plan[] = [
     notIncluded: ["Hosting and domain unless added", "Ongoing edits after 1 week", "Booking or store setups"],
     addOns: ["Hosting Only - $30 per month", "Logo Design - $75", "Rush Delivery 48 hours - +$100", "Extra Page - $50 per page"],
     spotlightColor: "ring-yellow-400",
-    cta: { label: "Get Elite Build", href: "/contact" }
+    cta: { label: "Get Elite Build" }
   },
   {
     key: "business",
@@ -121,7 +132,7 @@ const PLANS_IN_ORDER: Plan[] = [
     ],
     notIncluded: ["Strategy calls", "Advanced integrations"],
     spotlightColor: "ring-violet-400",
-    cta: { label: "Start Business", href: "/contact" }
+    cta: { label: "Start Business" }
   },
   {
     key: "business-pro",
@@ -140,7 +151,7 @@ const PLANS_IN_ORDER: Plan[] = [
     ],
     notIncluded: ["Large ecommerce builds", "Full redesigns without quote"],
     spotlightColor: "ring-fuchsia-400",
-    cta: { label: "Start Business Pro", href: "/contact" }
+    cta: { label: "Start Business Pro" }
   },
   {
     key: "ecom-starter",
@@ -152,7 +163,7 @@ const PLANS_IN_ORDER: Plan[] = [
     features: ["Store Setup with Stripe, PayPal, or Shopify Lite", "Up to 10 Products Uploaded", "Hosting and 1 Domain", "1 Edit Batch per Month", "Basic Support"],
     notIncluded: ["Subscriptions", "Advanced filtering", "Shipping calculators"],
     spotlightColor: "ring-rose-400",
-    cta: { label: "Start Ecommerce", href: "/contact" }
+    cta: { label: "Start Ecommerce" }
   },
   {
     key: "vip-flex",
@@ -171,7 +182,7 @@ const PLANS_IN_ORDER: Plan[] = [
     ],
     notIncluded: ["Large ecommerce without quote", "Complex data migrations without quote"],
     spotlightColor: "ring-amber-400",
-    cta: { label: "Start VIP Flex", href: "/contact" }
+    cta: { label: "Start VIP Flex" }
   },
   {
     key: "custom",
@@ -189,7 +200,7 @@ const PLANS_IN_ORDER: Plan[] = [
       "Dedicated Project Manager"
     ],
     spotlightColor: "ring-sky-400",
-    cta: { label: "Request Custom Quote", href: "/contact" }
+    cta: { label: "Request Custom Quote" }
   }
 ];
 
@@ -336,6 +347,8 @@ const LocalHeader: React.FC = () => {
 
 /* ---------------------------------- PAGE --------------------------------- */
 const Pricing: React.FC = () => {
+  const navigate = useNavigate();
+
   useEffect(() => {
     document.documentElement.classList.add("dark");
     try {
@@ -353,7 +366,6 @@ const Pricing: React.FC = () => {
   const initialKey: PlanKey = useMemo(() => {
     if (typeof window === "undefined") return ORDER_KEYS[0];
     const href = window.location.href;
-    // Prefer query inside hash for HashRouter
     const hashIdx = href.indexOf("#");
     if (hashIdx >= 0) {
       const afterHash = href.slice(hashIdx + 1);
@@ -364,7 +376,6 @@ const Pricing: React.FC = () => {
         return (ORDER_KEYS as readonly string[]).includes(plan) ? (plan as PlanKey) : ORDER_KEYS[0];
       }
     }
-    // Fallback to normal query
     const url = new URL(href);
     const plan = (url.searchParams.get("plan") || "").toLowerCase();
     return (ORDER_KEYS as readonly string[]).includes(plan) ? (plan as PlanKey) : ORDER_KEYS[0];
@@ -462,12 +473,18 @@ const Pricing: React.FC = () => {
     };
   }, []);
 
-  const GAP_BETWEEN = 56; // px
   const total = orderedPlans.length;
 
   // unified card styles for mobile "In focus" and Details
   const cardClass =
     "rounded-3xl border border-white/15 bg-black/72 backdrop-blur-md p-6 sm:p-8 shadow-[0_0_30px_rgba(0,0,0,0.35)] sm:bg-white/5 sm:backdrop-blur-0";
+
+  // Navigate to contact step 2 with plan preselected
+  const goContact = (slug: PlanKey, lock = false) => {
+    const qs = new URLSearchParams({ plan: slug, step: "2" });
+    if (lock) qs.set("lock", "1");
+    navigate(`/contact?${qs.toString()}`);
+  };
 
   return (
     <div className="relative min-h-screen text-white overflow-hidden">
@@ -493,10 +510,10 @@ const Pricing: React.FC = () => {
                   type="button"
                   onClick={() => setActiveKey(ORDER_KEYS[i])}
                   className={`px-3 py-1 rounded-lg text-sm border transition ${
-                    i === activeIndex ? "border-white/60 bg-white/10" : "border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10"
+                    i === ORDER_KEYS.indexOf(activeKey) ? "border-white/60 bg-white/10" : "border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10"
                   }`}
                   title={p.name}
-                  aria-pressed={i === activeIndex}
+                  aria-pressed={i === ORDER_KEYS.indexOf(activeKey)}
                 >
                   {p.name}
                 </button>
@@ -518,9 +535,9 @@ const Pricing: React.FC = () => {
                     setLegendOpen(false);
                   }}
                   className={`w-full px-3 py-2 rounded-xl text-left text-sm border transition ${
-                    i === activeIndex ? "border-white/60 bg-white/10" : "border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10"
+                    i === ORDER_KEYS.indexOf(activeKey) ? "border-white/60 bg-white/10" : "border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10"
                   }`}
-                  aria-pressed={i === activeIndex}
+                  aria-pressed={i === ORDER_KEYS.indexOf(activeKey)}
                 >
                   {p.name}
                 </button>
@@ -529,7 +546,7 @@ const Pricing: React.FC = () => {
           </div>
         )}
 
-        {/* MOBILE CAROUSEL (manual swipe, no auto-slide) */}
+        {/* MOBILE CAROUSEL */}
         <div className="relative z-0 sm:hidden px-4 pb-6">
           <div className="w-full" ref={carouselRef} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
             <div className={cardClass} key={activeKey}>
@@ -551,14 +568,12 @@ const Pricing: React.FC = () => {
                   </li>
                 ))}
               </ul>
-              {current.cta && (
-                <a
-                  href={current.cta.href}
-                  className="mt-4 mx-auto w-full inline-flex items-center justify-center px-5 sm:px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-blue-500 text-black font-semibold hover:opacity-90 transition shadow whitespace-nowrap overflow-visible leading-tight min-h-[44px]"
-                >
-                  {current.cta.label}
-                </a>
-              )}
+              <button
+                onClick={() => goContact(current.key as PlanKey /*, true to lock */)}
+                className="mt-4 mx-auto w-full inline-flex items-center justify-center px-5 sm:px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-blue-500 text-black font-semibold hover:opacity-90 transition shadow whitespace-nowrap overflow-visible leading-tight min-h-[44px]"
+              >
+                {current.cta?.label ?? "Get Started"}
+              </button>
 
               <div className="mt-5 flex items-center justify-center gap-1.5">
                 {orderedPlans.map((_, i) => (
@@ -566,9 +581,9 @@ const Pricing: React.FC = () => {
                     key={i}
                     type="button"
                     onClick={() => setActiveKey(ORDER_KEYS[i])}
-                    className={`h-2 w-2 rounded-full transition ${i === activeIndex ? "bg-cyan-400" : "bg-white/40 hover:bg-white/70"}`}
+                    className={`h-2 w-2 rounded-full transition ${i === ORDER_KEYS.indexOf(activeKey) ? "bg-cyan-400" : "bg-white/40 hover:bg-white/70"}`}
                     aria-label={`Go to ${orderedPlans[i].name}`}
-                    aria-pressed={i === activeIndex}
+                    aria-pressed={i === ORDER_KEYS.indexOf(activeKey)}
                   />
                 ))}
               </div>
@@ -590,19 +605,19 @@ const Pricing: React.FC = () => {
             <div className="absolute inset-0 flex items-center justify-center">
               <div
                 ref={centerRef}
-                className={`relative w-[46vw] max-w-[400px] aspect-square rounded-full bg-white/5 border ${(orderedPlans[activeIndex]?.spotlightColor as string) || "ring-cyan-400"} ring-2 ring-inset border-white/10 shadow-[0_0_40px_rgba(0,255,255,0.2)]`}
+                className={`relative w-[46vw] max-w-[400px] aspect-square rounded-full bg-white/5 border ${(orderedPlans[ORDER_KEYS.indexOf(activeKey)]?.spotlightColor as string) || "ring-cyan-400"} ring-2 ring-inset border-white/10 shadow-[0_0_40px_rgba(0,255,255,0.2)]`}
                 key={activeKey}
               >
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
                   <div className="text-xs uppercase tracking-widest text-white/70 mb-2">In focus</div>
                   <h2 className="text-2xl sm:text-3xl font-bold drop-shadow bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">
-                    {orderedPlans[activeIndex].name}
+                    {orderedPlans[ORDER_KEYS.indexOf(activeKey)].name}
                   </h2>
                   <div className="mt-1 text-lg sm:text-xl font-semibold">
-                    {orderedPlans[activeIndex].price} <span className="text-white/70">{orderedPlans[activeIndex].cadence}</span>
+                    {orderedPlans[ORDER_KEYS.indexOf(activeKey)].price} <span className="text-white/70">{orderedPlans[ORDER_KEYS.indexOf(activeKey)].cadence}</span>
                   </div>
                   <ul className="mt-3 space-y-1 text-sm text-white/80 list-none">
-                    {orderedPlans[activeIndex].shortBullets.map((b, idx) => (
+                    {orderedPlans[ORDER_KEYS.indexOf(activeKey)].shortBullets.map((b, idx) => (
                       <li key={idx} className="flex items-center justify-center gap-2">
                         <span className="inline-block h-1.5 w-1.5 rounded-full bg-white/70" />
                         {b}
@@ -770,6 +785,23 @@ const Pricing: React.FC = () => {
               )}
 
               <div className="mt-4 text-xs text-white/75">Large ecommerce and complex data migrations require a quote.</div>
+
+              {/* CTA -> Contact with preselect */}
+              <div className="mt-6 flex items-center justify-end gap-3">
+                <button
+                  onClick={() => goContact(current.key as PlanKey)}
+                  className="px-4 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-blue-500 text-black font-semibold hover:opacity-90 transition shadow"
+                >
+                  {current.cta?.label ?? "Get Started"}
+                </button>
+                <button
+                  onClick={() => goContact(current.key as PlanKey, true)}
+                  className="px-4 py-3 rounded-xl border border-white/15 bg-white/5 hover:bg-white/10"
+                  title="Go with this plan and lock it on the form"
+                >
+                  Choose & Lock
+                </button>
+              </div>
 
               {/* MOBILE-ONLY nav */}
               <div className="mt-6 flex sm:hidden items-center justify-end gap-2">

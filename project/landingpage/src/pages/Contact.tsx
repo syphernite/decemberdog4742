@@ -1,4 +1,29 @@
-// src/pages/Contact.tsx
+/**
+ * Contact.tsx
+ *
+ * New capabilities:
+ * - Reads ?plan=<slug>&step=2&lock=1 using useSearchParams.
+ * - currentStep defaults to 1 but initializes from valid "step" query (1..3). Lands on step 2 when step=2.
+ * - form.plan is a controlled <select> bound to a label value (e.g., "VIP Flex") resolved from semantic slugs.
+ * - Optional lock: toggle LOCK_PLAN_FROM_QUERY to true to force-lock globally, or pass ?lock=1 to lock per-visit.
+ * - Persists preselected plan to localStorage("contact.plan") on mount; loads it as a fallback on refresh.
+ * - Shows an accent chip above the select: "Chosen plan: VIP Flex" when preselected.
+ * - Submit payload includes both planLabel and planSlug for clean CRM ingestion.
+ *
+ * Slug-to-Label resolution:
+ *  startup -> "Startup"
+ *  basic -> "Basic"
+ *  pro -> "Pro"
+ *  elite -> "Elite Build"
+ *  business -> "Business"
+ *  business-pro -> "Business Pro"
+ *  ecom-starter -> "Ecommerce Starter"
+ *  vip-flex -> "VIP Flex"
+ *  vip-plus -> "VIP Flex" (alias)
+ *  custom -> "Custom"
+ *  starter -> "Startup" (alias)
+ */
+
 import React, { useEffect, useMemo, useState, ReactNode } from "react";
 import { useSearchParams } from "react-router-dom";
 
@@ -26,6 +51,29 @@ const ALL_PLANS: Exclude<Plan, "">[] = [
   "Custom",
 ];
 
+// Semantic slug -> label
+const SLUG_TO_LABEL: Record<string, Exclude<Plan, "">> = {
+  startup: "Startup",
+  starter: "Startup", // alias
+  basic: "Basic",
+  pro: "Pro",
+  elite: "Elite Build",
+  "business": "Business",
+  "business-pro": "Business Pro",
+  "ecom-starter": "Ecommerce Starter",
+  "vip-flex": "VIP Flex",
+  "vip-plus": "VIP Flex", // alias
+  custom: "Custom",
+};
+
+// Label -> slug (for outbound payloads)
+const LABEL_TO_SLUG = Object.fromEntries(
+  Object.entries(SLUG_TO_LABEL).map(([slug, label]) => [label, slug])
+) as Record<Exclude<Plan, "">, string>;
+
+// Lock behavior: can be forced here, or enabled per-visit with ?lock=1
+const LOCK_PLAN_FROM_QUERY = false;
+
 const INPUT =
   "w-full rounded-xl px-4 py-3 text-[15px] leading-tight text-white placeholder-white/70 \
    bg-[#0b0d14]/80 backdrop-blur-md border border-transparent \
@@ -35,13 +83,14 @@ const INPUT =
    focus:shadow-[0_0_0_3px_rgba(34,211,238,.15),0_8px_30px_rgba(16,185,129,.18)] \
    outline-none transition";
 
-/* ================= Embedded Stepper ================= */
+/* ================= Embedded Stepper (now accepts initialIndex) ================= */
 type StepperProps = {
   children: ReactNode[];
   onFinish: () => void;
   getNextDisabled?: (index: number) => boolean;
   nextLabel?: string;
   backLabel?: string;
+  initialIndex?: number; // new: starting step index (0-based)
 };
 function EmbeddedStepper({
   children,
@@ -49,9 +98,10 @@ function EmbeddedStepper({
   getNextDisabled,
   nextLabel = "Next",
   backLabel = "Previous",
+  initialIndex = 0,
 }: StepperProps) {
   const steps = React.Children.toArray(children);
-  const [idx, setIdx] = useState(0);
+  const [idx, setIdx] = useState(() => Math.min(Math.max(0, initialIndex), steps.length - 1));
   const last = idx === steps.length - 1;
   const nextDisabled = getNextDisabled ? getNextDisabled(idx) : false;
 
@@ -126,34 +176,68 @@ const initialForm = {
 };
 
 const Contact: React.FC = () => {
+  const [search] = useSearchParams();
+
+  // Resolve plan label from query or localStorage
+  const planFromQuery = useMemo<Plan | "">(() => {
+    const rawPlan = (search.get("plan") || search.get("pricing") || search.get("option") || search.get("tier") || "").toLowerCase().trim();
+    const guess = SLUG_TO_LABEL[rawPlan];
+    if (guess) return guess;
+    // Loose matching for non-slug inputs
+    if (!rawPlan) return "";
+    const direct = ALL_PLANS.find((p) => p.toLowerCase() === rawPlan);
+    if (direct) return direct;
+    if (rawPlan.startsWith("pro")) return "Pro";
+    if (rawPlan.startsWith("basic") || rawPlan === "starter") return "Startup";
+    if (rawPlan.startsWith("custom")) return "Custom";
+    if (rawPlan.includes("ecom")) return "Ecommerce Starter";
+    if (rawPlan.includes("vip")) return "VIP Flex";
+    if (rawPlan.includes("elite")) return "Elite Build";
+    if (rawPlan.includes("business pro")) return "Business Pro";
+    if (rawPlan.startsWith("business")) return "Business";
+    return "";
+  }, [search]);
+
+  const lockFromQuery = (search.get("lock") || "") === "1";
+  const stepFromQuery = Math.max(1, Math.min(3, Number(search.get("step") || "1") || 1));
+  const initialIndex = stepFromQuery - 1;
+
   const [formData, setFormData] = useState(initialForm);
   const [plan, setPlan] = useState<Plan>("");
+  const [preselectedLabel, setPreselectedLabel] = useState<string>("");
   const [submitted, setSubmitted] = useState(false);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
-  const [search] = useSearchParams();
 
-  // Autofill plan from redirects
+  // On mount, prefer query plan; if absent, load from localStorage
   useEffect(() => {
-    const raw =
-      search.get("plan") ||
-      search.get("pricing") ||
-      search.get("option") ||
-      search.get("tier") ||
-      "";
-    const v = raw.toLowerCase();
-    const match =
-      ALL_PLANS.find((p) => p.toLowerCase() === v) ||
-      (v.startsWith("pro") ? "Pro" : undefined) ||
-      (v.startsWith("basic") || v === "starter" ? ("Basic" as Plan) : undefined) ||
-      (v.startsWith("custom") ? ("Custom" as Plan) : undefined) ||
-      (v.includes("ecom") ? ("Ecommerce Starter" as Plan) : undefined) ||
-      (v.includes("vip") ? ("VIP Flex" as Plan) : undefined) ||
-      (v.includes("elite") ? ("Elite Build" as Plan) : undefined) ||
-      (v.includes("business pro") ? ("Business Pro" as Plan) : undefined) ||
-      (v.startsWith("business") ? ("Business" as Plan) : undefined);
-    if (match) setPlan(match);
-  }, [search]);
+    const q = planFromQuery;
+    if (q && ALL_PLANS.includes(q as Exclude<Plan, "">)) {
+      setPlan(q);
+      setPreselectedLabel(q);
+      try {
+        localStorage.setItem("contact.plan", q);
+      } catch {}
+    } else {
+      try {
+        const stored = localStorage.getItem("contact.plan") || "";
+        if (stored && ALL_PLANS.includes(stored as Exclude<Plan, "">)) {
+          setPlan(stored as Plan);
+          setPreselectedLabel(stored);
+        }
+      } catch {}
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Persist whenever user changes to a valid plan
+  useEffect(() => {
+    if (plan && ALL_PLANS.includes(plan as Exclude<Plan, "">)) {
+      try {
+        localStorage.setItem("contact.plan", plan);
+      } catch {}
+    }
+  }, [plan]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -164,15 +248,21 @@ const Contact: React.FC = () => {
   const step1Invalid = !(formData.name.trim().length > 0) || !isEmail(formData.email);
   const step3Invalid = !(formData.message.trim().length > 0);
 
+  const disabledSelect = !!planFromQuery && (LOCK_PLAN_FROM_QUERY || lockFromQuery);
+
   const handleSubmit = async () => {
     if (busy) return;
     setBusy(true);
     setErr(null);
     try {
+      const planLabel = plan || "Unspecified";
+      const planSlug = plan ? LABEL_TO_SLUG[plan as Exclude<Plan, "">] || "" : "";
+      const payload = { ...formData, plan: planLabel, planSlug };
+
       const r = await fetch("https://formspree.io/f/mrblknpq", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, plan: plan || "Unspecified" }),
+        body: JSON.stringify(payload),
       });
       if (!r.ok) throw new Error(`Submit failed ${r.status}`);
       setSubmitted(true);
@@ -208,6 +298,7 @@ const Contact: React.FC = () => {
 
         <EmbeddedStepper
           onFinish={handleSubmit}
+          initialIndex={initialIndex}
           getNextDisabled={(i) => {
             if (i === 0) return step1Invalid;
             if (i === 1) return false;
@@ -277,20 +368,34 @@ const Contact: React.FC = () => {
               />
             </Field>
 
-            <Field label="Pricing Option">
-              <select
-                value={plan}
-                onChange={(e) => setPlan(e.target.value as Plan)}
-                className={INPUT}
-              >
-                <option value="">Select a plan</option>
-                {ALL_PLANS.map((p) => (
-                  <option key={p} value={p}>
-                    {p}
-                  </option>
-                ))}
-              </select>
-            </Field>
+            <div className="sm:col-span-1">
+              {preselectedLabel && (
+                <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-300">
+                  <span className="inline-block h-2 w-2 rounded-full bg-emerald-400" />
+                  Chosen plan: {preselectedLabel}
+                </div>
+              )}
+              <Field label="Pricing Option">
+                <select
+                  value={plan}
+                  onChange={(e) => setPlan(e.target.value as Plan)}
+                  className={INPUT}
+                  disabled={disabledSelect && !!plan}
+                >
+                  <option value="">Select a plan</option>
+                  {ALL_PLANS.map((p) => (
+                    <option key={p} value={p}>
+                      {p}
+                    </option>
+                  ))}
+                </select>
+                {disabledSelect && !!plan && (
+                  <p className="mt-2 text-[11px] text-white/60">
+                    This selection is locked for this visit. Remove <span className="font-semibold">lock=1</span> from the URL to change it.
+                  </p>
+                )}
+              </Field>
+            </div>
 
             <p className="sm:col-span-2 text-xs text-zinc-400">Optional fields. Leave blank and press Next to skip.</p>
           </div>
