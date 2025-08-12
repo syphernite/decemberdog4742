@@ -222,7 +222,7 @@ const Hero: React.FC = () => {
                 "for Anyone",
                 "Specifically Built4You",
               ]}
-              typingSpeed={5}          // typing speed
+              typingSpeed={20}          // typing speed
               deletingSpeed={15}        // deleting speed
               pauseDuration={3000}
               initialDelay={200}
