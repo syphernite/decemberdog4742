@@ -14,7 +14,7 @@ const Home = () => {
     return () => io.disconnect();
   }, []);
 
-  const handleOrderClick = () => window.open("https://www.doordash.com", "_blank");
+  const handleOrderClick = () => window.open("https://www.doordash.com/store/beach-bumz-morehead-city-31247691/44617761/?utm_source=mx_share", "_blank");
 
   const instagramPosts = [
     { id: 1, image: "https://images.pexels.com/photos/33406006/pexels-photo-33406006.png?auto=compress&cs=tinysrgb&w=400", caption: "Fresh pizza perfection! 🍕" },

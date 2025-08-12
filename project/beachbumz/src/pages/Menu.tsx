@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
-const DOORDASH_URL = "https://www.doordash.com/"; // replace with your actual DoorDash store link
+const DOORDASH_URL = "https://www.doordash.com/store/beach-bumz-morehead-city-31247691/44617761/?utm_source=mx_share/"; // replace with your actual DoorDash store link
 
 type Item = {
   name: string;
@@ -523,7 +523,7 @@ export default function Menu() {
             {DOORDASH_URL && (
               <a
                 href={DOORDASH_URL}
-                target="_blank"
+                target="https://www.doordash.com/store/beach-bumz-morehead-city-31247691/44617761/?utm_source=mx_share"
                 rel="noopener noreferrer"
                 className="inline-flex rounded-md border border-emerald-400/30 bg-emerald-400/10 px-3 py-1.5 text-sm hover:bg-emerald-400/20"
               >
