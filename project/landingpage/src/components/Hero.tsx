@@ -241,15 +241,9 @@ const Hero: React.FC = () => {
                 "for Anyone",
                 "Specifically Built4You",
               ]}
-<<<<<<< Updated upstream
-              typingSpeed={20}          // typing speed
-              deletingSpeed={15}        // deleting speed
-              pauseDuration={3000}
-=======
               typingSpeed={100}
               deletingSpeed={15}
               pauseDuration={700}
->>>>>>> Stashed changes
               initialDelay={200}
               loop={false}   // stops on last phrase
               startOnVisible
