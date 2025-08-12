@@ -29,7 +29,7 @@ interface TextTypeProps {
   pauseDuration?: number;
   deletingSpeed?: number;
   loop?: boolean;
-  textColors?: string[]; // kept for API compatibility
+  textColors?: string[];
   variableSpeed?: { min: number; max: number };
   onSentenceComplete?: (sentence: string, index: number) => void;
   startOnVisible?: boolean;
@@ -215,18 +215,21 @@ const Hero: React.FC = () => {
               as="span"
               text={[
                 "for Small Businesses",
-                "for Electricians",
+                "for Hard Workers",
                 "for Restaurants",
                 "for Freelancers",
+                "for NIGGERS",
+                "for Entrepreneurs",
+                "for Anyone",
                 "Specifically Built4You",
               ]}
-              typingSpeed={45}
-              deletingSpeed={30}
+              typingSpeed={22}          // ~50% faster typing
+              deletingSpeed={15}        // ~50% faster deleting
               pauseDuration={3000}
               initialDelay={200}
               loop={false}
               startOnVisible
-              variableSpeed={{ min: 35, max: 65 }}
+              variableSpeed={{ min: 18, max: 35 }}
               showCursor={false}
             />
           </h1>
