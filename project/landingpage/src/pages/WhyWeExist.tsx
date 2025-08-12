@@ -22,14 +22,27 @@ function useInViewAnimation(threshold = 0.3) {
 const WhyWeExist: React.FC = () => {
   return (
     <main className="relative z-10 bg-transparent text-gray-900 dark:text-white min-h-screen font-sans">
-      {/* Hero */}
-      <section className="text-center py-20 px-6 bg-white/90 dark:bg-slate-800/80 shadow rounded-none">
-        <h1 className="text-3xl md:text-5xl font-extrabold mb-4">
+      {/* Page title */}
+      <section className="text-center py-16 px-6 bg-transparent">
+        <h1 className="text-3xl md:text-5xl font-extrabold mb-10">
           Why We Created Built4You
         </h1>
-        <p className="text-lg text-gray-700 dark:text-gray-200 max-w-xl mx-auto">
-          We exist to give small businesses the online edge they deserve — fast, affordable, and hassle free.
-        </p>
+
+        {/* CTA Buttons */}
+        <div className="flex items-center justify-center gap-4 flex-wrap">
+          <Link
+            to="/demos"
+            className="inline-flex items-center justify-center rounded-lg px-5 py-3 bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400"
+          >
+            View Demos
+          </Link>
+          <Link
+            to="/pricing"
+            className="inline-flex items-center justify-center rounded-lg px-5 py-3 bg-teal-600 text-white hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-400"
+          >
+            See Pricing
+          </Link>
+        </div>
       </section>
 
       {/* Value sections */}
@@ -73,29 +86,10 @@ const WhyWeExist: React.FC = () => {
         );
       })}
 
-      {/* Soft CTA for this page */}
-      <section className="py-10 px-6 max-w-3xl mx-auto text-center">
-        <h3 className="text-2xl font-semibold mb-4">See what we build</h3>
-        <div className="flex items-center justify-center gap-4 flex-wrap">
-          <Link
-            to="/demos"
-            className="inline-flex items-center justify-center rounded-lg px-5 py-3 bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400"
-          >
-            View Demos
-          </Link>
-          <Link
-            to="/pricing"
-            className="inline-flex items-center justify-center rounded-lg px-5 py-3 bg-teal-600 text-white hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-400"
-          >
-            See Pricing
-          </Link>
-        </div>
-      </section>
-
       {/* Booking calendar */}
       <div
         id="calendar"
-        className="w-full max-w-5xl mx-auto px-6 py-10 scroll-mt-20 bg-white rounded-2xl shadow-xl"
+        className="w-full max-w-5xl mx-auto px-6 py-10 scroll-mt-20 bg-white rounded-2xl shadow-xl mt-12"
         style={{ colorScheme: 'light', minHeight: '700px' }}
       >
         <h2 className="text-3xl font-semibold text-center mb-8 text-black">
