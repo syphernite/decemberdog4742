@@ -1,3 +1,4 @@
+// src/pages/Services.tsx
 import React from "react";
 import { motion } from "framer-motion";
 import {
@@ -42,19 +43,18 @@ const Services: React.FC = () => {
         </motion.div>
 
         <GlowArea glowColor="132,0,255">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 items-stretch">
             {services.map((s, i) => (
               <motion.div
                 key={s.title}
+                className="h-full"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.08, duration: 0.6 }}
               >
-                <GlowCard className="p-8">
+                <GlowCard className="p-8 h-full flex flex-col">
                   <div className="flex items-center justify-center mb-6">
-                    <div
-                      className={`p-4 bg-gradient-to-r ${s.gradient} rounded-2xl shadow-lg`}
-                    >
+                    <div className={`p-4 bg-gradient-to-r ${s.gradient} rounded-2xl shadow-lg`}>
                       <s.icon className="h-8 w-8 text-white" />
                     </div>
                   </div>
@@ -66,7 +66,7 @@ const Services: React.FC = () => {
                     {s.description}
                   </p>
 
-                  <ul className="space-y-2">
+                  <ul className="space-y-2 mt-auto">
                     {s.features.map((f) => (
                       <li
                         key={f}
