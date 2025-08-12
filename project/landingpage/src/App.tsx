@@ -26,17 +26,20 @@ function ScrollToTopOnRouteChange() {
 export default function App() {
   return (
     <>
-      {/* global animated background */}
-      <Galaxy
-        className="fixed inset-0 -z-10"
-        mouseRepulsion
-        mouseInteraction
-        density={1.1}
-        glowIntensity={0.6}
-        saturation={0.2}
-        hueShift={0}
-        transparent={false}
-      />
+      {/* global animated background (new OGL Galaxy) */}
+      <div className="fixed inset-0 -z-10">
+        <Galaxy
+          mouseRepulsion
+          mouseInteraction
+          density={1.3}
+          glowIntensity={0.45}
+          saturation={0.7}
+          hueShift={240}
+          rotationSpeed={0.08}
+          twinkleIntensity={0.35}
+          transparent
+        />
+      </div>
 
       <ScrollToTopOnRouteChange />
       <Routes>
