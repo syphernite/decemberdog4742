@@ -7,18 +7,20 @@ import Galaxy from "../components/Galaxy";
 /* --------------------------- BACKGROUND LAYERS --------------------------- */
 const BackgroundLayer: React.FC = () => (
   <>
-    {/* animated galaxy/light layer */}
+    {/* toned-down animated galaxy */}
     <Galaxy
       mouseInteraction
       mouseRepulsion
       transparent
-      density={1.9}
-      glowIntensity={0.3}
+      density={1.5}          // was 1.9
+      glowIntensity={0.18}   // was 0.3
       className="absolute inset-0 -z-10"
     />
-    {/* subtle global vignette for edges */}
+    {/* faint global dark overlay to soften the whole effect */}
+    <div className="absolute inset-0 -z-10 bg-black/20 pointer-events-none" />
+    {/* global vignette */}
     <div className="absolute inset-0 -z-10 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_60%,rgba(0,0,0,0.65)_100%)]" />
-    {/* mobile-only dark scrim to keep text legible over lights */}
+    {/* mobile-only stronger scrim */}
     <div className="absolute inset-0 -z-10 sm:hidden bg-black/80 backdrop-blur-[2px]" />
   </>
 );
