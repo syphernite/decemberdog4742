@@ -3,7 +3,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import Pricing from "../components/Pricing";
 import Hero from "./Hero";
-import WhyChooseUs from "./WhyChooseUs";
+import WhyChooseUs from "../components/WhyChooseUs";
 
 export default function Home() {
   const navigate = useNavigate();
