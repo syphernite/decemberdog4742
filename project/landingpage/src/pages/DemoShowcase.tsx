@@ -3,18 +3,106 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ExternalLink, ArrowRight, MonitorSmartphone, Search } from "lucide-react";
-// NOTE: Galaxy is now global in App.tsx — no per-page Galaxy import here.
 
 type Demo = {
-  title: string; slug: string; externalUrl: string;
-  badge?: string; tagline?: string; keywords?: string[]; features?: string[];
+  title: string;
+  slug: string;
+  externalUrl: string;
+  badge?: string;
+  tagline?: string;
+  keywords?: string[];
+  features?: string[];
   pricingPlanKey?: string;
 };
 
 const withTrailingSlash = (u: string) => (u.endsWith("/") ? u : u + "/");
 
-// ⬇️ Use your existing DEMOS array here
-// const DEMOS: Demo[] = [ ... ];
+// ✅ include DEMOS here so the file is self-contained
+const DEMOS: Demo[] = [
+  {
+    title: "Photography",
+    slug: "photography",
+    externalUrl: "https://built4you.org/photography/",
+    badge: "Portfolio",
+    tagline: "Visual-first galleries with booking.",
+    keywords: ["gallery", "portfolio", "booking", "lightbox", "photographer"],
+    features: ["responsive", "contact form", "seo", "image grid", "hero slideshow"],
+  },
+  {
+    title: "Barbershop",
+    slug: "barbershop",
+    externalUrl: "https://built4you.org/barbershop/",
+    badge: "Services",
+    tagline: "Appointments, pricing tables, reviews.",
+    keywords: ["barber", "appointments", "pricing", "reviews", "map"],
+    features: ["mobile-first", "contact form", "maps", "social links"],
+  },
+  {
+    title: "Detailer",
+    slug: "detailer",
+    externalUrl: "https://built4you.org/detailer/",
+    badge: "Auto",
+    tagline: "Before/after gallery, service tiers, mobile-first.",
+    keywords: ["auto", "detailing", "before/after", "packages", "mobile"],
+    features: ["gallery", "contact form", "pricing tiers"],
+  },
+  {
+    title: "Food Truck",
+    slug: "foodtruck",
+    externalUrl: "https://built4you.org/foodtruck/",
+    badge: "Food",
+    tagline: "Menu, schedule, locations, events.",
+    keywords: ["menu", "events", "schedule", "locations", "truck"],
+    features: ["map", "contact form", "social links"],
+    pricingPlanKey: "basic",
+  },
+  {
+    title: "Contractor",
+    slug: "trades",
+    externalUrl: "https://built4you.org/plumbing/",
+    badge: "Professional",
+    tagline: "Trust-building, licensing, quotes, service areas.",
+    keywords: ["plumber", "electrician", "contractor", "quote", "service area"],
+    features: ["contact form", "badges", "testimonials"],
+  },
+  {
+    title: "Tattoo",
+    slug: "tattooshop",
+    externalUrl: "https://built4you.org/tattooshop/",
+    badge: "Portfolio",
+    tagline: "Artist profiles, galleries, booking forms.",
+    keywords: ["tattoo", "artists", "portfolio", "booking", "instagram"],
+    features: ["gallery", "contact form", "profiles"],
+  },
+  {
+    title: "Pest Control",
+    slug: "pestcontrol",
+    externalUrl: "https://built4you.org/pestcontrol/",
+    badge: "Home Services",
+    tagline: "Instant service requests.",
+    keywords: ["pest", "bugs", "seasonal", "services"],
+    features: ["service plans", "contact form", "pricing tiers"],
+  },
+  {
+    title: "Ecommerce",
+    slug: "ecommerce",
+    externalUrl: "https://built4you.org/ecommerce/",
+    badge: "Online Store",
+    tagline: "Products, cart, checkout, promos.",
+    keywords: ["store", "cart", "checkout", "stripe", "shopify"],
+    features: ["products", "search", "filters", "checkout"],
+    pricingPlanKey: "ecom-starter",
+  },
+  {
+    title: "Influencer / Creator",
+    slug: "creator",
+    externalUrl: "https://built4you.org/creator/",
+    badge: "Personal Brand",
+    tagline: "Link hub, content, email capture, offers.",
+    keywords: ["creator", "influencer", "newsletter", "links", "offers"],
+    features: ["email capture", "social links", "landing page"],
+  },
+];
 
 const useInView = (options?: IntersectionObserverInit) => {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -39,7 +127,9 @@ const IFramePreview: React.FC<{ url: string }> = ({ url }) => {
 
   useEffect(() => {
     if (!inView) return;
-    const t = setTimeout(() => { if (!loaded) setBlocked(true); }, 8000);
+    const t = setTimeout(() => {
+      if (!loaded) setBlocked(true);
+    }, 8000);
     return () => clearTimeout(t);
   }, [inView, loaded]);
 
@@ -51,7 +141,6 @@ const IFramePreview: React.FC<{ url: string }> = ({ url }) => {
       className="relative rounded-xl overflow-hidden border border-white/10 bg-white/10 backdrop-blur"
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/20 to-transparent z-10" />
-
       {!inView ? (
         <div className="h-[460px] sm:h-[520px] w-full flex items-center justify-center">
           <div className="h-6 w-6 rounded-full border-2 border-white/50 border-t-transparent animate-spin" />
@@ -106,15 +195,16 @@ const DemoShowcase: React.FC = () => {
   };
 
   return (
-    <main className="relative z-10 min-h-screen bg-transparent text-white">
+    <main className="min-h-screen bg-transparent text-white">
       <section className="px-4 sm:px-6 lg:px-8 pt-20 pb-8">
         <div className="max-w-7xl mx-auto flex flex-col items-center text-center gap-4">
           <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight">Demo Showcase</h1>
           <p className="max-w-2xl text-base sm:text-lg text-slate-200/90">Live, scrollable previews.</p>
 
-          {/* Search kept but visually hidden */}
           <div className="w-full max-w-md hidden">
-            <label className="sr-only" htmlFor="demo-search">Search demos</label>
+            <label className="sr-only" htmlFor="demo-search">
+              Search demos
+            </label>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300" />
               <input

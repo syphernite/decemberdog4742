@@ -15,7 +15,9 @@ import Galaxy from "./components/Galaxy";
 
 function ScrollToTopOnRouteChange() {
   const location = useLocation();
-  useEffect(() => { window.scrollTo(0, 0); }, [location.pathname]);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
   return null;
 }
 
@@ -23,7 +25,8 @@ export default function App() {
   return (
     <>
       {/* global animated background */}
-      <div className="absolute inset-0 bg-black" />  {/* base */}
+      <div className="pointer-events-none fixed inset-0 -z-10">
+        <div className="absolute inset-0 bg-black" />
         <Galaxy
           mouseInteraction
           mouseRepulsion
