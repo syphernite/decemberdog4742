@@ -4,7 +4,7 @@ import { Menu, X, Code } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 /* --------------------------- BACKGROUND IMAGE --------------------------- */
-const SPACE_BG_URL = "https://i.imgur.com/EG6kbHOh.jpg";
+const SPACE_BG_URL = "https://static.vecteezy.com/system/resources/previews/000/834/435/original/beautiful-space-background-vector.jpg";
 
 type PlanKind = "core" | "optional" | "one-time" | "custom";
 
