@@ -1,3 +1,4 @@
+// src/pages/SolarPricing.tsx
 import React, { useMemo, useRef, useState, useEffect, useLayoutEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Code } from "lucide-react";
@@ -54,7 +55,7 @@ const PLANS_IN_ORDER: Plan[] = [
     features: ["Up to 3 Pages", "Hosting and 1 Domain", "1 Edit Batch per Month", "Contact Form", "Support within 72 hours"],
     notIncluded: ["Unlimited edits", "Strategy calls", "SEO reports"],
     spotlightColor: "ring-blue-400",
-    cta: { label: "Start Startup", href: "/contact" },
+    cta: { label: "Start Startup", href: "/contact" }
   },
   {
     key: "basic",
@@ -66,7 +67,7 @@ const PLANS_IN_ORDER: Plan[] = [
     features: ["1 Page Website", "Mobile Responsive", "Contact Form", "Basic SEO Setup"],
     notIncluded: ["Hosting", "Edits after delivery", "Extra pages"],
     spotlightColor: "ring-emerald-400",
-    cta: { label: "Order Basic", href: "/contact" },
+    cta: { label: "Order Basic", href: "/contact" }
   },
   {
     key: "pro",
@@ -79,7 +80,7 @@ const PLANS_IN_ORDER: Plan[] = [
     notIncluded: ["Hosting", "Ongoing support", "Advanced integrations"],
     addOns: ["Extra Page - $50", "Logo Design - $75", "Rush Delivery 48 hours - +$100"],
     spotlightColor: "ring-cyan-400",
-    cta: { label: "Order Pro", href: "/contact" },
+    cta: { label: "Order Pro", href: "/contact" }
   },
   {
     key: "elite",
@@ -96,12 +97,12 @@ const PLANS_IN_ORDER: Plan[] = [
       "Contact Form with Conditional Logic",
       "Custom Domain Setup",
       "1 Week of Post-Launch Support",
-      "SEO Foundations: headers, meta, structure",
+      "SEO Foundations: headers, meta, structure"
     ],
     notIncluded: ["Hosting and domain unless added", "Ongoing edits after 1 week", "Booking or store setups"],
     addOns: ["Hosting Only - $30 per month", "Logo Design - $75", "Rush Delivery 48 hours - +$100", "Extra Page - $50 per page"],
     spotlightColor: "ring-yellow-400",
-    cta: { label: "Get Elite Build", href: "/contact" },
+    cta: { label: "Get Elite Build", href: "/contact" }
   },
   {
     key: "business",
@@ -116,11 +117,11 @@ const PLANS_IN_ORDER: Plan[] = [
       "Monthly Reports",
       "Contact Form, Google Maps and Socials, optional Photo Gallery",
       "Basic SEO Maintenance",
-      "Priority Email Support",
+      "Priority Email Support"
     ],
     notIncluded: ["Strategy calls", "Advanced integrations"],
     spotlightColor: "ring-violet-400",
-    cta: { label: "Start Business", href: "/contact" },
+    cta: { label: "Start Business", href: "/contact" }
   },
   {
     key: "business-pro",
@@ -135,11 +136,11 @@ const PLANS_IN_ORDER: Plan[] = [
       "Biweekly Strategy Calls",
       "Custom Integrations: bookings, menus, payments",
       "Advanced Contact Forms with conditional logic",
-      "VIP Support",
+      "VIP Support"
     ],
     notIncluded: ["Large ecommerce builds", "Full redesigns without quote"],
     spotlightColor: "ring-fuchsia-400",
-    cta: { label: "Start Business Pro", href: "/contact" },
+    cta: { label: "Start Business Pro", href: "/contact" }
   },
   {
     key: "ecom-starter",
@@ -151,7 +152,7 @@ const PLANS_IN_ORDER: Plan[] = [
     features: ["Store Setup with Stripe, PayPal, or Shopify Lite", "Up to 10 Products Uploaded", "Hosting and 1 Domain", "1 Edit Batch per Month", "Basic Support"],
     notIncluded: ["Subscriptions", "Advanced filtering", "Shipping calculators"],
     spotlightColor: "ring-rose-400",
-    cta: { label: "Start Ecommerce", href: "/contact" },
+    cta: { label: "Start Ecommerce", href: "/contact" }
   },
   {
     key: "vip-flex",
@@ -166,11 +167,11 @@ const PLANS_IN_ORDER: Plan[] = [
       "Advanced Performance Tracking",
       "Quarterly Redesigns",
       "Socials, Reviews, Google Business Management",
-      "Dedicated Account Manager",
+      "Dedicated Account Manager"
     ],
     notIncluded: ["Large ecommerce without quote", "Complex data migrations without quote"],
     spotlightColor: "ring-amber-400",
-    cta: { label: "Start VIP Flex", href: "/contact" },
+    cta: { label: "Start VIP Flex", href: "/contact" }
   },
   {
     key: "custom",
@@ -185,11 +186,11 @@ const PLANS_IN_ORDER: Plan[] = [
       "Complex Integrations or Dashboards",
       "Multi-Step Forms or Funnels",
       "Custom CMS or Admin Panel",
-      "Dedicated Project Manager",
+      "Dedicated Project Manager"
     ],
     spotlightColor: "ring-sky-400",
-    cta: { label: "Request Custom Quote", href: "/contact" },
-  },
+    cta: { label: "Request Custom Quote", href: "/contact" }
+  }
 ];
 
 const ORDER_KEYS = ["startup", "basic", "pro", "elite", "business", "business-pro", "ecom-starter", "vip-flex", "custom"] as const;
@@ -213,7 +214,7 @@ const LocalHeader: React.FC = () => {
     { label: "About", path: "/about" },
     { label: "Our Mission", path: "/why-we-exist" },
     { label: "Our Work", path: "https://built4you.org/#/demos" },
-    { label: "Contact", path: "/contact" },
+    { label: "Contact", path: "/contact" }
   ];
 
   const isExternal = (p: string) => p.startsWith("http");
@@ -409,7 +410,6 @@ const Pricing: React.FC = () => {
     if (!touchStart.current) return;
     const t = e.changedTouches[0];
     const dx = t.clientX - touchStart.current.x;
-    theEnd:
     const dy = t.clientY - touchStart.current.y;
     touchStart.current = null;
     if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
@@ -609,11 +609,11 @@ const Pricing: React.FC = () => {
               style={{
                 animation: animEnabled ? "orbit-rotate 32s linear infinite" : "none",
                 willChange: "transform",
-                transformOrigin: "50% 50%",
+                transformOrigin: "50% 50%"
               }}
             >
               {orderedPlans.map((plan, slotIdx) => {
-                const angleDeg = startAngle + (360 / total) * slotIdx;
+                const angleDeg = -90 + (360 / total) * slotIdx;
                 const radius = centerRadius + GAP_BETWEEN + planetRadius;
 
                 return (
@@ -625,7 +625,7 @@ const Pricing: React.FC = () => {
                       left: "50%",
                       top: "50%",
                       transform: `translate(-50%, -50%) rotate(${angleDeg}deg) translateX(${radius}px) rotate(${-angleDeg}deg)`,
-                      willChange: "transform",
+                      willChange: "transform"
                     }}
                     title={plan.name}
                     aria-label={plan.name}
@@ -642,7 +642,7 @@ const Pricing: React.FC = () => {
                         className="absolute inset-0 flex flex-col items-center justify-center text-center px-1 leading-tight"
                         style={{
                           animation: animEnabled ? "orbit-rotate-reverse 32s linear infinite" : "none",
-                          willChange: "transform",
+                          willChange: "transform"
                         }}
                       >
                         <div className="text-[10px] uppercase tracking-wider text-white/70">Plan</div>
