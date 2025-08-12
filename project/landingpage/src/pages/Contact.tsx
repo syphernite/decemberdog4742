@@ -22,6 +22,10 @@
  *  vip-plus -> "VIP Flex" (alias)
  *  custom -> "Custom"
  *  starter -> "Startup" (alias)
+ *
+ * Updates in this file:
+ * - Swapped Step 1 and Step 2 so business details come first, identity second.
+ * - Made "# of Pages Desired" required (min 1) and gate progress on every step.
  */
 
 import React, { useEffect, useMemo, useState, ReactNode } from "react";
@@ -58,7 +62,7 @@ const SLUG_TO_LABEL: Record<string, Exclude<Plan, "">> = {
   basic: "Basic",
   pro: "Pro",
   elite: "Elite Build",
-  "business": "Business",
+  business: "Business",
   "business-pro": "Business Pro",
   "ecom-starter": "Ecommerce Starter",
   "vip-flex": "VIP Flex",
@@ -245,12 +249,21 @@ const Contact: React.FC = () => {
 
   const isEmail = (v: string) => /^\S+@\S+\.\S+$/.test(v);
 
-  const step1Invalid = !(formData.name.trim().length > 0) || !isEmail(formData.email);
-  const step3Invalid = !(formData.message.trim().length > 0);
+  // Validation flags
+  const pagesInvalid =
+    !(String(formData.pages ?? "").trim().length > 0) || Number(formData.pages) < 1;
+  const identityInvalid = !(formData.name.trim().length > 0) || !isEmail(formData.email);
+  const messageInvalid = !(formData.message.trim().length > 0);
 
   const disabledSelect = !!planFromQuery && (LOCK_PLAN_FROM_QUERY || lockFromQuery);
 
   const handleSubmit = async () => {
+    // Final guard to ensure required fields satisfied regardless of step flow
+    if (pagesInvalid || identityInvalid || messageInvalid) {
+      setErr("Please complete all required fields.");
+      return;
+    }
+
     if (busy) return;
     setBusy(true);
     setErr(null);
@@ -300,41 +313,16 @@ const Contact: React.FC = () => {
           onFinish={handleSubmit}
           initialIndex={initialIndex}
           getNextDisabled={(i) => {
-            if (i === 0) return step1Invalid;
-            if (i === 1) return false;
-            if (i === 2) return step3Invalid;
+            // Enforce pages on all steps, identity on step 2, message on step 3
+            if (i === 0) return pagesInvalid;
+            if (i === 1) return identityInvalid || pagesInvalid;
+            if (i === 2) return messageInvalid || pagesInvalid;
             return false;
           }}
           nextLabel="Next"
           backLabel="Previous"
         >
-          {/* Step 1 */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <Field label="Full Name *">
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="John Doe"
-                className={INPUT}
-                autoComplete="name"
-              />
-            </Field>
-            <Field label="Email Address *">
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="john@example.com"
-                className={INPUT}
-                autoComplete="email"
-              />
-            </Field>
-          </div>
-
-          {/* Step 2 */}
+          {/* Step 1 (was Step 2) Business, Industry, Pages (required), Plan */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <Field label="Business / Name">
               <input
@@ -344,6 +332,7 @@ const Contact: React.FC = () => {
                 onChange={handleChange}
                 placeholder="Your Company"
                 className={INPUT}
+                autoComplete="organization"
               />
             </Field>
             <Field label="Industry">
@@ -356,7 +345,8 @@ const Contact: React.FC = () => {
                 className={INPUT}
               />
             </Field>
-            <Field label="# of Pages Desired" span>
+
+            <Field label="# of Pages Desired *" span>
               <input
                 type="number"
                 name="pages"
@@ -364,8 +354,13 @@ const Contact: React.FC = () => {
                 onChange={handleChange}
                 placeholder="Example: 3"
                 className={INPUT}
-                min={0}
+                min={1}
+                required
+                aria-invalid={pagesInvalid}
               />
+              {pagesInvalid && (
+                <p className="mt-2 text-[11px] text-red-300">Enter a value of at least 1.</p>
+              )}
             </Field>
 
             <div className="sm:col-span-1">
@@ -397,10 +392,45 @@ const Contact: React.FC = () => {
               </Field>
             </div>
 
-            <p className="sm:col-span-2 text-xs text-zinc-400">Optional fields. Leave blank and press Next to skip.</p>
+            <p className="sm:col-span-2 text-xs text-zinc-400">
+              Pages is required. Other fields on this step are optional.
+            </p>
           </div>
 
-          {/* Step 3 */}
+          {/* Step 2 (was Step 1) Name and Email */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <Field label="Full Name *">
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="John Doe"
+                className={INPUT}
+                autoComplete="name"
+                required
+                aria-invalid={!(formData.name.trim().length > 0)}
+              />
+            </Field>
+            <Field label="Email Address *">
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="john@example.com"
+                className={INPUT}
+                autoComplete="email"
+                required
+                aria-invalid={!isEmail(formData.email)}
+              />
+            </Field>
+            <p className="sm:col-span-2 text-xs text-zinc-400">
+              Both name and email are required to continue.
+            </p>
+          </div>
+
+          {/* Step 3 Project Details */}
           <div className="grid grid-cols-1 gap-6">
             <Field label="Project Details *">
               <textarea
@@ -410,6 +440,8 @@ const Contact: React.FC = () => {
                 rows={6}
                 placeholder="Tell us about your project, goals, timeline, and any specific requirements..."
                 className={INPUT}
+                required
+                aria-invalid={messageInvalid}
               />
             </Field>
           </div>
