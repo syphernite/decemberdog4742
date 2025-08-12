@@ -70,14 +70,16 @@ const Footer = () => {
             <h4 className="text-xl font-bold mb-4">Follow Me</h4>
             <div className="flex space-x-4">
               {[
-                { icon: Instagram, href: '#', color: 'hover:text-pink-500' },
-                { icon: Youtube, href: '#', color: 'hover:text-red-500' },
-                { icon: Facebook, href: '#', color: 'hover:text-blue-500' },
-                { icon: MessageCircle, href: '#', color: 'hover:text-purple-500' }
+                { icon: Instagram, href: 'https://instagram.com/oliwakefieldfitness', color: 'hover:text-pink-500' },
+                { icon: Youtube, href: 'https://www.youtube.com/channel/UCSNa_smPFrELPhS6xLbpFqA', color: 'hover:text-red-500' },
+                { icon: Facebook, href: 'https://www.facebook.com/share/19w6RhurwL/?mibextid=wwXIfr', color: 'hover:text-blue-500' },
+                { icon: MessageCircle, href: '#contact', color: 'hover:text-purple-500' }
               ].map((social, index) => (
                 <a
                   key={index}
                   href={social.href}
+                  target={social.href.startsWith('http') ? '_blank' : undefined}
+                  rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                   className={`text-gray-400 transition-all duration-300 transform hover:scale-110 ${social.color}`}
                 >
                   <social.icon className="w-6 h-6" />
