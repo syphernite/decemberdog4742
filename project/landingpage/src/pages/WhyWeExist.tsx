@@ -1,177 +1,106 @@
 // src/pages/WhyWeExist.tsx
 import React, { useEffect, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { createPortal } from 'react-dom';
-import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 function useInViewAnimation(threshold = 0.3) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [isVisible, setVisible] = useState(false);
   useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { threshold });
+    const observer = new IntersectionObserver(
+      ([entry]) => setVisible(entry.isIntersecting),
+      { threshold }
+    );
     if (ref.current) observer.observe(ref.current);
-    return () => { if (ref.current) observer.unobserve(ref.current); };
+    return () => {
+      if (ref.current) observer.unobserve(ref.current);
+    };
   }, []);
   return { ref, isVisible };
 }
 
-const OfferModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
-  const modalRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (isOpen) {
-      const focusable = modalRef.current?.querySelectorAll<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-      focusable?.[0]?.focus();
-    }
-    const handleKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  }, [isOpen, onClose]);
-
-  if (!isOpen) return null;
-
-  return createPortal(
-    <AnimatePresence>
-      <motion.div
-        className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        aria-modal
-        role="dialog"
-        tabIndex={-1}
-      >
-        <motion.div
-          ref={modalRef}
-          className="bg-white dark:bg-slate-800 rounded-xl shadow-2xl max-w-md w-full p-6 relative"
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.8, opacity: 0 }}
-          transition={{ type: 'spring', stiffness: 100 }}
-        >
-          <button
-            onClick={onClose}
-            className="absolute top-3 right-3 text-gray-500 hover:text-black dark:hover:text-white"
-            aria-label="Close modal"
-          >
-            ✕
-          </button>
-          <h2 className="text-xl font-bold mb-3 text-center text-gray-800 dark:text-white">🚀 Get Online in 72 Hours</h2>
-          <p className="text-center text-gray-600 dark:text-gray-300 mb-4">
-            Book your <span className="font-semibold text-blue-600">free demo call</span> and we’ll build your homepage fast.
-          </p>
-          <div className="flex flex-col gap-3">
-            <a
-              onClick={() => {
-                onClose();
-                setTimeout(() => {
-                  const el = document.getElementById('calendar');
-                  el?.scrollIntoView({ behavior: 'smooth' });
-                }, 100);
-              }}
-              className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition text-center font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400"
-            >
-              📞 Schedule My Demo
-            </a>
-            <div className="flex justify-center text-sm gap-2 text-gray-500 dark:text-gray-400">
-              <button
-                onClick={() => { onClose(); navigate('/pricing?plan=basic'); }}
-                className="hover:underline focus:outline-none focus:ring-1 rounded"
-              >
-                Basic
-              </button>
-              <span>·</span>
-              <button
-                onClick={() => { onClose(); navigate('/pricing?plan=pro'); }}
-                className="hover:underline focus:outline-none focus:ring-1 rounded"
-              >
-                Pro
-              </button>
-            </div>
-          </div>
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>,
-    document.body
-  );
-};
-
 const WhyWeExist: React.FC = () => {
-  const [modalOpen, setModalOpen] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const calendar = document.getElementById('calendar');
-      if (calendar) {
-        const rect = calendar.getBoundingClientRect();
-        const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
-        if (isVisible) return;
-      }
-      setModalOpen(true);
-    }, 10000);
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
-    <main className="relative z-10 bg-transparent text-gray-800 dark:text-white min-h-screen font-sans">
-      {/* Hero now fully transparent to match galaxy background */}
-      <section className="text-center py-20 px-6 bg-transparent shadow-none">
-        <h1 className="text-3xl md:text-5xl font-extrabold mb-4 text-white">Why We Created Built4You</h1>
-        <p className="text-lg max-w-xl mx-auto text-gray-200">
-          We exist to give small businesses the online edge they deserve - fast, affordable, and hassle free.
+    <main className="relative z-10 bg-transparent text-gray-900 dark:text-white min-h-screen font-sans">
+      {/* Hero */}
+      <section className="text-center py-20 px-6 bg-white/90 dark:bg-slate-800/80 shadow rounded-none">
+        <h1 className="text-3xl md:text-5xl font-extrabold mb-4">
+          Why We Created Built4You
+        </h1>
+        <p className="text-lg text-gray-700 dark:text-gray-200 max-w-xl mx-auto">
+          We exist to give small businesses the online edge they deserve — fast, affordable, and hassle free.
         </p>
-        <button
-          onClick={() => setModalOpen(true)}
-          className="mt-8 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg relative focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400"
-        >
-          <span className="relative z-10">✨ Let’s Build Yours</span>
-        </button>
       </section>
 
+      {/* Value sections */}
       {[
         {
           title: 'Offline = Invisible in 2025',
           content:
-            'People search online first. If they can’t find your business, they will find someone else. We help local legends stay visible.'
+            'People search online first. If they can’t find your business, they will find someone else. We help local legends stay visible.',
         },
         {
           title: 'Agencies Are Too Slow + Pricey',
           content:
-            'Small businesses can’t wait 6 weeks or pay $5K. We deliver polished sites fast, sometimes within 3 days.'
+            'Small businesses can’t wait 6 weeks or pay $5K. We deliver polished sites fast, sometimes within 3 days.',
         },
         {
           title: 'Built for Real People',
           content:
-            'Our clients are barbers, mechanics, bakers, cleaners, artists, people with hustle but no time to learn web design.'
+            'Our clients are barbers, mechanics, bakers, cleaners, artists. People with hustle but no time to learn web design.',
         },
         {
           title: 'Simple. Fast. Done For You.',
           content:
-            'Send us your info. Pick a style. We build it. You focus on your business while we make sure people can find it.'
-        }
+            'Send us your info. Pick a style. We build it. You focus on your business while we make sure people can find it.',
+        },
       ].map(({ title, content }, i) => {
         const { ref, isVisible } = useInViewAnimation();
         return (
           <div key={i} ref={ref}>
             <motion.section
-              className="py-16 px-6 max-w-4xl mx-auto text-center"
+              className="py-12 px-6 max-w-4xl mx-auto text-center bg-black/40 dark:bg-slate-950/50 backdrop-blur-md rounded-2xl border border-white/10 shadow-lg"
               initial={{ opacity: 0, y: 50 }}
               animate={isVisible ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, ease: 'easeOut' }}
             >
-              <h2 className="text-2xl md:text-3xl font-bold mb-3">{title}</h2>
-              <p className="text-gray-300">{content}</p>
+              <h2 className="text-2xl md:text-3xl font-bold mb-3 text-white">
+                {title}
+              </h2>
+              <p className="text-white/90">{content}</p>
             </motion.section>
           </div>
         );
       })}
 
+      {/* Soft CTA for this page */}
+      <section className="py-10 px-6 max-w-3xl mx-auto text-center">
+        <h3 className="text-2xl font-semibold mb-4">See what we build</h3>
+        <div className="flex items-center justify-center gap-4 flex-wrap">
+          <Link
+            to="/demos"
+            className="inline-flex items-center justify-center rounded-lg px-5 py-3 bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400"
+          >
+            View Demos
+          </Link>
+          <Link
+            to="/pricing"
+            className="inline-flex items-center justify-center rounded-lg px-5 py-3 bg-teal-600 text-white hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-400"
+          >
+            See Pricing
+          </Link>
+        </div>
+      </section>
+
+      {/* Booking calendar */}
       <div
         id="calendar"
         className="w-full max-w-5xl mx-auto px-6 py-10 scroll-mt-20 bg-white rounded-2xl shadow-xl"
         style={{ colorScheme: 'light', minHeight: '700px' }}
       >
-        <h2 className="text-3xl font-semibold text-center mb-8 text-black">📅 Book a Free Demo Call</h2>
+        <h2 className="text-3xl font-semibold text-center mb-8 text-black">
+          📅 Book a Free Demo Call
+        </h2>
         <iframe
           src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0hRscFCqAlikNLhx7I1rb-xghG1bygoubGeEZ3G2r-JoIKLhNVX_Lr2nV6qlc8EFCk6Ourjn1F?gv=true"
           width="100%"
@@ -183,17 +112,6 @@ const WhyWeExist: React.FC = () => {
           title="Google Booking"
         />
       </div>
-
-      <div className="fixed bottom-4 left-0 right-0 px-4 md:hidden z-40">
-        <button
-          onClick={() => setModalOpen(true)}
-          className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3 rounded-lg shadow-lg transition font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-400"
-        >
-          🚀 Get My Site
-        </button>
-      </div>
-
-      <OfferModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
     </main>
   );
 };
