@@ -1,5 +1,5 @@
 import React from 'react';
-import { Instagram, Youtube, Facebook, MessageCircle, Heart } from 'lucide-react';
+import { Instagram, Youtube, Facebook, MessageCircle } from 'lucide-react';
 
 const Footer = () => {
   const scrollToSection = (sectionId: string) => {
@@ -95,7 +95,7 @@ const Footer = () => {
           
           <p className="text-gray-400 flex items-center space-x-2">
             <span>Made with</span>
-            <Heart className="w-4 h-4 text-red-500 fill-current" />
+            <span role="img" aria-label="flexed biceps" className="text-yellow-400 text-lg">💪</span>
             <span>by Built4You</span>
           </p>
         </div>
