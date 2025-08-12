@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
-import Header from './Header';
-import Footer from './Footer';
+import React, { useState, useEffect } from "react";
+import { Outlet } from "react-router-dom";
+import Header from "./Header";
+import Footer from "./Footer";
 
 const Layout: React.FC = () => {
   const [darkMode, setDarkMode] = useState<boolean | null>(null);
 
   // On first load: load from localStorage or use system preference
   useEffect(() => {
-    const stored = localStorage.getItem('darkMode');
+    const stored = localStorage.getItem("darkMode");
 
-    if (stored === 'true') {
+    if (stored === "true") {
       setDarkMode(true);
-    } else if (stored === 'false') {
+    } else if (stored === "false") {
       setDarkMode(false);
     } else {
-      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
       setDarkMode(systemPrefersDark);
     }
   }, []);
@@ -26,11 +26,11 @@ const Layout: React.FC = () => {
 
     const root = document.documentElement;
     if (darkMode) {
-      root.classList.add('dark');
-      localStorage.setItem('darkMode', 'true');
+      root.classList.add("dark");
+      localStorage.setItem("darkMode", "true");
     } else {
-      root.classList.remove('dark');
-      localStorage.setItem('darkMode', 'false');
+      root.classList.remove("dark");
+      localStorage.setItem("darkMode", "false");
     }
   }, [darkMode]);
 
@@ -42,7 +42,7 @@ const Layout: React.FC = () => {
   if (darkMode === null) return null;
 
   return (
-    <div className="zoom-desktop-only min-h-screen bg-white dark:bg-slate-900 transition-colors duration-300">
+    <div className="zoom-desktop-only min-h-screen bg-white/70 dark:bg-slate-900/70 transition-colors duration-300 backdrop-blur-sm">
       <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
       <main className="pt-16">
         <Outlet />

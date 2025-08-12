@@ -1,17 +1,19 @@
 // src/App.tsx
-import React, { useEffect } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import React, { useEffect } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
 
-import Layout from './components/Layout';
-import Home from './pages/Home';
-import Services from './pages/Services';
-import About from './pages/About';
-import Contact from './pages/Contact';
-import PrivacyPolicy from './pages/PrivacyPolicy';
-import TermsOfService from './pages/TermsOfService';
-import WhyWeCreatedBuilt4You from './pages/WhyWeExist';
-import SolarPricing from './pages/SolarPricing';
-import DemoShowcase from './pages/DemoShowcase'; // ← New import
+import Layout from "./components/Layout";
+import Home from "./pages/Home";
+import Services from "./pages/Services";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import WhyWeCreatedBuilt4You from "./pages/WhyWeExist";
+import SolarPricing from "./pages/SolarPricing";
+import DemoShowcase from "./pages/DemoShowcase";
+
+import Galaxy from "./components/Galaxy";
 
 function ScrollToTopOnRouteChange() {
   const location = useLocation();
@@ -21,9 +23,21 @@ function ScrollToTopOnRouteChange() {
   return null;
 }
 
-function App() {
+export default function App() {
   return (
     <>
+      {/* global animated background */}
+      <Galaxy
+        className="fixed inset-0 -z-10"
+        mouseRepulsion
+        mouseInteraction
+        density={1.3}
+        glowIntensity={0.45}
+        saturation={0.7}
+        hueShift={240}
+        transparent
+      />
+
       <ScrollToTopOnRouteChange />
       <Routes>
         <Route path="/" element={<Layout />}>
@@ -34,7 +48,7 @@ function App() {
           <Route path="privacy-policy" element={<PrivacyPolicy />} />
           <Route path="terms-of-service" element={<TermsOfService />} />
           <Route path="why-we-exist" element={<WhyWeCreatedBuilt4You />} />
-          <Route path="demos" element={<DemoShowcase />} /> {/* ← New route */}
+          <Route path="demos" element={<DemoShowcase />} />
         </Route>
         <Route path="/pricing" element={<SolarPricing />} />
       </Routes>
