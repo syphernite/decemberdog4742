@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import Pricing from "../components/Pricing";
 import Hero from "../components/Hero";
 import WhyChooseUs from "../components/WhyChooseUs";
-import MagicBento from "../components/MagicBento"; // ← NEW
 
 export default function Home() {
   const navigate = useNavigate();
