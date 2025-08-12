@@ -1,14 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { Code, Menu, X } from "lucide-react";
 
-interface HeaderProps {
-  darkMode: boolean;
-  toggleDarkMode: () => void;
-}
-
-const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
+const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMenuOpen) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = prev;
+      };
+    }
+  }, [isMenuOpen]);
 
   const navigation = [
     { name: "Home", path: "/" },
@@ -20,7 +26,7 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
   ];
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50 bg-slate-900/40 dark:bg-slate-950/40 backdrop-blur-md border-b border-slate-800/50">
+    <header className="fixed top-0 left-0 w-full z-50 bg-slate-900/60 backdrop-blur-md border-b border-slate-800/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -41,7 +47,7 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
                 key={item.name}
                 to={item.path}
                 className={({ isActive }) =>
-                  `text-sm font-medium transition-colors duration-200 ${
+                  `text-sm font-medium transition-colors ${
                     isActive
                       ? "text-emerald-400"
                       : "text-slate-300 hover:text-emerald-400"
@@ -53,26 +59,14 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
             ))}
           </nav>
 
-          {/* Right side controls */}
-          <div className="flex items-center space-x-4">
-            {/* Dark Mode Toggle */}
-            <button
-              onClick={toggleDarkMode}
-              className="p-2 rounded-lg bg-slate-800/50 hover:bg-slate-800 transition-colors"
-              aria-label="Toggle Dark Mode"
-            >
-              {darkMode ? (
-                <span className="text-yellow-400">☀️</span>
-              ) : (
-                <span className="text-blue-400">🌙</span>
-              )}
-            </button>
-
-            {/* Mobile Menu Button */}
+          {/* Mobile Menu Button */}
+          <div className="flex items-center">
             <button
               onClick={() => setIsMenuOpen(true)}
-              className="md:hidden p-2 rounded-lg bg-slate-800/50 hover:bg-slate-800 transition-colors"
+              className="md:hidden p-2 rounded-lg bg-slate-800/60 hover:bg-slate-800 transition-colors"
               aria-label="Open Menu"
+              aria-expanded={isMenuOpen}
+              aria-controls="mobile-menu"
             >
               <Menu className="h-6 w-6 text-white" />
             </button>
@@ -80,36 +74,45 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Overlay */}
       {isMenuOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-md flex flex-col p-6 space-y-6">
-          <div className="flex justify-between items-center">
-            <span className="text-2xl font-bold text-white">Menu</span>
-            <button
-              onClick={() => setIsMenuOpen(false)}
-              aria-label="Close Menu"
-            >
-              <X className="h-6 w-6 text-white" />
-            </button>
-          </div>
-          <nav className="flex flex-col space-y-4">
-            {navigation.map((item) => (
-              <NavLink
-                key={item.name}
-                to={item.path}
+        <div
+          id="mobile-menu"
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-[100] bg-slate-950 text-white"
+        >
+          <div className="flex flex-col h-full p-6">
+            <div className="flex justify-between items-center">
+              <span className="text-2xl font-bold">Menu</span>
+              <button
                 onClick={() => setIsMenuOpen(false)}
-                className={({ isActive }) =>
-                  `text-lg font-medium ${
-                    isActive
-                      ? "text-emerald-400"
-                      : "text-slate-300 hover:text-emerald-400"
-                  }`
-                }
+                aria-label="Close Menu"
+                className="p-2"
               >
-                {item.name}
-              </NavLink>
-            ))}
-          </nav>
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+
+            <nav className="mt-8 flex-1 overflow-y-auto flex flex-col space-y-4">
+              {navigation.map((item) => (
+                <NavLink
+                  key={item.name}
+                  to={item.path}
+                  onClick={() => setIsMenuOpen(false)}
+                  className={({ isActive }) =>
+                    `text-lg font-medium ${
+                      isActive
+                        ? "text-emerald-400"
+                        : "text-slate-300 hover:text-emerald-400"
+                    }`
+                  }
+                >
+                  {item.name}
+                </NavLink>
+              ))}
+            </nav>
+          </div>
         </div>
       )}
     </header>
