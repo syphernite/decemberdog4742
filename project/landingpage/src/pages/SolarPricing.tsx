@@ -1,15 +1,10 @@
 /**
  * SolarPricing.tsx
  *
- * What changed (behavioral only; visuals intact):
- * - Plan CTA buttons route with useNavigate to `/contact?plan=<slug>&step=2` by default.
- * - The DETAILS section CTA now routes to `/contact?plan=<slug>&step=1` to land on the first page of the contact form.
- * - Uses each plan's `key` as the semantic slug (startup, basic, pro, elite, business, business-pro, ecom-starter, vip-flex, custom).
- * - If you want to land locked, append `&lock=1` in the navigate call.
- *
- * Acceptance checks:
- * - Clicking the DETAILS section CTA for "VIP Flex" goes to /contact?plan=vip-flex&step=1.
- * - Other plan CTAs still go to /contact?plan=<slug>&step=2 unless overridden.
+ * Changes in this version:
+ * - The mobile carousel CTA now routes to /contact?plan=<slug>&step=1 so it lands on the first page.
+ * - The DETAILS section CTA already routes to step=1.
+ * - Updated CTA labels for all plans except "Custom" to "Get Your Free Demo Today".
  */
 
 import React, { useMemo, useRef, useState, useEffect, useLayoutEffect } from "react";
@@ -68,7 +63,7 @@ const PLANS_IN_ORDER: Plan[] = [
     features: ["Up to 3 Pages", "Hosting and 1 Domain", "1 Edit Batch per Month", "Contact Form", "Support within 72 hours"],
     notIncluded: ["Unlimited edits", "Strategy calls", "SEO reports"],
     spotlightColor: "ring-blue-400",
-    cta: { label: "Start Startup" }
+    cta: { label: "Get Your Free Demo Today" }
   },
   {
     key: "basic",
@@ -80,7 +75,7 @@ const PLANS_IN_ORDER: Plan[] = [
     features: ["1 Page Website", "Mobile Responsive", "Contact Form", "Basic SEO Setup"],
     notIncluded: ["Hosting", "Edits after delivery", "Extra pages"],
     spotlightColor: "ring-emerald-400",
-    cta: { label: "Order Basic" }
+    cta: { label: "Get Your Free Demo Today" }
   },
   {
     key: "pro",
@@ -93,7 +88,7 @@ const PLANS_IN_ORDER: Plan[] = [
     notIncluded: ["Hosting", "Ongoing support", "Advanced integrations"],
     addOns: ["Extra Page - $50", "Logo Design - $75", "Rush Delivery 48 hours - +$100"],
     spotlightColor: "ring-cyan-400",
-    cta: { label: "Order Pro" }
+    cta: { label: "Get Your Free Demo Today" }
   },
   {
     key: "elite",
@@ -115,7 +110,7 @@ const PLANS_IN_ORDER: Plan[] = [
     notIncluded: ["Hosting and domain unless added", "Ongoing edits after 1 week", "Booking or store setups"],
     addOns: ["Hosting Only - $30 per month", "Logo Design - $75", "Rush Delivery 48 hours - +$100", "Extra Page - $50 per page"],
     spotlightColor: "ring-yellow-400",
-    cta: { label: "Get Elite Build" }
+    cta: { label: "Get Your Free Demo Today" }
   },
   {
     key: "business",
@@ -134,7 +129,7 @@ const PLANS_IN_ORDER: Plan[] = [
     ],
     notIncluded: ["Strategy calls", "Advanced integrations"],
     spotlightColor: "ring-violet-400",
-    cta: { label: "Start Business" }
+    cta: { label: "Get Your Free Demo Today" }
   },
   {
     key: "business-pro",
@@ -153,7 +148,7 @@ const PLANS_IN_ORDER: Plan[] = [
     ],
     notIncluded: ["Large ecommerce builds", "Full redesigns without quote"],
     spotlightColor: "ring-fuchsia-400",
-    cta: { label: "Start Business Pro" }
+    cta: { label: "Get Your Free Demo Today" }
   },
   {
     key: "ecom-starter",
@@ -165,7 +160,7 @@ const PLANS_IN_ORDER: Plan[] = [
     features: ["Store Setup with Stripe, PayPal, or Shopify Lite", "Up to 10 Products Uploaded", "Hosting and 1 Domain", "1 Edit Batch per Month", "Basic Support"],
     notIncluded: ["Subscriptions", "Advanced filtering", "Shipping calculators"],
     spotlightColor: "ring-rose-400",
-    cta: { label: "Start Ecommerce" }
+    cta: { label: "Get Your Free Demo Today" }
   },
   {
     key: "vip-flex",
@@ -184,7 +179,7 @@ const PLANS_IN_ORDER: Plan[] = [
     ],
     notIncluded: ["Large ecommerce without quote", "Complex data migrations without quote"],
     spotlightColor: "ring-amber-400",
-    cta: { label: "Start VIP Flex" }
+    cta: { label: "Get Your Free Demo Today" }
   },
   {
     key: "custom",
@@ -481,7 +476,7 @@ const Pricing: React.FC = () => {
   const cardClass =
     "rounded-3xl border border-white/15 bg-black/72 backdrop-blur-md p-6 sm:p-8 shadow-[0_0_30px_rgba(0,0,0,0.35)] sm:bg-white/5 sm:backdrop-blur-0";
 
-  // Navigate to contact. Default step is "2" to preserve existing behavior elsewhere.
+  // Navigate to contact. Default step is "2" to preserve behavior when desired.
   const goContact = (slug: PlanKey, lock = false, step: "1" | "2" = "2") => {
     const qs = new URLSearchParams({ plan: slug, step });
     if (lock) qs.set("lock", "1");
@@ -570,8 +565,9 @@ const Pricing: React.FC = () => {
                   </li>
                 ))}
               </ul>
+              {/* Mobile CTA now routes to step=1 */}
               <button
-                onClick={() => goContact(current.key as PlanKey /* default step=2 */)}
+                onClick={() => goContact(current.key as PlanKey, false, "1")}
                 className="mt-4 mx-auto w-full inline-flex items-center justify-center px-5 sm:px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-blue-500 text-black font-semibold hover:opacity-90 transition shadow whitespace-nowrap overflow-visible leading-tight min-h-[44px]"
               >
                 {current.cta?.label ?? "Get Started"}
@@ -788,9 +784,8 @@ const Pricing: React.FC = () => {
 
               <div className="mt-4 text-xs text-white/75">Large ecommerce and complex data migrations require a quote.</div>
 
-              {/* CTA -> Contact with preselect */}
+              {/* CTA -> Contact with preselect, step 1 */}
               <div className="mt-6 flex items-center justify-end gap-3">
-                {/* Route to the FIRST page of the contact form */}
                 <button
                   onClick={() => goContact(current.key as PlanKey, false, "1")}
                   className="px-4 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-blue-500 text-black font-semibold hover:opacity-90 transition shadow"
