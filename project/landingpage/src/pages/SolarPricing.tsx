@@ -2,9 +2,26 @@ import React, { useMemo, useRef, useState, useEffect, useLayoutEffect } from "re
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Code } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import Galaxy from "../components/Galaxy";
 
-/* --------------------------- BACKGROUND IMAGE --------------------------- */
-const SPACE_BG_URL = "https://static.vecteezy.com/system/resources/previews/000/834/435/original/beautiful-space-background-vector.jpg";
+/* --------------------------- BACKGROUND LAYERS --------------------------- */
+const BackgroundLayer: React.FC = () => (
+  <>
+    {/* animated galaxy/light layer */}
+    <Galaxy
+      mouseInteraction
+      mouseRepulsion
+      transparent
+      density={1.9}
+      glowIntensity={0.3}
+      className="absolute inset-0 -z-10"
+    />
+    {/* subtle global vignette for edges */}
+    <div className="absolute inset-0 -z-10 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_60%,rgba(0,0,0,0.65)_100%)]" />
+    {/* mobile-only dark scrim to keep text legible over lights */}
+    <div className="absolute inset-0 -z-10 sm:hidden bg-black/80 backdrop-blur-[2px]" />
+  </>
+);
 
 type PlanKind = "core" | "optional" | "one-time" | "custom";
 
@@ -173,24 +190,6 @@ const PLANS_IN_ORDER: Plan[] = [
 
 const ORDER_KEYS = ["startup", "basic", "pro", "elite", "business", "business-pro", "ecom-starter", "vip-flex", "custom"];
 
-/* --------------------------- STATIC BG (BLUR RESTORED) --------------------------- */
-const StaticSpaceBG: React.FC = () => (
-  <>
-    <div
-      className="absolute inset-0 -z-10"
-      style={{
-        backgroundColor: "#060616",
-        backgroundImage: `url(${SPACE_BG_URL})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        transform: "none",
-      }}
-    />
-    <div className="absolute inset-0 -z-10 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_60%,rgba(0,0,0,0.65)_100%)]" />
-  </>
-);
-
 /* ------------------------- LOCAL PAGE-ONLY HEADER ------------------------ */
 const LocalHeader: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -226,7 +225,6 @@ const LocalHeader: React.FC = () => {
     >
       <style>{`
         @keyframes logoPulse { 0%{opacity:.35;transform:scale(1)} 50%{opacity:.85;transform:scale(1.07)} 100%{opacity:.35;transform:scale(1)} }
-        @keyframes logoOrbit { 0%{transform:rotate(0)} 100%{transform:rotate(360deg)} }
       `}</style>
 
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -293,7 +291,7 @@ const LocalHeader: React.FC = () => {
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div
-              className="lg:hidden bg-slate-900/95 border-t border-slate-700/20 shadow-xl"
+              className="lg:hidden bg-slate-900/95 border-t border-slate-700/20 shadow-xl backdrop-blur-md"
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
@@ -355,7 +353,6 @@ const Pricing: React.FC = () => {
 
   const [index, setIndex] = useState(initialPlan);
   const [legendOpen, setLegendOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
 
   // Update focus if query changes after load
   useEffect(() => {
@@ -364,13 +361,6 @@ const Pricing: React.FC = () => {
     if (idx >= 0 && idx !== index) setIndex(idx);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.search]);
-
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener("resize", check, { passive: true });
-    return () => window.removeEventListener("resize", check);
-  }, []);
 
   const len = orderedPlans.length;
   const current = orderedPlans[index];
@@ -446,14 +436,14 @@ const Pricing: React.FC = () => {
   return (
     <div className="relative min-h-screen text-white overflow-hidden">
       <LocalHeader />
-      <StaticSpaceBG />
+      <BackgroundLayer />
 
       <main className="pt-24">
         {/* top controls */}
         <div className="relative z-10 flex items-center justify-end px-4 sm:px-6 py-2">
           <div className="flex items-center gap-3">
             <button
-              className="sm:hidden inline-flex items-center px-3 py-2 rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 transition"
+              className="sm:hidden inline-flex items-center px-3 py-2 rounded-xl border border-white/15 bg-black/70 backdrop-blur-md hover:bg-black/80 transition"
               onClick={() => setLegendOpen((v) => !v)}
               aria-expanded={legendOpen}
             >
@@ -480,7 +470,7 @@ const Pricing: React.FC = () => {
         {/* mobile legend */}
         {legendOpen && (
           <div className="relative z-10 sm:hidden px-4 pb-2">
-            <div className="rounded-2xl border border-white/10 bg-black/40 p-2 grid grid-cols-2 gap-2">
+            <div className="rounded-2xl border border-white/15 bg-black/75 backdrop-blur-md p-2 grid grid-cols-2 gap-2">
               {orderedPlans.map((p, i) => (
                 <button
                   key={p.key}
@@ -502,16 +492,18 @@ const Pricing: React.FC = () => {
         {/* MOBILE CAROUSEL (manual swipe, no auto-slide) */}
         <div className="relative z-0 sm:hidden px-4 pb-6">
           <div className="w-full" ref={carouselRef} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-            <div className="relative rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_0_30px_rgba(255,255,255,0.08)]">
-              <div className="text-xs uppercase tracking-widest text-white/70 mb-2 text-center">In focus</div>
-              <h2 className="text-2xl font-bold text-center">{current.name}</h2>
+            <div className="relative rounded-3xl border border-white/20 bg-black/78 backdrop-blur-md p-6 shadow-[0_0_30px_rgba(0,0,0,0.4)]">
+              <div className="text-xs uppercase tracking-widest text-white/80 mb-2 text-center">In focus</div>
+              <h2 className="text-2xl font-bold text-center" style={{ textShadow: "0 1px 2px rgba(0,0,0,0.65)" }}>
+                {current.name}
+              </h2>
               <div className="mt-1 text-lg font-semibold text-center">
-                {current.price} <span className="text-white/70">{current.cadence}</span>
+                {current.price} <span className="text-white/80">{current.cadence}</span>
               </div>
-              <ul className="mt-3 space-y-1 text-sm text-white/80 list-none">
+              <ul className="mt-3 space-y-1 text-sm text-white/90 list-none">
                 {current.shortBullets.map((b, idx) => (
                   <li key={idx} className="flex items-center justify-center gap-2">
-                    <span className="inline-block h-1.5 w-1.5 rounded-full bg-white/70" />
+                    <span className="inline-block h-1.5 w-1.5 rounded-full bg-white/90" />
                     {b}
                   </li>
                 ))}
@@ -530,13 +522,13 @@ const Pricing: React.FC = () => {
                   <button
                     key={i}
                     onClick={() => setIndex(i)}
-                    className={`h-2 w-2 rounded-full transition ${i === index ? "bg-cyan-400" : "bg-white/30 hover:bg-white/60"}`}
+                    className={`h-2 w-2 rounded-full transition ${i === index ? "bg-cyan-400" : "bg-white/40 hover:bg-white/70"}`}
                     aria-label={`Go to ${orderedPlans[i].name}`}
                   />
                 ))}
               </div>
 
-              <div className="mt-3 text-center text-xs text-white/60">Swipe for next plan</div>
+              <div className="mt-3 text-center text-xs text-white/70">Swipe for next plan</div>
             </div>
           </div>
         </div>
@@ -554,17 +546,17 @@ const Pricing: React.FC = () => {
               <div
                 ref={centerRef}
                 className={`relative w-[46vw] max-w-[400px] aspect-square rounded-full bg-white/5 border ${
-                  current.spotlightColor || "ring-cyan-400"
+                  (orderedPlans[index]?.spotlightColor as string) || "ring-cyan-400"
                 } ring-2 ring-inset border-white/10 shadow-[0_0_40px_rgba(0,255,255,0.2)]`}
               >
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
                   <div className="text-xs uppercase tracking-widest text-white/70 mb-2">In focus</div>
-                  <h2 className="text-2xl sm:text-3xl font-bold drop-shadow">{current.name}</h2>
+                  <h2 className="text-2xl sm:text-3xl font-bold drop-shadow">{orderedPlans[index].name}</h2>
                   <div className="mt-1 text-lg sm:text-xl font-semibold">
-                    {current.price} <span className="text-white/70">{current.cadence}</span>
+                    {orderedPlans[index].price} <span className="text-white/70">{orderedPlans[index].cadence}</span>
                   </div>
                   <ul className="mt-3 space-y-1 text-sm text-white/80 list-none">
-                    {current.shortBullets.map((b, idx) => (
+                    {orderedPlans[index].shortBullets.map((b, idx) => (
                       <li key={idx} className="flex items-center justify-center gap-2">
                         <span className="inline-block h-1.5 w-1.5 rounded-full bg-white/70" />
                         {b}
@@ -653,20 +645,20 @@ const Pricing: React.FC = () => {
 
         {/* DETAILS */}
         <div className="relative z-10 mx-auto w-full max-w-4xl px-4 sm:px-6 pb-16">
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-6 sm:p-8 shadow-[0_0_30px_rgba(255,255,255,0.08)]">
+          <div className="rounded-3xl border border-white/15 bg-black/72 backdrop-blur-md sm:bg-white/5 sm:backdrop-blur-0 p-6 sm:p-8 shadow-[0_0_30px_rgba(0,0,0,0.35)] sm:shadow-[0_0_30px_rgba(255,255,255,0.08)]">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h3 className="text-xl sm:text-2xl font-bold">{current.name} Details</h3>
-                <div className="text-white/80">
+                <h3 className="text-xl sm:text-2xl font-bold" style={{ textShadow: "0 1px 2px rgba(0,0,0,0.6)" }}>
+                  {current.name} Details
+                </h3>
+                <div className="text-white/90">
                   <span className="font-semibold">{current.price}</span> {current.cadence}
                 </div>
               </div>
               <div className="hidden sm:flex items-center gap-2">
-                {index > 0 && (
-                  <button onClick={prev} className="px-3 py-2 rounded-lg border border-white/15 bg-white/10 hover:bg-white/20" title="Previous">
-                    Previous
-                  </button>
-                )}
+                <button onClick={prev} className="px-3 py-2 rounded-lg border border-white/15 bg-white/10 hover:bg-white/20" title="Previous">
+                  Previous
+                </button>
                 <button onClick={next} className="px-3 py-2 rounded-lg border border-white/15 bg-white/10 hover:bg-white/20" title="Next">
                   Next
                 </button>
@@ -675,12 +667,12 @@ const Pricing: React.FC = () => {
 
             <div className="mt-6 grid gap-8 sm:grid-cols-2">
               <div>
-                <div className="text-sm uppercase tracking-wider text-white/70 mb-2">Included</div>
+                <div className="text-sm uppercase tracking-wider text-white/80 mb-2">Included</div>
                 <ul className="space-y-2 list-none">
                   {current.features.map((f, i) => (
                     <li key={i} className="flex items-start gap-3">
                       <span className="mt-1 h-2 w-2 rounded-full bg-emerald-300 flex-shrink-0" />
-                      <span className="leading-relaxed">{f}</span>
+                      <span className="leading-relaxed text-white/95">{f}</span>
                     </li>
                   ))}
                 </ul>
@@ -689,12 +681,12 @@ const Pricing: React.FC = () => {
               <div>
                 {current.notIncluded && current.notIncluded.length > 0 && (
                   <>
-                    <div className="text-sm uppercase tracking-wider text-white/70 mb-2">Not Included</div>
+                    <div className="text-sm uppercase tracking-wider text-white/80 mb-2">Not Included</div>
                     <ul className="space-y-2 list-none">
                       {current.notIncluded.map((f, i) => (
                         <li key={i} className="flex items-start gap-3">
                           <span className="mt-1 h-2 w-2 rounded-full bg-rose-300 flex-shrink-0" />
-                          <span className="leading-relaxed">{f}</span>
+                          <span className="leading-relaxed text-white/95">{f}</span>
                         </li>
                       ))}
                     </ul>
@@ -704,19 +696,19 @@ const Pricing: React.FC = () => {
             </div>
 
             <div className="mt-8 pt-6 border-t border-white/10">
-              <div className="text-sm uppercase tracking-wider text-white/70 mb-2">Universal Add Ons</div>
+              <div className="text-sm uppercase tracking-wider text-white/80 mb-2">Universal Add Ons</div>
               <ul className="grid sm:grid-cols-2 gap-2 list-none">
                 <li className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-white/70" /> Extra Page - $50 per page
+                  <span className="h-2 w-2 rounded-full bg-white/80" /> Extra Page - $50 per page
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-white/70" /> Logo Design - $75 one time
+                  <span className="h-2 w-2 rounded-full bg-white/80" /> Logo Design - $75 one time
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-white/70" /> Hosting Only - $25 per month
+                  <span className="h-2 w-2 rounded-full bg-white/80" /> Hosting Only - $25 per month
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-white/70" /> Rush Delivery 48 hours - +$100
+                  <span className="h-2 w-2 rounded-full bg-white/80" /> Rush Delivery 48 hours - +$100
                 </li>
               </ul>
 
@@ -724,14 +716,22 @@ const Pricing: React.FC = () => {
                 <p className="mt-4 text-emerald-300 font-semibold">Monthly plans are month-to-month. Cancel anytime. No contracts.</p>
               )}
 
-              <div className="mt-4 text-xs text-white/60">Large ecommerce and complex data migrations require a quote.</div>
+              <div className="mt-4 text-xs text-white/75">Large ecommerce and complex data migrations require a quote.</div>
 
               {/* MOBILE-ONLY nav */}
               <div className="mt-6 flex sm:hidden items-center justify-end gap-2">
-                <button onClick={prev} className="px-3 py-2 rounded-lg border border-white/15 bg-white/10 hover:bg-white/20" title="Previous">
+                <button
+                  onClick={prev}
+                  className="px-3 py-2 rounded-lg border border-white/15 bg-black/60 hover:bg-black/70 backdrop-blur-md"
+                  title="Previous"
+                >
                   Previous
                 </button>
-                <button onClick={next} className="px-3 py-2 rounded-lg border border-white/15 bg-white/10 hover:bg-white/20" title="Next">
+                <button
+                  onClick={next}
+                  className="px-3 py-2 rounded-lg border border-white/15 bg-black/60 hover:bg-black/70 backdrop-blur-md"
+                  title="Next"
+                >
                   Next
                 </button>
               </div>
