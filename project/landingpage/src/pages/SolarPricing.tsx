@@ -373,8 +373,7 @@ const Pricing: React.FC = () => {
   useEffect(() => {
     const k = readPlanFromURL();
     if (k !== activeKey) setActiveKey(k);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.search, location.hash]);
+  }, [location.search, location.hash]); // eslint-disable-line
 
   // Keep URL in sync (does not rely on router updates)
   useEffect(() => {
@@ -410,6 +409,7 @@ const Pricing: React.FC = () => {
     if (!touchStart.current) return;
     const t = e.changedTouches[0];
     const dx = t.clientX - touchStart.current.x;
+    theEnd:
     const dy = t.clientY - touchStart.current.y;
     touchStart.current = null;
     if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
@@ -461,6 +461,10 @@ const Pricing: React.FC = () => {
   const GAP_BETWEEN = 56; // px
   const total = orderedPlans.length;
   const startAngle = -90; // 12 o'clock
+
+  // unified card styles for mobile "In focus" and Details
+  const cardClass =
+    "rounded-3xl border border-white/15 bg-black/72 backdrop-blur-md p-6 sm:p-8 shadow-[0_0_30px_rgba(0,0,0,0.35)] sm:bg-white/5 sm:backdrop-blur-0";
 
   return (
     <div className="relative min-h-screen text-white overflow-hidden">
@@ -521,8 +525,7 @@ const Pricing: React.FC = () => {
         {/* MOBILE CAROUSEL (manual swipe, no auto-slide) */}
         <div className="relative z-0 sm:hidden px-4 pb-6">
           <div className="w-full" ref={carouselRef} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-            {/* match Details box styles */}
-            <div className="relative rounded-3xl border border-white/15 bg-black/72 backdrop-blur-md p-6 shadow-[0_0_30px_rgba(0,0,0,0.35)]">
+            <div className={cardClass}>
               <div className="text-xs uppercase tracking-widest text-white/80 mb-2 text-center">In focus</div>
               <h2
                 className="text-2xl font-bold text-center bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent"
@@ -678,7 +681,7 @@ const Pricing: React.FC = () => {
 
         {/* DETAILS */}
         <div className="relative z-10 mx-auto w-full max-w-4xl px-4 sm:px-6 pb-16">
-          <div className="rounded-3xl border border-white/15 bg-black/72 backdrop-blur-md sm:bg-white/5 sm:backdrop-blur-0 p-6 sm:p-8 shadow-[0_0_30px_rgba(0,0,0,0.35)] sm:shadow-[0_0_30px_rgba(255,255,255,0.08)]">
+          <div className={cardClass}>
             <div className="flex items-start justify-between gap-4">
               <div>
                 <h3
