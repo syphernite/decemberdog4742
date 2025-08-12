@@ -26,15 +26,14 @@ const WhyChooseUs: React.FC = () => {
   ];
 
   return (
-    <section id="why-choose-us" className="py-20 bg-white dark:bg-slate-900">
+    <section id="why-choose-us" className="py-20 bg-transparent">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
+          <h2 className="text-3xl sm:text-4xl font-bold text-white drop-shadow-lg mb-4">
             Why Choose Built4You?
           </h2>
-          <p className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto">
+          <p className="text-xl text-slate-200 max-w-3xl mx-auto drop-shadow-md">
             We're not just another web agency. We're your dedicated partner in building a strong online presence.
           </p>
         </div>
@@ -43,19 +42,19 @@ const WhyChooseUs: React.FC = () => {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="group bg-slate-50 dark:bg-slate-800 p-8 rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-2 border border-slate-100 dark:border-slate-700"
+              className="group bg-white/10 dark:bg-slate-800/50 p-8 rounded-xl hover:shadow-xl hover:shadow-emerald-500/20 transition-all duration-300 hover:-translate-y-2 border border-white/10 backdrop-blur-sm"
             >
               <div className="flex items-center justify-center mb-6">
-                <div className="p-3 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg group-hover:bg-emerald-200 dark:group-hover:bg-emerald-900/50 transition-colors duration-300">
-                  <feature.icon className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
+                <div className="p-3 bg-emerald-200/30 dark:bg-emerald-900/30 rounded-lg group-hover:bg-emerald-300/40 dark:group-hover:bg-emerald-900/50 transition-colors duration-300">
+                  <feature.icon className="h-8 w-8 text-emerald-400" />
                 </div>
               </div>
               
-              <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-4 text-center">
+              <h3 className="text-xl font-semibold text-white mb-4 text-center">
                 {feature.title}
               </h3>
               
-              <p className="text-slate-600 dark:text-slate-300 text-center leading-relaxed">
+              <p className="text-slate-200 text-center leading-relaxed">
                 {feature.description}
               </p>
             </div>

@@ -31,11 +31,11 @@ export default function App() {
         className="fixed inset-0 -z-10"
         mouseRepulsion
         mouseInteraction
-        density={1.3}
-        glowIntensity={0.45}
-        saturation={0.7}
-        hueShift={240}
-        transparent
+        density={1.1}
+        glowIntensity={0.6}
+        saturation={0.2}
+        hueShift={0}
+        transparent={false}
       />
 
       <ScrollToTopOnRouteChange />
@@ -55,4 +55,3 @@ export default function App() {
     </>
   );
 }
-
