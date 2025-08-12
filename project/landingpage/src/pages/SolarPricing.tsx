@@ -569,7 +569,7 @@ const Pricing: React.FC = () => {
                 ))}
               </ul>
               <button
-                onClick={() => goContact(current.key as PlanKey /*, true to lock */)}
+                onClick={() => goContact(current.key as PlanKey /* lock optional via query */)}
                 className="mt-4 mx-auto w-full inline-flex items-center justify-center px-5 sm:px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-blue-500 text-black font-semibold hover:opacity-90 transition shadow whitespace-nowrap overflow-visible leading-tight min-h-[44px]"
               >
                 {current.cta?.label ?? "Get Started"}
@@ -781,7 +781,7 @@ const Pricing: React.FC = () => {
               </ul>
 
               {current.cadence.includes("/month") && (
-                <p className="mt-4 text-emerald-300 font-semibold">Monthly plans are month-to-month. Cancel anytime. No contracts.</p>
+                <p className="mt-4 text-emerald-300 font-semibold">Monthly plans are month to month. Cancel anytime. No contracts.</p>
               )}
 
               <div className="mt-4 text-xs text-white/75">Large ecommerce and complex data migrations require a quote.</div>
@@ -793,13 +793,6 @@ const Pricing: React.FC = () => {
                   className="px-4 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-blue-500 text-black font-semibold hover:opacity-90 transition shadow"
                 >
                   {current.cta?.label ?? "Get Started"}
-                </button>
-                <button
-                  onClick={() => goContact(current.key as PlanKey, true)}
-                  className="px-4 py-3 rounded-xl border border-white/15 bg-white/5 hover:bg-white/10"
-                  title="Go with this plan and lock it on the form"
-                >
-                  Choose & Lock
                 </button>
               </div>
 
