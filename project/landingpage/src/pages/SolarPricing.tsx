@@ -347,26 +347,38 @@ const Pricing: React.FC = () => {
   }, []);
 
   const orderedPlans = useMemo(() => ORDER_KEYS.map((k) => PLANS_IN_ORDER.find((p) => p.key === k)!).filter(Boolean), []);
+  const plansByKey = useMemo(
+    () => Object.fromEntries(orderedPlans.map((p) => [p.key, p])) as Record<PlanKey, Plan>,
+    [orderedPlans]
+  );
 
-  // Initial focus from URL using plan key
-  const initialKey = (() => {
-    const raw = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("plan") : null;
-    const key = (raw?.toLowerCase() || ORDER_KEYS[0]) as PlanKey;
-    return (ORDER_KEYS as readonly string[]).includes(key) ? (key as PlanKey) : ORDER_KEYS[0];
-  })();
+  // Read ?plan from search or hash (HashRouter safe on mobile)
+  const readPlanFromURL = (): PlanKey => {
+    const searchPlan = new URLSearchParams(location.search).get("plan")?.toLowerCase();
+    if (searchPlan && (ORDER_KEYS as readonly string[]).includes(searchPlan as PlanKey)) return searchPlan as PlanKey;
+    if (typeof window !== "undefined" && window.location.hash) {
+      const idx = window.location.hash.indexOf("?");
+      if (idx !== -1) {
+        const qs = window.location.hash.slice(idx + 1);
+        const hashPlan = new URLSearchParams(qs).get("plan")?.toLowerCase();
+        if (hashPlan && (ORDER_KEYS as readonly string[]).includes(hashPlan as PlanKey)) return hashPlan as PlanKey;
+      }
+    }
+    return ORDER_KEYS[0];
+  };
 
   // Single source of truth
-  const [activeKey, setActiveKey] = useState<PlanKey>(initialKey);
+  const [activeKey, setActiveKey] = useState<PlanKey>(readPlanFromURL());
   const [legendOpen, setLegendOpen] = useState(false);
 
-  // Reflect query string changes
+  // Reflect URL changes
   useEffect(() => {
-    const q = (new URLSearchParams(location.search).get("plan") || "").toLowerCase() as PlanKey;
-    if (q && (ORDER_KEYS as readonly string[]).includes(q) && q !== activeKey) setActiveKey(q);
+    const k = readPlanFromURL();
+    if (k !== activeKey) setActiveKey(k);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.search]);
+  }, [location.search, location.hash]);
 
-  // Keep URL in sync with selection
+  // Keep URL in sync (does not rely on router updates)
   useEffect(() => {
     if (typeof window === "undefined") return;
     const url = new URL(window.location.href);
@@ -376,7 +388,7 @@ const Pricing: React.FC = () => {
 
   const len = orderedPlans.length;
   const activeIndex = ORDER_KEYS.indexOf(activeKey);
-  const current = orderedPlans[activeIndex];
+  const current = plansByKey[activeKey];
 
   const next = () => {
     const i = (activeIndex + 1) % len;
