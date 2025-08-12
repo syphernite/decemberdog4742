@@ -1,7 +1,6 @@
 // src/pages/WhyWeExist.tsx
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
 
 function useInViewAnimation(threshold = 0.3) {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -24,27 +23,9 @@ const WhyWeExist: React.FC = () => {
     <main className="relative z-10 bg-transparent text-gray-900 dark:text-white min-h-screen font-sans">
       {/* Page title */}
       <section className="text-center py-16 px-6 bg-transparent">
-        <h1
-          className="text-3xl md:text-5xl font-extrabold mb-10 bg-gradient-to-r from-emerald-400 via-teal-400 to-blue-500 bg-clip-text text-transparent"
-        >
+        <h1 className="text-3xl md:text-5xl font-extrabold mb-2 bg-gradient-to-r from-emerald-300 to-sky-300 bg-clip-text text-transparent">
           Why We Created Built4You
         </h1>
-
-        {/* CTA Buttons */}
-        <div className="flex items-center justify-center gap-4 flex-wrap">
-          <Link
-            to="/demos"
-            className="inline-flex items-center justify-center rounded-lg px-5 py-3 bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400"
-          >
-            View Demos
-          </Link>
-          <Link
-            to="/pricing"
-            className="inline-flex items-center justify-center rounded-lg px-5 py-3 bg-teal-600 text-white hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-400"
-          >
-            See Pricing
-          </Link>
-        </div>
       </section>
 
       {/* Value sections */}
