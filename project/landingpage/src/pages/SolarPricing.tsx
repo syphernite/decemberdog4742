@@ -349,27 +349,49 @@ const Pricing: React.FC = () => {
     [orderedPlans]
   );
 
-  // Initialize from URL once, then state is the source of truth
+  // Initialize from URL once
   const initialKey: PlanKey = useMemo(() => {
     if (typeof window === "undefined") return ORDER_KEYS[0];
-    const url = new URL(window.location.href);
-    let plan = url.searchParams.get("plan")?.toLowerCase() as PlanKey | null;
-    if (!plan && window.location.hash.includes("?")) {
-      const qs = window.location.hash.slice(window.location.hash.indexOf("?") + 1);
-      plan = new URLSearchParams(qs).get("plan")?.toLowerCase() as PlanKey | null;
+    const href = window.location.href;
+    // Prefer query inside hash for HashRouter
+    const hashIdx = href.indexOf("#");
+    if (hashIdx >= 0) {
+      const afterHash = href.slice(hashIdx + 1);
+      const qIdx = afterHash.indexOf("?");
+      if (qIdx >= 0) {
+        const qs = new URLSearchParams(afterHash.slice(qIdx + 1));
+        const plan = (qs.get("plan") || "").toLowerCase();
+        return (ORDER_KEYS as readonly string[]).includes(plan) ? (plan as PlanKey) : ORDER_KEYS[0];
+      }
     }
-    return (plan && (ORDER_KEYS as readonly string[]).includes(plan)) ? plan : ORDER_KEYS[0];
+    // Fallback to normal query
+    const url = new URL(href);
+    const plan = (url.searchParams.get("plan") || "").toLowerCase();
+    return (ORDER_KEYS as readonly string[]).includes(plan) ? (plan as PlanKey) : ORDER_KEYS[0];
   }, []);
 
   const [activeKey, setActiveKey] = useState<PlanKey>(initialKey);
   const [legendOpen, setLegendOpen] = useState(false);
 
-  // Write chosen plan to URL, but never re-read to avoid races
+  // Write chosen plan to URL, hash-aware. Never re-read.
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const url = new URL(window.location.href);
-    url.searchParams.set("plan", activeKey);
-    window.history.replaceState({}, "", url.toString());
+    const href = window.location.href;
+    const hashIdx = href.indexOf("#");
+    if (hashIdx >= 0) {
+      const before = href.slice(0, hashIdx + 1);
+      const after = href.slice(hashIdx + 1);
+      const qIdx = after.indexOf("?");
+      const path = qIdx >= 0 ? after.slice(0, qIdx) : after;
+      const qs = qIdx >= 0 ? new URLSearchParams(after.slice(qIdx + 1)) : new URLSearchParams();
+      qs.set("plan", activeKey);
+      const newUrl = `${before}${path}?${qs.toString()}`;
+      window.history.replaceState({}, "", newUrl);
+    } else {
+      const url = new URL(href);
+      url.searchParams.set("plan", activeKey);
+      window.history.replaceState({}, "", url.toString());
+    }
   }, [activeKey]);
 
   const len = orderedPlans.length;
@@ -442,7 +464,6 @@ const Pricing: React.FC = () => {
 
   const GAP_BETWEEN = 56; // px
   const total = orderedPlans.length;
-  const startAngle = -90; // 12 o'clock
 
   // unified card styles for mobile "In focus" and Details
   const cardClass =
@@ -469,11 +490,13 @@ const Pricing: React.FC = () => {
               {orderedPlans.map((p, i) => (
                 <button
                   key={p.key}
+                  type="button"
                   onClick={() => setActiveKey(ORDER_KEYS[i])}
                   className={`px-3 py-1 rounded-lg text-sm border transition ${
                     i === activeIndex ? "border-white/60 bg-white/10" : "border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10"
                   }`}
                   title={p.name}
+                  aria-pressed={i === activeIndex}
                 >
                   {p.name}
                 </button>
@@ -489,6 +512,7 @@ const Pricing: React.FC = () => {
               {orderedPlans.map((p, i) => (
                 <button
                   key={p.key}
+                  type="button"
                   onClick={() => {
                     setActiveKey(ORDER_KEYS[i]);
                     setLegendOpen(false);
@@ -496,6 +520,7 @@ const Pricing: React.FC = () => {
                   className={`w-full px-3 py-2 rounded-xl text-left text-sm border transition ${
                     i === activeIndex ? "border-white/60 bg-white/10" : "border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10"
                   }`}
+                  aria-pressed={i === activeIndex}
                 >
                   {p.name}
                 </button>
@@ -507,7 +532,7 @@ const Pricing: React.FC = () => {
         {/* MOBILE CAROUSEL (manual swipe, no auto-slide) */}
         <div className="relative z-0 sm:hidden px-4 pb-6">
           <div className="w-full" ref={carouselRef} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-            <div className={cardClass}>
+            <div className={cardClass} key={activeKey}>
               <div className="text-xs uppercase tracking-widest text-white/80 mb-2 text-center">In focus</div>
               <h2
                 className="text-2xl font-bold text-center bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent"
@@ -539,9 +564,11 @@ const Pricing: React.FC = () => {
                 {orderedPlans.map((_, i) => (
                   <button
                     key={i}
+                    type="button"
                     onClick={() => setActiveKey(ORDER_KEYS[i])}
                     className={`h-2 w-2 rounded-full transition ${i === activeIndex ? "bg-cyan-400" : "bg-white/40 hover:bg-white/70"}`}
                     aria-label={`Go to ${orderedPlans[i].name}`}
+                    aria-pressed={i === activeIndex}
                   />
                 ))}
               </div>
@@ -564,6 +591,7 @@ const Pricing: React.FC = () => {
               <div
                 ref={centerRef}
                 className={`relative w-[46vw] max-w-[400px] aspect-square rounded-full bg-white/5 border ${(orderedPlans[activeIndex]?.spotlightColor as string) || "ring-cyan-400"} ring-2 ring-inset border-white/10 shadow-[0_0_40px_rgba(0,255,255,0.2)]`}
+                key={activeKey}
               >
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
                   <div className="text-xs uppercase tracking-widest text-white/70 mb-2">In focus</div>
@@ -596,11 +624,12 @@ const Pricing: React.FC = () => {
             >
               {orderedPlans.map((plan, slotIdx) => {
                 const angleDeg = -90 + (360 / total) * slotIdx;
-                const radius = centerRadius + GAP_BETWEEN + planetRadius;
+                const radius = centerRadius + 56 + 44;
 
                 return (
                   <button
                     key={plan.key}
+                    type="button"
                     onClick={() => setActiveKey(ORDER_KEYS[slotIdx])}
                     className="absolute"
                     style={{
@@ -611,6 +640,7 @@ const Pricing: React.FC = () => {
                     }}
                     title={plan.name}
                     aria-label={plan.name}
+                    aria-pressed={ORDER_KEYS[slotIdx] === activeKey}
                   >
                     <div
                       ref={slotIdx === 0 ? samplePlanetRef : undefined}
@@ -646,6 +676,7 @@ const Pricing: React.FC = () => {
                 className="absolute left-2 top-1/2 -translate-y-1/2 px-3 py-2 rounded-xl border border-white/15 bg-white/10 hover:bg-white/20"
                 aria-label="Previous plan"
                 title="Previous plan"
+                type="button"
               >
                 ←
               </button>
@@ -654,6 +685,7 @@ const Pricing: React.FC = () => {
                 className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-2 rounded-xl border border-white/15 bg-white/10 hover:bg-white/20"
                 aria-label="Next plan"
                 title="Next plan"
+                type="button"
               >
                 →
               </button>
@@ -663,7 +695,7 @@ const Pricing: React.FC = () => {
 
         {/* DETAILS */}
         <div className="relative z-10 mx-auto w-full max-w-4xl px-4 sm:px-6 pb-16">
-          <div className={cardClass}>
+          <div className={cardClass} key={`details-${activeKey}`}>
             <div className="flex items-start justify-between gap-4">
               <div>
                 <h3
@@ -677,10 +709,10 @@ const Pricing: React.FC = () => {
                 </div>
               </div>
               <div className="hidden sm:flex items-center gap-2">
-                <button onClick={prev} className="px-3 py-2 rounded-lg border border-white/15 bg-white/10 hover:bg-white/20" title="Previous">
+                <button onClick={prev} className="px-3 py-2 rounded-lg border border-white/15 bg-white/10 hover:bg-white/20" title="Previous" type="button">
                   Previous
                 </button>
-                <button onClick={next} className="px-3 py-2 rounded-lg border border-white/15 bg-white/10 hover:bg-white/20" title="Next">
+                <button onClick={next} className="px-3 py-2 rounded-lg border border-white/15 bg-white/10 hover:bg-white/20" title="Next" type="button">
                   Next
                 </button>
               </div>
@@ -745,6 +777,7 @@ const Pricing: React.FC = () => {
                   onClick={prev}
                   className="px-3 py-2 rounded-lg border border-white/15 bg-black/60 hover:bg-black/70 backdrop-blur-md"
                   title="Previous"
+                  type="button"
                 >
                   Previous
                 </button>
@@ -752,6 +785,7 @@ const Pricing: React.FC = () => {
                   onClick={next}
                   className="px-3 py-2 rounded-lg border border-white/15 bg-black/60 hover:bg-black/70 backdrop-blur-md"
                   title="Next"
+                  type="button"
                 >
                   Next
                 </button>
