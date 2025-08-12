@@ -9,7 +9,6 @@ type Item = {
   description?: string;
   price?: string;
   prices?: Record<string, string>;
-  note?: string;
 };
 
 type MenuData = Record<string, Item[]>;
@@ -21,8 +20,8 @@ const MENU: MenuData = {
       name: "Wings (Market Price)",
       description: "Mild, Hot, Jamaican Jerk, Garlic, Teriyaki, or BBQ",
       prices: {
-        '10 Wings': "$13.95",
-        '20 Wings': "$24.95",
+        "10 Wings": "$13.95",
+        "20 Wings": "$24.95",
       },
     },
     {
@@ -177,8 +176,6 @@ const MENU: MenuData = {
   ],
 
   Pizzas: [
-    { name: "— No changes on specialty pizzas please —", note: "rule" },
-
     {
       name: "Beach Bumz | OVER THE TOP",
       description:
@@ -299,17 +296,21 @@ const MENU: MenuData = {
 
 const categories = Object.keys(MENU);
 
+function formatSizeLabel(size: string): string {
+  if (/Small/i.test(size)) return 'S 12"';
+  if (/Medium/i.test(size)) return 'M 16"';
+  if (/Large/i.test(size)) return 'L 18"';
+  return size;
+}
+
 function PriceBlock({ item }: { item: Item }) {
-  if (item.note === "rule") {
-    return null;
-  }
   if (item.prices && Object.keys(item.prices).length) {
     const entries = Object.entries(item.prices);
     return (
-      <div className="mt-1 grid grid-cols-2 gap-x-4 gap-y-1 text-right text-sm">
+      <div className="mt-1 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-sm w-full sm:w-auto">
         {entries.map(([size, price]) => (
-          <div key={size} className="flex items-center justify-between gap-3 py-1 text-sm">
-            <span className="opacity-90">{size}</span>
+          <div key={size} className="flex items-center justify-between gap-3 py-0.5">
+            <span className="opacity-90">{formatSizeLabel(size)}</span>
             <span className="font-semibold">{price}</span>
           </div>
         ))}
@@ -466,23 +467,25 @@ export default function Menu() {
               {section}
             </h2>
 
+            {/* Pizzas banner note */}
+            {section === "Pizzas" && (
+              <div className="mb-4 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-center text-sm opacity-80">
+                — No changes on specialty pizzas please —
+              </div>
+            )}
+
             <div className="grid md:grid-cols-2 gap-4">
               {(MENU[section] || []).map((item) => (
                 <article
                   key={item.name}
                   className="rounded-xl border border-white/10 bg-white/5 p-4"
                 >
-                  <div className="flex items-start justify-between gap-4">
-                    <h3 className="text-lg font-semibold">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                    <h3 className="text-lg font-semibold break-words">
                       {item.name}
                     </h3>
                     <PriceBlock item={item} />
                   </div>
-                  {item.note === "rule" ? (
-                    <p className="mt-2 text-xs opacity-70">
-                      No changes on specialty pizzas please
-                    </p>
-                  ) : null}
                   {item.description && item.description.trim().length > 0 && (
                     <p className="mt-2 text-sm opacity-90">{item.description}</p>
                   )}
