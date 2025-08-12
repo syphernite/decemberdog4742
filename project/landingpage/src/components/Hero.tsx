@@ -1,4 +1,4 @@
-// src/components/Hero.tsx
+// src/components/Hero.tsx 
 "use client";
 
 import React, {
@@ -39,9 +39,9 @@ interface TextTypeProps {
 const TextType = ({
   text,
   as: Component = "div",
-  typingSpeed = 50,
+  typingSpeed = 40,
   initialDelay = 0,
-  pauseDuration = 2000,
+  pauseDuration = 750,
   deletingSpeed = 30,
   loop = true,
   className = "",
@@ -62,8 +62,11 @@ const TextType = ({
   const [isDeleting, setIsDeleting] = useState(false);
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(!startOnVisible);
+  const [finalDone, setFinalDone] = useState(false);
+
   const cursorRef = useRef<HTMLSpanElement>(null);
   const containerRef = useRef<HTMLElement>(null);
+  const textRef = useRef<HTMLSpanElement>(null);
 
   const textArray = Array.isArray(text) ? text : [text];
 
@@ -90,7 +93,7 @@ const TextType = ({
   }, [startOnVisible]);
 
   useEffect(() => {
-    if (showCursor && cursorRef.current) {
+    if (showCursor && cursorRef.current && !finalDone) {
       gsap.set(cursorRef.current, { opacity: 1 });
       gsap.to(cursorRef.current, {
         opacity: 0,
@@ -100,7 +103,7 @@ const TextType = ({
         ease: "power2.inOut",
       });
     }
-  }, [showCursor, cursorBlinkDuration]);
+  }, [showCursor, cursorBlinkDuration, finalDone]);
 
   useEffect(() => {
     if (!isVisible) return;
@@ -124,7 +127,6 @@ const TextType = ({
 
           setCurrentTextIndex((prev) => (prev + 1) % textArray.length);
           setCurrentCharIndex(0);
-          timeout = setTimeout(() => {}, pauseDuration);
         } else {
           timeout = setTimeout(() => {
             setDisplayedText((prev) => prev.slice(0, -1));
@@ -140,7 +142,21 @@ const TextType = ({
             variableSpeed ? getRandomSpeed() : typingSpeed
           );
         } else if (textArray.length > 1) {
-          if (currentTextIndex === textArray.length - 1 && !loop) return;
+          if (currentTextIndex === textArray.length - 1 && !loop) {
+            // last phrase typed — fade out cursor and subtly emphasize text
+            setFinalDone(true);
+            if (cursorRef.current) {
+              gsap.to(cursorRef.current, { opacity: 0, duration: 0.5, ease: "power2.out" });
+            }
+            if (textRef.current) {
+              gsap.fromTo(
+                textRef.current,
+                { opacity: 0.75, scale: 0.985, filter: "brightness(0.95)" },
+                { opacity: 1, scale: 1, filter: "brightness(1)", duration: 0.6, ease: "power2.out" }
+              );
+            }
+            return;
+          }
           timeout = setTimeout(() => setIsDeleting(true), pauseDuration);
         }
       }
@@ -181,10 +197,13 @@ const TextType = ({
       className: `inline-block whitespace-pre-wrap tracking-tight ${className}`,
       ...props,
     },
-    <span className="inline bg-gradient-to-r from-emerald-300 to-sky-300 bg-clip-text text-transparent">
+    <span
+      ref={textRef}
+      className="inline bg-gradient-to-r from-emerald-300 to-sky-300 bg-clip-text text-transparent"
+    >
       {displayedText}
     </span>,
-    showCursor && (
+    showCursor && !finalDone && (
       <span
         ref={cursorRef}
         className={`ml-1 inline-block opacity-100 ${shouldHideCursor ? "hidden" : ""} ${cursorClassName}`}
@@ -222,14 +241,14 @@ const Hero: React.FC = () => {
                 "for Anyone",
                 "Specifically Built4You",
               ]}
-              typingSpeed={20}          // typing speed
-              deletingSpeed={15}        // deleting speed
-              pauseDuration={3000}
+              typingSpeed={100}
+              deletingSpeed={15}
+              pauseDuration={700}
               initialDelay={200}
-              loop={false}
+              loop={false}   // stops on last phrase
               startOnVisible
-              variableSpeed={{ min: 18, max: 35 }}
-              showCursor={false}
+              variableSpeed={{ min: 95, max: 110 }}
+              showCursor={false} // fades out on last phrase
             />
           </h1>
         </div>
@@ -246,7 +265,7 @@ const Hero: React.FC = () => {
             Get Started <ArrowRight className="h-5 w-5" />
           </button>
 
-          <button
+        <button
             onClick={open}
             className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-6 py-3 text-white hover:bg-white/15 transition backdrop-blur-sm"
           >
