@@ -24,7 +24,9 @@ const WhyWeExist: React.FC = () => {
     <main className="relative z-10 bg-transparent text-gray-900 dark:text-white min-h-screen font-sans">
       {/* Page title */}
       <section className="text-center py-16 px-6 bg-transparent">
-        <h1 className="text-3xl md:text-5xl font-extrabold mb-10">
+        <h1
+          className="text-3xl md:text-5xl font-extrabold mb-10 bg-gradient-to-r from-emerald-400 via-teal-400 to-blue-500 bg-clip-text text-transparent"
+        >
           Why We Created Built4You
         </h1>
 
