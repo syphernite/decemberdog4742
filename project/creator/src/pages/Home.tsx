@@ -1,16 +1,18 @@
-import React, { useRef, useEffect } from 'react';
+// src/pages/Home.tsx
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { PlayIcon, BookOpenIcon } from '@heroicons/react/24/outline';
+import Lightning from '../components/Lightning'; // ensure file exists at src/components/Lightning.tsx
 
 export default function Home() {
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: heroRef,
-    offset: ["start start", "end start"]
+    offset: ['start start', 'end start'],
   });
-  
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+
+  const y = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
   return (
@@ -21,6 +23,7 @@ export default function Home() {
         className="relative min-h-screen flex items-center justify-center overflow-hidden"
         style={{ y, opacity }}
       >
+        {/* Background video */}
         <div className="absolute inset-0 z-0">
           <video
             autoPlay
@@ -37,6 +40,18 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-b from-onyx-950/50 via-transparent to-onyx-950/90" />
         </div>
 
+        {/* Lightning overlay */}
+        <div className="absolute inset-0 z-[1] pointer-events-none">
+          <Lightning
+            hue={220}
+            xOffset={0}
+            speed={1}
+            intensity={1}
+            size={1}
+          />
+        </div>
+
+        {/* Foreground content */}
         <div className="relative z-10 max-w-7xl mx-auto px-6 text-center">
           <motion.h1
             initial={{ y: 100, opacity: 0 }}
@@ -55,7 +70,7 @@ export default function Home() {
             transition={{ duration: 1, delay: 0.5 }}
             className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto font-light leading-relaxed"
           >
-            Premium content creation, brand partnerships, and digital experiences 
+            Premium content creation, brand partnerships, and digital experiences
             that captivate millions and drive exceptional results.
           </motion.p>
 
@@ -87,7 +102,7 @@ export default function Home() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5 }}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10"
         >
           <div className="w-6 h-10 border-2 border-white/30 rounded-full p-1">
             <motion.div
@@ -103,8 +118,8 @@ export default function Home() {
       <div className="bg-gradient-to-r from-neon-violet via-neon-cyan to-neon-magenta py-2 overflow-hidden">
         <div className="animate-marquee whitespace-nowrap">
           <span className="text-white font-medium">
-            🎯 Now Booking Q4 Campaigns • 🚀 3.2M+ Combined Followers • 💼 Premium Brand Partnerships • 
-            📈 Proven ROI Results • 🎬 Award-Winning Content • ⚡ Fast Turnaround • 
+            🎯 Now Booking Q4 Campaigns • 🚀 3.2M+ Combined Followers • 💼 Premium Brand Partnerships •
+            📈 Proven ROI Results • 🎬 Award-Winning Content • ⚡ Fast Turnaround •
             🎯 Now Booking Q4 Campaigns • 🚀 3.2M+ Combined Followers • 💼 Premium Brand Partnerships •
           </span>
         </div>
@@ -115,10 +130,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[
-              { number: "2.4M", label: "YouTube Subscribers" },
-              { number: "1.8M", label: "Instagram Followers" },
-              { number: "3.1M", label: "TikTok Followers" },
-              { number: "50+", label: "Brand Partners" }
+              { number: '2.4M', label: 'YouTube Subscribers' },
+              { number: '1.8M', label: 'Instagram Followers' },
+              { number: '3.1M', label: 'TikTok Followers' },
+              { number: '50+', label: 'Brand Partners' },
             ].map((stat, index) => (
               <motion.div
                 key={stat.label}
@@ -170,7 +185,11 @@ export default function Home() {
               >
                 <div className="aspect-video bg-gradient-to-br from-neon-violet/20 to-neon-cyan/20 relative overflow-hidden">
                   <img
-                    src={`https://images.pexels.com/photos/${item === 1 ? '205421' : item === 2 ? '274973' : '1105766'}/pexels-photo-${item === 1 ? '205421' : item === 2 ? '274973' : '1105766'}.jpeg?auto=compress&cs=tinysrgb&w=600`}
+                    src={`https://images.pexels.com/photos/${
+                      item === 1 ? '205421' : item === 2 ? '274973' : '1105766'
+                    }/pexels-photo-${
+                      item === 1 ? '205421' : item === 2 ? '274973' : '1105766'
+                    }.jpeg?auto=compress&cs=tinysrgb&w=600`}
                     alt={`Content ${item}`}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
@@ -181,10 +200,16 @@ export default function Home() {
                 </div>
                 <div className="p-6">
                   <h3 className="text-lg font-semibold text-white mb-2">
-                    {item === 1 ? 'Tech Review: Latest Gadgets' : item === 2 ? 'Behind the Scenes' : 'Lifestyle Content'}
+                    {item === 1
+                      ? 'Tech Review: Latest Gadgets'
+                      : item === 2
+                      ? 'Behind the Scenes'
+                      : 'Lifestyle Content'}
                   </h3>
                   <div className="flex justify-between text-sm text-gray-400">
-                    <span>{item === 1 ? '2.1M views' : item === 2 ? '856K views' : '1.4M views'}</span>
+                    <span>
+                      {item === 1 ? '2.1M views' : item === 2 ? '856K views' : '1.4M views'}
+                    </span>
                     <span>{item === 1 ? 'YouTube' : item === 2 ? 'Instagram' : 'TikTok'}</span>
                   </div>
                 </div>
