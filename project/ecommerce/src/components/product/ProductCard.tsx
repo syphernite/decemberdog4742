@@ -1,138 +1,98 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Heart, ShoppingBag } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { Button } from '../ui/Button';
-import { Badge } from '../ui/Badge';
-import { useStore } from '../../lib/store';
-import type { Product } from '../../lib/types';
+import React from 'react'
+import { Link } from 'react-router-dom'
 
-interface ProductCardProps {
-  product: Product;
+export type ProductCardProps = {
+  id: string | number
+  title?: string
+  image?: string
+  price?: number
+  badge?: string | null
 }
 
-export function ProductCard({ product }: ProductCardProps) {
-  const { addToCart, addToWishlist, removeFromWishlist, wishlist } = useStore();
-  
-  const isInWishlist = wishlist.includes(product.id);
-  const mainImage = product.images[0];
-  const hasDiscount = product.compareAtPrice && product.compareAtPrice > product.price;
-  const discountPercent = hasDiscount 
-    ? Math.round(((product.compareAtPrice! - product.price) / product.compareAtPrice!) * 100)
-    : 0;
+export function ProductCard({ id, title, badge = null }: ProductCardProps) {
+  const ref = React.useRef<HTMLDivElement>(null)
 
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    addToCart({
-      productId: product.id,
-      variantId: product.variants[0].id,
-      quantity: 1,
-    });
-  };
+  const onMove = (e: React.MouseEvent) => {
+    const el = ref.current
+    if (!el) return
+    const r = el.getBoundingClientRect()
+    const x = (e.clientX - r.left) / r.width
+    const y = (e.clientY - r.top) / r.height
+    const rx = (0.5 - y) * 6
+    const ry = (x - 0.5) * 6
+    el.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-2px)`
+  }
+  const onLeave = () => { if (ref.current) ref.current.style.transform = '' }
 
-  const handleWishlistToggle = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (isInWishlist) {
-      removeFromWishlist(product.id);
-    } else {
-      addToWishlist(product.id);
-    }
-  };
+  const displayTitle = title || 'Product Title'
+  const displayPrice = '$0.00'
 
   return (
-    <motion.div
-      className="group relative"
-      whileHover={{ y: -4 }}
-      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-    >
-      <Link to={`/products/${product.id}`}>
-        <div className="relative overflow-hidden aspect-[4/5] mb-4">
-          {/* Product Image */}
-          <motion.img
-            src={mainImage?.url}
-            alt={mainImage?.alt || product.title}
-            className="w-full h-full object-cover"
-            whileHover={{ scale: 1.02 }}
-            transition={{ duration: 0.6 }}
-          />
-          
-          {/* Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-obsidian/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          
-          {/* Badges */}
-          <div className="absolute top-4 left-4 space-y-2">
-            {hasDiscount && (
-              <Badge variant="destructive">
-                -{discountPercent}%
-              </Badge>
-            )}
-            {product.inventory.quantity <= 5 && product.inventory.quantity > 0 && (
-              <Badge variant="warning">
-                Low Stock
-              </Badge>
-            )}
-            {product.inventory.quantity === 0 && (
-              <Badge variant="secondary">
-                Sold Out
-              </Badge>
-            )}
+    <Link to={`/products/${id}`} className="block will-change-transform">
+      <div
+        ref={ref}
+        onMouseMove={onMove}
+        onMouseLeave={onLeave}
+        className="card-border glow transition-transform duration-200"
+      >
+        <div className="overflow-hidden rounded-[1.25rem]">
+          {/* PLACEHOLDER AREA */}
+          <div className="relative">
+            <div className="aspect-square bg-[#0f111a] flex items-center justify-center">
+              <div className="flex items-center gap-2 select-none">
+                {/* gradient headline */}
+                <span
+                  className="text-sm font-semibold"
+                  style={{
+                    background: 'linear-gradient(90deg, var(--acc), var(--acc2))',
+                    WebkitBackgroundClip: 'text',
+                    color: 'transparent'
+                  }}
+                >
+                  Product coming soon
+                </span>
+                {/* gradient smiley (SVG so it always renders) */}
+                <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="smile-g" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0" stopColor="#ff4d4d" />
+                      <stop offset="1" stopColor="#00e5ff" />
+                    </linearGradient>
+                  </defs>
+                  <circle cx="9" cy="9" r="8" fill="url(#smile-g)"/>
+                  <circle cx="6" cy="7" r="1.1" fill="rgba(0,0,0,.85)"/>
+                  <circle cx="12" cy="7" r="1.1" fill="rgba(0,0,0,.85)"/>
+                  <path d="M5.5 10.5c1.2 2.2 5.8 2.2 7 0" fill="none" stroke="rgba(0,0,0,.85)" strokeWidth="1.2" strokeLinecap="round"/>
+                </svg>
+              </div>
+            </div>
+            {badge ? (
+              <div className="absolute left-3 top-3 rounded-full bg-white text-black text-[10px] font-semibold px-2 py-1 shadow-sm">
+                {badge}
+              </div>
+            ) : null}
           </div>
 
-          {/* Wishlist Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/10 backdrop-blur-sm hover:bg-white/20"
-            onClick={handleWishlistToggle}
-          >
-            <Heart
-              className={`h-4 w-4 ${
-                isInWishlist ? 'fill-champagne text-champagne' : 'text-white'
-              }`}
-            />
-          </Button>
-
-          {/* Add to Cart Button */}
-          <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <Button
-              onClick={handleAddToCart}
-              disabled={product.inventory.quantity === 0}
-              className="w-full bg-champagne/90 backdrop-blur-sm hover:bg-champagne"
-              size="sm"
-            >
-              <ShoppingBag className="h-4 w-4 mr-2" />
-              Add to Cart
-            </Button>
+          {/* CONTENT */}
+          <div className="p-4 md:p-5 bg-[rgba(255,255,255,.04)] backdrop-blur-sm">
+            <h3 className="text-white font-semibold line-clamp-1">{displayTitle}</h3>
+            <div className="mt-1 text-sm" style={{ color: 'var(--muted)' }}>
+              Product Description Here
+            </div>
+            <div className="pt-2 flex items-center justify-between">
+              <span className="text-sm">{displayPrice}</span>
+              <button
+                onClick={(e) => e.preventDefault()}
+                className="btn btn-primary !py-2 !px-4"
+                aria-label="Demo CTA"
+              >
+                Add
+              </button>
+            </div>
           </div>
         </div>
-
-        {/* Product Info */}
-        <div className="space-y-2">
-          <h3 className="font-medium text-white group-hover:text-champagne transition-colors">
-            {product.title}
-          </h3>
-          
-          <div className="flex items-center space-x-2">
-            <span className="text-lg font-semibold text-champagne">
-              ${(product.price / 100).toFixed(2)}
-            </span>
-            {hasDiscount && (
-              <span className="text-sm text-white/50 line-through">
-                ${(product.compareAtPrice! / 100).toFixed(2)}
-              </span>
-            )}
-          </div>
-
-          {/* Materials */}
-          <div className="flex flex-wrap gap-1">
-            {product.materials.slice(0, 2).map((material, index) => (
-              <Badge key={index} variant="outline" className="text-xs">
-                {material}
-              </Badge>
-            ))}
-          </div>
-        </div>
-      </Link>
-    </motion.div>
-  );
+      </div>
+    </Link>
+  )
 }
+export default ProductCard

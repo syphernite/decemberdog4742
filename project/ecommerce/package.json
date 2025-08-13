@@ -24,6 +24,7 @@
     "framer-motion": "^12.23.12",
     "immer": "^10.1.1",
     "lucide-react": "^0.344.0",
+    "postprocessing": "^6.37.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.62.0",
@@ -32,6 +33,7 @@
     "react-query": "^3.39.3",
     "react-router-dom": "^7.8.0",
     "tailwind-merge": "^3.3.1",
+    "three": "^0.179.1",
     "use-immer": "^0.11.0",
     "zod": "^4.0.15",
     "zustand": "^5.0.7"
