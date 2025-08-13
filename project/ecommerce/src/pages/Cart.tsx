@@ -1,168 +1,192 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
-import { useStore } from '../lib/store';
-import { formatPrice } from '../lib/utils';
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { api } from '../lib/api'
 
-export function Cart() {
-  const { cart, updateCartItem, removeFromCart } = useStore();
+type LineItem = {
+  id: string
+  title: string
+  qty: number
+  image: string
+  price: number
+}
 
-  const subtotal = cart.items.reduce((sum, item) => sum + (item.quantity * 2400), 0); // Mock price
-  const shipping = subtotal > 10000 ? 0 : 1500; // Free shipping over $100
-  const tax = Math.round(subtotal * 0.08); // 8% tax
-  const total = subtotal + shipping + tax;
+function loadDemoCart(): LineItem[] {
+  try {
+    const raw = localStorage.getItem('demo_cart')
+    if (raw) return JSON.parse(raw)
+  } catch {}
+  return []
+}
 
-  if (cart.items.length === 0) {
-    return (
-      <div className="min-h-screen bg-obsidian">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="text-center space-y-6">
-            <ShoppingBag className="h-16 w-16 text-white/40 mx-auto" />
-            <div>
-              <h1 className="text-heading font-heading text-champagne mb-4">
-                Your Cart is Empty
-              </h1>
-              <p className="text-white/60 mb-8">
-                Looks like you haven't added anything to your cart yet.
-              </p>
-              <Button asChild size="lg">
-                <Link to="/collections">Continue Shopping</Link>
-              </Button>
-            </div>
+function saveDemoCart(items: LineItem[]) {
+  try {
+    localStorage.setItem('demo_cart', JSON.stringify(items))
+  } catch {}
+}
+
+function LineRow({
+  it,
+  onQty,
+  onRemove
+}: {
+  it: LineItem
+  onQty: (id: string, qty: number) => void
+  onRemove: (id: string) => void
+}) {
+  const [imgErr, setImgErr] = React.useState(false)
+  return (
+    <div className="flex items-center gap-4 rounded-2xl border border-[var(--line)] p-4 bg-[var(--surface)]">
+      <div className="h-24 w-24 rounded-xl overflow-hidden bg-[#0f111a] flex items-center justify-center">
+        {imgErr ? (
+          <div className="text-[10px] uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
+            Your Product Image
           </div>
+        ) : (
+          <img
+            src={it.image}
+            alt={it.title}
+            className="h-full w-full object-cover"
+            onError={() => setImgErr(true)}
+          />
+        )}
+      </div>
+
+      <div className="flex-1">
+        <div className="font-semibold text-white line-clamp-1">{it.title}</div>
+        <div className="text-sm" style={{ color: 'var(--muted)' }}>
+          Fast shipping. Easy returns.
+        </div>
+        <div className="mt-2 flex items-center gap-3">
+          <label className="text-sm" style={{ color: 'var(--muted)' }}>
+            Qty
+          </label>
+          <input
+            type="number"
+            min={1}
+            value={it.qty}
+            onChange={(e) => onQty(it.id, Number(e.target.value))}
+            className="w-20 rounded-md border border-[var(--line)] bg-[#151516] px-2 py-1 text-gray-100"
+          />
+          <button onClick={() => onRemove(it.id)} className="text-sm hover:text-white" style={{ color: 'var(--muted)' }}>
+            Remove
+          </button>
         </div>
       </div>
-    );
-  }
 
-  return (
-    <div className="min-h-screen bg-obsidian">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <h1 className="text-heading font-heading text-champagne mb-8">
-            Shopping Cart ({cart.items.length} items)
-          </h1>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Cart Items */}
-            <div className="lg:col-span-2 space-y-6">
-              {cart.items.map((item, index) => (
-                <motion.div
-                  key={item.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: index * 0.1 }}
-                  className="flex space-x-4 p-6 bg-onyx border border-champagne/20"
-                >
-                  <div className="w-24 h-24 bg-white/10 flex-shrink-0"></div>
-                  
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-medium text-white mb-1">
-                      Product Title
-                    </h3>
-                    <p className="text-sm text-white/60 mb-2">
-                      Variant info
-                    </p>
-                    
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <button
-                          onClick={() => updateCartItem(item.id, { 
-                            quantity: Math.max(1, item.quantity - 1) 
-                          })}
-                          className="w-8 h-8 border border-champagne/30 flex items-center justify-center text-sm hover:bg-champagne/10"
-                        >
-                          <Minus className="h-3 w-3" />
-                        </button>
-                        <span className="text-sm font-medium w-8 text-center">
-                          {item.quantity}
-                        </span>
-                        <button
-                          onClick={() => updateCartItem(item.id, { 
-                            quantity: item.quantity + 1 
-                          })}
-                          className="w-8 h-8 border border-champagne/30 flex items-center justify-center text-sm hover:bg-champagne/10"
-                        >
-                          <Plus className="h-3 w-3" />
-                        </button>
-                      </div>
-                      
-                      <div className="flex items-center space-x-4">
-                        <span className="font-semibold text-champagne">
-                          {formatPrice(2400 * item.quantity)}
-                        </span>
-                        <button
-                          onClick={() => removeFromCart(item.id)}
-                          className="text-white/60 hover:text-red-400"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Order Summary */}
-            <div className="space-y-6">
-              <div className="bg-onyx border border-champagne/20 p-6">
-                <h2 className="text-lg font-heading text-champagne mb-4">
-                  Order Summary
-                </h2>
-                
-                <div className="space-y-3 mb-6">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-white/80">Subtotal</span>
-                    <span className="text-white">{formatPrice(subtotal)}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-white/80">Shipping</span>
-                    <span className="text-white">
-                      {shipping === 0 ? 'Free' : formatPrice(shipping)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-white/80">Tax</span>
-                    <span className="text-white">{formatPrice(tax)}</span>
-                  </div>
-                  <div className="border-t border-champagne/20 pt-3">
-                    <div className="flex justify-between font-semibold">
-                      <span className="text-champagne">Total</span>
-                      <span className="text-champagne">{formatPrice(total)}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <Input
-                    placeholder="Discount code"
-                    className="text-sm"
-                  />
-                  <Button variant="outline" className="w-full" size="sm">
-                    Apply Discount
-                  </Button>
-                </div>
-              </div>
-
-              <Button asChild className="w-full" size="lg">
-                <Link to="/checkout">Proceed to Checkout</Link>
-              </Button>
-
-              <Button asChild variant="outline" className="w-full" size="lg">
-                <Link to="/collections">Continue Shopping</Link>
-              </Button>
-            </div>
-          </div>
-        </motion.div>
+      <div className="text-right">
+        <div className="text-sm text-white">${(it.price * it.qty).toFixed(2)}</div>
+        <div className="text-xs" style={{ color: 'var(--muted)' }}>
+          ${it.price.toFixed(2)} each
+        </div>
       </div>
     </div>
-  );
+  )
 }
+
+export function Cart() {
+  const [items, setItems] = React.useState<LineItem[]>(loadDemoCart())
+  const [loading, setLoading] = React.useState(items.length === 0)
+
+  React.useEffect(() => {
+    if (items.length > 0) return
+    let mounted = true
+    // Seed a couple demo lines so the page feels alive (real titles/images/prices)
+    api.products.getAll().then((products) => {
+      if (!mounted) return
+      const seed: LineItem[] = products.slice(0, 2).map((p, i) => ({
+        id: p.id,
+        title: p.title,
+        qty: i === 0 ? 1 : 2,
+        image: p.image,
+        price: typeof p.price === 'number' ? p.price : 0
+      }))
+      setItems(seed)
+      saveDemoCart(seed)
+      setLoading(false)
+    })
+    return () => {
+      mounted = false
+    }
+  }, [items.length])
+
+  const updateQty = (id: string, qty: number) => {
+    const next = items.map((it) => (it.id === id ? { ...it, qty: Math.max(1, qty) } : it))
+    setItems(next)
+    saveDemoCart(next)
+  }
+
+  const remove = (id: string) => {
+    const next = items.filter((it) => it.id !== id)
+    setItems(next)
+    saveDemoCart(next)
+  }
+
+  const subtotal = items.reduce((sum, it) => sum + it.qty * it.price, 0)
+  const shipping = 0
+  const tax = 0
+  const total = subtotal + shipping + tax
+
+  return (
+    <div className="max-w-7xl mx-auto px-6 py-10">
+      <h1 className="text-2xl font-bold text-white">Your Cart</h1>
+      <p className="mt-2" style={{ color: 'var(--muted)' }}>
+        Demo Mode — Replace these products with your own inventory in the admin panel.
+      </p>
+
+      {loading ? (
+        <div className="mt-6" style={{ color: 'var(--muted)' }}>
+          Loading…
+        </div>
+      ) : items.length === 0 ? (
+        <div className="mt-8">
+          <p className="mb-4" style={{ color: 'var(--muted)' }}>
+            Your cart is empty.
+          </p>
+          <Link to="/collections" className="inline-block btn btn-primary">
+            Browse Products
+          </Link>
+        </div>
+      ) : (
+        <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-4">
+            {items.map((it) => (
+              <LineRow key={it.id} it={it} onQty={updateQty} onRemove={remove} />
+            ))}
+          </div>
+
+          <aside className="rounded-2xl border border-[var(--line)] p-5 h-fit bg-[var(--surface)]">
+            <h2 className="text-lg font-semibold text-white">Order Summary</h2>
+            <div className="mt-4 space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span style={{ color: 'var(--muted)' }}>Subtotal</span>
+                <span className="text-white">${subtotal.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span style={{ color: 'var(--muted)' }}>Shipping</span>
+                <span className="text-white">${shipping.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span style={{ color: 'var(--muted)' }}>Tax</span>
+                <span className="text-white">${tax.toFixed(2)}</span>
+              </div>
+              <div className="border-t border-[var(--line)] pt-2 flex justify-between font-medium">
+                <span className="text-white">Total</span>
+                <span className="text-white">${total.toFixed(2)}</span>
+              </div>
+            </div>
+
+            <Link to="/checkout" className="mt-4 block w-full text-center btn btn-primary">
+              Checkout
+            </Link>
+
+            <p className="mt-3 text-xs" style={{ color: 'var(--muted)' }}>
+              This is a demo checkout flow. No real payments are processed.
+            </p>
+          </aside>
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default Cart

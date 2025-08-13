@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+  <defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#1a1a1e"></stop><stop offset="1" stop-color="#0f0f11"></stop></linearGradient></defs>
+  <rect width="1200" height="1200" fill="url(#g)"></rect>
+  <g fill="#e7e7ea" font-family="Inter,Arial,sans-serif" text-anchor="middle">
+    <text x="600" y="560" font-size="72" font-weight="700">Your Product</text>
+    <text x="600" y="650" font-size="56" font-weight="700">Image Here</text>
+  </g>
+  <rect x="100" y="100" width="1000" height="1000" fill="none" stroke="#2a2a2e" stroke-width="8" stroke-dasharray="16,16"></rect>
+</svg>

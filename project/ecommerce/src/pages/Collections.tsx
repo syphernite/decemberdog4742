@@ -1,175 +1,154 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { useQuery } from '@tanstack/react-query';
-import { Filter, Grid, List, SlidersHorizontal } from 'lucide-react';
-import { api } from '../lib/api';
-import { ProductCard } from '../components/product/ProductCard';
-import { Button } from '../components/ui/Button';
-import { Badge } from '../components/ui/Badge';
+import React from 'react'
+import { api, ApiProduct } from '../lib/api'
+import { ProductCard } from '../components/product/ProductCard'
 
 export function Collections() {
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [sortBy, setSortBy] = useState('featured');
-  const [filters, setFilters] = useState<Record<string, string[]>>({});
-  const [showFilters, setShowFilters] = useState(false);
+  const [all, setAll] = React.useState<ApiProduct[]>([])
+  const [loading, setLoading] = React.useState(true)
+  const [sp, setSp] = React.useState(() => new URLSearchParams(window.location.search))
 
-  const { data: collections = [] } = useQuery({
-    queryKey: ['collections'],
-    queryFn: api.collections.getAll,
-  });
+  const selected = sp.getAll('cat')
+  const q = sp.get('q') || ''
+  const tag = sp.get('tag') || ''
 
-  const { data: products = [] } = useQuery({
-    queryKey: ['products'],
-    queryFn: api.products.getAll,
-  });
+  React.useEffect(() => {
+    let m = true
+    api.products.getAll().then((res) => {
+      if (!m) return
+      setAll(res)
+      setLoading(false)
+    })
+    return () => { m = false }
+  }, [])
 
-  const sortOptions = [
-    { value: 'featured', label: 'Featured' },
-    { value: 'price-low', label: 'Price: Low to High' },
-    { value: 'price-high', label: 'Price: High to Low' },
-    { value: 'newest', label: 'Newest First' },
-    { value: 'name', label: 'Name A-Z' },
-  ];
+  const categories = React.useMemo(
+    () => Array.from(new Set(all.map(p => p.category))).sort(),
+    [all]
+  )
+  const tags = React.useMemo(
+    () => Array.from(new Set(all.flatMap(p => p.tags || []))).sort(),
+    [all]
+  )
+
+  const setParam = (key: string, value?: string) => {
+    const fresh = new URLSearchParams(sp.toString())
+    if (value) fresh.set(key, value)
+    else fresh.delete(key)
+    setSp(fresh)
+    const url = new URL(window.location.href); url.search = fresh.toString(); window.history.replaceState({}, '', url.toString())
+  }
+
+  const toggleCat = (cat: string) => {
+    const next = new Set(sp.getAll('cat'))
+    if (next.has(cat)) next.delete(cat)
+    else next.add(cat)
+    const fresh = new URLSearchParams(sp.toString())
+    fresh.delete('cat')
+    Array.from(next).forEach(c => fresh.append('cat', c))
+    setSp(fresh)
+    const url = new URL(window.location.href); url.search = fresh.toString(); window.history.replaceState({}, '', url.toString())
+  }
+
+  const filtered = all.filter(p => {
+    const byCat = selected.length ? selected.includes(p.category) : true
+    const byTag = tag ? (p.tags || []).includes(tag) : true
+    const term = q.trim().toLowerCase()
+    const byText = term
+      ? (p.title || '').toLowerCase().includes(term) ||
+        (p.description || '').toLowerCase().includes(term) ||
+        (p.category || '').toLowerCase().includes(term)
+      : true
+    return byCat && byTag && byText
+  })
+
+  const badgeFor = (p: ApiProduct): string | null => {
+    const t = (p.tags || [])
+    if (t.includes('bestseller')) return 'Bestseller'
+    if (t.includes('limited')) return 'Limited'
+    if (t.includes('new')) return 'New'
+    return null
+  }
 
   return (
-    <div className="min-h-screen bg-obsidian">
-      {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-b from-obsidian to-onyx">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center space-y-6"
-          >
-            <h1 className="text-display font-heading text-champagne">
-              Collections
-            </h1>
-            <p className="text-lg text-white/60 max-w-2xl mx-auto">
-              Discover our curated collections of luxury jewelry, each piece crafted 
-              with volcanic glass and precious metals.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+    <div className="py-12 grid grid-cols-1 lg:grid-cols-4 gap-10">
+      <aside className="lg:col-span-1">
+        <div className="rounded-2xl border border-gray-800 bg-[#131316] p-4 sticky top-20">
+          <h2 className="text-lg font-semibold text-white">Filters</h2>
 
-      {/* Collections Grid */}
-      <section className="py-16">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {collections.map((collection, index) => (
-              <motion.div
-                key={collection.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="group cursor-pointer"
-              >
-                <div className="relative overflow-hidden aspect-[4/3] mb-4">
-                  <motion.img
-                    src={collection.image?.url}
-                    alt={collection.image?.alt || collection.title}
-                    className="w-full h-full object-cover"
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.6 }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-obsidian/80 via-transparent to-transparent" />
-                  <div className="absolute bottom-6 left-6 right-6">
-                    <h3 className="text-xl font-heading text-champagne mb-2">
-                      {collection.title}
-                    </h3>
-                    <p className="text-sm text-white/80 mb-4">
-                      {collection.description}
-                    </p>
-                    <Button variant="outline" size="sm">
-                      Explore Collection
-                    </Button>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+          <div className="mt-3 space-y-2">
+            <input
+              value={q}
+              onChange={(e) => setParam('q', e.target.value || undefined)}
+              placeholder="Search"
+              className="w-full rounded-md border border-gray-700 bg-[#151516] px-3 py-2 text-sm text-gray-100"
+            />
           </div>
-        </div>
-      </section>
 
-      {/* All Products Section */}
-      <section className="py-16 border-t border-champagne/20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header */}
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">
-            <div>
-              <h2 className="text-heading font-heading text-champagne mb-2">
-                All Products
-              </h2>
-              <p className="text-white/60">
-                {products.length} products available
-              </p>
-            </div>
-
-            {/* Controls */}
-            <div className="flex items-center space-x-4 mt-4 lg:mt-0">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowFilters(!showFilters)}
-                className="lg:hidden"
-              >
-                <SlidersHorizontal className="h-4 w-4 mr-2" />
-                Filters
-              </Button>
-
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="bg-onyx border border-champagne/20 text-white px-3 py-2 text-sm focus:border-champagne/50 focus:outline-none"
-              >
-                {sortOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-
-              <div className="flex border border-champagne/20">
-                <Button
-                  variant={viewMode === 'grid' ? 'default' : 'ghost'}
-                  size="sm"
-                  onClick={() => setViewMode('grid')}
-                  className="border-0"
-                >
-                  <Grid className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant={viewMode === 'list' ? 'default' : 'ghost'}
-                  size="sm"
-                  onClick={() => setViewMode('list')}
-                  className="border-0"
-                >
-                  <List className="h-4 w-4" />
-                </Button>
-              </div>
+          <div className="pt-4">
+            <div className="text-sm font-medium mb-2 text-white">Category</div>
+            <div className="flex flex-wrap gap-2">
+              {categories.map(cat => {
+                const active = selected.includes(cat)
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => toggleCat(cat)}
+                    className={`px-3 py-1.5 rounded-lg border text-sm transition ${
+                      active ? 'border-white bg-white text-black' : 'border-gray-700 hover:bg-[#1a1a1e] text-gray-300'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                )
+              })}
             </div>
           </div>
 
-          {/* Products Grid */}
-          <div className={`grid gap-8 ${
-            viewMode === 'grid' 
-              ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' 
-              : 'grid-cols-1'
-          }`}>
-            {products.map((product, index) => (
-              <motion.div
-                key={product.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.05 }}
-              >
-                <ProductCard product={product} />
-              </motion.div>
-            ))}
+          <div className="pt-4">
+            <div className="text-sm font-medium mb-2 text-white">Tag</div>
+            <select
+              value={tag}
+              onChange={(e) => setParam('tag', e.target.value || undefined)}
+              className="w-full rounded-md border border-gray-700 bg-[#151516] px-3 py-2 text-sm text-gray-100"
+            >
+              <option value="">All</option>
+              {tags.map(t => (
+                <option key={t} value={t}>{t}</option>
+              ))}
+            </select>
           </div>
         </div>
+      </aside>
+
+      <section className="lg:col-span-3">
+        <header className="mb-6">
+          <h1 className="text-2xl font-bold text-white">Collections</h1>
+          <p className="text-gray-300 mt-2">Browse your grid. Use filters or search to narrow the list.</p>
+        </header>
+
+        {loading ? (
+          <div className="text-gray-400">Loading…</div>
+        ) : filtered.length === 0 ? (
+          <div className="rounded-xl border border-gray-800 p-8 text-center text-gray-400">
+            No products match these filters.
+          </div>
+        ) : (
+          <div className="mt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {filtered.map((p) => (
+              <ProductCard
+                key={p.id}
+                id={p.id}
+                title={p.title}
+                image={p.image}
+                price={p.price}
+                badge={badgeFor(p)}
+              />
+            ))}
+          </div>
+        )}
       </section>
     </div>
-  );
+  )
 }
+
+export default Collections
