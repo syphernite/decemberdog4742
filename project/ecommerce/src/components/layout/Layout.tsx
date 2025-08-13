@@ -1,42 +1,55 @@
-import React from 'react';
-import { Outlet } from 'react-router-dom';
-import { Header } from './Header';
-import { Footer } from './Footer';
-import { CartDrawer } from '../cart/CartDrawer';
-import { SearchModal } from '../search/SearchModal';
-import { MobileMenu } from './MobileMenu';
-import { Toaster } from 'react-hot-toast';
+import React from 'react'
+import { Outlet, Link, NavLink, useNavigate } from 'react-router-dom'
+import SearchModal from '../search/SearchModal'
 
 export function Layout() {
+  const [open, setOpen] = React.useState(false)
+  const nav = useNavigate()
+
+  React.useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === '/' && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        e.preventDefault()
+        setOpen(true)
+      }
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [])
+
+  const link = 'px-3 py-2 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-[#171826] transition'
+  const active = 'text-white bg-[#171826]'
+
   return (
-    <div className="min-h-screen bg-obsidian text-white">
-      <Header />
-      <main>
+    <div className="min-h-screen">
+      <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[rgba(6,6,7,.7)] backdrop-blur">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="h-16 flex items-center justify-between">
+            <Link to="/" className="text-white font-extrabold text-lg tracking-tight">
+              <span style={{background:'linear-gradient(90deg,var(--acc),var(--acc2))',WebkitBackgroundClip:'text',color:'transparent'}}>Nightwave</span> Supply
+            </Link>
+            <nav className="hidden md:flex items-center gap-1">
+              <NavLink to="/collections" className={({isActive})=>`${link} ${isActive?active:''}`}>Collections</NavLink>
+              <NavLink to="/new-arrivals" className={({isActive})=>`${link} ${isActive?active:''}`}>New Arrivals</NavLink>
+              <button onClick={()=>setOpen(true)} className={link} aria-label="Open search">Search</button>
+            </nav>
+            <button onClick={()=>nav('/cart')} className="btn btn-ghost">Cart</button>
+          </div>
+        </div>
+      </header>
+
+      <main className="mx-auto max-w-7xl px-4 sm:px-6">
         <Outlet />
       </main>
-      <Footer />
-      
-      {/* Modals and Drawers */}
-      <CartDrawer />
-      <SearchModal />
-      <MobileMenu />
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          duration: 4000,
-          style: {
-            background: '#1A1A2E',
-            color: '#FFFFFF',
-            border: '1px solid rgba(212, 175, 55, 0.2)',
-          },
-          success: {
-            iconTheme: {
-              primary: '#D4AF37',
-              secondary: '#1A1A2E',
-            },
-          },
-        }}
-      />
+
+      <footer className="mt-16 border-t border-[var(--line)]">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10 text-center text-sm muted">
+          © {new Date().getFullYear()} Nightwave Supply — demo theme
+        </div>
+      </footer>
+
+      <SearchModal open={open} onClose={()=>setOpen(false)} />
     </div>
-  );
+  )
 }
+export default Layout
