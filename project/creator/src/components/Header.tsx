@@ -52,7 +52,7 @@ export default function Header() {
             <div className="h-10 w-10 rounded-full bg-gradient-to-r from-neon-violet to-neon-cyan grid place-items-center">
               <span className="text-white font-bold text-lg">C</span>
             </div>
-            <span className="text-white font-display text-xl tracking-wider">CREATOR</span>
+            <span className="text-white font-display text-xl tracking-wider">CREATOR EMPIRE</span>
           </Link>
 
           {/* Desktop segmented tabs */}
