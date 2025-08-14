@@ -2,7 +2,6 @@ export type HomeCMS = {
   hero: {
     headline: string
     subtext: string
-    bannerSrc: string
     primaryCtaText: string
     primaryCtaHref: string
     secondaryCtaText: string
@@ -15,7 +14,6 @@ const homeContent: HomeCMS = {
   hero: {
     headline: 'Nightwave Supply',
     subtext: 'A bold, high-contrast storefront. Swap in your images and go live.',
-    bannerSrc: '/placeholders/banner_landscape.svg',
     primaryCtaText: 'Explore Collections',
     primaryCtaHref: '/collections',
     secondaryCtaText: 'New Arrivals',
