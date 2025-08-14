@@ -3,67 +3,126 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
 
+// Simple className join helper
+const cn = (...classes: (string | undefined)[]) =>
+  classes.filter(Boolean).join(' ');
+
+interface BlurIntProps {
+  word: string;
+  className?: string;
+  variant?: {
+    hidden: { filter: string; opacity: number };
+    visible: { filter: string; opacity: number };
+  };
+  duration?: number;
+  delay?: number;
+}
+
+const BlurIn = ({
+  word,
+  className,
+  variant,
+  duration = 1,
+  delay = 0,
+}: BlurIntProps) => {
+  const defaultVariants = {
+    hidden: { filter: 'blur(10px)', opacity: 0 },
+    visible: { filter: 'blur(0px)', opacity: 1 },
+  };
+  const combinedVariants = variant || defaultVariants;
+
+  return (
+    <motion.h1
+      initial="hidden"
+      animate="visible"
+      transition={{ duration, delay }}
+      variants={combinedVariants}
+      className={cn(
+        'font-display text-center font-bold tracking-[-0.02em] drop-shadow-sm',
+        className
+      )}
+    >
+      {word}
+    </motion.h1>
+  );
+};
+
 const Home = () => {
   const featuredImages = [
     {
       id: 1,
       src: 'https://images.pexels.com/photos/1386604/pexels-photo-1386604.jpeg?auto=compress&cs=tinysrgb&w=800',
       alt: 'Portrait Photography',
-      category: 'Portrait'
+      category: 'Portrait',
     },
     {
       id: 2,
       src: 'https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=800',
       alt: 'Wedding Photography',
-      category: 'Wedding'
+      category: 'Wedding',
     },
     {
       id: 3,
       src: 'https://images.pexels.com/photos/1308881/pexels-photo-1308881.jpeg?auto=compress&cs=tinysrgb&w=800',
       alt: 'Family Photography',
-      category: 'Family'
+      category: 'Family',
     },
     {
       id: 4,
       src: 'https://images.pexels.com/photos/3771120/pexels-photo-3771120.jpeg?auto=compress&cs=tinysrgb&w=800',
       alt: 'Event Photography',
-      category: 'Events'
-    }
+      category: 'Events',
+    },
   ];
+
+  // Stagger settings: subtitle starts after title fully finishes
+  const TITLE_DURATION = 1.2;
+  const GAP_AFTER_TITLE = 0.2;
 
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <div 
+      <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden">
+        <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: `url('https://images.pexels.com/photos/1264210/pexels-photo-1264210.jpeg?auto=compress&cs=tinysrgb&w=1600')`
+            backgroundImage: `url('https://images.pexels.com/photos/1264210/pexels-photo-1264210.jpeg?auto=compress&cs=tinysrgb&w=1600')`,
           }}
         >
           <div className="absolute inset-0 bg-black/40"></div>
         </div>
-        
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.2 }}
-          className="relative z-10 text-center text-white px-4"
-        >
-          <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl font-light mb-4">
-            Elena Photography
-          </h1>
-          <p className="text-lg md:text-xl mb-8 text-gray-200 max-w-2xl mx-auto">
-            Capturing Life Through the Lens
-          </p>
-          <Link
-            to="/contact"
-            className="inline-flex items-center space-x-2 bg-amber-600 text-white px-8 py-3 rounded-full hover:bg-amber-700 transition-colors group"
+
+        <div className="relative z-10 text-center text-white px-4 space-y-4">
+          <BlurIn
+            word="Elena Photography"
+            className="font-serif text-4xl md:text-6xl lg:text-7xl font-light"
+            duration={TITLE_DURATION}
+          />
+          <BlurIn
+            word="Capturing Life Through the Lens"
+            className="text-lg md:text-xl text-gray-200 max-w-2xl mx-auto"
+            duration={1.0}
+            delay={TITLE_DURATION + GAP_AFTER_TITLE}
+          />
+
+          <motion.div
+            initial={{ y: 0 }}
+            animate={{ y: [0, -4, 0] }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              repeatType: 'loop',
+            }}
           >
-            <span>Book Your Session</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </motion.div>
+            <Link
+              to="/contact"
+              className="inline-flex items-center space-x-2 bg-amber-600 text-white px-8 py-3 rounded-full hover:bg-amber-700 transition-colors group"
+            >
+              <span>Book Your Session</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </motion.div>
+        </div>
       </section>
 
       {/* Introduction */}
@@ -79,10 +138,7 @@ const Home = () => {
               Welcome to My World
             </h2>
             <p className="text-lg text-gray-600 leading-relaxed mb-8">
-              I'm Elena, a passionate photographer dedicated to capturing the beauty, 
-              emotion, and authentic moments that make life extraordinary. Whether it's a 
-              wedding, portrait session, or special event, I believe every photograph tells 
-              a unique story worth preserving.
+              I'm Elena, a passionate photographer dedicated to capturing the beauty, emotion, and authentic moments that make life extraordinary. Whether it's a wedding, portrait session, or special event, I believe every photograph tells a unique story worth preserving.
             </p>
             <Link
               to="/about"
@@ -109,8 +165,7 @@ const Home = () => {
               Featured Work
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              A glimpse into my recent photography sessions, showcasing the diverse 
-              range of moments I love to capture.
+              A glimpse into my recent photography sessions, showcasing the diverse range of moments I love to capture.
             </p>
           </motion.div>
 
@@ -166,9 +221,7 @@ const Home = () => {
               ))}
             </div>
             <blockquote className="text-xl md:text-2xl font-light italic mb-8 leading-relaxed">
-              "Elena captured our wedding day perfectly. Her attention to detail and ability 
-              to make us feel comfortable resulted in photos that we'll treasure forever. 
-              She has an incredible eye for those candid, emotional moments."
+              "Elena captured our wedding day perfectly. Her attention to detail and ability to make us feel comfortable resulted in photos that we'll treasure forever. She has an incredible eye for those candid, emotional moments."
             </blockquote>
             <div className="text-amber-500 font-medium">
               Sarah & Michael Johnson
