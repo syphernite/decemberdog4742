@@ -54,7 +54,7 @@ const Hero = () => {
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-sky-400/25 via-transparent to-transparent" />
       </div>
 
-      {/* Navigation (now owns the top space) */}
+      {/* Navigation */}
       <nav className="absolute top-0 left-0 right-0 z-20 p-4 md:p-6 bg-gradient-to-b from-black/60 to-transparent">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="text-2xl font-bold text-white">
@@ -69,7 +69,7 @@ const Hero = () => {
       </nav>
 
       {/* Hero Content */}
-      <div className="relative z-10 text-center px-6 pt-28 md:pt-0 animate-fade-in">
+      <div className="relative z-10 text-center px-6 pt-32 md:pt-0 animate-fade-in">
         <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-lg">
           Transform Your Body.
           <br />
@@ -97,7 +97,7 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Scroll Indicator (hidden on mobile) */}
+      {/* Scroll Indicator */}
       <div className="hidden md:block absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce">
         <ChevronDown className="text-white w-8 h-8 drop-shadow-lg" />
       </div>

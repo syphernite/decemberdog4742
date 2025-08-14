@@ -1,3 +1,9 @@
+/* Prevent flash of dark text before Tailwind loads */
+html, body {
+  color: white;
+  background-color: black;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
