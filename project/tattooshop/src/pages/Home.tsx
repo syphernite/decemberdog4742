@@ -4,7 +4,6 @@ import StyleChips from '../components/StyleChips';
 import TrustBadges from '../components/TrustBadges';
 import ReviewsCarousel from '../components/ReviewsCarousel';
 import Interlude from '../components/Interlude';
-import RecentWork from '../components/RecentWork';
 
 const Home: React.FC = () => {
   return (
@@ -14,7 +13,6 @@ const Home: React.FC = () => {
       <TrustBadges />
       <ReviewsCarousel />
       <Interlude />
-      <RecentWork />
     </>
   );
 };
