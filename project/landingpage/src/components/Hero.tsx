@@ -234,12 +234,11 @@ const Hero: React.FC = () => {
               as="span"
               text={[
                 "for Small Businesses",
-                "for Hard Workers",
-                "for Restaurants",
-                "for Freelancers",
                 "for Entrepreneurs",
+                "for Freelancers",
+                "for Restaurants",
                 "for Anyone",
-                "Specifically Built4You",
+                "Specifically Built 4 You",
               ]}
               typingSpeed={100}
               deletingSpeed={15}
