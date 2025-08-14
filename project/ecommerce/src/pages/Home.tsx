@@ -21,7 +21,9 @@ export function Home() {
       setPromos(cms.promos)
       setLoading(false)
     })
-    return () => { mounted = false }
+    return () => {
+      mounted = false
+    }
   }, [])
 
   const badgeFor = (p: ApiProduct): string | null => {
@@ -34,19 +36,20 @@ export function Home() {
 
   return (
     <div className="min-h-screen">
-      {/* HERO */}
-      {/* outline removed: no border on the outer section */}
-      <section className="relative rounded-3xl mt-6">
-        {/* background image (clipped to rounded box) */}
-        <div className="rounded-3xl overflow-hidden">
-          <img
-            alt=""
-            className="w-full h-[50vh] md:h-[62vh] object-cover opacity-80"
-          />
-        </div>
+      {/* HERO — clean, no border/outline; generous line-height so headline never clips */}
+      <section className="relative mt-6" style={{ border: '0', outline: '0', boxShadow: 'none' }}>
+        {/* Background image as cover (no rounded container to avoid visible frame) */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none"
+          style={{
+            backgroundImage: `url('/placeholders/banner_landscape.svg')`,
+            filter: 'brightness(0.86)'
+          }}
+          aria-hidden
+        />
 
-        {/* subtle hyperspeed animation behind the card */}
-        <div className="absolute inset-0 rounded-3xl pointer-events-none opacity-55">
+        {/* Hyperspeed effect layer */}
+        <div className="absolute inset-0 pointer-events-none opacity-55">
           <Hyperspeed
             effectOptions={{
               distortion: 'turbulentDistortionStill',
@@ -69,23 +72,40 @@ export function Home() {
           />
         </div>
 
-        {/* overlay card — centered */}
+        {/* Hero height */}
+        <div className="h-[52vh] md:h-[64vh]" />
+
+        {/* Overlay content */}
         <div className="absolute inset-0 p-6 md:p-10 flex items-center justify-center">
-          {/* use a custom container without any border/ring classes */}
           <div
-            className="rounded-2xl max-w-2xl w-full overflow-visible border-0 ring-0 shadow-[0_10px_60px_rgba(0,0,0,0.45)]"
-            style={{ backdropFilter: 'blur(14px)', background: 'rgba(255,255,255,.05)' }}
+            className="max-w-2xl w-full"
+            style={{
+              backdropFilter: 'blur(14px)',
+              background: 'rgba(255,255,255,.05)',
+              border: '0',
+              outline: '0',
+              boxShadow: 'none'
+            }}
           >
-            <div className="p-6 md:p-8">
+            <div className="p-6 md:p-8 pt-8 pb-10">
               <h1
-                className="h1 leading-tight pb-1 [text-wrap:balance] overflow-visible"
-                style={{ background: 'linear-gradient(90deg,var(--acc),var(--acc2))', WebkitBackgroundClip: 'text', color: 'transparent' }}
+                className="font-extrabold tracking-tight text-4xl md:text-6xl"
+                style={{
+                  background: 'linear-gradient(90deg,var(--acc),var(--acc2))',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  display: 'inline-block',
+                  lineHeight: 1.22,           // prevents baseline clip
+                  marginBottom: '0.25rem'     // subtle space under headline
+                }}
               >
                 {hero?.headline || 'Nightwave Supply'}
               </h1>
+
               <p className="mt-3 md:text-lg muted">
                 {hero?.subtext || 'A bold, high-contrast storefront. Swap in your images and go live.'}
               </p>
+
               <div className="mt-6 flex gap-3">
                 <Link to={hero?.primaryCtaHref || '/collections'} className="btn btn-primary">
                   {hero?.primaryCtaText || 'Explore Collections'}
@@ -117,7 +137,7 @@ export function Home() {
       <section className="py-12">
         <div className="flex items-end justify-between">
           <h2 className="h2">Featured Products</h2>
-          <Link to="/collections" className="text-sm muted hover:text-white">View all</Link>
+        <Link to="/collections" className="text-sm muted hover:text-white">View all</Link>
         </div>
 
         {loading ? (
