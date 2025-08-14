@@ -2,9 +2,9 @@ import React from 'react'
 import { useParams } from 'react-router-dom'
 import { api } from '../lib/api'
 import type { ApiProduct } from '../lib/api'
-import { useCart } from '../lib/cart' // ✅ Assuming you have a cart hook/context
 
 type Selected = Record<string, string>
+type LineItem = { id: string; title: string; qty: number; image: string; price: number; options?: Selected }
 
 function ProductSchema({ p }: { p: ApiProduct }) {
   const schema = {
@@ -21,9 +21,63 @@ function ProductSchema({ p }: { p: ApiProduct }) {
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
 }
 
+/* --------- lightweight session cart helpers (no external hook) --------- */
+const SAVE_KEY = 'cart'
+const LEGACY_KEYS = ['demo_cart', 'ecom_cart', 'cart']
+const hasWindow = typeof window !== 'undefined'
+
+function getStore(): Storage | null {
+  if (!hasWindow) return null as unknown as Storage
+  try {
+    const t = '__cart_test__'; sessionStorage.setItem(t, '1'); sessionStorage.removeItem(t)
+    return sessionStorage
+  } catch {}
+  try {
+    const t = '__cart_test__'; localStorage.setItem(t, '1'); localStorage.removeItem(t)
+    return localStorage
+  } catch {}
+  return null as unknown as Storage
+}
+function mergeItems(a: LineItem[], b: LineItem[]) {
+  const m = new Map<string, LineItem>()
+  ;[...a, ...b].forEach((it) => {
+    const key = it.id // simple merge by product id
+    const cur = m.get(key)
+    if (cur) m.set(key, { ...cur, qty: cur.qty + Math.max(1, it.qty || 1) })
+    else m.set(key, { ...it, qty: Math.max(1, it.qty || 1) })
+  })
+  return Array.from(m.values())
+}
+function loadCart(): LineItem[] {
+  const store = getStore(); if (!store) return []
+  try {
+    let result: LineItem[] = []
+    for (const k of LEGACY_KEYS) {
+      const raw = store.getItem(k)
+      if (raw) result = mergeItems(result, JSON.parse(raw))
+    }
+    return result
+  } catch { return [] }
+}
+function saveCart(items: LineItem[]) {
+  const store = getStore(); if (!store) return
+  try {
+    store.setItem(SAVE_KEY, JSON.stringify(items))
+    for (const k of LEGACY_KEYS) if (k !== SAVE_KEY) store.removeItem(k)
+    if (hasWindow) {
+      window.dispatchEvent(new StorageEvent('storage', { key: SAVE_KEY, newValue: JSON.stringify(items) }))
+      window.dispatchEvent(new CustomEvent('cart:add'))
+    }
+  } catch {}
+}
+function addToCart(item: LineItem) {
+  const next = mergeItems(loadCart(), [item])
+  saveCart(next)
+}
+/* ----------------------------------------------------------------------- */
+
 export function ProductDetail() {
   const { id } = useParams()
-  const { addItem } = useCart() // ✅ Hook from your cart system
   const [loading, setLoading] = React.useState(true)
   const [p, setP] = React.useState<ApiProduct | null>(null)
   const [imgErr, setImgErr] = React.useState(false)
@@ -56,16 +110,16 @@ export function ProductDetail() {
                 (p.tags || []).includes('new') ? 'New' : null
 
   const handleAddToCart = () => {
-    addItem({
-      id: p.id,
+    addToCart({
+      id: String(p.id),
       title: p.title,
-      price: p.price ?? 0,
-      image: p.image,
-      quantity: qty,
+      image: p.image || '',
+      price: typeof p.price === 'number' ? p.price : 0,
+      qty: Math.max(1, qty),
       options: sel
     })
-    setAddedMsg('✅ Added to cart!')
-    setTimeout(() => setAddedMsg(''), 2000)
+    setAddedMsg('Added to cart')
+    setTimeout(() => setAddedMsg(''), 1500)
   }
 
   return (
@@ -142,15 +196,10 @@ export function ProductDetail() {
         </div>
 
         <div className="flex gap-3 pt-1">
-          <button
-            onClick={handleAddToCart}
-            className="btn btn-primary px-6"
-          >
-            Add to Cart
-          </button>
-          <button className="btn btn-ghost px-6">Add to Wishlist</button>
+          <button className="btn btn-primary px-6" onClick={handleAddToCart}>Add to Cart</button>
+          <button className="btn btn-ghost px-6" onClick={(e)=>e.preventDefault()}>Add to Wishlist</button>
         </div>
-        {addedMsg && <div className="text-green-400 text-sm pt-1">{addedMsg}</div>}
+        {addedMsg && <div className="text-sm text-green-400">{addedMsg}</div>}
 
         {/* Meta */}
         <div className="pt-6 border-t border-[var(--line)] grid grid-cols-1 md:grid-cols-3 gap-3">
