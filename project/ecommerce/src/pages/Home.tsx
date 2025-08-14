@@ -34,12 +34,15 @@ export function Home() {
 
   return (
     <div className="min-h-screen">
-      {/* HERO */}
-      {/* outline removed: no border on the outer section */}
-      <section className="relative rounded-3xl mt-6">
+      {/* HERO (no outline/border) */}
+      <section
+        className="relative rounded-3xl mt-6"
+        style={{ border: 'none', outline: 'none', boxShadow: 'none' }}
+      >
         {/* background image (clipped to rounded box) */}
         <div className="rounded-3xl overflow-hidden">
           <img
+            src={hero?.bannerSrc || '/placeholders/banner_landscape.svg'}
             alt=""
             className="w-full h-[50vh] md:h-[62vh] object-cover opacity-80"
           />
@@ -71,14 +74,13 @@ export function Home() {
 
         {/* overlay card — centered */}
         <div className="absolute inset-0 p-6 md:p-10 flex items-center justify-center">
-          {/* use a custom container without any border/ring classes */}
           <div
             className="rounded-2xl max-w-2xl w-full overflow-visible border-0 ring-0 shadow-[0_10px_60px_rgba(0,0,0,0.45)]"
             style={{ backdropFilter: 'blur(14px)', background: 'rgba(255,255,255,.05)' }}
           >
             <div className="p-6 md:p-8">
               <h1
-                className="h1 leading-tight pb-1 [text-wrap:balance] overflow-visible"
+                className="h1 leading-[1.12] pb-1 overflow-visible"
                 style={{ background: 'linear-gradient(90deg,var(--acc),var(--acc2))', WebkitBackgroundClip: 'text', color: 'transparent' }}
               >
                 {hero?.headline || 'Nightwave Supply'}
