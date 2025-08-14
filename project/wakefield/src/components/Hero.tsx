@@ -61,9 +61,10 @@ const Hero = () => {
             Oli Wakefield <span className="text-sky-400">Fitness</span>
           </div>
           <div className="hidden md:flex space-x-8 text-white font-medium">
-            <a href="#coaching" className="hover:text-sky-300" onClick={(e) => { e.preventDefault(); scrollToSection('coaching'); }}>Coaching</a>
-            <a href="#recipes"  className="hover:text-sky-300" onClick={(e) => { e.preventDefault(); scrollToSection('recipes'); }}>Recipes</a>
-            <a href="#contact"  className="hover:text-sky-300" onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}>Contact</a>
+            {/* Changed Coaching to About */}
+            <a href="#about" className="hover:text-sky-300" onClick={(e) => { e.preventDefault(); scrollToSection('about'); }}>About</a>
+            <a href="#recipes"  className="hover:text-sky-300" onClick={(e) => { e.preventDefault(); scrollToSection('recipes');  }}>Recipes</a>
+            <a href="#content"  className="hover:text-sky-300" onClick={(e) => { e.preventDefault(); scrollToSection('content');  }}>Socials</a>
           </div>
         </div>
       </nav>
