@@ -49,22 +49,33 @@ html,body{
 /* Images */
 img{ image-rendering:-webkit-optimize-contrast; }
 
-/* Hero section border/frame removal */
+/* ---------- Kill any hero frame/border/shadow ---------- */
 .hero-section,
 .hero-section::before,
-.hero-section::after {
-  border: 0 !important;
-  outline: 0 !important;
-  box-shadow: none !important;
+.hero-section::after,
+.hero-section *::before,
+.hero-section *::after{
+  border:0 !important;
+  outline:0 !important;
+  box-shadow:none !important;
 }
 
-.hero-section > *::before,
-.hero-section > *::after {
-  border: 0 !important;
-  outline: 0 !important;
-  box-shadow: none !important;
+/* remove any Tailwind ring on hero */
+.hero-section{
+  --tw-ring-color: transparent !important;
+  --tw-ring-offset-shadow: 0 0 #0000 !important;
+  --tw-ring-shadow: 0 0 #0000 !important;
+  background-clip: padding-box !important;
 }
 
-.hero-section { 
-  background-clip: padding-box !important; 
+/* also nuke frames some layouts draw around the first section */
+.min-h-screen > section:first-child,
+.min-h-screen > section:first-child::before,
+.min-h-screen > section:first-child::after{
+  border:0 !important;
+  outline:0 !important;
+  box-shadow:none !important;
 }
+
+/* if any hr lines are used as a frame inside hero, hide them */
+.hero-section hr{ display:none !important; }
