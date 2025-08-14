@@ -1,3 +1,4 @@
+// src/components/layout/Layout.tsx
 import React from 'react'
 import { Outlet, Link, NavLink, useNavigate } from 'react-router-dom'
 import SearchModal from '../search/SearchModal'
@@ -13,8 +14,8 @@ export function Layout() {
         setOpen(true)
       }
     }
-    document.addEventListener('keydown', onKey)
-    return () => document.removeEventListener('keydown', onKey)
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
   }, [])
 
   const link = 'px-3 py-2 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-[#171826] transition'
@@ -22,11 +23,21 @@ export function Layout() {
 
   return (
     <div className="min-h-screen">
-      <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[rgba(6,6,7,.7)] backdrop-blur">
+      {/* removed border-b to kill the top frame line */}
+      <header className="sticky top-0 z-40 bg-[rgba(6,6,7,.7)] backdrop-blur">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="h-16 flex items-center justify-between">
             <Link to="/" className="text-white font-extrabold text-lg tracking-tight">
-              <span style={{background:'linear-gradient(90deg,var(--acc),var(--acc2))',WebkitBackgroundClip:'text',color:'transparent'}}>Nightwave</span> Supply
+              <span
+                style={{
+                  background: 'linear-gradient(90deg,var(--acc),var(--acc2))',
+                  WebkitBackgroundClip: 'text',
+                  color: 'transparent'
+                }}
+              >
+                Nightwave
+              </span>{' '}
+              Supply
             </Link>
             <nav className="hidden md:flex items-center gap-1">
               <NavLink to="/collections" className={({isActive})=>`${link} ${isActive?active:''}`}>Collections</NavLink>
@@ -42,9 +53,10 @@ export function Layout() {
         <Outlet />
       </main>
 
-      <footer className="mt-16 border-t border-[var(--line)]">
+      {/* removed border-t to kill the bottom frame line */}
+      <footer className="">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10 text-center text-sm muted">
-          © {new Date().getFullYear()} Nightwave Supply — demo theme
+          © {new Date().getFullYear()} Nightwave Supply — Demo Store
         </div>
       </footer>
 
