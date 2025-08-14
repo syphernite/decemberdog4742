@@ -49,7 +49,22 @@ html,body{
 /* Images */
 img{ image-rendering:-webkit-optimize-contrast; }
 
-.hero-section {
-  border: none !important;
-  outline: none !important;
+/* Hero section border/frame removal */
+.hero-section,
+.hero-section::before,
+.hero-section::after {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+.hero-section > *::before,
+.hero-section > *::after {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+.hero-section { 
+  background-clip: padding-box !important; 
 }
