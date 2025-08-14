@@ -24,16 +24,25 @@ export function Layout() {
 
   return (
     <div className="min-h-screen">
-      {/* header (no borders/rings/shadows) */}
-      <header className="sticky top-0 z-40 bg-[rgba(6,6,7,.7)] backdrop-blur border-0 shadow-none ring-0">
+      <header className="sticky top-0 z-40 bg-[rgba(6,6,7,.7)] backdrop-blur">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="h-16 flex items-center justify-between">
-            <Link to="/" className="text-white font-extrabold text-lg tracking-tight">
+            <Link
+              to="/"
+              className="font-extrabold tracking-tight"
+              style={{
+                fontSize: '1.125rem', // text-lg equivalent
+                lineHeight: '1.4', // FIX: more room for descenders
+                color: 'white',
+              }}
+            >
               <span
                 style={{
                   background: 'linear-gradient(90deg,var(--acc),var(--acc2))',
                   WebkitBackgroundClip: 'text',
-                  color: 'transparent'
+                  color: 'transparent',
+                  display: 'inline-block',
+                  lineHeight: '1.4', // match outer line height
                 }}
               >
                 Nightwave
@@ -41,28 +50,42 @@ export function Layout() {
               Supply
             </Link>
             <nav className="hidden md:flex items-center gap-1">
-              <NavLink to="/collections" className={({ isActive }) => `${link} ${isActive ? active : ''}`}>
+              <NavLink
+                to="/collections"
+                className={({ isActive }) =>
+                  `${link} ${isActive ? active : ''}`
+                }
+              >
                 Collections
               </NavLink>
-              <NavLink to="/new-arrivals" className={({ isActive }) => `${link} ${isActive ? active : ''}`}>
+              <NavLink
+                to="/new-arrivals"
+                className={({ isActive }) =>
+                  `${link} ${isActive ? active : ''}`
+                }
+              >
                 New Arrivals
               </NavLink>
-              <button onClick={() => setOpen(true)} className={link} aria-label="Open search">
+              <button
+                onClick={() => setOpen(true)}
+                className={link}
+                aria-label="Open search"
+              >
                 Search
               </button>
             </nav>
-            <button onClick={() => nav('/cart')} className="btn btn-ghost">Cart</button>
+            <button onClick={() => nav('/cart')} className="btn btn-ghost">
+              Cart
+            </button>
           </div>
         </div>
       </header>
 
-      {/* main wrapper (no borders) */}
-      <main className="mx-auto max-w-7xl px-4 sm:px-6 border-0 shadow-none ring-0">
+      <main className="mx-auto max-w-7xl px-4 sm:px-6">
         <Outlet />
       </main>
 
-      {/* footer (no borders/rings/shadows) */}
-      <footer className="border-0 shadow-none ring-0">
+      <footer>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10 text-center text-sm muted">
           © {new Date().getFullYear()} Nightwave Supply — Demo Store
         </div>
@@ -72,5 +95,4 @@ export function Layout() {
     </div>
   )
 }
-
 export default Layout
