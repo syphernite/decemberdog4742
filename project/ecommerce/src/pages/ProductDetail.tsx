@@ -2,6 +2,7 @@ import React from 'react'
 import { useParams } from 'react-router-dom'
 import { api } from '../lib/api'
 import type { ApiProduct } from '../lib/api'
+import { useCart } from '../lib/cart' // ✅ Assuming you have a cart hook/context
 
 type Selected = Record<string, string>
 
@@ -22,11 +23,13 @@ function ProductSchema({ p }: { p: ApiProduct }) {
 
 export function ProductDetail() {
   const { id } = useParams()
+  const { addItem } = useCart() // ✅ Hook from your cart system
   const [loading, setLoading] = React.useState(true)
   const [p, setP] = React.useState<ApiProduct | null>(null)
   const [imgErr, setImgErr] = React.useState(false)
   const [sel, setSel] = React.useState<Selected>({})
   const [qty, setQty] = React.useState(1)
+  const [addedMsg, setAddedMsg] = React.useState('')
 
   React.useEffect(() => {
     let m = true
@@ -51,6 +54,19 @@ export function ProductDetail() {
   const badge = (p.tags || []).includes('bestseller') ? 'Bestseller' :
                 (p.tags || []).includes('limited') ? 'Limited' :
                 (p.tags || []).includes('new') ? 'New' : null
+
+  const handleAddToCart = () => {
+    addItem({
+      id: p.id,
+      title: p.title,
+      price: p.price ?? 0,
+      image: p.image,
+      quantity: qty,
+      options: sel
+    })
+    setAddedMsg('✅ Added to cart!')
+    setTimeout(() => setAddedMsg(''), 2000)
+  }
 
   return (
     <div className="py-10 grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -126,9 +142,15 @@ export function ProductDetail() {
         </div>
 
         <div className="flex gap-3 pt-1">
-          <button className="btn btn-primary px-6">Add to Cart</button>
+          <button
+            onClick={handleAddToCart}
+            className="btn btn-primary px-6"
+          >
+            Add to Cart
+          </button>
           <button className="btn btn-ghost px-6">Add to Wishlist</button>
         </div>
+        {addedMsg && <div className="text-green-400 text-sm pt-1">{addedMsg}</div>}
 
         {/* Meta */}
         <div className="pt-6 border-t border-[var(--line)] grid grid-cols-1 md:grid-cols-3 gap-3">

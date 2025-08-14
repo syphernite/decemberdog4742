@@ -69,33 +69,6 @@ const DESCS: string[] = [
   'Soft brim with classic crown.'
 ]
 
-const IMG: string[] = [
-  'https://images.unsplash.com/photo-1520975693413-35a4c86c5e52?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1592878904946-b3cd9a8d8f80?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1580894732444-8ecded7900cd?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1517705008128-361805f42e86?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1526045612212-70caf35c14df?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1542293787938-c9e299b88054?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1556909114-95f7f72f0dd4?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1535059329802-3b7a9a7f2c02?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1542291024-7f0f4b6c28b6?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1520975922284-9d8a5d51d0b1?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1524594227084-df79e4e4d7f0?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1520975926212-4f2b9b1e0c58?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1537039557101-4a42c334fd08?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1490367532201-b9bc1dc483f6?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1520975605362-33898b26f8a0?q=80&w=1200&auto=format&fit=crop'
-]
-
 function priceFor(i: number): number {
   const base = [29, 39, 49, 59, 69, 79, 89, 99][i % 8]
   return base + (i % 3 === 0 ? 0.99 : 0)
@@ -109,7 +82,6 @@ const PRODUCTS: Product[] = Array.from({ length: 24 }).map((_, i) => {
     id,
     title: NAMES[i % NAMES.length],
     description: DESCS[i % DESCS.length],
-    image: IMG[i % IMG.length],
     price: priceFor(i),
     category,
     options: [
