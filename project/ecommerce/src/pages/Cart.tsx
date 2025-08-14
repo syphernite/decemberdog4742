@@ -1,5 +1,6 @@
+// src/pages/Cart.tsx
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { api } from '../lib/api'
 
 type LineItem = {
@@ -10,17 +11,77 @@ type LineItem = {
   price: number
 }
 
-function loadDemoCart(): LineItem[] {
+const SAVE_KEY = 'cart'
+const LEGACY_KEYS = ['demo_cart', 'ecom_cart', 'cart']
+
+const hasWindow = typeof window !== 'undefined'
+
+/** In-memory fallback when storage is blocked */
+const memoryStore = (() => {
+  let map = new Map<string, string>()
+  return {
+    getItem: (k: string) => map.get(k) ?? null,
+    setItem: (k: string, v: string) => void map.set(k, v),
+    removeItem: (k: string) => void map.delete(k),
+  }
+})()
+
+type SafeStore = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>
+
+function getStore(): SafeStore {
+  if (!hasWindow) return memoryStore
+  // prefer sessionStorage for session-lifetime carts
   try {
-    const raw = localStorage.getItem('demo_cart')
-    if (raw) return JSON.parse(raw)
+    const t = '__cart_test__'
+    window.sessionStorage.setItem(t, '1')
+    window.sessionStorage.removeItem(t)
+    return window.sessionStorage
   } catch {}
-  return []
+  try {
+    const t = '__cart_test__'
+    window.localStorage.setItem(t, '1')
+    window.localStorage.removeItem(t)
+    return window.localStorage
+  } catch {}
+  return memoryStore
 }
 
-function saveDemoCart(items: LineItem[]) {
+function mergeItems(a: LineItem[], b: LineItem[]) {
+  const m = new Map<string, LineItem>()
+  ;[...a, ...b].forEach((it) => {
+    const cur = m.get(it.id)
+    if (cur) m.set(it.id, { ...cur, qty: cur.qty + Math.max(1, it.qty || 1) })
+    else m.set(it.id, { ...it, qty: Math.max(1, it.qty || 1) })
+  })
+  return Array.from(m.values())
+}
+
+function loadCart(): LineItem[] {
+  const store = getStore()
   try {
-    localStorage.setItem('demo_cart', JSON.stringify(items))
+    // read newest first; merge any legacy keys to be compatible with “add to cart” elsewhere
+    let result: LineItem[] = []
+    for (const k of LEGACY_KEYS) {
+      const raw = store.getItem(k)
+      if (raw) {
+        const parsed = JSON.parse(raw) as LineItem[]
+        result = mergeItems(result, parsed)
+      }
+    }
+    return result
+  } catch {
+    return []
+  }
+}
+
+function saveCart(items: LineItem[]) {
+  const store = getStore()
+  try {
+    // write to primary key and clean legacy
+    store.setItem(SAVE_KEY, JSON.stringify(items))
+    for (const k of LEGACY_KEYS) if (k !== SAVE_KEY) store.removeItem(k)
+    // notify other tabs/pages
+    if (hasWindow) window.dispatchEvent(new StorageEvent('storage', { key: SAVE_KEY, newValue: JSON.stringify(items) }))
   } catch {}
 }
 
@@ -63,8 +124,8 @@ function LineRow({
           <input
             type="number"
             min={1}
-            value={it.qty}
-            onChange={(e) => onQty(it.id, Number(e.target.value))}
+            value={Number.isFinite(it.qty) ? it.qty : 1}
+            onChange={(e) => onQty(it.id, Math.max(1, Number(e.target.value) || 1))}
             className="w-20 rounded-md border border-[var(--line)] bg-[#151516] px-2 py-1 text-gray-100"
           />
           <button onClick={() => onRemove(it.id)} className="text-sm hover:text-white" style={{ color: 'var(--muted)' }}>
@@ -84,41 +145,88 @@ function LineRow({
 }
 
 export function Cart() {
-  const [items, setItems] = React.useState<LineItem[]>(loadDemoCart())
-  const [loading, setLoading] = React.useState(items.length === 0)
+  const [items, setItems] = React.useState<LineItem[]>([])
+  const [hydrated, setHydrated] = React.useState(false)
+  const location = useLocation()
+  const navigate = useNavigate()
 
+  // Initial load
   React.useEffect(() => {
-    if (items.length > 0) return
-    let mounted = true
-    // Seed a couple demo lines so the page feels alive (real titles/images/prices)
-    api.products.getAll().then((products) => {
-      if (!mounted) return
-      const seed: LineItem[] = products.slice(0, 2).map((p, i) => ({
-        id: p.id,
-        title: p.title,
-        qty: i === 0 ? 1 : 2,
-        image: p.image,
-        price: typeof p.price === 'number' ? p.price : 0
-      }))
-      setItems(seed)
-      saveDemoCart(seed)
-      setLoading(false)
-    })
-    return () => {
-      mounted = false
+    setItems(loadCart())
+    setHydrated(true)
+  }, [])
+
+  // Listen for storage updates and custom cart events
+  React.useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (!e.key || !LEGACY_KEYS.includes(e.key)) return
+      try {
+        setItems(loadCart())
+      } catch {}
     }
-  }, [items.length])
+
+    const onCartAdd = (e: Event) => {
+      const detail = (e as CustomEvent).detail as Partial<LineItem> & { qty?: number }
+      if (!detail?.id || !detail?.title) return
+      addItem({
+        id: String(detail.id),
+        title: String(detail.title),
+        qty: Math.max(1, Number(detail.qty) || 1),
+        image: String(detail.image || ''),
+        price: Number(detail.price || 0),
+      })
+    }
+
+    window.addEventListener('storage', onStorage)
+    window.addEventListener('cart:add', onCartAdd as EventListener)
+    return () => {
+      window.removeEventListener('storage', onStorage)
+      window.removeEventListener('cart:add', onCartAdd as EventListener)
+    }
+  }, [])
+
+  // Support “/cart?add=<id>&qty=<n>” deep-linking
+  React.useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const add = params.get('add')
+    const qty = Math.max(1, Number(params.get('qty') || 1))
+    if (!add) return
+
+    ;(async () => {
+      const all = await api.products.getAll()
+      const p = all.find((x: any) => String(x.id) === String(add))
+      if (!p) return
+      addItem({
+        id: String(p.id),
+        title: p.title,
+        image: p.image,
+        price: typeof p.price === 'number' ? p.price : 0,
+        qty,
+      })
+      // clean URL so refresh doesn’t re-add
+      params.delete('add')
+      params.delete('qty')
+      navigate({ pathname: location.pathname, search: params.toString() ? `?${params.toString()}` : '' }, { replace: true })
+    })()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search])
+
+  function addItem(newItem: LineItem) {
+    const next = mergeItems(items, [newItem])
+    setItems(next)
+    saveCart(next)
+  }
 
   const updateQty = (id: string, qty: number) => {
-    const next = items.map((it) => (it.id === id ? { ...it, qty: Math.max(1, qty) } : it))
+    const next = items.map((it) => (it.id === id ? { ...it, qty: Math.max(1, qty || 1) } : it))
     setItems(next)
-    saveDemoCart(next)
+    saveCart(next)
   }
 
   const remove = (id: string) => {
     const next = items.filter((it) => it.id !== id)
     setItems(next)
-    saveDemoCart(next)
+    saveCart(next)
   }
 
   const subtotal = items.reduce((sum, it) => sum + it.qty * it.price, 0)
@@ -129,14 +237,9 @@ export function Cart() {
   return (
     <div className="max-w-7xl mx-auto px-6 py-10">
       <h1 className="text-2xl font-bold text-white">Your Cart</h1>
-      <p className="mt-2" style={{ color: 'var(--muted)' }}>
-        Demo Mode — Replace these products with your own inventory in the admin panel.
-      </p>
 
-      {loading ? (
-        <div className="mt-6" style={{ color: 'var(--muted)' }}>
-          Loading…
-        </div>
+      {!hydrated ? (
+        <div className="mt-6" style={{ color: 'var(--muted)' }}>Loading…</div>
       ) : items.length === 0 ? (
         <div className="mt-8">
           <p className="mb-4" style={{ color: 'var(--muted)' }}>
@@ -178,10 +281,6 @@ export function Cart() {
             <Link to="/checkout" className="mt-4 block w-full text-center btn btn-primary">
               Checkout
             </Link>
-
-            <p className="mt-3 text-xs" style={{ color: 'var(--muted)' }}>
-              This is a demo checkout flow. No real payments are processed.
-            </p>
           </aside>
         </div>
       )}

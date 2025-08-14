@@ -40,7 +40,6 @@ export function Home() {
         {/* background image (clipped to rounded box) */}
         <div className="rounded-3xl overflow-hidden">
           <img
-            src={hero?.bannerSrc || '/placeholders/banner_landscape.svg'}
             alt=""
             className="w-full h-[50vh] md:h-[62vh] object-cover opacity-80"
           />
