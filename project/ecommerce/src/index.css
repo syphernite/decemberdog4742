@@ -79,3 +79,10 @@ img{ image-rendering:-webkit-optimize-contrast; }
 
 /* if any hr lines are used as a frame inside hero, hide them */
 .hero-section hr{ display:none !important; }
+
+/* Remove any accidental layout borders */
+header, footer, main {
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+}
