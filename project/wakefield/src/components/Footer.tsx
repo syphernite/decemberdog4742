@@ -36,15 +36,6 @@ const Footer = () => {
               </li>
               <li>
                 <a
-                  href="#coaching"
-                  onClick={(e) => { e.preventDefault(); scrollToSection('coaching'); }}
-                  className="text-gray-400 hover:text-sky-400 transition-colors cursor-pointer"
-                >
-                  Coaching
-                </a>
-              </li>
-              <li>
-                <a
                   href="#recipes"
                   onClick={(e) => { e.preventDefault(); scrollToSection('recipes'); }}
                   className="text-gray-400 hover:text-sky-400 transition-colors cursor-pointer"
@@ -54,11 +45,11 @@ const Footer = () => {
               </li>
               <li>
                 <a
-                  href="#contact"
-                  onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}
+                  href="#socials"
+                  onClick={(e) => { e.preventDefault(); scrollToSection('socials'); }}
                   className="text-gray-400 hover:text-sky-400 transition-colors cursor-pointer"
                 >
-                  Contact
+                  Socials
                 </a>
               </li>
             </ul>
@@ -91,7 +82,17 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 mb-4 md:mb-0">© {new Date().getFullYear()} Oli Wakefield Fitness</p>
-          <p className="text-gray-400">Built with 💪 by <span className="text-sky-400">Built4You</span></p>
+          <p className="text-gray-400">
+            Built with 💪 by{' '}
+            <a
+              href="https://built4you.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sky-400 hover:underline"
+            >
+              Built4You
+            </a>
+          </p>
         </div>
       </div>
     </footer>
