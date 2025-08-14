@@ -1,14 +1,14 @@
 import React from 'react';
 import { ChevronDown } from 'lucide-react';
 
-// Use BASE_URL so it works locally and on GitHub Pages
-const VIDEO_SRC = import.meta.env.BASE_URL + 'media/oli-hero.mp4';
-const POSTER_SRC = import.meta.env.BASE_URL + 'media/oli-hero-poster.jpg';
+// files live in /public/media/
+const VER = 'v1'; // bump to bust cache after redeploys
+const MP4   = import.meta.env.BASE_URL + `media/oli-hero.mp4?${VER}`;
+const POSTER = import.meta.env.BASE_URL + 'media/oli-hero-poster.jpg';
 
 const Hero = () => {
   const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    element?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -21,9 +21,11 @@ const Hero = () => {
           muted
           loop
           playsInline
-          poster={POSTER_SRC}
+          preload="auto"
+          poster={POSTER}
+          onError={(e) => console.error('Hero video failed:', (e.target as HTMLVideoElement).currentSrc)}
         >
-          <source src={VIDEO_SRC} type="video/mp4" />
+          <source src={MP4} type="video/mp4" />
         </video>
 
         {/* Overlay: dark + baby-blue tint */}
@@ -41,30 +43,21 @@ const Hero = () => {
             <a
               href="#coaching"
               className="hover:text-sky-300 transition-colors cursor-pointer"
-              onClick={(e) => {
-                e.preventDefault();
-                scrollToSection('coaching');
-              }}
+              onClick={(e) => { e.preventDefault(); scrollToSection('coaching'); }}
             >
               Coaching
             </a>
             <a
               href="#recipes"
               className="hover:text-sky-300 transition-colors cursor-pointer"
-              onClick={(e) => {
-                e.preventDefault();
-                scrollToSection('recipes');
-              }}
+              onClick={(e) => { e.preventDefault(); scrollToSection('recipes'); }}
             >
               Recipes
             </a>
             <a
               href="#contact"
               className="hover:text-sky-300 transition-colors cursor-pointer"
-              onClick={(e) => {
-                e.preventDefault();
-                scrollToSection('contact');
-              }}
+              onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}
             >
               Contact
             </a>
@@ -105,15 +98,6 @@ const Hero = () => {
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce">
         <ChevronDown className="text-white w-8 h-8" />
       </div>
-
-      {/* No-JS fallback image */}
-      <noscript>
-        <style>{`.hero-fallback{background-image:url('${POSTER_SRC}');background-size:cover;background-position:center}`}</style>
-        <div className="hero-fallback absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-black/50" />
-          <div className="absolute inset-0 bg-gradient-to-tr from-sky-400/25 via-transparent to-transparent" />
-        </div>
-      </noscript>
     </div>
   );
 };
