@@ -3,116 +3,75 @@ import { Instagram, Youtube, Facebook, MessageCircle, Star } from 'lucide-react'
 
 const ContentHub = () => {
   const testimonials = [
-    {
-      name: 'Sarah M.',
-      text: "Oli completely transformed my relationship with fitness. I'm stronger and more confident than ever!",
-      rating: 5
-    },
-    {
-      name: 'Mike T.',
-      text: "The mindset coaching was a game-changer. I finally broke through my mental barriers.",
-      rating: 5
-    },
-    {
-      name: 'Emma L.',
-      text: "Love the recipes! Finally found a way to eat healthy without sacrificing flavor.",
-      rating: 5
-    }
+    { name: 'Sarah M.', text: 'I’m stronger and more confident than ever.', rating: 5 },
+    { name: 'Mike T.', text: 'Mindset coaching helped me break mental barriers.', rating: 5 },
+    { name: 'Emma L.', text: 'Recipes made healthy eating simple and tasty.', rating: 5 },
   ];
 
   return (
     <section className="py-20 bg-gray-50" id="content">
       <div className="max-w-7xl mx-auto px-6">
-        {/* Social Media Section */}
+        {/* Social */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Follow The <span className="text-orange-500">Journey</span>
+            Follow The <span className="text-sky-500">Journey</span>
           </h2>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Get daily motivation, workout tips, and behind-the-scenes content across all platforms.
+            Daily training, nutrition, and motivation.
           </p>
 
           <div className="flex justify-center space-x-6 mb-12">
             {[
               { icon: Instagram, label: 'Instagram', href: 'https://instagram.com/oliwakefieldfitness', color: 'hover:text-pink-500' },
-              { icon: Youtube, label: 'YouTube', href: 'https://www.youtube.com/channel/UCSNa_smPFrELPhS6xLbpFqA', color: 'hover:text-red-500' },
+              { icon: Youtube, label: 'YouTube', href: 'https://www.youtube.com/@oliwakefieldfitness', color: 'hover:text-red-500' },
               { icon: Facebook, label: 'Facebook', href: 'https://www.facebook.com/share/19w6RhurwL/?mibextid=wwXIfr', color: 'hover:text-blue-500' },
-              { icon: MessageCircle, label: 'Contact', href: '#contact', color: 'hover:text-purple-500' }
-            ].map((social, index) => (
+              { icon: MessageCircle, label: 'Contact', href: '#contact', color: 'hover:text-sky-500' },
+            ].map((s) => (
               <a
-                key={index}
-                href={social.href}
-                target={social.href.startsWith('http') ? '_blank' : undefined}
-                rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                className={`bg-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 ${social.color}`}
-                aria-label={social.label}
-                title={social.label}
+                key={s.label}
+                href={s.href}
+                target={s.href.startsWith('http') ? '_blank' : undefined}
+                rel={s.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                className={`bg-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 ${s.color}`}
+                aria-label={s.label}
+                title={s.label}
               >
-                <social.icon className="w-8 h-8 text-gray-700" />
+                <s.icon className="w-8 h-8 text-gray-700" />
               </a>
             ))}
           </div>
         </div>
 
-        {/* Featured Content Grid */}
+        {/* Featured content (static placeholders) */}
         <div className="grid md:grid-cols-3 gap-8 mb-16">
-          <div className="relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
-            <img 
-              src="https://images.pexels.com/photos/416778/pexels-photo-416778.jpeg?auto=compress&cs=tinysrgb&w=800"
-              alt="Workout demonstration"
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-6">
-              <h3 className="text-xl font-bold mb-2">Weekly Workout Breakdown</h3>
-              <p className="text-gray-600">Follow along with my latest training session and learn proper form.</p>
+          {[
+            { title: 'Weekly Workout Breakdown', img: 'https://images.pexels.com/photos/416778/pexels-photo-416778.jpeg?auto=compress&cs=tinysrgb&w=800', blurb: 'Learn proper form and progress with clarity.' },
+            { title: 'Sunday Meal Prep', img: 'https://images.pexels.com/photos/1640774/pexels-photo-1640774.jpeg?auto=compress&cs=tinysrgb&w=800', blurb: 'Prep tasty meals that fit your macros.' },
+            { title: 'Mindset Monday', img: 'https://images.pexels.com/photos/3768916/pexels-photo-3768916.jpeg?auto=compress&cs=tinysrgb&w=800', blurb: 'Build confidence and discipline that lasts.' },
+          ].map((c) => (
+            <div key={c.title} className="relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+              <img src={c.img} alt={c.title} className="w-full h-48 object-cover" />
+              <div className="p-6">
+                <h3 className="text-xl font-bold mb-2">{c.title}</h3>
+                <p className="text-gray-600">{c.blurb}</p>
+              </div>
             </div>
-          </div>
-
-          <div className="relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
-            <img 
-              src="https://images.pexels.com/photos/1640774/pexels-photo-1640774.jpeg?auto=compress&cs=tinysrgb&w=800"
-              alt="Meal prep"
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-6">
-              <h3 className="text-xl font-bold mb-2">Sunday Meal Prep</h3>
-              <p className="text-gray-600">Step-by-step guide to preparing a week's worth of healthy meals.</p>
-            </div>
-          </div>
-
-          <div className="relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
-            <img 
-              src="https://images.pexels.com/photos/3768916/pexels-photo-3768916.jpeg?auto=compress&cs=tinysrgb&w=800"
-              alt="Mindset coaching"
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-6">
-              <h3 className="text-xl font-bold mb-2">Mindset Monday</h3>
-              <p className="text-gray-600">Weekly motivation and mental strategies for lasting success.</p>
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* Testimonials */}
         <div className="bg-white rounded-2xl p-8 shadow-lg">
-          <h3 className="text-3xl font-bold text-center mb-12 text-gray-900">
-            What My Clients Say
-          </h3>
-          
+          <h3 className="text-3xl font-bold text-center mb-12 text-gray-900">What My Clients Say</h3>
           <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <div key={index} className="text-center">
+            {testimonials.map((t) => (
+              <div key={t.name} className="text-center">
                 <div className="flex justify-center mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
+                  {[...Array(t.rating)].map((_, i) => (
                     <Star key={i} className="w-5 h-5 text-yellow-500 fill-current" />
                   ))}
                 </div>
-                
-                <p className="text-gray-700 italic mb-4 text-lg">
-                  "{testimonial.text}"
-                </p>
-                
-                <p className="font-bold text-orange-500">{testimonial.name}</p>
+                <p className="text-gray-700 italic mb-4 text-lg">“{t.text}”</p>
+                <p className="font-bold text-sky-500">{t.name}</p>
               </div>
             ))}
           </div>

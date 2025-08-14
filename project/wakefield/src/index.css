@@ -23,6 +23,22 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Hide scrollbar but allow scrolling */
+/* Chrome, Safari, Opera */
+html::-webkit-scrollbar {
+  display: none;
+}
+
+/* Firefox */
+html {
+  scrollbar-width: none;
+}
+
+/* IE, Edge */
+html {
+  -ms-overflow-style: none;
+}
+
 /* Custom button glow effect */
 .btn-glow:hover {
   box-shadow: 0 0 30px rgba(255, 107, 53, 0.3);
