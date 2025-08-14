@@ -91,7 +91,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 mb-4 md:mb-0">© {new Date().getFullYear()} Oli Wakefield Fitness</p>
-          <p className="text-gray-400">Built by <span className="text-sky-400">Built4You</span></p>
+          <p className="text-gray-400">Built with 💪 by <span className="text-sky-400">Built4You</span></p>
         </div>
       </div>
     </footer>
