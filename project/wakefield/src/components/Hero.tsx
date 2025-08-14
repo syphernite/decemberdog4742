@@ -82,7 +82,7 @@ const Hero = () => {
 
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
           <button
-            onClick={() => scrollToSection('coaching')}
+            onClick={() => window.open('https://kahunas.io/contact/person_info/c2b2951e-632f-4b0a-bb08-a85d7803a87f', '_blank')}
             className="bg-sky-500 hover:bg-sky-600 text-white px-8 py-4 rounded-full text-lg font-bold transition-all duration-300 transform hover:scale-105 hover:shadow-2xl min-w-[280px] drop-shadow-lg"
           >
             Start Your Coaching Journey
