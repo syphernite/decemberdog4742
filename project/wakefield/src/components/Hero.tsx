@@ -1,8 +1,8 @@
 import React from 'react';
 import { ChevronDown } from 'lucide-react';
 
-// Use BASE_URL so paths work in dev and on GitHub Pages subpath
-const VIDEO_SRC  = import.meta.env.BASE_URL + 'media/oli-hero.mp4';
+// Use BASE_URL so it works locally and on GitHub Pages
+const VIDEO_SRC = import.meta.env.BASE_URL + 'media/oli-hero.mp4';
 const POSTER_SRC = import.meta.env.BASE_URL + 'media/oli-hero-poster.jpg';
 
 const Hero = () => {
