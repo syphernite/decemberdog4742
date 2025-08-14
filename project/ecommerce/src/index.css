@@ -48,3 +48,8 @@ html,body{
 
 /* Images */
 img{ image-rendering:-webkit-optimize-contrast; }
+
+.hero-section {
+  border: none !important;
+  outline: none !important;
+}

@@ -5,7 +5,7 @@ import { Button } from '../ui/Button';
 
 export function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="hero-section relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with Film Grain */}
       <div 
         className="absolute inset-0 film-grain bg-cover bg-center bg-no-repeat"
