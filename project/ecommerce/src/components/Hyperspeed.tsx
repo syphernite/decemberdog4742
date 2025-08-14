@@ -471,7 +471,7 @@ class App {
   scene: THREE.Scene;
   renderPass!: RenderPass; bloomPass!: EffectPass; clock: THREE.Clock;
   assets: Record<string, any>; disposed: boolean;
-  road: Road; leftCarLights: CarLights; rightCarLights: CarLights; leftSticks: LightsSticks;
+  road: Road; leftCarLights: CarLights; rightCarLights: CarLights; leftSticks: LightsSticks; rightSticks: LightsSticks;  // <-- added rightSticks
   fogUniforms: Record<string,{value:any}>; fovTarget:number; speedUpTarget:number; speedUp:number; timeOffset:number;
 
   constructor(container: HTMLElement, options: HyperspeedOptions){
@@ -501,6 +501,7 @@ class App {
     this.leftCarLights = new CarLights(this, options, options.colors.leftCars, options.movingAwaySpeed, new THREE.Vector2(0, 1 - options.carLightsFade));
     this.rightCarLights = new CarLights(this, options, options.colors.rightCars, options.movingCloserSpeed, new THREE.Vector2(1, 0 + options.carLightsFade));
     this.leftSticks = new LightsSticks(this, options);
+    this.rightSticks = new LightsSticks(this, options); // <-- new mirrored sticks
 
     this.fovTarget = options.fov; this.speedUpTarget = 0; this.speedUp = 0; this.timeOffset = 0;
 
@@ -542,6 +543,7 @@ class App {
     this.leftCarLights.init(); this.leftCarLights.mesh.position.setX(-(o.roadWidth/2 + o.islandWidth/2));
     this.rightCarLights.init(); this.rightCarLights.mesh.position.setX(o.roadWidth/2 + o.islandWidth/2);
     this.leftSticks.init(); this.leftSticks.mesh.position.setX(-(o.roadWidth + o.islandWidth/2));
+    this.rightSticks.init(); this.rightSticks.mesh.position.setX(o.roadWidth + o.islandWidth/2); // <-- mirror on right
     this.container.addEventListener("mousedown", this.onMouseDown);
     this.container.addEventListener("mouseup", this.onMouseUp);
     this.container.addEventListener("mouseout", this.onMouseUp);
@@ -558,7 +560,9 @@ class App {
     const time = this.clock.getDelta() + (this.timeOffset += 0);
 
     const t = this.clock.elapsedTime + this.timeOffset;
-    this.rightCarLights.update(t); this.leftCarLights.update(t); this.leftSticks.update(t); this.road.update(t);
+    this.rightCarLights.update(t); this.leftCarLights.update(t);
+    this.leftSticks.update(t); this.rightSticks.update(t);  // <-- update both sides
+    this.road.update(t);
 
     let updateCam=false; const fovChange=lerp(this.camera.fov, this.fovTarget, lerpPct);
     if(fovChange!==0){ this.camera.fov += fovChange * delta * 6; updateCam=true; }
