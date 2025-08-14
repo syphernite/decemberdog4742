@@ -1,4 +1,3 @@
-// src/components/layout/Layout.tsx
 import React from 'react'
 import { Outlet, Link, NavLink, useNavigate } from 'react-router-dom'
 import SearchModal from '../search/SearchModal'
@@ -23,7 +22,7 @@ export function Layout() {
 
   return (
     <div className="min-h-screen">
-      {/* removed border-b to kill the top frame line */}
+      {/* removed border-b */}
       <header className="sticky top-0 z-40 bg-[rgba(6,6,7,.7)] backdrop-blur">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="h-16 flex items-center justify-between">
@@ -53,10 +52,10 @@ export function Layout() {
         <Outlet />
       </main>
 
-      {/* removed border-t to kill the bottom frame line */}
+      {/* removed border-t */}
       <footer className="">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10 text-center text-sm muted">
-          © {new Date().getFullYear()} Nightwave Supply — Demo Store
+          © {new Date().getFullYear()} Nightwave Supply — demo theme
         </div>
       </footer>
 
