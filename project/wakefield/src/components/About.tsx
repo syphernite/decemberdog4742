@@ -9,7 +9,7 @@ const About = () => {
           <div className="relative">
             <div className="relative overflow-hidden rounded-2xl shadow-2xl transform hover:scale-105 transition-transform duration-500">
               <img
-                src="https://images.pexels.com/photos/1547971/pexels-photo-1547971.jpeg?auto=compress&cs=tinysrgb&w=800"
+                src={`${import.meta.env.BASE_URL}images/oli-gym.png`}
                 alt="Oli Wakefield - Personal Trainer"
                 className="w-full h-[500px] object-cover"
               />
