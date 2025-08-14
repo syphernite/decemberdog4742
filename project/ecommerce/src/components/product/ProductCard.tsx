@@ -1,3 +1,4 @@
+// src/components/product/ProductCard.tsx
 import React from 'react'
 import { Link } from 'react-router-dom'
 
@@ -9,7 +10,7 @@ export type ProductCardProps = {
   badge?: string | null
 }
 
-export function ProductCard({ id, title, badge = null }: ProductCardProps) {
+export function ProductCard({ id, title, image, price, badge = null }: ProductCardProps) {
   const ref = React.useRef<HTMLDivElement>(null)
 
   const onMove = (e: React.MouseEvent) => {
@@ -24,8 +25,80 @@ export function ProductCard({ id, title, badge = null }: ProductCardProps) {
   }
   const onLeave = () => { if (ref.current) ref.current.style.transform = '' }
 
+  // ----- Add to Cart (session-scoped, no checkout) -----
+  const SAVE_KEY = 'cart'
+  const LEGACY_KEYS = ['demo_cart', 'ecom_cart', 'cart']
+  const hasWindow = typeof window !== 'undefined'
+
+  const getStore = () => {
+    if (!hasWindow) return null as unknown as Storage
+    try {
+      const t = '__cart_test__'
+      sessionStorage.setItem(t, '1'); sessionStorage.removeItem(t)
+      return sessionStorage
+    } catch {}
+    try {
+      const t = '__cart_test__'
+      localStorage.setItem(t, '1'); localStorage.removeItem(t)
+      return localStorage
+    } catch {}
+    return null as unknown as Storage
+  }
+
+  type LineItem = { id: string; title: string; qty: number; image: string; price: number }
+  const mergeItems = (a: LineItem[], b: LineItem[]) => {
+    const m = new Map<string, LineItem>()
+    ;[...a, ...b].forEach(it => {
+      const cur = m.get(it.id)
+      if (cur) m.set(it.id, { ...cur, qty: cur.qty + Math.max(1, it.qty || 1) })
+      else m.set(it.id, { ...it, qty: Math.max(1, it.qty || 1) })
+    })
+    return Array.from(m.values())
+  }
+
+  const loadCart = (): LineItem[] => {
+    const store = getStore()
+    if (!store) return []
+    try {
+      let result: LineItem[] = []
+      for (const k of LEGACY_KEYS) {
+        const raw = store.getItem(k)
+        if (raw) result = mergeItems(result, JSON.parse(raw))
+      }
+      return result
+    } catch { return [] }
+  }
+
+  const saveCart = (items: LineItem[]) => {
+    const store = getStore()
+    if (!store) return
+    try {
+      store.setItem(SAVE_KEY, JSON.stringify(items))
+      for (const k of LEGACY_KEYS) if (k !== SAVE_KEY) store.removeItem(k)
+      // notify any open Cart views
+      if (hasWindow) {
+        window.dispatchEvent(new StorageEvent('storage', { key: SAVE_KEY, newValue: JSON.stringify(items) }))
+        window.dispatchEvent(new CustomEvent('cart:add', { detail: items[items.length - 1] }))
+      }
+    } catch {}
+  }
+
+  const handleAdd = (e: React.MouseEvent) => {
+    e.preventDefault() // stay on the grid; no product/checkout navigation
+    const item: LineItem = {
+      id: String(id),
+      title: title || 'Product Title',
+      image: image || '',
+      price: typeof price === 'number' ? price : 0,
+      qty: 1,
+    }
+    const next = mergeItems(loadCart(), [item])
+    saveCart(next)
+  }
+  // -----------------------------------------------------
+
   const displayTitle = title || 'Product Title'
-  const displayPrice = '$0.00'
+  const displayPrice = '$0.00' // leaving visuals unchanged per your request
 
   return (
     <Link to={`/products/${id}`} className="block will-change-transform">
@@ -67,7 +140,7 @@ export function ProductCard({ id, title, badge = null }: ProductCardProps) {
               </div>
             </div>
             {badge ? (
-              <div className="absolute left-3 top-3 rounded-full bg-white text-black text-[10px] font-semibold px-2 py-1 shadow-sm">
+              <div className="absolute left-3 top-3 rounded-full bg.white text-black text-[10px] font-semibold px-2 py-1 shadow-sm">
                 {badge}
               </div>
             ) : null}
@@ -79,12 +152,12 @@ export function ProductCard({ id, title, badge = null }: ProductCardProps) {
             <div className="mt-1 text-sm" style={{ color: 'var(--muted)' }}>
               Product Description Here
             </div>
-            <div className="pt-2 flex items-center justify-between">
+            <div className="pt-2 flex items.center justify-between">
               <span className="text-sm">{displayPrice}</span>
               <button
-                onClick={(e) => e.preventDefault()}
+                onClick={handleAdd}
                 className="btn btn-primary !py-2 !px-4"
-                aria-label="Demo CTA"
+                aria-label="Add to cart"
               >
                 Add
               </button>
