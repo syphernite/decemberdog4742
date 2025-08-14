@@ -1,53 +1,65 @@
-import React from 'react';
-import { Target, Utensils, Users, TrendingUp } from 'lucide-react';
+import React from "react";
 
-const Coaching = () => {
-  const features = [
-    { icon: Target, title: 'Personalized Workouts', description: 'Programs tailored to your goal, level, and schedule.' },
-    { icon: Utensils, title: 'Nutrition Guidance', description: 'Macro targets and flexible meals you’ll actually enjoy.' },
-    { icon: TrendingUp, title: 'Accountability & Support', description: 'Check-ins, progress tracking, and form feedback.' },
-    { icon: Users, title: 'Community Motivation', description: 'Be part of a supportive, like-minded crew.' },
-  ];
+const KAHUNAS_URL =
+  "https://kahunas.io/contact/person_info/c2b2951e-632f-4b0a-bb08-a85d7803a87f";
 
+const Booking = () => {
   return (
-    <section className="py-20 bg-gray-900 text-white" id="coaching">
+    <section id="booking" className="py-20 bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-6xl font-bold mb-6">
-            Work With Me — <span className="text-sky-400">Wherever You Are</span>
-          </h2>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            World-class coaching delivered to you. Train smarter. Eat better. Stay consistent.
-          </p>
-        </div>
+        <h2 className="text-center text-4xl md:text-5xl font-extrabold mb-4">
+          Work With Me — <span className="text-sky-400">Wherever You Are</span>
+        </h2>
+        <p className="text-center text-gray-300 max-w-3xl mx-auto mb-12">
+          World-class coaching delivered to you. Train smarter. Eat better. Stay consistent.
+        </p>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-          {features.map((f) => (
-            <div
-              key={f.title}
-              className="bg-gray-800 p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:bg-gray-700"
-            >
-              <div className="bg-sky-500 w-16 h-16 rounded-full flex items-center justify-center mb-6">
-                <f.icon className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold mb-4 text-white">{f.title}</h3>
-              <p className="text-gray-300 leading-relaxed">{f.description}</p>
-            </div>
-          ))}
+        <div className="grid md:grid-cols-4 gap-6 mb-14">
+          <div className="bg-gray-800 rounded-2xl p-8 shadow-lg">
+            <h3 className="text-xl font-bold mb-2">Personalized Workouts</h3>
+            <p className="text-gray-300">
+              Programs tailored to your goal, level, and schedule.
+            </p>
+          </div>
+          <div className="bg-gray-800 rounded-2xl p-8 shadow-lg">
+            <h3 className="text-xl font-bold mb-2">Nutrition Guidance</h3>
+            <p className="text-gray-300">
+              Macro targets and flexible meals you’ll actually enjoy.
+            </p>
+          </div>
+          <div className="bg-gray-800 rounded-2xl p-8 shadow-lg">
+            <h3 className="text-xl font-bold mb-2">Accountability & Support</h3>
+            <p className="text-gray-300">
+              Check-ins, progress tracking, and form feedback.
+            </p>
+          </div>
+          <div className="bg-gray-800 rounded-2xl p-8 shadow-lg">
+            <h3 className="text-xl font-bold mb-2">Community Motivation</h3>
+            <p className="text-gray-300">
+              Be part of a supportive, like-minded crew.
+            </p>
+          </div>
         </div>
 
         <div className="text-center">
+          {/* Changed button link */}
           <a
-            href="#contact"
-            className="bg-sky-500 hover:bg-sky-600 text-white px-12 py-6 rounded-full text-xl font-bold transition-all duration-300 hover:shadow-2xl"
+            href={KAHUNAS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-sky-500 hover:bg-sky-600 transition text-white font-semibold text-lg shadow-lg"
           >
             Apply for Coaching
           </a>
-          <p className="mt-4 text-gray-400">Limited spots • Personalized onboarding</p>
+
+          {/* Moved this text slightly down */}
+          <p className="text-gray-300 mt-6">
+            Limited spots • Personalized onboarding
+          </p>
         </div>
       </div>
     </section>
   );
 };
 
-export default Coaching;
+export default Booking;
