@@ -9,6 +9,18 @@ import Services from './pages/Services';
 import Results from './pages/Results';
 import SEO from './components/SEO';
 
+function ScrollToTopOnRouteChange() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    // Instant scroll to top only when the route (pathname) changes
+    window.scrollTo(0, 0);
+    requestAnimationFrame(() => window.scrollTo(0, 0));
+  }, [pathname]);
+
+  return null;
+}
+
 function App() {
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
@@ -31,7 +43,10 @@ function App() {
       <Navbar />
       <FloatingBookButton />
       <BackToTop />
-      
+
+      {/* Scroll to top on real route changes; no anchor interception */}
+      <ScrollToTopOnRouteChange />
+
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<Home />} />

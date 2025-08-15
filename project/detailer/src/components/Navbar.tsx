@@ -25,71 +25,78 @@ const Navbar: React.FC = () => {
 
   return (
     <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled 
-          ? 'bg-gray-900/95 backdrop-blur-lg shadow-lg py-2' 
-          : 'bg-transparent py-4'
-      }`}
+      initial={{ y: -80, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.35, ease: 'easeOut' }}
+      className={`fixed top-0 left-0 right-0 z-50`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between">
+      <div
+        className={[
+          'mx-auto max-w-7xl px-4 sm:px-6 lg:px-8',
+          'mt-3',
+        ].join(' ')}
+      >
+        <div
+          className={[
+            'flex items-center justify-between',
+            'rounded-2xl',
+            'transition-all duration-300',
+            isScrolled ? 'bg-gray-900/85 backdrop-blur-xl border border-white/10 shadow-xl py-2 px-3' : 'bg-transparent py-3 px-3',
+          ].join(' ')}
+        >
           {/* Logo */}
-          <Link 
-            to="/" 
-            className="flex items-center space-x-2 text-xl font-bold"
-          >
-            <motion.div
-              whileHover={{ rotate: 360 }}
-              transition={{ duration: 0.5 }}
-            >
+          <Link to="/" className="flex items-center gap-2 text-xl font-bold">
+            <motion.div whileHover={{ rotate: 8, scale: 1.02 }} transition={{ duration: 0.2 }}>
               <Car className="h-8 w-8 text-blue-500" />
             </motion.div>
-            <span className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+            <span className="tracking-tight bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
               Shine Xpress
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={`relative px-3 py-2 transition-colors duration-200 ${
-                  location.pathname === item.path
-                    ? 'text-blue-500'
-                    : 'text-gray-300 hover:text-white'
-                }`}
-              >
-                {item.name}
-                {location.pathname === item.path && (
-                  <motion.div
-                    layoutId="activeTab"
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500"
-                  />
-                )}
-              </Link>
-            ))}
+          <div className="hidden md:flex items-center gap-2">
+            <div className="flex items-center gap-1 rounded-xl p-1">
+              {navItems.map((item) => {
+                const isActive = location.pathname === item.path;
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className={[
+                      'relative px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200',
+                      isActive ? 'text-white' : 'text-gray-300 hover:text-white'
+                    ].join(' ')}
+                  >
+                    <span className="relative z-10">{item.name}</span>
+                    {isActive && (
+                      <motion.span
+                        layoutId="activePill"
+                        className="absolute inset-0 rounded-lg bg-white/10"
+                        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                      />
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
+
             <Link
               to="/services#book"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200"
+              className="ml-2 relative inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold text-white transition-transform duration-200 hover:scale-[1.03]"
             >
-              Book Now
+              <span className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-600 via-sky-500 to-indigo-600 opacity-90" />
+              <span className="relative">Book Now</span>
             </Link>
           </div>
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden"
+            className="md:hidden rounded-lg p-2 hover:bg-white/10 transition-colors"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle menu"
           >
-            {isMobileMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
+            {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
 
@@ -100,29 +107,33 @@ const Navbar: React.FC = () => {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="md:hidden mt-4 pb-4"
+              className="md:hidden mt-2 pb-3"
             >
-              {navItems.map((item) => (
+              <div className="rounded-2xl bg-gray-900/90 backdrop-blur-xl border border-white/10 shadow-xl p-2">
+                {navItems.map((item) => (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className={[
+                      'block py-2 px-3 rounded-lg transition-colors duration-200',
+                      location.pathname === item.path
+                        ? 'text-white bg-white/10'
+                        : 'text-gray-300 hover:text-white hover:bg-white/5'
+                    ].join(' ')}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                ))}
                 <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`block py-2 px-4 rounded transition-colors duration-200 ${
-                    location.pathname === item.path
-                      ? 'text-blue-500 bg-gray-800'
-                      : 'text-gray-300 hover:text-white hover:bg-gray-800'
-                  }`}
+                  to="/services#book"
+                  className="block mt-2 text-center rounded-xl py-2 font-medium text-white relative"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  {item.name}
+                  <span className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-600 via-sky-500 to-indigo-600 opacity-90" />
+                  <span className="relative">Book Now</span>
                 </Link>
-              ))}
-              <Link
-                to="/services#book"
-                className="block mt-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-center transition-colors duration-200"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Book Now
-              </Link>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

@@ -63,16 +63,43 @@ const Home: React.FC = () => {
       exit={{ opacity: 0 }}
       className="overflow-hidden"
     >
-      {/* Hero Section with Parallax */}
+      {/* Local styles for animated gradient text */}
+      <style>{`
+        @keyframes gradientShift {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        .animated-gradient-text {
+          background-image: linear-gradient(90deg,
+            #60a5fa,
+            #a78bfa,
+            #f472b6,
+            #22d3ee,
+            #60a5fa
+          );
+          background-size: 200% 200%;
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+          animation: gradientShift 6s ease-in-out infinite;
+        }
+      `}</style>
+
+      {/* Hero Section with mobile-safe background image */}
       <section 
         ref={heroRef}
-        className="relative h-screen flex items-center justify-center overflow-hidden"
+        className="relative min-h-[100svh] flex items-center justify-center overflow-hidden"
       >
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-fixed"
-          style={{ 
-            backgroundImage: 'url(https://images.pexels.com/photos/3764984/pexels-photo-3764984.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&dpr=2)',
-          }}
+        {/* Use fixed only on md+ to avoid iOS bugs. Use an <img> as a mobile fallback. */}
+        <div className="absolute inset-0 hidden md:block bg-cover bg-center md:bg-fixed"
+             style={{ backgroundImage: 'url(https://images.pexels.com/photos/3764984/pexels-photo-3764984.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&dpr=2)' }} />
+        <img
+          src="https://images.pexels.com/photos/3764984/pexels-photo-3764984.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&dpr=2"
+          alt=""
+          className="absolute inset-0 block md:hidden w-full h-full object-cover"
+          loading="eager"
+          fetchpriority="high"
         />
         <div className="absolute inset-0 bg-gray-900/70" />
         
@@ -82,10 +109,12 @@ const Home: React.FC = () => {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="relative z-10 text-center max-w-4xl mx-auto px-4"
         >
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-            Showroom Shine,
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-[1.1]">
+            <span className="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+              Showroom Shine,
+            </span>
             <br />
-            <span className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+            <span className="animated-gradient-text">
               Delivered to Your Door
             </span>
           </h1>
