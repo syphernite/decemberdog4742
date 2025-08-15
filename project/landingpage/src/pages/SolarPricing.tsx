@@ -86,7 +86,7 @@ const PLANS_IN_ORDER: Plan[] = [
     shortBullets: ["Up to 5 Pages", "Gallery", "Maps + Socials"],
     features: ["Up to 5 Pages", "Photo Gallery", "Google Maps and Social Media Links", "Custom Domain Setup"],
     notIncluded: ["Hosting", "Ongoing support", "Advanced integrations"],
-    addOns: ["Extra Page - $50", "Logo Design - $75", "Rush Delivery 48 hours - +$100"],
+    addOns: ["Extra Page - $50", "Logo Design - $75", "Rush Delivery 72 hours - +$250"],
     spotlightColor: "ring-cyan-400",
     cta: { label: "Get Your Free Demo Today" }
   },

@@ -26,8 +26,8 @@ export default function WalkthroughModal() {
 
           <div className="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-              <div className="text-lg font-semibold text-white">1. Pick a plan</div>
-              <p className="mt-1 text-sm text-slate-300">See pricing and what is included.</p>
+              <div className="text-lg font-semibold text-white">1. Check out our pricing</div>
+              <p className="mt-1 text-sm text-slate-300">We charge 50% less than the industry standard.</p>
               <button
                 onClick={() => { close(); navigate("/pricing"); }}
                 className="mt-2 inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-3 py-2 text-white hover:bg-emerald-500"
@@ -37,8 +37,8 @@ export default function WalkthroughModal() {
             </div>
 
             <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-              <div className="text-lg font-semibold text-white">2. See demos</div>
-              <p className="mt-1 text-sm text-slate-300">Explore industry examples.</p>
+              <div className="text-lg font-semibold text-white">2. See mockups</div>
+              <p className="mt-1 text-sm text-slate-300">Explore examples of our work.</p>
               <button
                 onClick={() => { close(); navigate("/demos"); }}
                 className="mt-2 inline-flex items-center gap-2 rounded-lg border border-white/15 px-3 py-2 text-white hover:bg-white/10"
@@ -49,7 +49,7 @@ export default function WalkthroughModal() {
 
             <div className="rounded-xl border border-white/10 bg-white/5 p-4">
               <div className="text-lg font-semibold text-white">3. Get started</div>
-              <p className="mt-1 text-sm text-slate-300">Tell us about your business.</p>
+              <p className="mt-1 text-sm text-slate-300">Tell us about your business, submit the form for a free demo.</p>
               <button
                 onClick={() => { close(); navigate("/contact"); }}
                 className="mt-2 inline-flex items-center gap-2 rounded-lg bg-sky-600 px-3 py-2 text-white hover:bg-sky-500"
