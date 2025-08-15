@@ -63,6 +63,29 @@ const Home: React.FC = () => {
       exit={{ opacity: 0 }}
       className="overflow-hidden"
     >
+      {/* Local styles for animated gradient text */}
+      <style>{`
+        @keyframes gradientShift {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        .animated-gradient-text {
+          background-image: linear-gradient(90deg,
+            #60a5fa,
+            #a78bfa,
+            #f472b6,
+            #22d3ee,
+            #60a5fa
+          );
+          background-size: 200% 200%;
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+          animation: gradientShift 6s ease-in-out infinite;
+        }
+      `}</style>
+
       {/* Hero Section with Parallax */}
       <section 
         ref={heroRef}
@@ -82,10 +105,12 @@ const Home: React.FC = () => {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="relative z-10 text-center max-w-4xl mx-auto px-4"
         >
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-            Showroom Shine,
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-[1.1]">
+            <span className="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+              Showroom Shine,
+            </span>
             <br />
-            <span className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+            <span className="animated-gradient-text">
               Delivered to Your Door
             </span>
           </h1>
