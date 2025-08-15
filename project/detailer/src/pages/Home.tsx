@@ -86,16 +86,20 @@ const Home: React.FC = () => {
         }
       `}</style>
 
-      {/* Hero Section with Parallax */}
+      {/* Hero Section with mobile-safe background image */}
       <section 
         ref={heroRef}
-        className="relative h-screen flex items-center justify-center overflow-hidden"
+        className="relative min-h-[100svh] flex items-center justify-center overflow-hidden"
       >
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-fixed"
-          style={{ 
-            backgroundImage: 'url(https://images.pexels.com/photos/3764984/pexels-photo-3764984.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&dpr=2)',
-          }}
+        {/* Use fixed only on md+ to avoid iOS bugs. Use an <img> as a mobile fallback. */}
+        <div className="absolute inset-0 hidden md:block bg-cover bg-center md:bg-fixed"
+             style={{ backgroundImage: 'url(https://images.pexels.com/photos/3764984/pexels-photo-3764984.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&dpr=2)' }} />
+        <img
+          src="https://images.pexels.com/photos/3764984/pexels-photo-3764984.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&dpr=2"
+          alt=""
+          className="absolute inset-0 block md:hidden w-full h-full object-cover"
+          loading="eager"
+          fetchpriority="high"
         />
         <div className="absolute inset-0 bg-gray-900/70" />
         
