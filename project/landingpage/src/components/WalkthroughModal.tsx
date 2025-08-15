@@ -21,7 +21,7 @@ export default function WalkthroughModal() {
           </div>
 
           <p className="mt-2 text-slate-300">
-            Fast, custom sites for small businesses. Transparent pricing. Live demos.
+            Fast, custom sites for small businesses. Transparent pricing. Free mockups, no payment until you're satisfied.
           </p>
 
           <div className="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -49,7 +49,7 @@ export default function WalkthroughModal() {
 
             <div className="rounded-xl border border-white/10 bg-white/5 p-4">
               <div className="text-lg font-semibold text-white">3. Get started</div>
-              <p className="mt-1 text-sm text-slate-300">Tell us about your business, submit the form for a free demo.</p>
+              <p className="mt-1 text-sm text-slate-300">Tell us about your business. Submit the form for a free demo.</p>
               <button
                 onClick={() => { close(); navigate("/contact"); }}
                 className="mt-2 inline-flex items-center gap-2 rounded-lg bg-sky-600 px-3 py-2 text-white hover:bg-sky-500"
