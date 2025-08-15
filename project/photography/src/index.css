@@ -1,3 +1,50 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ===== Custom Scrollbar (Cross-browser) ===== */
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  /* Thumb uses currentColor for automatic theme matching; track stays transparent */
+  scrollbar-color: color-mix(in oklab, currentColor 55%, transparent) transparent;
+}
+
+/* WebKit (Chrome, Edge, Safari, Opera) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  /* Complementary, adaptive tone based on current text color */
+  background: color-mix(in oklab, currentColor 55%, transparent);
+  border-radius: 9999px;
+  /* Creates a subtle inner “ink” edge while preserving rounded look */
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  /* Slightly bolder on hover for better grip */
+  background: color-mix(in oklab, currentColor 80%, transparent);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Optional: slightly thinner on mobile for a cleaner feel */
+@media (max-width: 640px) {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  * {
+    scrollbar-width: thin;
+  }
+}
