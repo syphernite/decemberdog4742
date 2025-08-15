@@ -11,3 +11,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     </HashRouter>
   </React.StrictMode>
 );
+
+/* Keep styles targeted without changing your app logic */
+(function enableInkScrollbar(){
+  const html = document.documentElement;
+  const body = document.body;
+  html.classList.add('ink-scroll');
+  body.classList.add('ink-scroll');
+})();
