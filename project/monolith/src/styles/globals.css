@@ -1,0 +1,169 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --c-charcoal: rgb(12,12,14);
+  --c-slate: rgb(22,23,27);
+  --c-stone: rgb(43,45,49);
+  --c-hair: rgba(82,84,90,0.3);
+  --t-primary: rgb(232,233,236);
+  --t-secondary: rgb(174,178,185);
+  --c-accent: rgba(160,160,255,0.4);
+  --glass-blur: 10px;
+  --glass-inset: inset 0 0 0 1px rgba(255,255,255,0.06);
+  --noise-strength: 0.025;
+  --radius: 12px;
+  --ease-default: cubic-bezier(0.22,1,0.36,1);
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    background: var(--c-charcoal);
+    color: var(--t-primary);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Sora', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+}
+
+@layer utilities {
+  .glass {
+    background: rgba(22,23,27,0.28);
+    backdrop-filter: blur(var(--glass-blur));
+    border: var(--glass-inset);
+    border-radius: var(--radius);
+  }
+  
+  .glass-hover:hover {
+    background: rgba(22,23,27,0.34);
+    backdrop-filter: blur(12px);
+  }
+  
+  .stone {
+    background: var(--c-stone);
+    position: relative;
+  }
+  
+  .stone::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 50%, transparent 0%, rgba(255,255,255,0.015) 100%),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath d='M1,1h1v1h-1z' fill='%23ffffff' opacity='0.02'/%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  
+  .hairline {
+    border-color: var(--c-hair);
+  }
+  
+  .text-primary {
+    color: var(--t-primary);
+  }
+  
+  .text-secondary {
+    color: var(--t-secondary);
+  }
+  
+  .cursor-aura {
+    position: fixed;
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle, rgba(160,160,255,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: luminosity;
+    transition: opacity 0.3s var(--ease-default);
+  }
+  
+  .light-sweep {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(45deg, 
+                transparent 0%, 
+                rgba(255,255,255,0.02) 30%, 
+                rgba(255,255,255,0.08) 50%, 
+                rgba(255,255,255,0.02) 70%, 
+                transparent 100%);
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+    animation: lightSweep 28s linear infinite;
+    animation-delay: 1.2s;
+  }
+  
+  @keyframes lightSweep {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100vw) translateY(100vh) rotate(45deg); }
+  }
+  
+  .magnetic {
+    transition: transform 120ms var(--ease-default);
+  }
+  
+  .text-micro {
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  
+  .text-display {
+    font-size: clamp(2.2rem, 2vw + 1.6rem, 4rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  
+  .text-h2 {
+    font-size: clamp(1.6rem, 1.2vw + 1.2rem, 2.5rem);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .light-sweep {
+    animation: none;
+  }
+  
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--c-charcoal);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--c-stone);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(82,84,90,0.6);
+}

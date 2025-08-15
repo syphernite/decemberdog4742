@@ -1,6 +1,6 @@
-// src/App.tsx
 import React, { useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import Services from "./pages/Services";
@@ -26,6 +26,24 @@ function ScrollToTopOnRouteChange() {
 export default function App() {
   return (
     <WalkthroughProvider>
+      {/* Default SEO for the whole app. Individual pages can override with their own <Helmet>. */}
+      <Helmet>
+        <title>Built4You — Custom websites for small businesses</title>
+        <meta
+          name="description"
+          content="Built4You builds fast, mobile-first custom websites for small businesses. $0 demos. Subscription or one-time pricing."
+        />
+        <link rel="canonical" href="https://built4you.org/" />
+        <meta name="robots" content="index,follow,max-image-preview:large" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Built4You" />
+        <meta property="og:title" content="Built4You — Custom websites for small businesses" />
+        <meta property="og:description" content="Fast, mobile-first custom websites. $0 demos. Flexible pricing." />
+        <meta property="og:url" content="https://built4you.org/" />
+        <meta property="og:image" content="/og-default.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+      </Helmet>
+
       {/* global animated background */}
       <div className="pointer-events-none fixed inset-0 -z-10">
         <div className="absolute inset-0 bg-black" />
@@ -59,7 +77,22 @@ export default function App() {
           <Route path="why-we-exist" element={<WhyWeCreatedBuilt4You />} />
           <Route path="demos" element={<DemoShowcase />} />
         </Route>
-        <Route path="/pricing" element={<SolarPricing />} />
+        <Route
+          path="/pricing"
+          element={
+            <>
+              <Helmet>
+                <title>Pricing — Built4You</title>
+                <meta
+                  name="description"
+                  content="Choose a Built4You plan: subscription or one-time pricing. Fast delivery. $0 demo to start."
+                />
+                <link rel="canonical" href="https://built4you.org/pricing" />
+              </Helmet>
+              <SolarPricing />
+            </>
+          }
+        />
       </Routes>
 
       {/* global walkthrough modal overlay */}
