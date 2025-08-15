@@ -9,9 +9,7 @@ const Home = () => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('animate-fade-in');
-          }
+          if (entry.isIntersecting) entry.target.classList.add('animate-fade-in');
         });
       },
       { threshold: 0.1 }
@@ -19,64 +17,61 @@ const Home = () => {
 
     const elements = document.querySelectorAll('.scroll-reveal');
     elements.forEach((el) => observer.observe(el));
-
     return () => observer.disconnect();
   }, []);
 
   const testimonials = [
-    {
-      name: "Sarah Johnson",
-      rating: 5,
-      text: "FlowRight saved the day! Emergency water heater repair on a Sunday morning. Professional, fast, and reasonably priced.",
-      service: "Water Heater Repair"
-    },
-    {
-      name: "Mike Chen",
-      rating: 5,
-      text: "Excellent drain cleaning service. Arrived on time, explained everything, and left the area cleaner than they found it.",
-      service: "Drain Cleaning"
-    },
-    {
-      name: "Lisa Rodriguez",
-      rating: 5,
-      text: "Outstanding leak detection work. Found a hidden pipe issue that could have caused major damage. Highly recommend!",
-      service: "Leak Detection"
-    }
+    { name: "Sarah Johnson", rating: 5, text: "FlowRight saved the day! Emergency water heater repair on a Sunday morning. Professional, fast, and reasonably priced.", service: "Water Heater Repair" },
+    { name: "Mike Chen", rating: 5, text: "Excellent drain cleaning service. Arrived on time, explained everything, and left the area cleaner than they found it.", service: "Drain Cleaning" },
+    { name: "Lisa Rodriguez", rating: 5, text: "Outstanding leak detection work. Found a hidden pipe issue that could have caused major damage. Highly recommend!", service: "Leak Detection" }
   ];
 
   return (
     <div className="pt-16">
       {/* Hero Section */}
-      <section ref={heroRef} className="relative min-h-screen flex items-center bg-gradient-to-br from-blue-50 to-white">
-        <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/6474471/pexels-photo-6474471.jpeg')] bg-cover bg-center opacity-10"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative">
+      <section ref={heroRef} className="relative min-h-screen flex items-center">
+        {/* Background Image with Overlay */}
+        <div className="absolute inset-0">
+          <img
+            src={`${import.meta.env.BASE_URL}images/plumb.jpg`}
+            alt="Plumber at work"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-black/20" />
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="scroll-reveal opacity-0">
-              <h1 className="text-4xl md:text-6xl font-bold text-gray-900 leading-tight">
+              <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight">
                 Your Local Plumbing Experts
-                <span className="text-blue-600 block">24/7 Service</span>
+                <span className="text-blue-400 block">24/7 Service</span>
               </h1>
-              <p className="text-xl text-gray-600 mt-6 mb-8">
-                Professional, reliable plumbing solutions for your home and business. 
+              <p className="text-xl text-gray-200 mt-6 mb-8">
+                Professional, reliable plumbing solutions for your home and business.
                 Licensed, insured, and trusted by thousands of satisfied customers.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
+                {/* Hero Call Now */}
                 <a
                   href="tel:+1-555-FLOWPRO"
-                  className="bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-300 flex items-center justify-center space-x-2 transform hover:scale-105"
+                  className="bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center space-x-2 transform hover:scale-105 hover:bg-blue-700 animate-glow-pulse focus:outline-none focus:ring-4 focus:ring-blue-300"
                 >
                   <Phone className="h-5 w-5" />
                   <span>Call Now: (555) FLOW-PRO</span>
                 </a>
+
+                {/* Hero Request Service */}
                 <Link
                   to="/contact"
-                  className="bg-white text-blue-600 border-2 border-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-blue-600 hover:text-white transition-all duration-300 flex items-center justify-center space-x-2 transform hover:scale-105"
+                  className="bg-white text-blue-600 border-2 border-blue-600 px-8 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center space-x-2 transform hover:scale-105 hover:bg-blue-600 hover:text-white animate-glow-pulse focus:outline-none focus:ring-4 focus:ring-blue-300"
                 >
                   <MessageSquare className="h-5 w-5" />
                   <span>Request Service</span>
                 </Link>
               </div>
             </div>
+
             <div className="scroll-reveal opacity-0 hidden lg:block">
               <div className="relative">
                 <img
@@ -162,20 +157,20 @@ const Home = () => {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
+            {testimonials.map((t, index) => (
               <div
                 key={index}
                 className="scroll-reveal opacity-0 bg-white border border-gray-200 p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300"
               >
                 <div className="flex items-center mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
+                  {[...Array(t.rating)].map((_, i) => (
                     <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
                   ))}
                 </div>
-                <p className="text-gray-700 mb-4 italic">"{testimonial.text}"</p>
+                <p className="text-gray-700 mb-4 italic">"{t.text}"</p>
                 <div className="border-t pt-4">
-                  <p className="font-semibold text-gray-900">{testimonial.name}</p>
-                  <p className="text-sm text-blue-600">{testimonial.service}</p>
+                  <p className="font-semibold text-gray-900">{t.name}</p>
+                  <p className="text-sm text-blue-600">{t.service}</p>
                 </div>
               </div>
             ))}
@@ -196,14 +191,14 @@ const Home = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="tel:+1-555-FLOWPRO"
-                className="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-all duration-300 flex items-center justify-center space-x-2 transform hover:scale-105"
+                className="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center space-x-2 transform hover:scale-105 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-blue-300"
               >
                 <Phone className="h-5 w-5" />
                 <span>Call for Emergency Service</span>
               </a>
               <Link
                 to="/contact"
-                className="bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold hover:bg-blue-800 transition-all duration-300 flex items-center justify-center space-x-2 transform hover:scale-105"
+                className="bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center space-x-2 transform hover:scale-105 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300"
               >
                 <MessageSquare className="h-5 w-5" />
                 <span>Request Free Quote</span>

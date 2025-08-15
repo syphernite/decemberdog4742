@@ -8,9 +8,7 @@ const Navbar = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -23,9 +21,11 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      isScrolled ? 'bg-white shadow-lg py-2' : 'bg-white/95 backdrop-blur-sm py-4'
-    }`}>
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled ? 'bg-white shadow-lg py-2' : 'bg-white/95 backdrop-blur-sm py-4'
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
           {/* Logo */}
@@ -51,7 +51,7 @@ const Navbar = () => {
             ))}
             <a
               href="tel:+1-555-FLOWPRO"
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center space-x-2"
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold transition-all duration-300 flex items-center space-x-2 transform hover:scale-105 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 animate-glow-pulse"
             >
               <Phone className="h-4 w-4" />
               <span>Call Now</span>
@@ -62,13 +62,14 @@ const Navbar = () => {
           <div className="md:hidden flex items-center space-x-4">
             <a
               href="tel:+1-555-FLOWPRO"
-              className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 transition-colors"
+              className="bg-blue-600 text-white p-2 rounded-lg transition-all duration-300 hover:bg-blue-700 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300 animate-glow-pulse"
             >
               <Phone className="h-4 w-4" />
             </a>
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="text-gray-700 hover:text-blue-600 transition-colors"
+              aria-label="Toggle menu"
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -92,7 +93,7 @@ const Navbar = () => {
             ))}
             <a
               href="tel:+1-555-FLOWPRO"
-              className="block bg-blue-600 text-white px-4 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-center mt-4"
+              className="block bg-blue-600 text-white px-4 py-3 rounded-lg font-semibold transition-all duration-300 text-center mt-4 transform hover:scale-105 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 animate-glow-pulse"
             >
               Call (555) FLOW-PRO
             </a>
