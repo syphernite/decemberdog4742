@@ -1,131 +1,115 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Creepster&family=Nosifer&family=Butcherman&family=Metal+Mania&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  html {
-    font-family: 'Inter', system-ui, sans-serif;
-  }
-  
-  .font-display {
-    font-family: 'Creepster', 'Nosifer', cursive;
-    letter-spacing: -0.02em;
-  }
-  
-  .font-gothic {
-    font-family: 'Butcherman', 'Metal Mania', cursive;
-  }
-  
-  .font-punk {
-    font-family: 'Nosifer', cursive;
-  }
-  
-  body {
-    @apply bg-ink-900 text-bone-100 overflow-x-hidden;
-  }
-  
-  * {
-    @apply scroll-smooth;
-  }
+/* ================================
+   Ink Scrollbar — visible + animated
+   ================================ */
+
+:root{
+  --ink-900:#0a0a0b;
+  --ink-800:#111113;
+  --ink-700:#1a1b1e;
+  --stone-700:#2a2b2e;
+  --stone-500:#5a5c61;
 }
 
-@layer components {
-  .film-grain {
-    position: relative;
-  }
-  
-  .film-grain::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.06'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 1;
-  }
-  
-  .rain-overlay {
-    position: relative;
-  }
-  
-  .rain-overlay::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='rain' x='0' y='0' width='100' height='100' patternUnits='userSpaceOnUse'%3E%3Ccircle cx='10' cy='10' r='0.5' fill='white' opacity='0.1'/%3E%3Ccircle cx='80' cy='30' r='0.3' fill='white' opacity='0.08'/%3E%3Ccircle cx='45' cy='60' r='0.4' fill='white' opacity='0.09'/%3E%3Ccircle cx='25' cy='85' r='0.6' fill='white' opacity='0.12'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23rain)'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 2;
-  }
-  
-  .glow-accent {
-    box-shadow: 0 0 20px rgba(122, 15, 22, 0.3);
-  }
-  
-  .text-glow {
-    text-shadow: 0 0 10px rgba(122, 15, 22, 0.5), 0 0 20px rgba(122, 15, 22, 0.3);
-  }
-  
-  .text-glow-white {
-    text-shadow: 0 0 10px rgba(232, 233, 235, 0.5), 0 0 20px rgba(232, 233, 235, 0.3);
-  }
-  
-  .animate-pulse-glow {
-    animation: pulse-glow 2s ease-in-out infinite alternate;
-  }
-  
-  @keyframes pulse-glow {
-    from {
-      text-shadow: 0 0 5px rgba(122, 15, 22, 0.5), 0 0 10px rgba(122, 15, 22, 0.3);
-    }
-    to {
-      text-shadow: 0 0 15px rgba(122, 15, 22, 0.8), 0 0 25px rgba(122, 15, 22, 0.5);
-    }
-  }
-  
-  .animate-flicker {
-    animation: flicker 3s linear infinite;
-  }
-  
-  @keyframes flicker {
-    0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
-      opacity: 1;
-    }
-    20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
-      opacity: 0.4;
-    }
-  }
-  
-  .animate-shake {
-    animation: shake 0.5s ease-in-out;
-  }
-  
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-2px); }
-    75% { transform: translateX(2px); }
-  }
+/* Reserve gutter only on the right (no left shift) */
+html, body {
+  scrollbar-gutter: stable;
 }
 
-@layer utilities {
-  .text-shadow {
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
-  }
-  
-  .backdrop-blur-xs {
-    backdrop-filter: blur(2px);
-  }
+html.ink-scroll::-webkit-scrollbar,
+body.ink-scroll::-webkit-scrollbar,
+.ink-scroll::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+html.ink-scroll::-webkit-scrollbar-track,
+body.ink-scroll::-webkit-scrollbar-track,
+.ink-scroll::-webkit-scrollbar-track {
+  background:
+    radial-gradient(12px 12px at 25% 25%, rgba(255,255,255,0.03), transparent 60%),
+    radial-gradient(14px 14px at 75% 60%, rgba(255,255,255,0.02), transparent 60%),
+    linear-gradient(180deg, var(--ink-800), var(--ink-900));
+  border-left: 1px solid var(--ink-900);
+}
+
+html.ink-scroll::-webkit-scrollbar-corner,
+body.ink-scroll::-webkit-scrollbar-corner,
+.ink-scroll::-webkit-scrollbar-corner {
+  background: var(--ink-900);
+}
+
+@keyframes inkFlow {
+  0%   { background-position: 0% 0%, 0 0, center 0; }
+  50%  { background-position: 100% 200%, 0 6px, center 20px; }
+  100% { background-position: 0% 0%, 0 0, center 40px; }
+}
+@keyframes inkPulse {
+  0%,100% { box-shadow: inset 0 0 0 0 rgba(90,92,97,0.15); }
+  50%     { box-shadow: inset 0 0 12px 2px rgba(90,92,97,0.25); }
+}
+
+html.ink-scroll::-webkit-scrollbar-thumb,
+body.ink-scroll::-webkit-scrollbar-thumb,
+.ink-scroll::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  border: 2px solid var(--stone-700);
+  background:
+    url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='20' height='40' viewBox='0 0 20 40'>\
+<circle cx='5' cy='6' r='3' fill='%235a5c61'/>\
+<circle cx='15' cy='18' r='2' fill='%235a5c61'/>\
+<circle cx='10' cy='33' r='2.5' fill='%235a5c61'/>\
+</svg>") repeat-y center / 20px 40px,
+    radial-gradient(120% 60% at 50% 40%, #202226 0%, #16171a 40%, #0e0f11 70%),
+    repeating-conic-gradient(from 0deg, #0f1012 0 10%, #1a1b1e 10% 20%);
+  background-blend-mode: multiply;
+  animation: inkFlow 3.2s ease-in-out infinite, inkPulse 2.8s ease-in-out infinite;
+  -webkit-mask-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'>\
+<g fill='%23000'>\
+<path d='M8 28c6-10 18-16 28-14s18 12 18 20-10 16-22 18S4 46 8 28z'/>\
+<circle cx='12' cy='10' r='3'/><circle cx='6' cy='30' r='2'/>\
+<circle cx='22' cy='58' r='4'/><circle cx='50' cy='54' r='3'/>\
+<circle cx='56' cy='24' r='2.5'/><circle cx='36' cy='6' r='3'/>\
+</g></svg>");
+  -webkit-mask-size: cover;
+  -webkit-mask-repeat: no-repeat;
+}
+
+html.ink-scroll::-webkit-scrollbar-thumb:hover,
+body.ink-scroll::-webkit-scrollbar-thumb:hover,
+.ink-scroll::-webkit-scrollbar-thumb:hover {
+  background:
+    url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='20' height='40' viewBox='0 0 20 40'>\
+<circle cx='5' cy='6' r='3' fill='%235a5c61'/>\
+<circle cx='15' cy='18' r='2' fill='%235a5c61'/>\
+<circle cx='10' cy='33' r='2.5' fill='%235a5c61'/>\
+</svg>") repeat-y center / 20px 40px,
+    radial-gradient(120% 60% at 50% 40%, #24262a 0%, #191a1e 40%, #101216 70%),
+    repeating-conic-gradient(from 0deg, #131417 0 10%, #1e2024 10% 20%);
+}
+
+html.ink-scroll::-webkit-scrollbar-thumb:active,
+body.ink-scroll::-webkit-scrollbar-thumb:active,
+.ink-scroll::-webkit-scrollbar-thumb:active {
+  background:
+    url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='20' height='40' viewBox='0 0 20 40'>\
+<circle cx='5' cy='6' r='3' fill='%235a5c61'/>\
+<circle cx='15' cy='18' r='2' fill='%235a5c61'/>\
+<circle cx='10' cy='33' r='2.5' fill='%235a5c61'/>\
+</svg>") repeat-y center / 20px 40px,
+    radial-gradient(120% 60% at 50% 40%, #2a2c31 0%, #1f2025 40%, #14161a 70%),
+    repeating-conic-gradient(from 0deg, #16181c 0 10%, #24262b 10% 20%);
+}
+
+/* Firefox fallback */
+html.ink-scroll, body.ink-scroll, .ink-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--stone-500) var(--ink-900);
 }
