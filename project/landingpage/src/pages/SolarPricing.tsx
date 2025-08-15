@@ -108,7 +108,7 @@ const PLANS_IN_ORDER: Plan[] = [
       "SEO Foundations: headers, meta, structure"
     ],
     notIncluded: ["Hosting and domain unless added", "Ongoing edits after 1 week", "Booking or store setups"],
-    addOns: ["Hosting Only - $30 per month", "Logo Design - $75", "Rush Delivery 48 hours - +$100", "Extra Page - $50 per page"],
+    addOns: ["Hosting Only - $30 per month", "Logo Design - $75", "Rush Delivery 72 hours - +$250", "Extra Page - $50 per page"],
     spotlightColor: "ring-yellow-400",
     cta: { label: "Get Your Free Demo Today" }
   },
@@ -774,7 +774,7 @@ const Pricing: React.FC = () => {
                   <span className="h-2 w-2 rounded-full bg-white/80" /> Hosting Only - $25 per month
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-white/80" /> Rush Delivery 48 hours - +$100
+                  <span className="h-2 w-2 rounded-full bg-white/80" />  Rush Delivery 72 hours - +$250
                 </li>
               </ul>
 
