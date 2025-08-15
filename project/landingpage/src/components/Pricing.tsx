@@ -76,7 +76,7 @@ const Pricing: React.FC = () => {
         {/* Optional mini add-ons (no table) */}
         <div className="text-center mt-10">
           <p className="text-slate-300/90">
-            Add-ons available: Extra Page ($50), Logo Design ($75), Hosting-only ($25/mo), Rush (48h) +$100
+            Add-ons available: Extra Page ($50), Logo Design ($75), Hosting-only ($25/mo), Rush Delivery (72h) +$250
           </p>
           <Link
             to="/contact"
