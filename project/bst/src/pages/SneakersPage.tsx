@@ -9,8 +9,6 @@ const pub = (p: string) => {
   return `${base}${p}`.replace(/\/{2,}/g, '/');
 };
 
-const NAV_H_REM = 3; // 3rem = 48px
-
 const SneakersPage = () => {
   const features = [
     { icon: ShoppingCart, title: 'BUY', description: 'Curated selection of authentic sneakers' },
@@ -22,25 +20,29 @@ const SneakersPage = () => {
   useEffect(() => { setSneakers([]); }, []);
 
   return (
-    <div className="min-h-screen w-full overflow-x-hidden bg-[#2C2C2C] text-white pt-12 md:pt-16">
-      {/* Navigation (fixed height) */}
-      <nav className="fixed top-0 left-0 right-0 z-50 h-12 md:h-16 flex items-center px-4 md:px-6">
-        <Link to="/select" className="inline-flex items-center text-white hover:text-red-500 transition-colors">
+    <div className="min-h-screen w-full overflow-x-hidden bg-[#2C2C2C] text-white">
+      {/* Transparent nav over hero */}
+      <nav className="fixed top-0 left-0 right-0 z-50 h-12 md:h-16 flex items-center px-4 md:px-6 bg-transparent">
+        <Link
+          to="/select"
+          className="inline-flex items-center transition-colors
+                     text-white mix-blend-difference drop-shadow
+                     hover:text-red-500"
+          aria-label="Back"
+        >
           <ArrowLeft className="w-6 h-6 mr-2" />
           <span className="font-medium">BACK</span>
         </Link>
       </nav>
 
-      {/* Hero: height = viewport minus nav */}
-      <div
-        className="relative w-full"
-        style={{ minHeight: `calc(100dvh - ${NAV_H_REM}rem)` }}
-      >
+      {/* Hero fills full viewport; image visible under transparent nav */}
+      <div className="relative w-full" style={{ minHeight: '100dvh' }}>
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${pub('shoe-bg.png')})` }}
         />
         <div className="absolute inset-0 bg-black/70" />
+
         <div className="relative z-10 h-full w-full flex flex-col items-center justify-center text-center px-4 sm:px-6">
           <h1 className="text-5xl sm:text-6xl md:text-8xl font-bold mb-4 sm:mb-6">BST</h1>
           <p className="text-xl sm:text-2xl md:text-3xl text-red-500 mb-3 sm:mb-4 font-bold">EXCLUSIVE</p>
@@ -77,7 +79,11 @@ const SneakersPage = () => {
               {sneakers.map((s, i) => (
                 <div key={i} className="group">
                   <div className="aspect-square bg-gray-800 mb-4 overflow-hidden rounded">
-                    <img src={s.imageURL} alt={s.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <img
+                      src={s.imageURL}
+                      alt={s.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
                   </div>
                   <h3 className="text-lg sm:text-xl font-bold mb-2">{s.name}</h3>
                   <div className="flex justify-between items-center text-gray-300">
@@ -96,20 +102,40 @@ const SneakersPage = () => {
         <div className="max-w-4xl w-full mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 sm:mb-12">STAY CONNECTED</h2>
           <div className="grid grid-cols-2 gap-5 sm:gap-8 justify-items-center">
-            <a href="https://instagram.com/bst.exclusive" target="_blank" rel="noopener noreferrer" aria-label="Instagram"
-               className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center rounded-full bg-gray-800 hover:bg-red-600 transition-colors ring-1 ring-white/10 hover:ring-red-500">
+            <a
+              href="https://instagram.com/bst.exclusive"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+              className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center rounded-full bg-gray-800 hover:bg-red-600 transition-colors ring-1 ring-white/10 hover:ring-red-500"
+            >
               <FaInstagram className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
             </a>
-            <a href="https://t.snapchat.com/RInsoZeO" target="_blank" rel="noopener noreferrer" aria-label="Snapchat"
-               className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center rounded-full bg-gray-800 hover:bg-red-600 transition-colors ring-1 ring-white/10 hover:ring-red-500">
+            <a
+              href="https://t.snapchat.com/RInsoZeO"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Snapchat"
+              className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center rounded-full bg-gray-800 hover:bg-red-600 transition-colors ring-1 ring-white/10 hover:ring-red-500"
+            >
               <FaSnapchatGhost className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
             </a>
-            <a href="https://venmo.com/u/Tony-Holmes-36" target="_blank" rel="noopener noreferrer" aria-label="Venmo"
-               className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center rounded-full bg-gray-800 hover:bg-red-600 transition-colors ring-1 ring-white/10 hover:ring-red-500">
+            <a
+              href="https://venmo.com/u/Tony-Holmes-36"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Venmo"
+              className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center rounded-full bg-gray-800 hover:bg-red-600 transition-colors ring-1 ring-white/10 hover:ring-red-500"
+            >
               <SiVenmo className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
             </a>
-            <a href="https://cash.app/$tonyboyz007" target="_blank" rel="noopener noreferrer" aria-label="CashApp"
-               className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center rounded-full bg-gray-800 hover:bg-red-600 transition-colors ring-1 ring-white/10 hover:ring-red-500">
+            <a
+              href="https://cash.app/$tonyboyz007"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="CashApp"
+              className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center rounded-full bg-gray-800 hover:bg-red-600 transition-colors ring-1 ring-white/10 hover:ring-red-500"
+            >
               <SiCashapp className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
             </a>
           </div>
