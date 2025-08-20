@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, ShoppingBag, Instagram, TrendingUp, RefreshCw, ShoppingCart } from 'lucide-react';
-import { FaSnapchatGhost } from 'react-icons/fa';
+import { ArrowLeft, ShoppingBag, TrendingUp, RefreshCw, ShoppingCart } from 'lucide-react';
+import { FaSnapchatGhost, FaInstagram } from 'react-icons/fa';
+import { SiCashapp, SiVenmo } from 'react-icons/si';
 
 const SneakersPage = () => {
   const features = [
@@ -91,7 +92,7 @@ const SneakersPage = () => {
       <section className="py-20 px-6 bg-gradient-to-r from-gray-900 to-black">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-8">STAY CONNECTED</h2>
-          <div className="space-y-6">
+        <div className="space-y-6">
             <div>
               <a
                 href="https://instagram.com/bst.exclusive"
@@ -99,7 +100,7 @@ const SneakersPage = () => {
                 rel="noopener noreferrer"
                 className="flex items-center justify-center space-x-3 hover:scale-105 transition-transform"
               >
-                <Instagram className="w-8 h-8 text-green-400" />
+                <FaInstagram className="w-8 h-8 text-pink-500" />
                 <span className="text-green-400 font-semibold">@bst.exclusive</span>
               </a>
             </div>
@@ -114,6 +115,28 @@ const SneakersPage = () => {
                 <span className="text-green-400 font-semibold">@bst.company</span>
               </a>
             </div>
+            <div>
+              <a
+                href="https://venmo.com/u/Tony-Holmes-36"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center space-x-3 hover:scale-105 transition-transform"
+              >
+                <SiVenmo className="w-8 h-8 text-blue-500" />
+                <span className="text-green-400 font-semibold">@Tony-Holmes-36</span>
+              </a>
+            </div>
+            <div>
+              <a
+                href="https://cash.app/$tonyboyz007"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center space-x-3 hover:scale-105 transition-transform"
+              >
+                <SiCashapp className="w-8 h-8 text-green-500" />
+                <span className="text-green-400 font-semibold">$tonyboyz007</span>
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -124,10 +147,16 @@ const SneakersPage = () => {
           <div className="text-gray-400">BST Exclusive © 2025</div>
           <div className="flex space-x-4">
             <a href="https://instagram.com/bst.exclusive" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-              <Instagram className="w-6 h-6 text-gray-400 hover:text-green-400 transition-colors" />
+              <FaInstagram className="w-6 h-6 text-gray-400 hover:text-green-400 transition-colors" />
             </a>
             <a href="https://t.snapchat.com/RInsoZeO" target="_blank" rel="noopener noreferrer" aria-label="Snapchat" className="flex items-center space-x-2 text-gray-400 hover:text-green-400 transition-colors">
               <FaSnapchatGhost className="w-6 h-6" />
+            </a>
+            <a href="https://venmo.com/u/Tony-Holmes-36" target="_blank" rel="noopener noreferrer" aria-label="Venmo">
+              <SiVenmo className="w-6 h-6 text-gray-400 hover:text-green-400 transition-colors" />
+            </a>
+            <a href="https://cash.app/$tonyboyz007" target="_blank" rel="noopener noreferrer" aria-label="CashApp">
+              <SiCashapp className="w-6 h-6 text-gray-400 hover:text-green-400 transition-colors" />
             </a>
           </div>
         </div>
