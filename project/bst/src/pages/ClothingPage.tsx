@@ -16,7 +16,6 @@ const ClothingPage = () => {
         return prev - 1;
       });
     }, 1000);
-
     return () => clearInterval(interval);
   }, []);
 
@@ -28,8 +27,8 @@ const ClothingPage = () => {
     <div className="min-h-screen bg-black text-white flex flex-col justify-between">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 z-50 p-6">
-        <Link 
-          to="/" 
+        <Link
+          to="/select"
           className="flex items-center text-gray-300 hover:text-white transition-colors duration-300"
         >
           <ArrowLeft className="w-6 h-6 mr-2" />
@@ -41,12 +40,8 @@ const ClothingPage = () => {
       <div className="flex flex-1 items-center justify-center text-center px-6">
         <div>
           <Shirt className="w-20 h-20 text-yellow-400 mx-auto mb-6 animate-pulse" />
-          <h1 className="text-6xl md:text-8xl font-light tracking-widest mb-6">
-            STAKS
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-300 mb-10">
-            CLOTHING COLLECTION
-          </p>
+          <h1 className="text-6xl md:text-8xl font-light tracking-widest mb-6">STAKS</h1>
+          <p className="text-xl md:text-2xl text-gray-300 mb-10">CLOTHING COLLECTION</p>
           <a
             href="https://staksclothing.com"
             target="_blank"
@@ -60,14 +55,7 @@ const ClothingPage = () => {
           {/* Countdown Circle */}
           <div className="mt-10 flex flex-col items-center space-y-4">
             <svg className="w-20 h-20">
-              <circle
-                cx="40"
-                cy="40"
-                r={radius}
-                stroke="gray"
-                strokeWidth="6"
-                fill="transparent"
-              />
+              <circle cx="40" cy="40" r={radius} stroke="gray" strokeWidth="6" fill="transparent" />
               <circle
                 cx="40"
                 cy="40"
@@ -79,21 +67,13 @@ const ClothingPage = () => {
                 strokeDashoffset={circumference - progress}
                 strokeLinecap="round"
                 className="transition-all duration-1000 ease-linear"
-                transform="rotate(-90 40 40)"  // rotate around center
+                transform="rotate(-90 40 40)"
               />
-              <text
-                x="50%"
-                y="50%"
-                dy=".3em"
-                textAnchor="middle"
-                className="fill-yellow-400 text-lg font-bold"
-              >
+              <text x="50%" y="50%" dy=".3em" textAnchor="middle" className="fill-yellow-400 text-lg font-bold">
                 {countdown}
               </text>
             </svg>
-            <p className="text-sm text-gray-400">
-              Redirecting in {countdown} seconds...
-            </p>
+            <p className="text-sm text-gray-400">Redirecting in {countdown} seconds...</p>
           </div>
         </div>
       </div>
@@ -101,7 +81,7 @@ const ClothingPage = () => {
       {/* Footer */}
       <footer className="py-8 px-6 border-t border-gray-800">
         <div className="max-w-4xl mx-auto flex justify-center space-x-6">
-          <a 
+          <a
             href="https://instagram.com/staks.tn"
             target="_blank"
             rel="noopener noreferrer"
