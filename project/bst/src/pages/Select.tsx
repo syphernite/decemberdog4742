@@ -51,7 +51,7 @@ export default function Select() {
         </div>
       </div>
 
-      {/* MOBILE: full-bleed, each section fills the screen, whole area clickable */}
+      {/* MOBILE: full-bleed, brighter backgrounds, whole area clickable */}
       <div className="md:hidden">
         {sections.map((s, i) => (
           <Link
@@ -60,11 +60,14 @@ export default function Select() {
             className="relative block h-[100dvh] w-full"
             aria-label={s.label}
           >
+            {/* same image, brighter without hue shift */}
             <div
-              className="absolute inset-0 bg-cover bg-center"
+              className="absolute inset-0 bg-cover bg-center brightness-150 saturate-125 contrast-105"
               style={{ backgroundImage: s.imgMobile || s.img }}
             />
-            <div className="absolute inset-0 bg-black/50" />
+            {/* lighter veil for readability, not too dark */}
+            <div className="absolute inset-0 bg-black/25" />
+            {/* content */}
             <div className="relative z-10 h-full w-full flex flex-col items-center justify-center text-center px-6">
               <span className="inline-flex items-center gap-2 rounded-full px-5 py-3 font-semibold
                                 bg-white/10 ring-1 ring-white/15 backdrop-blur-md mb-6">
@@ -74,14 +77,14 @@ export default function Select() {
                 </svg>
               </span>
               <div className="relative w-64 h-64 flex items-end justify-center">
-                <p className="text-white/85 drop-shadow">{s.blurb}</p>
+                <p className="text-white/90 drop-shadow">{s.blurb}</p>
               </div>
             </div>
           </Link>
         ))}
       </div>
 
-      {/* DESKTOP: original tri-panel preserved exactly (md and up) */}
+      {/* DESKTOP: original tri-panel preserved (md and up) */}
       <div className="hidden md:block absolute inset-0 pt-24 pb-24 px-4 md:p-0">
         <div className="h-full flex flex-col md:flex-row items-stretch gap-6 md:gap-0 overflow-hidden">
           {sections.map((s, i) => (
@@ -145,15 +148,18 @@ function TriPanel({
       ].join(" ")}
       style={{ flexGrow, transform: `scale(${scale})`, opacity }}
     >
+      {/* same image, brighter without hue shift */}
       <div
-        className="absolute inset-0 hidden md:block bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105"
+        className="absolute inset-0 hidden md:block bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105 brightness-150 saturate-125 contrast-105"
         style={{ backgroundImage: image }}
       />
+      {/* mobile path kept for completeness */}
       <div
         className="absolute inset-0 md:hidden bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105"
         style={{ backgroundImage: imageMobile ?? image }}
       />
-      <div className="absolute inset-0 bg-black/50" />
+      {/* lighter veil for readability */}
+      <div className="absolute inset-0 bg-black/25" />
 
       <div className="relative hidden md:flex flex-col items-center text-center text-white">
         <Link
@@ -169,7 +175,7 @@ function TriPanel({
           </svg>
         </Link>
         <div className="relative flex items-end justify-center w-64 h-64 xl:w-[26rem] xl:h-[26rem]">
-          <p className="text-white/85 mb-3 drop-shadow">{blurb}</p>
+          <p className="text-white/90 mb-3 drop-shadow">{blurb}</p>
         </div>
       </div>
 
