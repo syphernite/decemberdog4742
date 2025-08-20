@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowLeft, Shirt, ExternalLink, Instagram } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Instagram } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { FaSnapchatGhost } from 'react-icons/fa';
 
@@ -41,7 +41,11 @@ const ClothingPage = () => {
       {/* Hero Section */}
       <div className="flex flex-1 items-center justify-center text-center px-6">
         <div>
-          <Shirt className="w-20 h-20 text-yellow-400 mx-auto mb-6 animate-pulse" />
+          <img 
+            src={`${import.meta.env.BASE_URL}staks_logo.png`} 
+            alt="Staks Logo" 
+            className="h-32 md:h-48 mx-auto mb-6"
+          />
           <h1 className="text-6xl md:text-8xl font-light tracking-widest mb-6">
             STAKS
           </h1>
