@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, ShoppingBag, Instagram, TrendingUp, RefreshCw, ShoppingCart } from 'lucide-react';
+import { FaSnapchatGhost } from 'react-icons/fa';
 
 const SneakersPage = () => {
   const features = [
@@ -109,8 +110,8 @@ const SneakersPage = () => {
                 rel="noopener noreferrer"
                 className="flex items-center justify-center space-x-3 hover:scale-105 transition-transform"
               >
-                <span className="text-green-400 font-semibold">@bstexclusive</span>
-                <span className="text-gray-400">(Snapchat)</span>
+                <FaSnapchatGhost className="w-8 h-8 text-yellow-300" />
+                <span className="text-green-400 font-semibold">@bst.company</span>
               </a>
             </div>
           </div>
@@ -125,8 +126,8 @@ const SneakersPage = () => {
             <a href="https://instagram.com/bst.exclusive" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
               <Instagram className="w-6 h-6 text-gray-400 hover:text-green-400 transition-colors" />
             </a>
-            <a href="https://t.snapchat.com/RInsoZeO" target="_blank" rel="noopener noreferrer" aria-label="Snapchat" className="text-gray-400 hover:text-green-400 transition-colors">
-              @bstexclusive
+            <a href="https://t.snapchat.com/RInsoZeO" target="_blank" rel="noopener noreferrer" aria-label="Snapchat" className="flex items-center space-x-2 text-gray-400 hover:text-green-400 transition-colors">
+              <FaSnapchatGhost className="w-6 h-6" />
             </a>
           </div>
         </div>
