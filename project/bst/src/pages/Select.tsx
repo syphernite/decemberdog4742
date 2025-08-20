@@ -41,61 +41,50 @@ export default function Select() {
 
   return (
     <div className={`relative min-h-screen w-full bg-[#0b1220] text-white overflow-hidden ${pageAnim}`}>
-      {/* Scoped keyframes/classes */}
       <style>{`
-        @keyframes ppFade{from{opacity:0}to{opacity:1}}
-        .pp-anim-fade{animation:ppFade .45s ease-out both}
-        @keyframes ppSlideUp{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
-        .pp-anim-slide-up{animation:ppSlideUp .5s cubic-bezier(.22,.8,.36,1) both}
-        @keyframes ppSlideRight{from{transform:translateX(-24px);opacity:0}to{transform:none;opacity:1}}
-        .pp-anim-slide-right{animation:ppSlideRight .5s cubic-bezier(.22,.8,.36,1) both}
-        @keyframes ppSlideDown{from{transform:translateY(-24px);opacity:0}to{transform:none;opacity:1}}
-        .pp-anim-slide-down{animation:ppSlideDown .5s cubic-bezier(.22,.8,.36,1) both}
-        @keyframes ppSlideLeft{from{transform:translateX(24px);opacity:0}to{transform:none;opacity:1}}
-        .pp-anim-slide-left{animation:ppSlideLeft .5s cubic-bezier(.22,.8,.36,1) both}
-        @keyframes ppZoomIn{from{transform:scale(.96);opacity:0}to{transform:scale(1);opacity:1}}
-        .pp-anim-zoom-in{animation:ppZoomIn .45s ease-out both}
-        @keyframes ppZoomOut{from{transform:scale(1.06);opacity:0}to{transform:scale(1);opacity:1}}
-        .pp-anim-zoom-out{animation:ppZoomOut .45s ease-out both}
-        @keyframes ppPop{0%{transform:scale(.86);opacity:0}60%{transform:scale(1.04);opacity:1}100%{transform:scale(1)}}
-        .pp-anim-pop{animation:ppPop .5s cubic-bezier(.2,.9,.2,1.1) both}
-        @keyframes ppFlipX{from{transform:perspective(800px) rotateX(-12deg);opacity:0}to{transform:perspective(800px) rotateX(0);opacity:1}}
-        .pp-anim-flip-x{animation:ppFlipX .55s ease-out both; transform-style:preserve-3d}
-        @keyframes ppFlipY{from{transform:perspective(800px) rotateY(12deg);opacity:0}to{transform:perspective(800px) rotateY(0);opacity:1}}
-        .pp-anim-flip-y{animation:ppFlipY .55s ease-out both; transform-style:preserve-3d}
-        @keyframes ppRotateIn{from{transform:rotate(-6deg);opacity:0}to{transform:rotate(0);opacity:1}}
-        .pp-anim-rotate-in{animation:ppRotateIn .45s ease-out both}
-        @keyframes ppBlurIn{from{filter:blur(14px);opacity:0}to{filter:blur(0);opacity:1}}
-        .pp-anim-blur-in{animation:ppBlurIn .45s ease-out both}
-        @keyframes ppWipeRight{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
-        .pp-anim-wipe-right{animation:ppWipeRight .6s ease-out both}
-        @keyframes ppWipeUp{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0 0 0 0)}}
-        .pp-anim-wipe-up{animation:ppWipeUp .6s ease-out both}
-        @keyframes ppSplitX{from{clip-path:inset(0 50% 0 50%)}to{clip-path:inset(0 0 0 0)}}
-        .pp-anim-split-x{animation:ppSplitX .6s ease-out both}
-        @keyframes ppSplitY{from{clip-path:inset(50% 0 50% 0)}to{clip-path:inset(0 0 0 0)}}
-        .pp-anim-split-y{animation:ppSplitY .6s ease-out both}
+        @keyframes ppFade{from{opacity:0}to{opacity:1}} .pp-anim-fade{animation:ppFade .45s ease-out both}
+        @keyframes ppSlideUp{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}} .pp-anim-slide-up{animation:ppSlideUp .5s cubic-bezier(.22,.8,.36,1) both}
+        @keyframes ppSlideRight{from{transform:translateX(-24px);opacity:0}to{transform:none;opacity:1}} .pp-anim-slide-right{animation:ppSlideRight .5s cubic-bezier(.22,.8,.36,1) both}
+        @keyframes ppSlideDown{from{transform:translateY(-24px);opacity:0}to{transform:none;opacity:1}} .pp-anim-slide-down{animation:ppSlideDown .5s cubic-bezier(.22,.8,.36,1) both}
+        @keyframes ppSlideLeft{from{transform:translateX(24px);opacity:0}to{transform:none;opacity:1}} .pp-anim-slide-left{animation:ppSlideLeft .5s cubic-bezier(.22,.8,.36,1) both}
+        @keyframes ppZoomIn{from{transform:scale(.96);opacity:0}to{transform:scale(1);opacity:1}} .pp-anim-zoom-in{animation:ppZoomIn .45s ease-out both}
+        @keyframes ppZoomOut{from{transform:scale(1.06);opacity:0}to{transform:scale(1);opacity:1}} .pp-anim-zoom-out{animation:ppZoomOut .45s ease-out both}
+        @keyframes ppPop{0%{transform:scale(.86);opacity:0}60%{transform:scale(1.04);opacity:1}100%{transform:scale(1)}} .pp-anim-pop{animation:ppPop .5s cubic-bezier(.2,.9,.2,1.1) both}
+        @keyframes ppFlipX{from{transform:perspective(800px) rotateX(-12deg);opacity:0}to{transform:perspective(800px) rotateX(0);opacity:1}} .pp-anim-flip-x{animation:ppFlipX .55s ease-out both;transform-style:preserve-3d}
+        @keyframes ppFlipY{from{transform:perspective(800px) rotateY(12deg);opacity:0}to{transform:perspective(800px) rotateY(0);opacity:1}} .pp-anim-flip-y{animation:ppFlipY .55s ease-out both;transform-style:preserve-3d}
+        @keyframes ppRotateIn{from{transform:rotate(-6deg);opacity:0}to{transform:rotate(0);opacity:1}} .pp-anim-rotate-in{animation:ppRotateIn .45s ease-out both}
+        @keyframes ppBlurIn{from{filter:blur(14px);opacity:0}to{filter:blur(0);opacity:1}} .pp-anim-blur-in{animation:ppBlurIn .45s ease-out both}
+        @keyframes ppWipeRight{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}} .pp-anim-wipe-right{animation:ppWipeRight .6s ease-out both}
+        @keyframes ppWipeUp{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0 0 0 0)}} .pp-anim-wipe-up{animation:ppWipeUp .6s ease-out both}
+        @keyframes ppSplitX{from{clip-path:inset(0 50% 0 50%)}to{clip-path:inset(0 0 0 0)}} .pp-anim-split-x{animation:ppSplitX .6s ease-out both}
+        @keyframes ppSplitY{from{clip-path:inset(50% 0 50% 0)}to{clip-path:inset(0 0 0 0)}} .pp-anim-split-y{animation:ppSplitY .6s ease-out both}
       `}</style>
 
-      {/* MOBILE: fixed viewport, 3 equal panels, no buttons/text */}
-      <div className="md:hidden fixed inset-0 flex flex-col overflow-hidden" style={{ height: "100svh" }}>
+      {/* MOBILE: fixed viewport, 3 equal panels, nudge BG to avoid clipping; prevent bottom gap */}
+      <div
+        className="md:hidden fixed inset-0 flex flex-col overflow-hidden overscroll-none"
+        style={{ height: "100dvh", minHeight: "100svh", paddingBottom: "env(safe-area-inset-bottom)" }}
+      >
         {sections.map((s, i) => (
           <Link
             key={i}
             to={s.to}
-            className="relative block flex-1 w-full"
+            className="relative block flex-1 min-h-0 w-full"
             aria-label={s.label}
           >
             <div
-              className="absolute inset-0 bg-cover bg-center brightness-150 saturate-125 contrast-105"
-              style={{ backgroundImage: s.imgMobile || s.img }}
+              className="absolute inset-0 bg-cover bg-no-repeat"
+              style={{
+                backgroundImage: s.imgMobile || s.img,
+                backgroundPosition: "center 52%", // small vertical bias to avoid seam clipping
+              }}
             />
             <div className="absolute inset-0 bg-black/25" />
           </Link>
         ))}
       </div>
 
-      {/* DESKTOP: original tri-panel (header removed) */}
+      {/* DESKTOP: original tri-panel */}
       <div className="hidden md:block absolute inset-0 pt-24 pb-24 px-4 md:p-0">
         <div className="h-full flex flex-col md:flex-row items-stretch gap-6 md:gap-0 overflow-hidden">
           {sections.map((s, i) => (
