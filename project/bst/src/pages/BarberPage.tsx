@@ -35,7 +35,7 @@ const BarberPage = () => {
       {/* Navigation */}
       <nav className="fixed top-0 left-0 z-50 p-6">
         <Link 
-          to="/" 
+          to="/select" 
           className="flex items-center text-white hover:text-yellow-400 transition-colors duration-300"
         >
           <ArrowLeft className="w-6 h-6 mr-2" />
@@ -123,7 +123,7 @@ const BarberPage = () => {
             alt="Anti Broke Barbers Club"
             className="h-20 md:h-28 object-contain mb-2"
           />
-          <p className="text-gray-300">Join with my referral code</p>
+          <p className="text-gray-300">Shop with my referral code</p>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <span className="inline-flex items-center rounded-full border border-yellow-400 text-yellow-400 px-4 py-2 text-sm font-semibold tracking-widest">
               REFERRAL CODE: 1017
@@ -146,7 +146,7 @@ const BarberPage = () => {
               rel="noopener noreferrer"
               className="px-4 py-2 border border-yellow-400 text-yellow-400 rounded hover:bg-yellow-400 hover:text-black transition-colors"
             >
-              Join Now
+              Shop Now
             </a>
           </div>
           <p className="text-xs text-gray-500">Paste the code at signup if not prompted automatically.</p>
