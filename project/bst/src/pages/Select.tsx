@@ -30,12 +30,11 @@ export default function Select() {
 
       {/* full-height panel region */}
       <div className="absolute inset-0 pt-24 pb-24 px-4 md:p-0">
-        <div className="h-full flex flex-col md:flex-row items-stretch gap-6 md:gap-0 overflow-hidden">
+        <div className="h-full flex flex-col md:flex-row items-stretch gap-0 md:gap-0 overflow-hidden">
           <TriPanel
             index={0}
             hovered={hovered}
             setHovered={setHovered}
-            title="Barber"
             to="/barber"
             image={`url(${asset("barber.png")})`}
             imageMobile={`url(${asset("barber-mobile.png")})`}
@@ -46,7 +45,6 @@ export default function Select() {
             index={1}
             hovered={hovered}
             setHovered={setHovered}
-            title="Sneakers"
             to="/sneakers"
             image={`url(${asset("shoes.png")})`}
             imageMobile={`url(${asset("shoes-mobile.png")})`}
@@ -57,7 +55,6 @@ export default function Select() {
             index={2}
             hovered={hovered}
             setHovered={setHovered}
-            title="Clothing"
             to="/clothing"
             image={`url(${asset("staks.png")})`}
             imageMobile={`url(${asset("staks-mobile.png")})`}
@@ -77,7 +74,6 @@ function TriPanel({
   index,
   hovered,
   setHovered,
-  title,
   to,
   image,
   imageMobile,
@@ -87,7 +83,6 @@ function TriPanel({
   index: number;
   hovered: number | null;
   setHovered: (v: number | null) => void;
-  title: string;
   to: string;
   image: string;
   imageMobile?: string;
@@ -106,7 +101,7 @@ function TriPanel({
       onMouseLeave={() => setHovered(null)}
       className={[
         "group relative overflow-hidden h-full",
-        "flex items-center justify-center", // centers the circle vertically
+        "flex items-center justify-center",
         "rounded-2xl md:rounded-none",
         "border-t md:border-t-0 md:border-l border-white/5",
         "transition-all duration-500 ease-out will-change-transform",
@@ -126,15 +121,21 @@ function TriPanel({
       {/* Dark overlay */}
       <div className="absolute inset-0 bg-black/50" />
 
-      {/* Foreground content */}
-      <div className="relative w-full max-w-md flex flex-col items-center text-center text-white">
-        {/* Button above circle */}
+      {/* Mobile: whole panel is a link */}
+      <Link
+        to={to}
+        aria-label={buttonLabel}
+        className="md:hidden absolute inset-0 z-20"
+      />
+
+      {/* Desktop content only */}
+      <div className="relative hidden md:flex flex-col items-center text-center text-white">
         <Link
           to={to}
           aria-label={buttonLabel}
           className="inline-flex items-center gap-2 rounded-full px-5 py-3 font-semibold
                      bg-white/10 hover:bg-white/15 ring-1 ring-white/15
-                     backdrop-blur-md transition-all mb-4 z-10"
+                     backdrop-blur-md transition-all mb-6"
         >
           {buttonLabel}
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="opacity-90">
@@ -142,10 +143,9 @@ function TriPanel({
           </svg>
         </Link>
 
-        {/* Circle graphic placeholder (already your background images) */}
-        <div className="relative w-48 h-48 flex items-end justify-center">
-          {/* Blurb pinned bottom inside circle */}
-          <p className="text-white/80 mb-2">{blurb}</p>
+        {/* Circle-sized spacer so blurb sits at the bottom of the circle */}
+        <div className="relative flex items-end justify-center w-64 h-64 xl:w-[26rem] xl:h-[26rem]">
+          <p className="text-white/85 mb-3 drop-shadow">{blurb}</p>
         </div>
       </div>
     </div>
