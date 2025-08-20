@@ -48,9 +48,15 @@ const BarberPage = () => {
               <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto">
                 Premium cuts, classic style, modern techniques
               </p>
-              <button className="px-8 py-4 bg-yellow-400 text-black font-bold text-lg hover:bg-yellow-500 transition-colors duration-300">
-                BOOK APPOINTMENT
-              </button>
+              <a 
+                href="https://bstcuts.square.site" 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                <button className="px-8 py-4 bg-yellow-400 text-black font-bold text-lg hover:bg-yellow-500 transition-colors duration-300">
+                  BOOK APPOINTMENT
+                </button>
+              </a>
             </div>
           </div>
         </div>
@@ -121,7 +127,14 @@ const BarberPage = () => {
             @bst.cuts
           </div>
           <div className="flex space-x-4">
-            <Instagram className="w-6 h-6 text-gray-400 hover:text-yellow-400 transition-colors cursor-pointer" />
+            <a 
+              href="https://instagram.com/bst.cuts"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+            >
+              <Instagram className="w-6 h-6 text-gray-400 hover:text-yellow-400 transition-colors cursor-pointer" />
+            </a>
           </div>
         </div>
       </footer>

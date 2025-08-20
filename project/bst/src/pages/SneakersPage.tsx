@@ -1,34 +1,31 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, ShoppingBag, Instagram, MessageCircle, TrendingUp, RefreshCw, ShoppingCart } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Instagram, TrendingUp, RefreshCw, ShoppingCart } from 'lucide-react';
 
 const SneakersPage = () => {
   const features = [
-    {
-      icon: ShoppingCart,
-      title: 'BUY',
-      description: 'Curated selection of authentic sneakers'
-    },
-    {
-      icon: TrendingUp,
-      title: 'SELL',
-      description: 'Get top dollar for your collection'
-    },
-    {
-      icon: RefreshCw,
-      title: 'TRADE',
-      description: 'Exchange kicks with fellow collectors'
-    }
+    { icon: ShoppingCart, title: 'BUY', description: 'Curated selection of authentic sneakers' },
+    { icon: TrendingUp, title: 'SELL', description: 'Get top dollar for your collection' },
+    { icon: RefreshCw, title: 'TRADE', description: 'Exchange kicks with fellow collectors' }
   ];
 
-  const featuredSneakers = [
-    { name: 'Air Jordan 1 High', size: '10.5', price: '$350' },
-    { name: 'Yeezy 350 V2', size: '9', price: '$280' },
-    { name: 'Travis Scott 1s', size: '11', price: '$1,200' },
-    { name: 'Off-White Chicagos', size: '10', price: '$4,500' },
-    { name: 'Dior 1s', size: '9.5', price: '$8,000' },
-    { name: 'Fragment Jordans', size: '11.5', price: '$2,800' }
-  ];
+  const [sneakers, setSneakers] = useState<any[]>([]);
+
+  useEffect(() => {
+    // ===== PLACEHOLDER FOR GOOGLE SHEETS API =====
+    // 1. Create a Google Sheet with columns: Name | Size | Price | ImageURL
+    // 2. Publish it to the web or enable Sheets API with an API key
+    // 3. Replace SHEET_ID and API_KEY in the fetch URL
+    // Example URL:
+    // https://sheets.googleapis.com/v4/spreadsheets/{SHEET_ID}/values/Inventory!A:D?key={API_KEY}
+    //
+    // For demo purposes we just simulate empty data
+    async function fetchData() {
+      // Replace this with real fetch when ready
+      setSneakers([]);
+    }
+    fetchData();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -43,101 +40,97 @@ const SneakersPage = () => {
         </Link>
       </nav>
 
-      {/* Hero Section */}
+      {/* Hero */}
       <div className="relative h-screen">
         <div 
           className="h-full bg-cover bg-center"
-          style={{
-            backgroundImage: 'url("https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2")'
-          }}
+          style={{ backgroundImage: 'url("https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2")' }}
         >
           <div className="absolute inset-0 bg-black bg-opacity-70"></div>
-          <div className="relative h-full flex items-center justify-center text-center px-6">
-            <div>
-              <ShoppingBag className="w-20 h-20 text-green-400 mx-auto mb-6" />
-              <h1 className="text-6xl md:text-8xl font-bold mb-6 tracking-tight">BST</h1>
-              <p className="text-2xl md:text-3xl text-green-400 mb-4 font-bold">EXCLUSIVE</p>
-              <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-                Your destination for rare kicks and streetwear culture
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button className="px-8 py-4 bg-green-400 text-black font-bold text-lg hover:bg-green-500 transition-colors duration-300">
-                  BROWSE INVENTORY
-                </button>
-                <button className="px-8 py-4 border-2 border-green-400 text-green-400 font-bold text-lg hover:bg-green-400 hover:text-black transition-all duration-300">
-                  SELL TO US
-                </button>
-              </div>
-            </div>
+          <div className="relative h-full flex flex-col items-center justify-center text-center px-6">
+            <ShoppingBag className="w-20 h-20 text-green-400 mx-auto mb-6" />
+            <h1 className="text-6xl md:text-8xl font-bold mb-6">BST</h1>
+            <p className="text-2xl md:text-3xl text-green-400 mb-4 font-bold">EXCLUSIVE</p>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+              Your destination for rare kicks and streetwear culture
+            </p>
           </div>
         </div>
       </div>
 
-      {/* Features Section */}
+      {/* Features */}
       <section className="py-20 px-6">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">HOW WE OPERATE</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
-              <div key={index} className="text-center p-8 border border-gray-700 hover:border-green-400 transition-colors duration-300">
-                <feature.icon className="w-16 h-16 text-green-400 mx-auto mb-6" />
-                <h3 className="text-2xl font-bold mb-4">{feature.title}</h3>
-                <p className="text-gray-400 text-lg">{feature.description}</p>
+            {features.map((f, i) => (
+              <div key={i} className="text-center p-8 border border-gray-700 hover:border-green-400 transition-colors duration-300">
+                <f.icon className="w-16 h-16 text-green-400 mx-auto mb-6" />
+                <h3 className="text-2xl font-bold mb-4">{f.title}</h3>
+                <p className="text-gray-400 text-lg">{f.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Featured Inventory */}
+      {/* Inventory (Google Sheets placeholder) */}
       <section className="py-20 px-6 bg-black">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">FEATURED KICKS</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredSneakers.map((sneaker, index) => (
-              <div key={index} className="group">
-                <div className="aspect-square bg-gray-800 mb-4 overflow-hidden">
-                  <img 
-                    src={`https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&dpr=2`}
-                    alt={sneaker.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">CURRENT INVENTORY</h2>
+          {sneakers.length === 0 ? (
+            <p className="text-center text-gray-400">
+              Inventory will appear here when linked to Google Sheets.
+            </p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {sneakers.map((s, i) => (
+                <div key={i} className="group">
+                  <div className="aspect-square bg-gray-800 mb-4 overflow-hidden">
+                    <img 
+                      src={s.imageURL} 
+                      alt={s.name} 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                    />
+                  </div>
+                  <h3 className="text-xl font-bold mb-2">{s.name}</h3>
+                  <div className="flex justify-between items-center text-gray-400">
+                    <span>Size {s.size}</span>
+                    <span className="text-green-400 font-bold text-lg">{s.price}</span>
+                  </div>
                 </div>
-                <h3 className="text-xl font-bold mb-2">{sneaker.name}</h3>
-                <div className="flex justify-between items-center text-gray-400">
-                  <span>Size {sneaker.size}</span>
-                  <span className="text-green-400 font-bold text-lg">{sneaker.price}</span>
-                </div>
-                <button className="w-full mt-4 py-3 border border-green-400 text-green-400 hover:bg-green-400 hover:text-black transition-all duration-300 font-semibold">
-                  VIEW DETAILS
-                </button>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
-      {/* Social Section */}
+      {/* Socials */}
       <section className="py-20 px-6 bg-gradient-to-r from-gray-900 to-black">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-8">STAY CONNECTED</h2>
-          <p className="text-xl text-gray-400 mb-12">
-            Follow us for the latest drops and exclusive deals
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-8">
-            <div className="flex items-center space-x-4">
-              <Instagram className="w-8 h-8 text-green-400" />
-              <div className="text-left">
-                <p className="text-green-400 font-semibold">@bst.exclusive</p>
-                <p className="text-gray-400">Instagram</p>
-              </div>
+          <div className="space-y-6">
+            <div>
+              <a 
+                href="https://instagram.com/bst.exclusive"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center space-x-3 hover:scale-105 transition-transform"
+              >
+                <Instagram className="w-8 h-8 text-green-400" />
+                <span className="text-green-400 font-semibold">@bst.exclusive</span>
+              </a>
             </div>
-            <div className="flex items-center space-x-4">
-              <MessageCircle className="w-8 h-8 text-green-400" />
-              <div className="text-left">
-                <p className="text-green-400 font-semibold">@bstexclusive</p>
-                <p className="text-gray-400">Snapchat</p>
-              </div>
+            <div>
+              <a 
+                href="https://t.snapchat.com/RInsoZeO"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center space-x-3 hover:scale-105 transition-transform"
+              >
+                <span className="text-green-400 font-semibold">@bstexclusive</span>
+                <span className="text-gray-400">(Snapchat)</span>
+              </a>
             </div>
           </div>
         </div>
@@ -146,12 +139,25 @@ const SneakersPage = () => {
       {/* Footer */}
       <footer className="py-8 px-6 border-t border-gray-800">
         <div className="max-w-4xl mx-auto flex justify-between items-center">
-          <div className="text-gray-400">
-            BST Exclusive © 2025
-          </div>
+          <div className="text-gray-400">BST Exclusive © 2025</div>
           <div className="flex space-x-4">
-            <Instagram className="w-6 h-6 text-gray-400 hover:text-green-400 transition-colors cursor-pointer" />
-            <MessageCircle className="w-6 h-6 text-gray-400 hover:text-green-400 transition-colors cursor-pointer" />
+            <a 
+              href="https://instagram.com/bst.exclusive"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+            >
+              <Instagram className="w-6 h-6 text-gray-400 hover:text-green-400 transition-colors" />
+            </a>
+            <a 
+              href="https://t.snapchat.com/RInsoZeO"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Snapchat"
+              className="text-gray-400 hover:text-green-400 transition-colors"
+            >
+              @bstexclusive
+            </a>
           </div>
         </div>
       </footer>
