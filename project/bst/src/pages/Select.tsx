@@ -1,23 +1,15 @@
 // src/pages/Select.tsx
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const COLORS = {
-  emerald: "#34d399",
-  teal: "#14b8a6",
-  indigo: "#6366f1",
-  sky: "#38bdf8",
-  fuchsia: "#e879f9",
-  rose: "#fb7185",
-  white: "#ffffff",
-};
-
 export default function Select() {
-  const [showFX, setShowFX] = useState(true);
+  const [showLoader, setShowLoader] = useState(true);
+
   useEffect(() => {
-    const t = setTimeout(() => setShowFX(false), 1400);
+    const t = setTimeout(() => setShowLoader(false), 1400); // loader duration
     return () => clearTimeout(t);
   }, []);
+
   const [hovered, setHovered] = useState<number | null>(null);
 
   return (
@@ -66,7 +58,8 @@ export default function Select() {
         </div>
       </div>
 
-      {showFX && <SwooshFX />}
+      {/* Loader overlay */}
+      <LoaderOverlay show={showLoader} />
     </div>
   );
 }
@@ -112,12 +105,18 @@ function TriPanel({
       style={{ flexGrow, transform: `scale(${scale})`, opacity }}
     >
       <div className={`pointer-events-none absolute inset-0 bg-gradient-to-b ${gradient}`} />
-      <div className="pointer-events-none absolute inset-0 transition-opacity duration-500" style={{ opacity: isActive ? 1 : 0 }}>
+      <div
+        className="pointer-events-none absolute inset-0 transition-opacity duration-500"
+        style={{ opacity: isActive ? 1 : 0 }}
+      >
         <div className="absolute -inset-24 blur-3xl bg-white/10" />
       </div>
 
       <div className="relative w-full max-w-md px-6 sm:px-8 text-center">
-        <div className="mx-auto mb-6 h-1 w-12 rounded-full opacity-80" style={{ backgroundColor: "currentColor" }} />
+        <div
+          className="mx-auto mb-6 h-1 w-12 rounded-full opacity-80"
+          style={{ backgroundColor: "currentColor" }}
+        />
         <h3 className="text-3xl font-extrabold tracking-tight mb-2">{title}</h3>
         <p className="text-white/70 mb-8">{blurb}</p>
 
@@ -128,8 +127,20 @@ function TriPanel({
                      backdrop-blur-md transition-all"
         >
           Enter {title}
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="opacity-90">
-            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            className="opacity-90"
+          >
+            <path
+              d="M5 12h14M13 5l7 7-7 7"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </Link>
 
@@ -139,147 +150,30 @@ function TriPanel({
   );
 }
 
-function SwooshFX() {
-  const dust = useMemo(() => {
-    const palette = [COLORS.emerald, COLORS.teal, COLORS.indigo, COLORS.sky, COLORS.fuchsia, COLORS.rose, COLORS.white];
-    return Array.from({ length: 180 }).map((_, i) => {
-      const x = 35 + Math.random() * 30;
-      const y = 28 + Math.random() * 44;
-      const tx = (Math.random() * 2 - 1) * (30 + Math.random() * 60);
-      const ty = (Math.random() * 2 - 1) * (18 + Math.random() * 36);
-      const size = 3 + Math.random() * 9;
-      const rot = Math.random() * 360;
-      const delay = 80 + Math.random() * 700;
-      const dur = 700 + Math.random() * 600;
-      const color = palette[(i + Math.floor(Math.random() * 5)) % palette.length];
-      const blur = Math.random() < 0.35 ? 6 : 2;
-      const alpha = 0.45 + Math.random() * 0.4;
-      return { i, x, y, tx, ty, size, rot, delay, dur, color, blur, alpha };
-    });
-  }, []);
-
-  const shards = useMemo(() => {
-    const palette = [COLORS.emerald, COLORS.indigo, COLORS.fuchsia, COLORS.white];
-    return Array.from({ length: 24 }).map((_, i) => {
-      const x = 45 + Math.random() * 10;
-      const y = 35 + Math.random() * 30;
-      const length = 40 + Math.random() * 120;
-      const width = 2 + Math.random() * 5;
-      const angle = -20 + Math.random() * 40;
-      const tx = (Math.random() * 2 - 1) * 55;
-      const ty = (Math.random() * 2 - 1) * 28;
-      const delay = Math.random() * 200;
-      const dur = 800 + Math.random() * 700;
-      const color = palette[i % palette.length];
-      const alpha = 0.25 + Math.random() * 0.5;
-      return { i, x, y, length, width, angle, tx, ty, delay, dur, color, alpha };
-    });
-  }, []);
-
-  const rings = useMemo(() => {
-    const palette = [COLORS.emerald, COLORS.indigo, COLORS.fuchsia];
-    return palette.map((c, i) => ({
-      i,
-      color: c,
-      delay: 120 + i * 120,
-      dur: 900 + i * 150,
-      end: 60 + i * 8,
-      alpha: 0.18,
-    }));
-  }, []);
-
+function LoaderOverlay({ show }: { show: boolean }) {
+  if (!show) return null;
   return (
-    <div className="absolute inset-0 z-50 pointer-events-none">
+    <div className="absolute inset-0 z-50 flex items-center justify-center bg-[#0b1220]">
       <style>{`
-        @keyframes sweep { 0% { transform: translateX(-130%) skewX(-10deg); opacity:.9 } 60%{opacity:.65} 100%{ transform: translateX(130%) skewX(-10deg); opacity:0 } }
-        @keyframes sweepC { 0% { transform: translateX(-140%) skewX(-14deg); opacity:.75 } 100%{ transform: translateX(140%) skewX(-14deg); opacity:0 } }
-        @keyframes dust { 0%{ transform:translate(0,0) rotate(0deg) scale(1); opacity:var(--a); filter:blur(var(--blur)) } 100%{ transform:translate(var(--tx),var(--ty)) rotate(var(--rot)) scale(.5); opacity:0; filter:blur(calc(var(--blur) + 2px)) } }
-        @keyframes shard { 0%{ transform:translate(0,0) rotate(var(--ang)); opacity:var(--a) } 100%{ transform:translate(var(--tx),var(--ty)) rotate(calc(var(--ang) + 15deg)); opacity:0 } }
-        @keyframes ring { 0%{ width:0vw; height:0vw; opacity:var(--a) } 100%{ width:var(--end)vw; height:var(--end)vw; opacity:0 } }
-        @keyframes flash { 0%{opacity:0} 12%{opacity:.35} 100%{opacity:0} }
-        @keyframes bloom { 0%{ filter:blur(0px) brightness(1) } 40%{ filter:blur(3px) brightness(1.4) } 100%{ filter:blur(0px) brightness(1) } }
+        @keyframes bstLoaderAnim {
+          0%   { inset: 0 35px 35px 0; }
+          12.5%{ inset: 0 35px 0 0; }
+          25%  { inset: 35px 35px 0 0; }
+          37.5%{ inset: 35px 0 0 0; }
+          50%  { inset: 35px 0 0 35px; }
+          62.5%{ inset: 0 0 0 35px; }
+          75%  { inset: 0 0 35px 35px; }
+          87.5%{ inset: 0 0 35px 0; }
+          100% { inset: 0 35px 35px 0; }
+        }
+        .bst-animate { animation: bstLoaderAnim 2.5s infinite; }
+        .bst-delay   { animation-delay: -1.25s; }
       `}</style>
 
-      <div className="absolute inset-0 bg-white/5 animate-[flash_1100ms_ease-out_forwards] mix-blend-screen" />
-      <div className="absolute inset-0 animate-[bloom_1400ms_ease-out_forwards]" />
-
-      <div className="absolute inset-y-0 -left-1/3 w-2/3 bg-gradient-to-r from-transparent via-emerald-300/40 to-transparent blur-2xl" style={{ animation: "sweep 900ms ease-in forwards" }} />
-      <div className="absolute inset-y-0 -left-1/4 w-3/4 bg-gradient-to-r from-transparent via-indigo-300/35 to-transparent blur-[40px]" style={{ animation: "sweepC 1050ms 60ms ease-in forwards" }} />
-      <div className="absolute inset-y-0 -left-1/5 w-3/4 bg-gradient-to-r from-transparent via-fuchsia-300/30 to-transparent blur-[50px]" style={{ animation: "sweepC 1150ms 120ms ease-in forwards" }} />
-
-      {rings.map((r) => (
-        <div
-          key={`ring-${r.i}`}
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border"
-          style={{
-            borderColor: r.color,
-            opacity: r.alpha,
-            width: 0,
-            height: 0,
-            // @ts-ignore
-            "--end": r.end,
-            // @ts-ignore
-            "--a": r.alpha,
-            animation: `ring ${r.dur}ms ${r.delay}ms cubic-bezier(.16,.84,.44,1) forwards`,
-          }}
-        />
-      ))}
-
-      {shards.map((s) => (
-        <span
-          key={`shard-${s.i}`}
-          className="absolute block"
-          style={{
-            left: `${s.x}vw`,
-            top: `${s.y}vh`,
-            width: `${s.length}px`,
-            height: `${s.width}px`,
-            background: `linear-gradient(90deg, ${s.color} 0%, rgba(255,255,255,.8) 70%, transparent 100%)`,
-            borderRadius: `${s.width}px`,
-            opacity: s.alpha,
-            filter: "blur(1px)",
-            transformOrigin: "left center",
-            // @ts-ignore
-            "--tx": `${s.tx}vw`,
-            // @ts-ignore
-            "--ty": `${s.ty}vh`,
-            // @ts-ignore
-            "--ang": `${s.angle}deg`,
-            // @ts-ignore
-            "--a": s.alpha,
-            animation: `shard ${s.dur}ms ${s.delay}ms ease-out forwards`,
-          }}
-        />
-      ))}
-
-      {dust.map((p) => (
-        <span
-          key={`p-${p.i}`}
-          className="absolute rounded-full"
-          style={{
-            left: `${p.x}vw`,
-            top: `${p.y}vh`,
-            width: `${p.size}px`,
-            height: `${p.size}px`,
-            backgroundColor: p.color,
-            opacity: p.alpha,
-            filter: `blur(${p.blur}px)`,
-            border: p.size > 8 ? "1px solid rgba(255,255,255,0.35)" : "none",
-            boxShadow: p.size > 7 ? `0 0 ${Math.max(6, p.size)}px ${p.color}` : "none",
-            // @ts-ignore
-            "--tx": `${p.tx}vw`,
-            // @ts-ignore
-            "--ty": `${p.ty}vh`,
-            // @ts-ignore
-            "--rot": `${p.rot}deg`,
-            // @ts-ignore
-            "--blur": `${p.blur}px`,
-            // @ts-ignore
-            "--a": p.alpha,
-            animation: `dust ${p.dur}ms ${p.delay}ms cubic-bezier(.2,.7,.1,1) forwards`,
-          }}
-        />
-      ))}
+      <div className="relative w-[65px] aspect-square">
+        <span className="absolute rounded-[50px] bst-animate shadow-[inset_0_0_0_3px] shadow-gray-800/90 dark:shadow-gray-100/90" />
+        <span className="absolute rounded-[50px] bst-animate bst-delay shadow-[inset_0_0_0_3px] shadow-gray-800/90 dark:shadow-gray-100/90" />
+      </div>
     </div>
   );
 }
