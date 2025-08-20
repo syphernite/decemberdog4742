@@ -1,5 +1,5 @@
 // src/pages/Select.tsx
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 
 const asset = (p: string) => {
@@ -7,7 +7,7 @@ const asset = (p: string) => {
   return `${base}${p}`.replace(/\/{2,}/g, "/");
 };
 
-// Animation catalog (no flash)
+// Page-level animation catalog (no flash)
 const ANIMS = [
   "pp-anim-fade",
   "pp-anim-slide-up",
@@ -26,7 +26,6 @@ const ANIMS = [
   "pp-anim-split-x",
   "pp-anim-split-y",
 ] as const;
-
 const pickAnim = () => ANIMS[Math.floor(Math.random() * ANIMS.length)];
 
 export default function Select() {
@@ -38,7 +37,6 @@ export default function Select() {
     { to: "/clothing", img: `url(${asset("staks.png")})`,    imgMobile: `url(${asset("staks-mobile.png")})`,    blurb: "Fits, caps, essentials.",label: "Stay Fresh" },
   ];
 
-  // One random page transition per mount
   const pageAnim = useMemo(pickAnim, []);
 
   return (
@@ -47,53 +45,34 @@ export default function Select() {
       <style>{`
         @keyframes ppFade{from{opacity:0}to{opacity:1}}
         .pp-anim-fade{animation:ppFade .45s ease-out both}
-
         @keyframes ppSlideUp{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
         .pp-anim-slide-up{animation:ppSlideUp .5s cubic-bezier(.22,.8,.36,1) both}
-
         @keyframes ppSlideRight{from{transform:translateX(-24px);opacity:0}to{transform:none;opacity:1}}
         .pp-anim-slide-right{animation:ppSlideRight .5s cubic-bezier(.22,.8,.36,1) both}
-
         @keyframes ppSlideDown{from{transform:translateY(-24px);opacity:0}to{transform:none;opacity:1}}
         .pp-anim-slide-down{animation:ppSlideDown .5s cubic-bezier(.22,.8,.36,1) both}
-
         @keyframes ppSlideLeft{from{transform:translateX(24px);opacity:0}to{transform:none;opacity:1}}
         .pp-anim-slide-left{animation:ppSlideLeft .5s cubic-bezier(.22,.8,.36,1) both}
-
         @keyframes ppZoomIn{from{transform:scale(.96);opacity:0}to{transform:scale(1);opacity:1}}
         .pp-anim-zoom-in{animation:ppZoomIn .45s ease-out both}
-
         @keyframes ppZoomOut{from{transform:scale(1.06);opacity:0}to{transform:scale(1);opacity:1}}
         .pp-anim-zoom-out{animation:ppZoomOut .45s ease-out both}
-
-        @keyframes ppPop{
-          0%{transform:scale(.86);opacity:0}
-          60%{transform:scale(1.04);opacity:1}
-          100%{transform:scale(1)}
-        }
+        @keyframes ppPop{0%{transform:scale(.86);opacity:0}60%{transform:scale(1.04);opacity:1}100%{transform:scale(1)}}
         .pp-anim-pop{animation:ppPop .5s cubic-bezier(.2,.9,.2,1.1) both}
-
         @keyframes ppFlipX{from{transform:perspective(800px) rotateX(-12deg);opacity:0}to{transform:perspective(800px) rotateX(0);opacity:1}}
         .pp-anim-flip-x{animation:ppFlipX .55s ease-out both; transform-style:preserve-3d}
-
         @keyframes ppFlipY{from{transform:perspective(800px) rotateY(12deg);opacity:0}to{transform:perspective(800px) rotateY(0);opacity:1}}
         .pp-anim-flip-y{animation:ppFlipY .55s ease-out both; transform-style:preserve-3d}
-
         @keyframes ppRotateIn{from{transform:rotate(-6deg);opacity:0}to{transform:rotate(0);opacity:1}}
         .pp-anim-rotate-in{animation:ppRotateIn .45s ease-out both}
-
         @keyframes ppBlurIn{from{filter:blur(14px);opacity:0}to{filter:blur(0);opacity:1}}
         .pp-anim-blur-in{animation:ppBlurIn .45s ease-out both}
-
         @keyframes ppWipeRight{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
         .pp-anim-wipe-right{animation:ppWipeRight .6s ease-out both}
-
         @keyframes ppWipeUp{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0 0 0 0)}}
         .pp-anim-wipe-up{animation:ppWipeUp .6s ease-out both}
-
         @keyframes ppSplitX{from{clip-path:inset(0 50% 0 50%)}to{clip-path:inset(0 0 0 0)}}
         .pp-anim-split-x{animation:ppSplitX .6s ease-out both}
-
         @keyframes ppSplitY{from{clip-path:inset(50% 0 50% 0)}to{clip-path:inset(0 0 0 0)}}
         .pp-anim-split-y{animation:ppSplitY .6s ease-out both}
       `}</style>
@@ -106,8 +85,8 @@ export default function Select() {
         </div>
       </div>
 
-      {/* MOBILE: single viewport, 3 equal panels, no scroll */}
-      <div className="md:hidden h-[100dvh] flex flex-col">
+      {/* MOBILE: fixed viewport, 3 equal panels, text fits */}
+      <div className="md:hidden fixed inset-0 flex flex-col overflow-hidden" style={{ height: "100svh" }}>
         {sections.map((s, i) => (
           <Link
             key={i}
@@ -115,21 +94,24 @@ export default function Select() {
             className="relative block flex-1 w-full"
             aria-label={s.label}
           >
+            {/* BG */}
             <div
               className="absolute inset-0 bg-cover bg-center brightness-150 saturate-125 contrast-105"
               style={{ backgroundImage: s.imgMobile || s.img }}
             />
             <div className="absolute inset-0 bg-black/25" />
-            <div className="relative z-10 h-full w-full flex flex-col items-center justify-center text-center px-6">
-              <span className="inline-flex items-center gap-2 rounded-full px-5 py-3 font-semibold bg-white/10 ring-1 ring-white/15 backdrop-blur-md mb-3">
+            {/* Content grid: button top, spacer, caption bottom */}
+            <div className="relative z-10 h-full w-full grid grid-rows-[auto,1fr,auto] justify-items-center px-4">
+              <span className="mt-2 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold bg-white/10 ring-1 ring-white/15 backdrop-blur-md">
                 {s.label}
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="opacity-90">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="opacity-90">
                   <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </span>
-              <div className="relative w-48 h-48 flex items-end justify-center">
-                <p className="text-white/90 drop-shadow">{s.blurb}</p>
-              </div>
+              <div />
+              <span className="mb-3 rounded-full bg-black/35 px-3 py-1 text-[13px] font-medium text-white/90">
+                {s.blurb}
+              </span>
             </div>
           </Link>
         ))}
