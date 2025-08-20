@@ -8,9 +8,10 @@ const asset = (p: string) => {
 };
 
 export default function Select() {
-  const [showLoader, setShowLoader] = useState(true);
+  // flash overlay for smooth transition
+  const [flashOn, setFlashOn] = useState(true);
   useEffect(() => {
-    const t = setTimeout(() => setShowLoader(false), 1400);
+    const t = setTimeout(() => setFlashOn(false), 250); // flash duration
     return () => clearTimeout(t);
   }, []);
 
@@ -80,7 +81,13 @@ export default function Select() {
         </div>
       </div>
 
-      <LoaderOverlay show={showLoader} />
+      {/* smooth flash overlay replaces old loader */}
+      <div
+        className={
+          "pointer-events-none fixed inset-0 z-50 bg-white/95 transition-opacity duration-500 " +
+          (flashOn ? "opacity-100" : "opacity-0")
+        }
+      />
     </div>
   );
 }
@@ -151,33 +158,6 @@ function TriPanel({
         <div className="relative flex items-end justify-center w-64 h-64 xl:w-[26rem] xl:h-[26rem]">
           <p className="text-white/90 mb-3 drop-shadow">{blurb}</p>
         </div>
-      </div>
-    </div>
-  );
-}
-
-function LoaderOverlay({ show }: { show: boolean }) {
-  if (!show) return null;
-  return (
-    <div className="absolute inset-0 z-50 flex items-center justify-center bg-[#0b1220]">
-      <style>{`
-        @keyframes bstLoaderAnim {
-          0%   { inset: 0 35px 35px 0; }
-          12.5%{ inset: 0 35px 0 0; }
-          25%  { inset: 35px 35px 0 0; }
-          37.5%{ inset: 35px 0 0 0; }
-          50%  { inset: 35px 0 0 35px; }
-          62.5%{ inset: 0 0 0 35px; }
-          75%  { inset: 0 0 35px 35px; }
-          87.5%{ inset: 0 0 35px 0; }
-          100% { inset: 0 35px 35px 0; }
-        }
-        .bst-animate { animation: bstLoaderAnim 2.5s infinite; }
-        .bst-delay   { animation-delay: -1.25s; }
-      `}</style>
-      <div className="relative w-[65px] aspect-square">
-        <span className="absolute rounded-[50px] bst-animate shadow-[inset_0_0_0_3px] shadow-gray-800/90 dark:shadow-gray-100/90" />
-        <span className="absolute rounded-[50px] bst-animate bst-delay shadow-[inset_0_0_0_3px] shadow-gray-800/90 dark:shadow-gray-100/90" />
       </div>
     </div>
   );
