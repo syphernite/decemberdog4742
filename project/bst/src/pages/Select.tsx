@@ -16,66 +16,44 @@ export default function Select() {
 
   const [hovered, setHovered] = useState<number | null>(null);
 
-  // shared data
   const sections = [
-    {
-      to: "/barber",
-      img: `url(${asset("barber.png")})`,
-      imgMobile: `url(${asset("barber-mobile.png")})`,
-      blurb: "Cuts, fades, grooming.",
-      label: "Get Faded",
-    },
-    {
-      to: "/sneakers",
-      img: `url(${asset("shoes.png")})`,
-      imgMobile: `url(${asset("shoes-mobile.png")})`,
-      blurb: "Drops, trades, heat.",
-      label: "Kick Game",
-    },
-    {
-      to: "/clothing",
-      img: `url(${asset("staks.png")})`,
-      imgMobile: `url(${asset("staks-mobile.png")})`,
-      blurb: "Fits, caps, essentials.",
-      label: "Stay Fresh",
-    },
+    { to: "/barber",   img: `url(${asset("barber.png")})`,   imgMobile: `url(${asset("barber-mobile.png")})`,   blurb: "Cuts, fades, grooming.",  label: "Get Faded" },
+    { to: "/sneakers", img: `url(${asset("shoes.png")})`,    imgMobile: `url(${asset("shoes-mobile.png")})`,    blurb: "Drops, trades, heat.",   label: "Kick Game" },
+    { to: "/clothing", img: `url(${asset("staks.png")})`,    imgMobile: `url(${asset("staks-mobile.png")})`,    blurb: "Fits, caps, essentials.",label: "Stay Fresh" },
   ];
 
   return (
     <div className="relative min-h-screen w-full bg-[#0b1220] text-white overflow-hidden">
-      {/* header (overlay, same on all viewports) */}
+      {/* header overlay */}
       <div className="absolute top-0 left-0 right-0 h-20 flex items-center justify-center pointer-events-none z-10">
         <div className="text-center">
           <h2 className="text-sm uppercase tracking-[0.25em] text-white/60">BST</h2>
+          <p className="text-xs text-white/40">Select your experience</p>
         </div>
       </div>
 
-      {/* MOBILE: full-bleed, brighter backgrounds, whole area clickable */}
-      <div className="md:hidden">
+      {/* MOBILE: single viewport, 3 equal panels, no scroll */}
+      <div className="md:hidden h-[100dvh] flex flex-col">
         {sections.map((s, i) => (
           <Link
             key={i}
             to={s.to}
-            className="relative block h-[100dvh] w-full"
+            className="relative block flex-1 w-full"
             aria-label={s.label}
           >
-            {/* same image, brighter without hue shift */}
             <div
               className="absolute inset-0 bg-cover bg-center brightness-150 saturate-125 contrast-105"
               style={{ backgroundImage: s.imgMobile || s.img }}
             />
-            {/* lighter veil for readability, not too dark */}
             <div className="absolute inset-0 bg-black/25" />
-            {/* content */}
             <div className="relative z-10 h-full w-full flex flex-col items-center justify-center text-center px-6">
-              <span className="inline-flex items-center gap-2 rounded-full px-5 py-3 font-semibold
-                                bg-white/10 ring-1 ring-white/15 backdrop-blur-md mb-6">
+              <span className="inline-flex items-center gap-2 rounded-full px-5 py-3 font-semibold bg-white/10 ring-1 ring-white/15 backdrop-blur-md mb-3">
                 {s.label}
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="opacity-90">
                   <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </span>
-              <div className="relative w-64 h-64 flex items-end justify-center">
+              <div className="relative w-48 h-48 flex items-end justify-center">
                 <p className="text-white/90 drop-shadow">{s.blurb}</p>
               </div>
             </div>
@@ -83,7 +61,7 @@ export default function Select() {
         ))}
       </div>
 
-      {/* DESKTOP: original tri-panel preserved (md and up) */}
+      {/* DESKTOP: original tri-panel */}
       <div className="hidden md:block absolute inset-0 pt-24 pb-24 px-4 md:p-0">
         <div className="h-full flex flex-col md:flex-row items-stretch gap-6 md:gap-0 overflow-hidden">
           {sections.map((s, i) => (
@@ -147,17 +125,14 @@ function TriPanel({
       ].join(" ")}
       style={{ flexGrow, transform: `scale(${scale})`, opacity }}
     >
-      {/* same image, brighter without hue shift */}
       <div
         className="absolute inset-0 hidden md:block bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105 brightness-150 saturate-125 contrast-105"
         style={{ backgroundImage: image }}
       />
-      {/* mobile path kept for completeness */}
       <div
         className="absolute inset-0 md:hidden bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105"
         style={{ backgroundImage: imageMobile ?? image }}
       />
-      {/* lighter veil for readability */}
       <div className="absolute inset-0 bg-black/25" />
 
       <div className="relative hidden md:flex flex-col items-center text-center text-white">
@@ -177,8 +152,6 @@ function TriPanel({
           <p className="text-white/90 mb-3 drop-shadow">{blurb}</p>
         </div>
       </div>
-
-      {/* mobile click target handled by mobile block */}
     </div>
   );
 }
