@@ -69,7 +69,7 @@ export default function LandingPage() {
         </div>
 
         {/* panels */}
-        <div className="h-full flex flex-col md:flex-row">
+        <div className="h-full flex flex-col md:flex-row gap-6 md:gap-0 pt-24 pb-24 px-4 md:p-0 overflow-y-auto">
           <TriPanel
             index={0}
             hovered={hovered}
@@ -348,6 +348,8 @@ function TriPanel({
       className={[
         "relative overflow-hidden",
         "flex items-center justify-center",
+        "py-12 md:py-0",                     // mobile breathing room
+        "rounded-2xl md:rounded-none",      // separate cards on mobile
         "border-t md:border-t-0 md:border-l border-white/5",
         "bg-[radial-gradient(65%_100%_at_50%_0%,rgba(255,255,255,0.06),rgba(0,0,0,0))]",
         "transition-all duration-500 ease-out will-change-transform",
@@ -367,7 +369,7 @@ function TriPanel({
         <div className="absolute -inset-24 blur-3xl bg-white/10" />
       </div>
 
-      <div className="relative w-full max-w-md px-8 text-center">
+      <div className="relative w-full max-w-md px-6 sm:px-8 text-center">
         <div className="mx-auto mb-6 h-1 w-12 rounded-full opacity-80" style={{ backgroundColor: "currentColor" }} />
         <h3 className="text-3xl font-extrabold tracking-tight mb-2">{title}</h3>
         <p className="text-white/70 mb-8">{blurb}</p>
