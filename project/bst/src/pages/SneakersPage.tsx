@@ -12,18 +12,7 @@ const SneakersPage = () => {
   const [sneakers, setSneakers] = useState<any[]>([]);
 
   useEffect(() => {
-    // ===== PLACEHOLDER FOR GOOGLE SHEETS API =====
-    // 1. Create a Google Sheet with columns: Name | Size | Price | ImageURL
-    // 2. Publish it to the web or enable Sheets API with an API key
-    // 3. Replace SHEET_ID and API_KEY in the fetch URL
-    // Example URL:
-    // https://sheets.googleapis.com/v4/spreadsheets/{SHEET_ID}/values/Inventory!A:D?key={API_KEY}
-    //
-    // For demo purposes we just simulate empty data
-    async function fetchData() {
-      // Replace this with real fetch when ready
-      setSneakers([]);
-    }
+    async function fetchData() { setSneakers([]); }
     fetchData();
   }, []);
 
@@ -31,8 +20,8 @@ const SneakersPage = () => {
     <div className="min-h-screen bg-gray-900 text-white">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 z-50 p-6">
-        <Link 
-          to="/" 
+        <Link
+          to="/select"
           className="flex items-center text-white hover:text-green-400 transition-colors duration-300"
         >
           <ArrowLeft className="w-6 h-6 mr-2" />
@@ -42,7 +31,7 @@ const SneakersPage = () => {
 
       {/* Hero */}
       <div className="relative h-screen">
-        <div 
+        <div
           className="h-full bg-cover bg-center"
           style={{ backgroundImage: 'url("https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2")' }}
         >
@@ -51,9 +40,7 @@ const SneakersPage = () => {
             <ShoppingBag className="w-20 h-20 text-green-400 mx-auto mb-6" />
             <h1 className="text-6xl md:text-8xl font-bold mb-6">BST</h1>
             <p className="text-2xl md:text-3xl text-green-400 mb-4 font-bold">EXCLUSIVE</p>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              Your destination for rare kicks and streetwear culture
-            </p>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">Your destination for rare kicks and streetwear culture</p>
           </div>
         </div>
       </div>
@@ -74,24 +61,18 @@ const SneakersPage = () => {
         </div>
       </section>
 
-      {/* Inventory (Google Sheets placeholder) */}
+      {/* Inventory placeholder */}
       <section className="py-20 px-6 bg-black">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">CURRENT INVENTORY</h2>
           {sneakers.length === 0 ? (
-            <p className="text-center text-gray-400">
-              Inventory will appear here when linked to Google Sheets.
-            </p>
+            <p className="text-center text-gray-400">Inventory will appear here when linked to Google Sheets.</p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {sneakers.map((s, i) => (
                 <div key={i} className="group">
                   <div className="aspect-square bg-gray-800 mb-4 overflow-hidden">
-                    <img 
-                      src={s.imageURL} 
-                      alt={s.name} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                    />
+                    <img src={s.imageURL} alt={s.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   </div>
                   <h3 className="text-xl font-bold mb-2">{s.name}</h3>
                   <div className="flex justify-between items-center text-gray-400">
@@ -111,7 +92,7 @@ const SneakersPage = () => {
           <h2 className="text-4xl md:text-5xl font-bold mb-8">STAY CONNECTED</h2>
           <div className="space-y-6">
             <div>
-              <a 
+              <a
                 href="https://instagram.com/bst.exclusive"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -122,7 +103,7 @@ const SneakersPage = () => {
               </a>
             </div>
             <div>
-              <a 
+              <a
                 href="https://t.snapchat.com/RInsoZeO"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -141,21 +122,10 @@ const SneakersPage = () => {
         <div className="max-w-4xl mx-auto flex justify-between items-center">
           <div className="text-gray-400">BST Exclusive © 2025</div>
           <div className="flex space-x-4">
-            <a 
-              href="https://instagram.com/bst.exclusive"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Instagram"
-            >
+            <a href="https://instagram.com/bst.exclusive" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
               <Instagram className="w-6 h-6 text-gray-400 hover:text-green-400 transition-colors" />
             </a>
-            <a 
-              href="https://t.snapchat.com/RInsoZeO"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Snapchat"
-              className="text-gray-400 hover:text-green-400 transition-colors"
-            >
+            <a href="https://t.snapchat.com/RInsoZeO" target="_blank" rel="noopener noreferrer" aria-label="Snapchat" className="text-gray-400 hover:text-green-400 transition-colors">
               @bstexclusive
             </a>
           </div>
