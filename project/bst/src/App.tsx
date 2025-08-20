@@ -1,7 +1,9 @@
+// src/App.tsx
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { PageTransition } from './components/PageTransition';
-import LandingPage from './pages/LandingPage';
+import Cover from './pages/Cover';
+import Select from './pages/Select';
 import BarberPage from './pages/BarberPage';
 import SneakersPage from './pages/SneakersPage';
 import ClothingPage from './pages/ClothingPage';
@@ -14,7 +16,15 @@ function App() {
           path="/"
           element={
             <PageTransition>
-              <LandingPage />
+              <Cover />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/select"
+          element={
+            <PageTransition>
+              <Select />
             </PageTransition>
           }
         />
