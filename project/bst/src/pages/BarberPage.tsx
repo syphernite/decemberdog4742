@@ -187,3 +187,4 @@ const BarberPage = () => {
 };
 
 export default BarberPage;
+
