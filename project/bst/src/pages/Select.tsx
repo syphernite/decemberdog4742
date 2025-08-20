@@ -1,5 +1,5 @@
 // src/pages/Select.tsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 
 const asset = (p: string) => {
@@ -7,14 +7,29 @@ const asset = (p: string) => {
   return `${base}${p}`.replace(/\/{2,}/g, "/");
 };
 
-export default function Select() {
-  // flash overlay for smooth transition
-  const [flashOn, setFlashOn] = useState(true);
-  useEffect(() => {
-    const t = setTimeout(() => setFlashOn(false), 250); // flash duration
-    return () => clearTimeout(t);
-  }, []);
+// Animation catalog (no flash)
+const ANIMS = [
+  "pp-anim-fade",
+  "pp-anim-slide-up",
+  "pp-anim-slide-right",
+  "pp-anim-slide-down",
+  "pp-anim-slide-left",
+  "pp-anim-zoom-in",
+  "pp-anim-zoom-out",
+  "pp-anim-pop",
+  "pp-anim-flip-x",
+  "pp-anim-flip-y",
+  "pp-anim-rotate-in",
+  "pp-anim-blur-in",
+  "pp-anim-wipe-right",
+  "pp-anim-wipe-up",
+  "pp-anim-split-x",
+  "pp-anim-split-y",
+] as const;
 
+const pickAnim = () => ANIMS[Math.floor(Math.random() * ANIMS.length)];
+
+export default function Select() {
   const [hovered, setHovered] = useState<number | null>(null);
 
   const sections = [
@@ -23,8 +38,66 @@ export default function Select() {
     { to: "/clothing", img: `url(${asset("staks.png")})`,    imgMobile: `url(${asset("staks-mobile.png")})`,    blurb: "Fits, caps, essentials.",label: "Stay Fresh" },
   ];
 
+  // One random page transition per mount
+  const pageAnim = useMemo(pickAnim, []);
+
   return (
-    <div className="relative min-h-screen w-full bg-[#0b1220] text-white overflow-hidden">
+    <div className={`relative min-h-screen w-full bg-[#0b1220] text-white overflow-hidden ${pageAnim}`}>
+      {/* Scoped keyframes/classes */}
+      <style>{`
+        @keyframes ppFade{from{opacity:0}to{opacity:1}}
+        .pp-anim-fade{animation:ppFade .45s ease-out both}
+
+        @keyframes ppSlideUp{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+        .pp-anim-slide-up{animation:ppSlideUp .5s cubic-bezier(.22,.8,.36,1) both}
+
+        @keyframes ppSlideRight{from{transform:translateX(-24px);opacity:0}to{transform:none;opacity:1}}
+        .pp-anim-slide-right{animation:ppSlideRight .5s cubic-bezier(.22,.8,.36,1) both}
+
+        @keyframes ppSlideDown{from{transform:translateY(-24px);opacity:0}to{transform:none;opacity:1}}
+        .pp-anim-slide-down{animation:ppSlideDown .5s cubic-bezier(.22,.8,.36,1) both}
+
+        @keyframes ppSlideLeft{from{transform:translateX(24px);opacity:0}to{transform:none;opacity:1}}
+        .pp-anim-slide-left{animation:ppSlideLeft .5s cubic-bezier(.22,.8,.36,1) both}
+
+        @keyframes ppZoomIn{from{transform:scale(.96);opacity:0}to{transform:scale(1);opacity:1}}
+        .pp-anim-zoom-in{animation:ppZoomIn .45s ease-out both}
+
+        @keyframes ppZoomOut{from{transform:scale(1.06);opacity:0}to{transform:scale(1);opacity:1}}
+        .pp-anim-zoom-out{animation:ppZoomOut .45s ease-out both}
+
+        @keyframes ppPop{
+          0%{transform:scale(.86);opacity:0}
+          60%{transform:scale(1.04);opacity:1}
+          100%{transform:scale(1)}
+        }
+        .pp-anim-pop{animation:ppPop .5s cubic-bezier(.2,.9,.2,1.1) both}
+
+        @keyframes ppFlipX{from{transform:perspective(800px) rotateX(-12deg);opacity:0}to{transform:perspective(800px) rotateX(0);opacity:1}}
+        .pp-anim-flip-x{animation:ppFlipX .55s ease-out both; transform-style:preserve-3d}
+
+        @keyframes ppFlipY{from{transform:perspective(800px) rotateY(12deg);opacity:0}to{transform:perspective(800px) rotateY(0);opacity:1}}
+        .pp-anim-flip-y{animation:ppFlipY .55s ease-out both; transform-style:preserve-3d}
+
+        @keyframes ppRotateIn{from{transform:rotate(-6deg);opacity:0}to{transform:rotate(0);opacity:1}}
+        .pp-anim-rotate-in{animation:ppRotateIn .45s ease-out both}
+
+        @keyframes ppBlurIn{from{filter:blur(14px);opacity:0}to{filter:blur(0);opacity:1}}
+        .pp-anim-blur-in{animation:ppBlurIn .45s ease-out both}
+
+        @keyframes ppWipeRight{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+        .pp-anim-wipe-right{animation:ppWipeRight .6s ease-out both}
+
+        @keyframes ppWipeUp{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0 0 0 0)}}
+        .pp-anim-wipe-up{animation:ppWipeUp .6s ease-out both}
+
+        @keyframes ppSplitX{from{clip-path:inset(0 50% 0 50%)}to{clip-path:inset(0 0 0 0)}}
+        .pp-anim-split-x{animation:ppSplitX .6s ease-out both}
+
+        @keyframes ppSplitY{from{clip-path:inset(50% 0 50% 0)}to{clip-path:inset(0 0 0 0)}}
+        .pp-anim-split-y{animation:ppSplitY .6s ease-out both}
+      `}</style>
+
       {/* header overlay */}
       <div className="absolute top-0 left-0 right-0 h-20 flex items-center justify-center pointer-events-none z-10">
         <div className="text-center">
@@ -80,14 +153,6 @@ export default function Select() {
           ))}
         </div>
       </div>
-
-      {/* smooth flash overlay replaces old loader */}
-      <div
-        className={
-          "pointer-events-none fixed inset-0 z-50 bg-white/95 transition-opacity duration-500 " +
-          (flashOn ? "opacity-100" : "opacity-0")
-        }
-      />
     </div>
   );
 }
