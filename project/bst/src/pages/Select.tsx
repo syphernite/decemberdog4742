@@ -77,15 +77,7 @@ export default function Select() {
         .pp-anim-split-y{animation:ppSplitY .6s ease-out both}
       `}</style>
 
-      {/* header overlay */}
-      <div className="absolute top-0 left-0 right-0 h-20 flex items-center justify-center pointer-events-none z-10">
-        <div className="text-center">
-          <h2 className="text-sm uppercase tracking-[0.25em] text-white/60">BST</h2>
-          <p className="text-xs text-white/40">Select your experience</p>
-        </div>
-      </div>
-
-      {/* MOBILE: fixed viewport, 3 equal panels, text fits */}
+      {/* MOBILE: fixed viewport, 3 equal panels, no buttons/text */}
       <div className="md:hidden fixed inset-0 flex flex-col overflow-hidden" style={{ height: "100svh" }}>
         {sections.map((s, i) => (
           <Link
@@ -94,30 +86,16 @@ export default function Select() {
             className="relative block flex-1 w-full"
             aria-label={s.label}
           >
-            {/* BG */}
             <div
               className="absolute inset-0 bg-cover bg-center brightness-150 saturate-125 contrast-105"
               style={{ backgroundImage: s.imgMobile || s.img }}
             />
             <div className="absolute inset-0 bg-black/25" />
-            {/* Content grid: button top, spacer, caption bottom */}
-            <div className="relative z-10 h-full w-full grid grid-rows-[auto,1fr,auto] justify-items-center px-4">
-              <span className="mt-2 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold bg-white/10 ring-1 ring-white/15 backdrop-blur-md">
-                {s.label}
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="opacity-90">
-                  <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </span>
-              <div />
-              <span className="mb-3 rounded-full bg-black/35 px-3 py-1 text-[13px] font-medium text-white/90">
-                {s.blurb}
-              </span>
-            </div>
           </Link>
         ))}
       </div>
 
-      {/* DESKTOP: original tri-panel */}
+      {/* DESKTOP: original tri-panel (header removed) */}
       <div className="hidden md:block absolute inset-0 pt-24 pb-24 px-4 md:p-0">
         <div className="h-full flex flex-col md:flex-row items-stretch gap-6 md:gap-0 overflow-hidden">
           {sections.map((s, i) => (
