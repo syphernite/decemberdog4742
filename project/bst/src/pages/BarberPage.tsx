@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Scissors, Clock, DollarSign, Instagram } from 'lucide-react';
+import { FaSnapchatGhost } from 'react-icons/fa';
 
 const BarberPage = () => {
   const services = [
@@ -23,8 +24,8 @@ const BarberPage = () => {
     <div className="min-h-screen bg-black text-white">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 z-50 p-6">
-        <Link
-          to="/select"
+        <Link 
+          to="/" 
           className="flex items-center text-white hover:text-yellow-400 transition-colors duration-300"
         >
           <ArrowLeft className="w-6 h-6 mr-2" />
@@ -34,9 +35,11 @@ const BarberPage = () => {
 
       {/* Hero Section */}
       <div className="relative h-screen">
-        <div
+        <div 
           className="h-full bg-cover bg-center"
-          style={{ backgroundImage: 'url("https://images.pexels.com/photos/1813272/pexels-photo-1813272.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2")' }}
+          style={{
+            backgroundImage: 'url("https://images.pexels.com/photos/1813272/pexels-photo-1813272.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2")'
+          }}
         >
           <div className="absolute inset-0 bg-black bg-opacity-60"></div>
           <div className="relative h-full flex items-center justify-center text-center px-6">
@@ -46,7 +49,11 @@ const BarberPage = () => {
               <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto">
                 Premium cuts, classic style, modern techniques
               </p>
-              <a href="https://bstcuts.square.site" target="_blank" rel="noopener noreferrer">
+              <a 
+                href="https://bstcuts.square.site" 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
                 <button className="px-8 py-4 bg-yellow-400 text-black font-bold text-lg hover:bg-yellow-500 transition-colors duration-300">
                   BOOK APPOINTMENT
                 </button>
@@ -63,8 +70,8 @@ const BarberPage = () => {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
             {portfolio.map((image, index) => (
               <div key={index} className="aspect-square overflow-hidden group">
-                <img
-                  src={image}
+                <img 
+                  src={image} 
                   alt={`Haircut ${index + 1}`}
                   className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500 group-hover:scale-105"
                 />
@@ -102,8 +109,10 @@ const BarberPage = () => {
       <section className="py-16 px-6 bg-gray-900">
         <div className="max-w-4xl mx-auto text-center">
           <h3 className="text-3xl font-bold mb-6">COMPLETE THE LOOK</h3>
-          <p className="text-xl text-gray-400 mb-8">Fresh cut deserves fresh threads</p>
-          <Link
+          <p className="text-xl text-gray-400 mb-8">
+            Fresh cut deserves fresh threads
+          </p>
+          <Link 
             to="/clothing"
             className="inline-block px-8 py-3 border border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black transition-all duration-300 font-semibold"
           >
@@ -115,10 +124,26 @@ const BarberPage = () => {
       {/* Footer */}
       <footer className="py-8 px-6 border-t border-gray-800">
         <div className="max-w-4xl mx-auto flex justify-between items-center">
-          <div className="text-gray-400">@bst.cuts</div>
+          <div className="text-gray-400">
+            @bst.cuts
+          </div>
           <div className="flex space-x-4">
-            <a href="https://instagram.com/bst.cuts" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <a 
+              href="https://instagram.com/bst.cuts"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+            >
               <Instagram className="w-6 h-6 text-gray-400 hover:text-yellow-400 transition-colors cursor-pointer" />
+            </a>
+            <a 
+              href="https://t.snapchat.com/RInsoZeO"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Snapchat"
+              className="flex items-center space-x-2 text-gray-400 hover:text-yellow-400 transition-colors"
+            >
+              <FaSnapchatGhost className="w-6 h-6" />
             </a>
           </div>
         </div>
