@@ -35,7 +35,7 @@ const BarberPage = () => {
       {/* Navigation */}
       <nav className="fixed top-0 left-0 z-50 p-6">
         <Link 
-          to="/" 
+          to="/select" 
           className="flex items-center text-white hover:text-yellow-400 transition-colors duration-300"
         >
           <ArrowLeft className="w-6 h-6 mr-2" />

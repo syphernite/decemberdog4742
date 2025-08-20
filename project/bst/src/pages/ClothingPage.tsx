@@ -30,7 +30,7 @@ const ClothingPage = () => {
       {/* Navigation */}
       <nav className="fixed top-0 left-0 z-50 p-6">
         <Link 
-          to="/" 
+          to="/select" 
           className="flex items-center text-gray-300 hover:text-white transition-colors duration-300"
         >
           <ArrowLeft className="w-6 h-6 mr-2" />
