@@ -10,19 +10,26 @@ const BarberPage = () => {
   const [copied, setCopied] = useState(false);
 
   const services = [
-    { name: 'Classic Cut', price: '$25', duration: '30 min' },
-    { name: 'Fade & Style', price: '$35', duration: '45 min' },
-    { name: 'Beard Trim', price: '$20', duration: '20 min' },
-    { name: 'Full Service', price: '$45', duration: '60 min' }
+    { name: 'Bst Kid Cut (12 and under)', price: '$35.00', duration: '45 mins' },
+    { name: 'Bst Cut, Beard Trim, & Shampoo', price: '$55.00', duration: '1 hr' },
+    { name: 'Bst Cut & Shampoo', price: '$45.00', duration: '45 mins' },
+    { name: 'Bst Cut & Beard Trim', price: '$50.00', duration: '45 mins' },
+    { name: 'Bst Cut', price: '$40.00', duration: '45 mins' }
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="relative min-h-screen bg-black text-white">
+      {/* Local keyframes for CTA bounce */}
+      <style>{`
+        @keyframes slight-bounce-y { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+        .btn-bounce-slight { animation: slight-bounce-y 2.2s ease-in-out infinite; will-change: transform; }
+      `}</style>
+
       {/* Navigation */}
       <nav className="fixed top-0 left-0 z-50 p-6">
         <Link 
           to="/select" 
-          className="flex items-center text-white hover:text-sky-400 hover:shadow-[0_0_15px_#38bdf8] transition duration-300"
+          className="flex items-center text-white hover:text-sky-400 transition duration-300"
         >
           <ArrowLeft className="w-6 h-6 mr-2" />
           <span className="font-medium">BACK</span>
@@ -37,7 +44,7 @@ const BarberPage = () => {
             backgroundImage: 'url("https://images.pexels.com/photos/1813272/pexels-photo-1813272.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2")'
           }}
         >
-          <div className="absolute inset-0 bg-black bg-opacity-60"></div>
+          <div className="absolute inset-0 bg-black/60"></div>
           <div className="relative h-full flex items-center justify-center text-center px-6">
             <div>
               <Scissors className="w-20 h-20 text-sky-400 mx-auto mb-6 drop-shadow-[0_0_15px_#38bdf8]" />
@@ -50,7 +57,7 @@ const BarberPage = () => {
                 target="_blank" 
                 rel="noopener noreferrer"
               >
-                <button className="px-8 py-4 bg-sky-400 text-black font-bold text-lg hover:bg-sky-500 hover:shadow-[0_0_20px_#38bdf8] transition duration-300">
+                <button className="px-8 py-4 bg-sky-400 text-black font-bold text-lg hover:bg-sky-500 transition duration-300 btn-bounce-slight">
                   BOOK APPOINTMENT
                 </button>
               </a>
@@ -69,7 +76,7 @@ const BarberPage = () => {
                 <img 
                   src={pub(`${num}.png`)}
                   alt={`Haircut ${num}`}
-                  className="w-full h-full object-cover grayscale hover:grayscale-0 hover:shadow-[0_0_15px_#38bdf8] transition-all duration-500 group-hover:scale-105"
+                  className="w-full h-full object-cover ring-1 ring-sky-400/60 hover:shadow-[0_0_15px_#38bdf8] transition-all duration-500 group-hover:scale-105"
                 />
               </div>
             ))}
@@ -81,7 +88,7 @@ const BarberPage = () => {
       <section className="py-20 px-6 bg-white text-black">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">SERVICES</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {services.map((service, index) => (
               <div key={index} className="p-8 border border-gray-200 hover:border-sky-400 hover:shadow-[0_0_15px_#38bdf8] transition duration-300">
                 <h3 className="text-2xl font-bold mb-4">{service.name}</h3>
@@ -111,7 +118,7 @@ const BarberPage = () => {
           />
           <p className="text-gray-300">Shop with my referral code</p>
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <span className="inline-flex items-center rounded-full border border-sky-400 text-sky-400 px-4 py-2 text-sm font-semibold tracking-widest hover:shadow-[0_0_15px_#38bdf8] transition">
+            <span className="inline-flex items-center rounded-full border border-sky-400 text-sky-400 px-4 py-2 text-sm font-semibold tracking-widest transition">
               REFERRAL CODE: 1017
             </span>
             <button
@@ -122,7 +129,7 @@ const BarberPage = () => {
                   setTimeout(() => setCopied(false), 1800);
                 } catch {}
               }}
-              className="px-4 py-2 bg-sky-400 text-black font-semibold rounded hover:bg-sky-500 hover:shadow-[0_0_20px_#38bdf8] transition"
+              className="px-4 py-2 bg-sky-400 text-black font-semibold rounded hover:bg-sky-500 transition"
             >
               {copied ? 'Copied' : 'Copy Code'}
             </button>
@@ -130,7 +137,7 @@ const BarberPage = () => {
               href="https://antibrokebarbersclub.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2 border border-sky-400 text-sky-400 rounded hover:bg-sky-400 hover:text-black hover:shadow-[0_0_15px_#38bdf8] transition"
+              className="px-4 py-2 border border-sky-400 text-sky-400 rounded hover:bg-sky-400 hover:text-black transition"
             >
               Shop Now
             </a>
@@ -148,7 +155,7 @@ const BarberPage = () => {
           </p>
           <Link 
             to="/clothing"
-            className="inline-block px-8 py-3 border border-sky-400 text-sky-400 hover:bg-sky-400 hover:text-black hover:shadow-[0_0_15px_#38bdf8] transition duration-300 font-semibold"
+            className="inline-block px-8 py-3 border border-sky-400 text-sky-400 hover:bg-sky-400 hover:text-black transition duration-300 font-semibold"
           >
             SHOP STAKS CLOTHING
           </Link>
@@ -158,26 +165,33 @@ const BarberPage = () => {
       {/* Footer */}
       <footer className="py-8 px-6 border-t border-gray-800">
         <div className="max-w-4xl mx-auto flex justify-between items-center">
-          <div className="text-gray-400">
-            @bst.cuts
-          </div>
-          <div className="flex space-x-4">
-            <a 
-              href="https://instagram.com/bst.cuts"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Instagram"
-            >
-              <Instagram className="w-6 h-6 text-gray-400 hover:text-sky-400 hover:shadow-[0_0_15px_#38bdf8] transition cursor-pointer" />
-            </a>
+          <div className="text-gray-400">@bst.cuts</div>
+          <div className="flex items-center space-x-4">
             <a 
               href="https://t.snapchat.com/RInsoZeO"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Snapchat"
-              className="flex items-center space-x-2 text-gray-400 hover:text-sky-400 hover:shadow-[0_0_15px_#38bdf8] transition"
+              className="flex items-center text-gray-400 hover:text-sky-400 transition"
             >
               <FaSnapchatGhost className="w-6 h-6" />
+            </a>
+            <a 
+              href="https://instagram.com/bst.cuts"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+              className="transition"
+            >
+              <Instagram className="w-6 h-6 text-gray-400 hover:text-sky-400 cursor-pointer transition" />
+            </a>
+            <a
+              href="https://built4you.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-400 hover:text-sky-400 transition font-medium"
+            >
+              Made with 😎 by Built4You
             </a>
           </div>
         </div>
@@ -187,4 +201,3 @@ const BarberPage = () => {
 };
 
 export default BarberPage;
-
