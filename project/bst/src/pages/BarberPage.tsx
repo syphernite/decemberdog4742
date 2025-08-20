@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Scissors, Clock, DollarSign, Instagram } from 'lucide-react';
 import { FaSnapchatGhost } from 'react-icons/fa';
 
 const BarberPage = () => {
+  const [copied, setCopied] = useState(false);
+
   const services = [
     { name: 'Classic Cut', price: '$25', duration: '30 min' },
     { name: 'Fade & Style', price: '$35', duration: '45 min' },
@@ -19,6 +21,14 @@ const BarberPage = () => {
     'https://images.pexels.com/photos/1570809/pexels-photo-1570809.jpeg?auto=compress&cs=tinysrgb&w=400',
     'https://images.pexels.com/photos/1805603/pexels-photo-1805603.jpeg?auto=compress&cs=tinysrgb&w=400'
   ];
+
+  const copyCode = async () => {
+    try {
+      await navigator.clipboard.writeText('1017');
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch {}
+  };
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -102,6 +112,44 @@ const BarberPage = () => {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Referral CTA */}
+      <section className="py-10 px-6 bg-gray-900">
+        <div className="max-w-3xl mx-auto flex flex-col items-center gap-4 text-center">
+          <img
+            src={`${import.meta.env.BASE_URL}ab-barbersclub.png`}
+            alt="Anti Broke Barbers Club"
+            className="h-20 md:h-28 object-contain mb-2"
+          />
+          <p className="text-gray-300">Join with my referral code</p>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <span className="inline-flex items-center rounded-full border border-yellow-400 text-yellow-400 px-4 py-2 text-sm font-semibold tracking-widest">
+              REFERRAL CODE: 1017
+            </span>
+            <button
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText('1017');
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 1800);
+                } catch {}
+              }}
+              className="px-4 py-2 bg-yellow-400 text-black font-semibold rounded hover:bg-yellow-500 transition-colors"
+            >
+              {copied ? 'Copied' : 'Copy Code'}
+            </button>
+            <a
+              href="https://antibrokebarbersclub.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-2 border border-yellow-400 text-yellow-400 rounded hover:bg-yellow-400 hover:text-black transition-colors"
+            >
+              Join Now
+            </a>
+          </div>
+          <p className="text-xs text-gray-500">Paste the code at signup if not prompted automatically.</p>
         </div>
       </section>
 
