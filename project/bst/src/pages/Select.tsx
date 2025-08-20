@@ -2,11 +2,17 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+// Safe asset resolver for Vite public/ with subpaths
+const asset = (p: string) => {
+  const base = (import.meta as any).env?.BASE_URL ?? "/";
+  return `${base}${p}`.replace(/\/{2,}/g, "/");
+};
+
 export default function Select() {
   const [showLoader, setShowLoader] = useState(true);
 
   useEffect(() => {
-    const t = setTimeout(() => setShowLoader(false), 1400); // loader duration
+    const t = setTimeout(() => setShowLoader(false), 1400);
     return () => clearTimeout(t);
   }, []);
 
@@ -31,7 +37,8 @@ export default function Select() {
             setHovered={setHovered}
             title="Barber"
             to="/barber"
-            gradient="from-emerald-400/20 to-teal-500/20"
+            image={`url(${asset("barber.png")})`}
+            imageMobile={`url(${asset("barber-mobile.png")})`} // put in public/ if you have it
             accent="bg-emerald-400"
             blurb="Cuts, fades, grooming."
           />
@@ -41,7 +48,8 @@ export default function Select() {
             setHovered={setHovered}
             title="Sneakers"
             to="/sneakers"
-            gradient="from-indigo-400/20 to-sky-500/20"
+            image={`url(${asset("shoes.png")})`}
+            imageMobile={`url(${asset("shoes-mobile.png")})`}  // optional; defaults to desktop if missing
             accent="bg-indigo-400"
             blurb="Drops, trades, heat."
           />
@@ -51,7 +59,8 @@ export default function Select() {
             setHovered={setHovered}
             title="Clothing"
             to="/clothing"
-            gradient="from-fuchsia-400/20 to-rose-500/20"
+            image={`url(${asset("staks.png")})`}
+            imageMobile={`url(${asset("staks-mobile.png")})`}  // optional
             accent="bg-fuchsia-400"
             blurb="Fits, caps, essentials."
           />
@@ -70,7 +79,8 @@ function TriPanel({
   setHovered,
   title,
   to,
-  gradient,
+  image,
+  imageMobile,
   accent,
   blurb,
 }: {
@@ -79,7 +89,8 @@ function TriPanel({
   setHovered: (v: number | null) => void;
   title: string;
   to: string;
-  gradient: string;
+  image: string;        // css url(...)
+  imageMobile?: string; // css url(...), falls back to image if not provided
   accent: string;
   blurb: string;
 }) {
@@ -94,31 +105,32 @@ function TriPanel({
       onMouseEnter={() => setHovered(index)}
       onMouseLeave={() => setHovered(null)}
       className={[
-        "relative overflow-hidden h-full",
+        "group relative overflow-hidden h-full",
         "flex items-center justify-center",
         "py-12 md:py-0",
         "rounded-2xl md:rounded-none",
         "border-t md:border-t-0 md:border-l border-white/5",
-        "bg-[radial-gradient(65%_100%_at_50%_0%,rgba(255,255,255,0.06),rgba(0,0,0,0))]",
         "transition-all duration-500 ease-out will-change-transform",
       ].join(" ")}
       style={{ flexGrow, transform: `scale(${scale})`, opacity }}
     >
-      <div className={`pointer-events-none absolute inset-0 bg-gradient-to-b ${gradient}`} />
+      {/* Desktop bg */}
       <div
-        className="pointer-events-none absolute inset-0 transition-opacity duration-500"
-        style={{ opacity: isActive ? 1 : 0 }}
-      >
-        <div className="absolute -inset-24 blur-3xl bg-white/10" />
-      </div>
+        className="absolute inset-0 hidden md:block bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105"
+        style={{ backgroundImage: image }}
+      />
+      {/* Mobile bg (falls back to desktop if no mobile provided) */}
+      <div
+        className="absolute inset-0 md:hidden bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105"
+        style={{ backgroundImage: imageMobile ?? image }}
+      />
+      {/* Dark overlay for readability */}
+      <div className="absolute inset-0 bg-black/50" />
 
-      <div className="relative w-full max-w-md px-6 sm:px-8 text-center">
-        <div
-          className="mx-auto mb-6 h-1 w-12 rounded-full opacity-80"
-          style={{ backgroundColor: "currentColor" }}
-        />
+      <div className="relative w-full max-w-md px-6 sm:px-8 text-center text-white">
+        <div className="mx-auto mb-6 h-1 w-12 rounded-full opacity-80" style={{ backgroundColor: "currentColor" }} />
         <h3 className="text-3xl font-extrabold tracking-tight mb-2">{title}</h3>
-        <p className="text-white/70 mb-8">{blurb}</p>
+        <p className="text-white/80 mb-8">{blurb}</p>
 
         <Link
           to={to}
@@ -127,20 +139,8 @@ function TriPanel({
                      backdrop-blur-md transition-all"
         >
           Enter {title}
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            className="opacity-90"
-          >
-            <path
-              d="M5 12h14M13 5l7 7-7 7"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="opacity-90">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </Link>
 
