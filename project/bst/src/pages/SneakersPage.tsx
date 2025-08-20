@@ -36,7 +36,7 @@ const SneakersPage = () => {
       </nav>
 
       {/* Hero fills full viewport; image visible under transparent nav */}
-      <div className="relative w-full" style={{ minHeight: '100dvh' }}>
+      <div className="relative w-full" style={{ height: '100svh' }}>
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${pub('shoe-bg.png')})` }}
@@ -72,7 +72,7 @@ const SneakersPage = () => {
       <section className="py-14 sm:py-16 px-4 md:px-6 bg-black">
         <div className="max-w-6xl w-full mx-auto">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-10 sm:mb-16">CURRENT INVENTORY</h2>
-          {sneakers.length === 0 ? (
+        {sneakers.length === 0 ? (
             <p className="text-center text-gray-400 px-2">Inventory will appear here when linked to Google Sheets.</p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
