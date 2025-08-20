@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-// Safe asset resolver for Vite public/ with subpaths
 const asset = (p: string) => {
   const base = (import.meta as any).env?.BASE_URL ?? "/";
   return `${base}${p}`.replace(/\/{2,}/g, "/");
@@ -10,7 +9,6 @@ const asset = (p: string) => {
 
 export default function Select() {
   const [showLoader, setShowLoader] = useState(true);
-
   useEffect(() => {
     const t = setTimeout(() => setShowLoader(false), 1400);
     return () => clearTimeout(t);
@@ -18,9 +16,34 @@ export default function Select() {
 
   const [hovered, setHovered] = useState<number | null>(null);
 
+  // shared data
+  const sections = [
+    {
+      to: "/barber",
+      img: `url(${asset("barber.png")})`,
+      imgMobile: `url(${asset("barber-mobile.png")})`,
+      blurb: "Cuts, fades, grooming.",
+      label: "Get Faded",
+    },
+    {
+      to: "/sneakers",
+      img: `url(${asset("shoes.png")})`,
+      imgMobile: `url(${asset("shoes-mobile.png")})`,
+      blurb: "Drops, trades, heat.",
+      label: "Kick Game",
+    },
+    {
+      to: "/clothing",
+      img: `url(${asset("staks.png")})`,
+      imgMobile: `url(${asset("staks-mobile.png")})`,
+      blurb: "Fits, caps, essentials.",
+      label: "Stay Fresh",
+    },
+  ];
+
   return (
-    <div className="relative h-screen w-full bg-[#0b1220] text-white overflow-hidden">
-      {/* header */}
+    <div className="relative min-h-screen w-full bg-[#0b1220] text-white overflow-hidden">
+      {/* header (overlay, same on all viewports) */}
       <div className="absolute top-0 left-0 right-0 h-20 flex items-center justify-center pointer-events-none z-10">
         <div className="text-center">
           <h2 className="text-sm uppercase tracking-[0.25em] text-white/60">BST</h2>
@@ -28,48 +51,61 @@ export default function Select() {
         </div>
       </div>
 
-      {/* full-height panel region */}
-      <div className="absolute inset-0 pt-24 pb-24 px-4 md:p-0">
-        <div className="h-full flex flex-col md:flex-row items-stretch gap-0 md:gap-0 overflow-hidden">
-          <TriPanel
-            index={0}
-            hovered={hovered}
-            setHovered={setHovered}
-            to="/barber"
-            image={`url(${asset("barber.png")})`}
-            imageMobile={`url(${asset("barber-mobile.png")})`}
-            blurb="Cuts, fades, grooming."
-            buttonLabel="Get Faded"
-          />
-          <TriPanel
-            index={1}
-            hovered={hovered}
-            setHovered={setHovered}
-            to="/sneakers"
-            image={`url(${asset("shoes.png")})`}
-            imageMobile={`url(${asset("shoes-mobile.png")})`}
-            blurb="Drops, trades, heat."
-            buttonLabel="Kick Game"
-          />
-          <TriPanel
-            index={2}
-            hovered={hovered}
-            setHovered={setHovered}
-            to="/clothing"
-            image={`url(${asset("staks.png")})`}
-            imageMobile={`url(${asset("staks-mobile.png")})`}
-            blurb="Fits, caps, essentials."
-            buttonLabel="Stay Fresh"
-          />
+      {/* MOBILE: full-bleed, each section fills the screen, whole area clickable */}
+      <div className="md:hidden">
+        {sections.map((s, i) => (
+          <Link
+            key={i}
+            to={s.to}
+            className="relative block h-[100dvh] w-full"
+            aria-label={s.label}
+          >
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: s.imgMobile || s.img }}
+            />
+            <div className="absolute inset-0 bg-black/50" />
+            <div className="relative z-10 h-full w-full flex flex-col items-center justify-center text-center px-6">
+              <span className="inline-flex items-center gap-2 rounded-full px-5 py-3 font-semibold
+                                bg-white/10 ring-1 ring-white/15 backdrop-blur-md mb-6">
+                {s.label}
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="opacity-90">
+                  <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
+              <div className="relative w-64 h-64 flex items-end justify-center">
+                <p className="text-white/85 drop-shadow">{s.blurb}</p>
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      {/* DESKTOP: original tri-panel preserved exactly (md and up) */}
+      <div className="hidden md:block absolute inset-0 pt-24 pb-24 px-4 md:p-0">
+        <div className="h-full flex flex-col md:flex-row items-stretch gap-6 md:gap-0 overflow-hidden">
+          {sections.map((s, i) => (
+            <TriPanel
+              key={i}
+              index={i}
+              hovered={hovered}
+              setHovered={setHovered}
+              to={s.to}
+              image={s.img}
+              imageMobile={s.imgMobile}
+              blurb={s.blurb}
+              buttonLabel={s.label}
+            />
+          ))}
         </div>
       </div>
 
-      {/* Loader overlay */}
       <LoaderOverlay show={showLoader} />
     </div>
   );
 }
 
+/* Desktop-only panel */
 function TriPanel({
   index,
   hovered,
@@ -102,33 +138,23 @@ function TriPanel({
       className={[
         "group relative overflow-hidden h-full",
         "flex items-center justify-center",
+        "py-12 md:py-0",
         "rounded-2xl md:rounded-none",
         "border-t md:border-t-0 md:border-l border-white/5",
         "transition-all duration-500 ease-out will-change-transform",
       ].join(" ")}
       style={{ flexGrow, transform: `scale(${scale})`, opacity }}
     >
-      {/* Desktop bg */}
       <div
         className="absolute inset-0 hidden md:block bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105"
         style={{ backgroundImage: image }}
       />
-      {/* Mobile bg */}
       <div
         className="absolute inset-0 md:hidden bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105"
         style={{ backgroundImage: imageMobile ?? image }}
       />
-      {/* Dark overlay */}
       <div className="absolute inset-0 bg-black/50" />
 
-      {/* Mobile: whole panel is a link */}
-      <Link
-        to={to}
-        aria-label={buttonLabel}
-        className="md:hidden absolute inset-0 z-20"
-      />
-
-      {/* Desktop content only */}
       <div className="relative hidden md:flex flex-col items-center text-center text-white">
         <Link
           to={to}
@@ -139,15 +165,15 @@ function TriPanel({
         >
           {buttonLabel}
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="opacity-90">
-            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </Link>
-
-        {/* Circle-sized spacer so blurb sits at the bottom of the circle */}
         <div className="relative flex items-end justify-center w-64 h-64 xl:w-[26rem] xl:h-[26rem]">
           <p className="text-white/85 mb-3 drop-shadow">{blurb}</p>
         </div>
       </div>
+
+      {/* mobile click target handled by mobile block */}
     </div>
   );
 }
@@ -171,7 +197,6 @@ function LoaderOverlay({ show }: { show: boolean }) {
         .bst-animate { animation: bstLoaderAnim 2.5s infinite; }
         .bst-delay   { animation-delay: -1.25s; }
       `}</style>
-
       <div className="relative w-[65px] aspect-square">
         <span className="absolute rounded-[50px] bst-animate shadow-[inset_0_0_0_3px] shadow-gray-800/90 dark:shadow-gray-100/90" />
         <span className="absolute rounded-[50px] bst-animate bst-delay shadow-[inset_0_0_0_3px] shadow-gray-800/90 dark:shadow-gray-100/90" />

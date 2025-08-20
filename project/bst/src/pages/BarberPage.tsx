@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, Scissors, Clock, DollarSign, Instagram } from 'lucide-react';
 import { FaSnapchatGhost } from 'react-icons/fa';
 
+// public/ helper that respects Vite base paths
+const pub = (p: string) => `${import.meta.env.BASE_URL}${p}`.replace(/\/{2,}/g, '/');
+
 const BarberPage = () => {
   const [copied, setCopied] = useState(false);
 
@@ -13,30 +16,13 @@ const BarberPage = () => {
     { name: 'Full Service', price: '$45', duration: '60 min' }
   ];
 
-  const portfolio = [
-    'https://images.pexels.com/photos/1805600/pexels-photo-1805600.jpeg?auto=compress&cs=tinysrgb&w=400',
-    'https://images.pexels.com/photos/1570807/pexels-photo-1570807.jpeg?auto=compress&cs=tinysrgb&w=400',
-    'https://images.pexels.com/photos/1570808/pexels-photo-1570808.jpeg?auto=compress&cs=tinysrgb&w=400',
-    'https://images.pexels.com/photos/1805602/pexels-photo-1805602.jpeg?auto=compress&cs=tinysrgb&w=400',
-    'https://images.pexels.com/photos/1570809/pexels-photo-1570809.jpeg?auto=compress&cs=tinysrgb&w=400',
-    'https://images.pexels.com/photos/1805603/pexels-photo-1805603.jpeg?auto=compress&cs=tinysrgb&w=400'
-  ];
-
-  const copyCode = async () => {
-    try {
-      await navigator.clipboard.writeText('1017');
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
-    } catch {}
-  };
-
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 z-50 p-6">
         <Link 
           to="/select" 
-          className="flex items-center text-white hover:text-yellow-400 transition-colors duration-300"
+          className="flex items-center text-white hover:text-sky-400 hover:shadow-[0_0_15px_#38bdf8] transition duration-300"
         >
           <ArrowLeft className="w-6 h-6 mr-2" />
           <span className="font-medium">BACK</span>
@@ -54,7 +40,7 @@ const BarberPage = () => {
           <div className="absolute inset-0 bg-black bg-opacity-60"></div>
           <div className="relative h-full flex items-center justify-center text-center px-6">
             <div>
-              <Scissors className="w-20 h-20 text-yellow-400 mx-auto mb-6" />
+              <Scissors className="w-20 h-20 text-sky-400 mx-auto mb-6 drop-shadow-[0_0_15px_#38bdf8]" />
               <h1 className="text-6xl md:text-8xl font-bold mb-6 tracking-tight">BST CUTS</h1>
               <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto">
                 Premium cuts, classic style, modern techniques
@@ -64,7 +50,7 @@ const BarberPage = () => {
                 target="_blank" 
                 rel="noopener noreferrer"
               >
-                <button className="px-8 py-4 bg-yellow-400 text-black font-bold text-lg hover:bg-yellow-500 transition-colors duration-300">
+                <button className="px-8 py-4 bg-sky-400 text-black font-bold text-lg hover:bg-sky-500 hover:shadow-[0_0_20px_#38bdf8] transition duration-300">
                   BOOK APPOINTMENT
                 </button>
               </a>
@@ -78,12 +64,12 @@ const BarberPage = () => {
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">PORTFOLIO</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-            {portfolio.map((image, index) => (
-              <div key={index} className="aspect-square overflow-hidden group">
+            {[1,2,3,4,5,6].map((num) => (
+              <div key={num} className="aspect-square overflow-hidden group">
                 <img 
-                  src={image} 
-                  alt={`Haircut ${index + 1}`}
-                  className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500 group-hover:scale-105"
+                  src={pub(`${num}.png`)}
+                  alt={`Haircut ${num}`}
+                  className="w-full h-full object-cover grayscale hover:grayscale-0 hover:shadow-[0_0_15px_#38bdf8] transition-all duration-500 group-hover:scale-105"
                 />
               </div>
             ))}
@@ -95,13 +81,13 @@ const BarberPage = () => {
       <section className="py-20 px-6 bg-white text-black">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">SERVICES</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {services.map((service, index) => (
-              <div key={index} className="p-8 border border-gray-200 hover:border-yellow-400 transition-colors duration-300">
+              <div key={index} className="p-8 border border-gray-200 hover:border-sky-400 hover:shadow-[0_0_15px_#38bdf8] transition duration-300">
                 <h3 className="text-2xl font-bold mb-4">{service.name}</h3>
                 <div className="flex justify-between items-center text-lg">
                   <span className="flex items-center">
-                    <DollarSign className="w-5 h-5 mr-2 text-yellow-600" />
+                    <DollarSign className="w-5 h-5 mr-2 text-sky-600" />
                     {service.price}
                   </span>
                   <span className="flex items-center text-gray-600">
@@ -119,13 +105,13 @@ const BarberPage = () => {
       <section className="py-10 px-6 bg-gray-900">
         <div className="max-w-3xl mx-auto flex flex-col items-center gap-4 text-center">
           <img
-            src={`${import.meta.env.BASE_URL}ab-barbersclub.png`}
+            src={pub('ab-barbersclub.png')}
             alt="Anti Broke Barbers Club"
             className="h-20 md:h-28 object-contain mb-2"
           />
           <p className="text-gray-300">Shop with my referral code</p>
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <span className="inline-flex items-center rounded-full border border-yellow-400 text-yellow-400 px-4 py-2 text-sm font-semibold tracking-widest">
+            <span className="inline-flex items-center rounded-full border border-sky-400 text-sky-400 px-4 py-2 text-sm font-semibold tracking-widest hover:shadow-[0_0_15px_#38bdf8] transition">
               REFERRAL CODE: 1017
             </span>
             <button
@@ -136,7 +122,7 @@ const BarberPage = () => {
                   setTimeout(() => setCopied(false), 1800);
                 } catch {}
               }}
-              className="px-4 py-2 bg-yellow-400 text-black font-semibold rounded hover:bg-yellow-500 transition-colors"
+              className="px-4 py-2 bg-sky-400 text-black font-semibold rounded hover:bg-sky-500 hover:shadow-[0_0_20px_#38bdf8] transition"
             >
               {copied ? 'Copied' : 'Copy Code'}
             </button>
@@ -144,7 +130,7 @@ const BarberPage = () => {
               href="https://antibrokebarbersclub.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2 border border-yellow-400 text-yellow-400 rounded hover:bg-yellow-400 hover:text-black transition-colors"
+              className="px-4 py-2 border border-sky-400 text-sky-400 rounded hover:bg-sky-400 hover:text-black hover:shadow-[0_0_15px_#38bdf8] transition"
             >
               Shop Now
             </a>
@@ -162,7 +148,7 @@ const BarberPage = () => {
           </p>
           <Link 
             to="/clothing"
-            className="inline-block px-8 py-3 border border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black transition-all duration-300 font-semibold"
+            className="inline-block px-8 py-3 border border-sky-400 text-sky-400 hover:bg-sky-400 hover:text-black hover:shadow-[0_0_15px_#38bdf8] transition duration-300 font-semibold"
           >
             SHOP STAKS CLOTHING
           </Link>
@@ -182,14 +168,14 @@ const BarberPage = () => {
               rel="noopener noreferrer"
               aria-label="Instagram"
             >
-              <Instagram className="w-6 h-6 text-gray-400 hover:text-yellow-400 transition-colors cursor-pointer" />
+              <Instagram className="w-6 h-6 text-gray-400 hover:text-sky-400 hover:shadow-[0_0_15px_#38bdf8] transition cursor-pointer" />
             </a>
             <a 
               href="https://t.snapchat.com/RInsoZeO"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Snapchat"
-              className="flex items-center space-x-2 text-gray-400 hover:text-yellow-400 transition-colors"
+              className="flex items-center space-x-2 text-gray-400 hover:text-sky-400 hover:shadow-[0_0_15px_#38bdf8] transition"
             >
               <FaSnapchatGhost className="w-6 h-6" />
             </a>
