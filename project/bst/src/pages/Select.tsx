@@ -47,7 +47,6 @@ export default function Select() {
       <div className="absolute top-0 left-0 right-0 h-20 flex items-center justify-center pointer-events-none z-10">
         <div className="text-center">
           <h2 className="text-sm uppercase tracking-[0.25em] text-white/60">BST</h2>
-          <p className="text-xs text-white/40">Select your experience</p>
         </div>
       </div>
 
