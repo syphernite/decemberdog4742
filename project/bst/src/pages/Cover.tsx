@@ -193,7 +193,7 @@ function MetallicPaint({ imageData, size, params = defaultParams }:{
     id = requestAnimationFrame(loop); return () => cancelAnimationFrame(id);
   }, [gl, u, params.speed]);
 
-  return <canvas ref={ref} className="block" />;
+  return <canvas ref={ref} className="block max-w-full max-h-full object-contain" />;
 }
 
 /* page */
@@ -204,9 +204,9 @@ export default function Cover() {
   useEffect(() => {
     const calc = () => {
       const vw = window.innerWidth, vh = window.innerHeight;
-      const reserved = vw < 768 ? 160 : 200;
-      const side = Math.min(vw * 0.88, (vh - reserved) * 0.95);
-      const s = Math.max(220, Math.min(720, Math.floor(side)));
+      const reserved = vw < 768 ? 120 : 200; // reduced on mobile
+      const side = Math.min(vw * 0.9, (vh - reserved));
+      const s = Math.max(180, Math.min(600, Math.floor(side)));
       setSize(s);
       const fontPx = Math.floor(s * 0.55);
       const pad = Math.floor(s * 0.12);
@@ -217,21 +217,16 @@ export default function Cover() {
   }, []);
 
   return (
-    <div className="h-screen w-screen overflow-hidden text-white relative flex items-center justify-center" style={{ backgroundColor: "#121212" }}>
-      {/* no glow box, just the logo */}
+    <div className="h-screen w-screen overflow-hidden flex items-center justify-center bg-[#121212]">
       <div
-        className="relative z-10 flex flex-col items-center justify-center"
+        className="relative z-10 flex flex-col items-center justify-center max-h-full max-w-full"
         style={{
-          paddingTop: "calc(env(safe-area-inset-top, 0px) + 16px)",
-          paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 16px)",
-          paddingLeft: "16px", paddingRight: "16px", gap: "18px",
+          padding: "16px",
+          gap: "14px",
         }}
       >
         {img && <MetallicPaint imageData={img} size={size} params={defaultParams} />}
-
-        <p className="text-white/80 text-sm md:text-base">One brand. Three experiences.</p>
-
-        {/* Chrome/Silver gradient button */}
+        <p className="text-white/80 text-sm md:text-base text-center">One brand. Three experiences.</p>
         <Link
           to="/select"
           className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-base font-semibold shadow-lg ring-1 ring-white/10 transition-transform active:scale-95"
