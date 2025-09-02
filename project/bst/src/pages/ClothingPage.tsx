@@ -10,9 +10,9 @@ type Product = {
   images: string[];
   sizes?: string[];
   desc?: string;
-  accent: string;   // gradient start color class
-  accentTo: string; // gradient end color class
-  badge: string;    // badge color classes
+  accent: string;
+  accentTo: string;
+  badge: string;
 };
 
 const pub = (p: string) => `${import.meta.env.BASE_URL}${p}`.replace(/\/{2,}/g, '/');
@@ -65,7 +65,6 @@ const products: Product[] = [
 ];
 
 const ClothingPage = () => {
-  // modal state
   const [open, setOpen] = useState<null | Product>(null);
   const [index, setIndex] = useState(0);
 
@@ -88,7 +87,53 @@ const ClothingPage = () => {
   const hideIfBroken = (key: string) => () => setHidden((h) => ({ ...h, [key]: true }));
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col">
+    <div className="min-h-screen bg-black text-white flex flex-col relative overflow-hidden">
+      {/* page background */}
+      <style>{`
+        @keyframes slow-rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes floaty { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        .card-tilt {
+          transform-style: preserve-3d;
+          transition: transform 300ms ease, box-shadow 300ms ease;
+        }
+        .group:hover .card-tilt {
+          transform: rotateX(3deg) rotateY(-3deg) translateY(-4px);
+        }
+        .bg-weave {
+          background:
+            radial-gradient(60rem 60rem at 50% -10%, rgba(99,102,241,0.10), transparent 60%),
+            radial-gradient(40rem 40rem at 100% 100%, rgba(16,185,129,0.08), transparent 60%),
+            radial-gradient(50rem 50rem at 0% 100%, rgba(244,63,94,0.08), transparent 60%),
+            #000;
+        }
+        .twinkle {
+          background-image:
+            radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.35) 0, rgba(255,255,255,0.0) 60%),
+            radial-gradient(1px 1px at 80% 70%, rgba(255,255,255,0.25) 0, rgba(255,255,255,0.0) 60%),
+            radial-gradient(1px 1px at 60% 20%, rgba(255,255,255,0.25) 0, rgba(255,255,255,0.0) 60%);
+          animation: pulse 5s ease-in-out infinite;
+          opacity: .25;
+          filter: blur(0.2px);
+        }
+        @keyframes pulse { 0%,100% { opacity:.15 } 50% { opacity:.35 } }
+      `}</style>
+
+      {/* animated layers */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-10 bg-weave"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-[-20%] -z-10 opacity-30"
+        style={{
+          background:
+            'conic-gradient(from 0deg at 50% 50%, rgba(255,255,255,0.05), rgba(255,255,255,0) 25%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 75%)',
+          animation: 'slow-rotate 60s linear infinite'
+        }}
+      />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 twinkle" />
+
       {/* Navigation */}
       <nav className="fixed top-0 left-0 z-40 p-6">
         <Link to="/select" className="flex items-center text-gray-300 hover:text-white transition-colors duration-300">
@@ -98,30 +143,35 @@ const ClothingPage = () => {
       </nav>
 
       {/* Header */}
-      <header className="pt-24 pb-6 text-center px-6">
-        <img src={pub('staks_logo.png')} alt="Staks Logo" className="h-96 md:h-[32rem] mx-auto mb-4" />
-        <h1 className="text-5xl md:text-7xl font-light tracking-[0.4em] mb-2">STAKS</h1>
-        <p className="text-base md:text-lg text-gray-300 tracking-widest">CLOTHING COLLECTION</p>
+      <header className="pt-24 pb-6 px-6">
+        <div className="max-w-5xl mx-auto text-center">
+          <img src={pub('staks_logo.png')} alt="Staks Logo" className="h-40 md:h-56 mx-auto mb-4" />
+          <h1 className="text-5xl md:text-7xl font-light tracking-[0.4em] mb-2 mx-auto leading-none">S T A K S</h1>
+          <p className="text-base md:text-lg text-gray-300 tracking-widest">CLOTHING COLLECTION</p>
+        </div>
       </header>
 
       {/* Products */}
       <main className="flex-1 px-6 pb-20 max-w-7xl mx-auto w-full">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-10">
-          {products.map((p) => (
-            <div key={p.id} className="relative">
+          {products.map((p, i) => (
+            <div key={p.id} className="relative group [perspective:1200px]">
               <div className={`absolute -inset-0.5 rounded-3xl bg-gradient-to-br ${p.accent} ${p.accentTo} blur-xl opacity-30`} />
               <button
                 type="button"
                 onClick={() => setOpen(p)}
-                className="relative w-full text-left rounded-3xl border border-white/10 bg-gradient-to-b from-white/5 to-transparent p-6 md:p-8 hover:-translate-y-0.5 transition-transform"
+                className="relative w-full h-[520px] text-left rounded-3xl border border-white/10 bg-gradient-to-b from-white/5 to-transparent p-6 md:p-8 transition-transform flex flex-col card-tilt"
+                style={{ animation: `floaty ${6 + i}s ease-in-out ${i * 0.4}s infinite` }}
               >
-                <div className="relative w-full aspect-[3/4] flex items-center justify-center">
-                  <img
-                    src={pub(p.images[0])}
-                    alt={p.name}
-                    className="max-h-full max-w-full object-contain drop-shadow-2xl select-none"
-                    draggable={false}
-                  />
+                <div className="relative w-full flex-1 flex items-center justify-center">
+                  <div className="w-full h-full flex items-center justify-center">
+                    <img
+                      src={pub(p.images[0])}
+                      alt={p.name}
+                      className="max-h-full max-w-full object-contain drop-shadow-2xl select-none"
+                      draggable={false}
+                    />
+                  </div>
                   <div className="pointer-events-none absolute inset-x-8 bottom-2 h-8 bg-gradient-to-t from-white/10 to-transparent blur-md rounded-full opacity-70" />
                 </div>
                 <div className="mt-6 flex items-center justify-between">
@@ -138,7 +188,7 @@ const ClothingPage = () => {
       </main>
 
       {/* Footer */}
-      <footer className="py-10 px-6 border-t border-gray-800">
+      <footer className="py-10 px-6 border-t border-gray-800/60">
         <div className="max-w-4xl mx-auto flex justify-center space-x-6">
           <a href="https://instagram.com/staks.tn" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-yellow-400 transition-colors">
             <Instagram className="w-6 h-6" />
@@ -153,7 +203,7 @@ const ClothingPage = () => {
       {open && (
         <div className="fixed inset-0 z-50" aria-modal="true" role="dialog">
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setOpen(null)} />
-          <div className="relative mx-auto my-8 w-[min(1100px,92vw)] max-h-[88vh] overflow-hidden rounded-3xl border border-white/15 bg-zinc-900 text-white shadow-2xl">
+          <div className="relative mx-auto my-8 w=[min(1100px,92vw)] max-w-[92vw] max-h-[88vh] overflow-hidden rounded-3xl border border-white/15 bg-zinc-900 text-white shadow-2xl">
             <button onClick={() => setOpen(null)} className="absolute top-3 right-3 z-10 p-2 rounded-lg bg-white/10 hover:bg-white/15" aria-label="Close">
               <X className="w-5 h-5" />
             </button>
@@ -230,9 +280,7 @@ const ClothingPage = () => {
                   </button>
                 </div>
 
-                <div className="text-xs text-gray-400 mt-4">
-                  Ships in 2–4 business days.
-                </div>
+                <div className="text-xs text-gray-400 mt-4">Ships in 2–4 business days.</div>
               </div>
             </div>
           </div>
