@@ -1,3 +1,27 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* If you use Tailwind, keep @tailwind first. Safe baseline that won't crash if Tailwind isn't set up. */
+:root {
+  color-scheme: light dark;
+  --bg: #0b0b0b;
+  --fg: #eaeaea;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell,
+    Noto Sans, Helvetica Neue, Arial, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol';
+}
