@@ -25,7 +25,7 @@ const Home = () => {
       icon: ChefHat,
     },
     {
-      name: 'La Familia Sampler',
+      name: 'Family Sampler',
       description:
         'Ground beef nachos, chicken taquitos, beef fajita quesadilla with guacamole & sour cream.',
       price: '$14.39',
@@ -46,18 +46,17 @@ const Home = () => {
         <motion.div style={{ y: heroY }}>
           <div className="max-w-6xl mx-auto px-4 pt-20 pb-24 text-center">
             <h1 className="text-4xl md:text-6xl font-display font-bold text-charcoal leading-tight">
-              Auténtica comida mexicana en{' '}
-              <span className="text-chili">Lawton</span>
+              Authentic Mexican food in <span className="text-chili">Lawton</span>
             </h1>
             <p className="mt-4 text-lg md:text-xl text-charcoal/70 max-w-2xl mx-auto">
-              Recetas familiares y Tex-Mex clásico. Bienvenidos a Tu Familia.
+              Family recipes and classic Tex-Mex. Welcome to Tu Familia.
             </p>
             <div className="mt-8 flex items-center justify-center gap-3">
               <Button asChild intent="primary">
-                <Link to="/menu">Ver Menú</Link>
+                <Link to="/menu">View Menu</Link>
               </Button>
               <Button asChild intent="secondary">
-                <a href="tel:+15805954900">Llamar</a>
+                <a href="tel:+15805954900">Call</a>
               </Button>
             </div>
           </div>
@@ -85,10 +84,10 @@ const Home = () => {
             className="text-center mb-10"
           >
             <h2 className="text-4xl md:text-5xl font-display font-bold text-charcoal mb-4">
-              Destacados del <span className="text-chili">Menú</span>
+              Menu <span className="text-chili">Highlights</span>
             </h2>
             <p className="text-lg text-charcoal/70 max-w-2xl mx-auto">
-              Platos populares preparados a diario
+              Popular dishes prepared daily
             </p>
           </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -111,7 +110,7 @@ const Home = () => {
           </div>
           <div className="mt-10 text-center">
             <Button asChild intent="secondary">
-              <Link to="/menu">Explorar menú completo</Link>
+              <Link to="/menu">Explore full menu</Link>
             </Button>
           </div>
         </div>

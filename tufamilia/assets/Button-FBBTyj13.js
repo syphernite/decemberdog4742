@@ -1,1 +1,0 @@
-import{l as s,L as i,k as e}from"./index-PohEs6Y8.js";const a=s(i);function l({className:o,children:t,...n}){return e.jsx(a,{whileHover:{scale:1.03},whileTap:{scale:.98},className:o,...n,children:t})}export{l as B};
