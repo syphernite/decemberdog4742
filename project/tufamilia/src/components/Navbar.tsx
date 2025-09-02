@@ -20,10 +20,10 @@ import {
 
 const navItems = [
   { to: '/', label: 'Inicio' },
-  { to: '/menu', label: 'Menú' },
-  { to: '/reservations', label: 'Reservaciones' },
-  { to: '/gallery', label: 'Galería' },
-  { to: '/contact', label: 'Contacto' },
+  { to: '/menu', label: 'Menu' },
+  { to: '/reservations', label: 'Reservations' },
+  { to: '/gallery', label: 'Gallery' },
+  { to: '/contact', label: 'Contact' },
 ]
 
 const base = (import.meta as any)?.env?.BASE_URL || '/'
@@ -110,7 +110,7 @@ export default function Navbar() {
               whileTap={{ scale: 0.98 }}
               className="inline-flex items-center gap-2 rounded-md bg-marigold text-charcoal px-3 py-2 text-sm font-semibold"
             >
-              <CalendarDays className="h-4 w-4" /> Reservar
+              <CalendarDays className="h-4 w-4" /> Reserve
             </MotionLink>
             <a
               href="tel:+15805954900"
