@@ -1,149 +1,248 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
-import Button from './Button';
+import React, { useEffect, useId, useState } from 'react'
+import { NavLink, Link, useLocation } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
+import {
+  Menu as MenuIcon,
+  X as XIcon,
+  Phone,
+  CalendarDays,
+  Instagram,
+  Facebook,
+  MapPin,
+} from 'lucide-react'
 
-const Navbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const location = useLocation();
+/**
+ * HashRouter-safe Navbar:
+ * - Uses <Link>/<NavLink> only. No absolute hrefs to /tufamilia/...
+ * - Framer Motion props live on motion(...) elements to avoid React DOM warnings.
+ * - Closes the mobile menu on route change.
+ * - Supports keyboard and ARIA.
+ */
 
+const MotionLink = motion(Link)
+const MotionNavLink = motion(NavLink)
+const MotionButton = motion.button
+
+const navItems = [
+  { to: '/', label: 'Inicio' },
+  { to: '/menu', label: 'Menú' },
+  { to: '/reservations', label: 'Reservaciones' },
+  { to: '/gallery', label: 'Galería' },
+  { to: '/about', label: 'Nosotros' },
+  { to: '/contact', label: 'Contacto' },
+]
+
+const base = (import.meta as any)?.env?.BASE_URL || '/'
+
+export default function Navbar() {
+  const [open, setOpen] = useState(false)
+  const [elevated, setElevated] = useState(false)
+  const location = useLocation()
+  const menuLabelId = useId()
+
+  // Close mobile menu on route change
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
+    setOpen(false)
+    // Scroll to top on navigation for better UX
+    if (typeof window !== 'undefined') window.scrollTo(0, 0)
+  }, [location.pathname])
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  // Add a subtle shadow after scrolling
+  useEffect(() => {
+    const onScroll = () => setElevated(window.scrollY > 10)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
-  const navItems = [
-    { name: 'Home', path: '/' },
-    { name: 'Menu', path: '/menu' },
-    { name: 'Reservations', path: '/reservations' },
-    { name: 'Gallery', path: '/gallery' },
-    { name: 'About', path: '/about' },
-    { name: 'Contact', path: '/contact' },
-  ];
+  const linkBaseClasses =
+    'inline-flex items-center px-2 py-1 text-sm font-medium transition-colors'
+  const linkActiveClasses =
+    'text-marigold underline underline-offset-4'
+  const linkIdleClasses =
+    'text-charcoal/80 hover:text-charcoal'
 
   return (
-    <>
-      {/* Talavera tile border */}
-      <div className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-chili via-marigold to-nopal z-50"></div>
-      
-      <motion.nav
-        className={`fixed top-1 left-0 right-0 z-40 transition-all duration-300 ${
-          isScrolled ? 'bg-papel/95 backdrop-blur-md shadow-lg' : 'bg-transparent'
-        }`}
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ type: 'spring', stiffness: 100, damping: 20 }}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo */}
-            <Link to="/" className="flex-shrink-0">
-              <motion.div 
-                className="w-12 h-12 bg-gradient-to-br from-chili to-chili/80 rounded-lg flex items-center justify-center relative overflow-hidden"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <div className="absolute inset-0 bg-marigold/10"></div>
-                <span className="text-papel font-display font-bold text-lg relative z-10">RF</span>
-                <div className="absolute inset-1 border border-nopal/20 rounded-md"></div>
-              </motion.div>
-            </Link>
-
-            {/* Desktop Navigation */}
-            <div className="hidden md:block">
-              <div className="ml-10 flex items-baseline space-x-8">
-                {navItems.map((item) => (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    className="relative px-3 py-2 text-sm font-medium text-charcoal hover:text-chili transition-colors group"
-                  >
-                    {item.name}
-                    {location.pathname === item.path && (
-                      <motion.div
-                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-marigold rounded-full"
-                        layoutId="activeTab"
-                        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                      />
-                    )}
-                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-marigold rounded-full scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            {/* Reserve Button */}
-            <div className="hidden md:block">
-              <Button as={Link} to="/reservations" variant="primary" size="sm">
-                Reserve Table
-              </Button>
-            </div>
-
-            {/* Mobile menu button */}
-            <motion.button
-              className="md:hidden p-2 rounded-lg text-charcoal hover:bg-chili/10 transition-colors"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              whileTap={{ scale: 0.95 }}
+    <nav
+      className={`w-full sticky top-0 z-50 backdrop-blur bg-papel/80 transition-shadow ${
+        elevated ? 'shadow-sm' : ''
+      }`}
+      role="navigation"
+      aria-label="Primary"
+    >
+      <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6">
+        <div className="h-16 flex items-center justify-between gap-3">
+          {/* Brand */}
+          <div className="flex items-center gap-3 min-w-0">
+            <MotionLink
+              to="/"
+              className="flex items-center gap-2 min-w-0"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
             >
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </motion.button>
+              <img
+                src={`${base}logo.svg`}
+                alt="TuFamilia"
+                className="h-8 w-8 object-contain"
+                onError={(e) => {
+                  // Hide if asset missing; app still works
+                  ;(e.currentTarget as HTMLImageElement).style.display = 'none'
+                }}
+              />
+              <span className="text-base sm:text-lg font-semibold truncate">
+                TuFamilia
+              </span>
+            </MotionLink>
+          </div>
+
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center gap-2">
+            {navItems.map((item) => (
+              <MotionNavLink
+                key={item.to}
+                to={item.to}
+                end={item.to === '/'}
+                className={({ isActive }) =>
+                  [
+                    linkBaseClasses,
+                    isActive ? linkActiveClasses : linkIdleClasses,
+                  ].join(' ')
+                }
+                whileHover={{ y: -2 }}
+                whileTap={{ y: 0 }}
+              >
+                {item.label}
+              </MotionNavLink>
+            ))}
+          </div>
+
+          {/* Actions */}
+          <div className="hidden md:flex items-center gap-2">
+            <MotionLink
+              to="/reservations"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold bg-marigold text-papel hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-marigold"
+            >
+              <CalendarDays className="h-4 w-4" aria-hidden="true" />
+              Reservar
+            </MotionLink>
+            <a
+              href="tel:+15555551234"
+              className="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-charcoal/90 hover:text-charcoal focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-marigold"
+            >
+              <Phone className="h-4 w-4" aria-hidden="true" />
+              <span>(555) 555-1234</span>
+            </a>
+          </div>
+
+          {/* Mobile menu button */}
+          <div className="md:hidden">
+            <MotionButton
+              type="button"
+              aria-haspopup="dialog"
+              aria-expanded={open}
+              aria-controls="mobile-menu"
+              aria-labelledby={menuLabelId}
+              className="p-2 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-marigold text-charcoal"
+              whileTap={{ scale: 0.96 }}
+              onClick={() => setOpen((v) => !v)}
+            >
+              <span id={menuLabelId} className="sr-only">
+                Abrir menú
+              </span>
+              {open ? <XIcon className="h-6 w-6" /> : <MenuIcon className="h-6 w-6" />}
+            </MotionButton>
           </div>
         </div>
+      </div>
 
-        {/* Mobile menu */}
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div
-              className="md:hidden bg-papel/98 backdrop-blur-md border-t border-marigold/20"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <div className="px-4 py-4 space-y-4">
-                {navItems.map((item, index) => (
-                  <motion.div
-                    key={item.path}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <Link
-                      to={item.path}
-                      className={`block px-4 py-2 text-base font-medium rounded-lg transition-colors ${
-                        location.pathname === item.path
-                          ? 'bg-chili text-papel'
-                          : 'text-charcoal hover:bg-chili/10'
-                      }`}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      {item.name}
-                    </Link>
-                  </motion.div>
-                ))}
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: navItems.length * 0.1 }}
-                  className="pt-4 border-t border-marigold/20"
+      {/* Mobile Drawer */}
+      <AnimatePresence>
+        {open ? (
+          <motion.div
+            id="mobile-menu"
+            role="dialog"
+            aria-modal="true"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ type: 'tween', duration: 0.2 }}
+            className="md:hidden overflow-hidden border-t border-black/5 bg-papel/95 backdrop-blur"
+          >
+            <div className="px-4 py-3 flex flex-col gap-1">
+              {navItems.map((item) => (
+                <MotionNavLink
+                  key={item.to}
+                  to={item.to}
+                  end={item.to === '/'}
+                  className={({ isActive }) =>
+                    [
+                      'w-full rounded-lg px-3 py-2 text-base',
+                      isActive
+                        ? 'bg-marigold text-papel'
+                        : 'text-charcoal/90 hover:bg-black/5',
+                    ].join(' ')
+                  }
+                  whileHover={{ x: 4 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  <Button as={Link} to="/reservations" variant="primary" className="w-full justify-center" onClick={() => setIsMobileMenuOpen(false)}>
-                    Reserve Table
-                  </Button>
-                </motion.div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.nav>
-    </>
-  );
-};
+                  {item.label}
+                </MotionNavLink>
+              ))}
 
-export default Navbar;
+              <div className="h-px my-2 bg-black/10" />
+
+              <div className="flex flex-col gap-2">
+                <MotionLink
+                  to="/reservations"
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.99 }}
+                  className="inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-base font-semibold bg-marigold text-papel"
+                >
+                  <CalendarDays className="h-4 w-4" aria-hidden="true" />
+                  Reservar
+                </MotionLink>
+
+                <a
+                  href="tel:+15555551234"
+                  className="inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-base font-medium text-charcoal/90 hover:bg-black/5"
+                >
+                  <Phone className="h-4 w-4" aria-hidden="true" />
+                  Llamar
+                </a>
+              </div>
+
+              <div className="h-px my-2 bg-black/10" />
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3 text-sm text-charcoal/70">
+                  <MapPin className="h-4 w-4" aria-hidden="true" />
+                  <span>123 Calle Principal, Ciudad</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <a
+                    aria-label="Instagram"
+                    href="#"
+                    className="p-2 rounded-md hover:bg-black/5"
+                    rel="noopener noreferrer"
+                  >
+                    <Instagram className="h-4 w-4" />
+                  </a>
+                  <a
+                    aria-label="Facebook"
+                    href="#"
+                    className="p-2 rounded-md hover:bg-black/5"
+                    rel="noopener noreferrer"
+                  >
+                    <Facebook className="h-4 w-4" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </nav>
+  )
+}
