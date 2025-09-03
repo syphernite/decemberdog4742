@@ -2,24 +2,94 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  html {
-    scroll-behavior: smooth;
-  }
-  
-  body {
-    font-family: 'Inter', sans-serif;
-  }
-  
-  .text-shadow-sm {
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  }
-  
-  .text-shadow-md {
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  }
-  
-  .text-shadow-lg {
-    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-  }
+/* Brand palette from logo */
+:root{
+  --pm-green: #006847; /* arches green */
+  --pm-red:   #CE1126; /* "MEXICO" red */
+  --pm-gold:  #FFC107; /* bullfighter gold */
+  --pm-char:  #0b0b0b; /* charcoal */
 }
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; }
+}
+
+/* Square glass cards */
+.card-glass-square {
+  @apply border border-white/10 bg-white/5 p-4;
+  backdrop-filter: blur(6px);
+  border-radius: 0.25rem;
+}
+
+/* Secondary red button to match logo */
+.btn-secondary-red{
+  @apply px-6 py-3 text-base md:text-lg font-semibold uppercase tracking-wide;
+  color:#fff;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--pm-red) 90%, #ff6a6a), var(--pm-red));
+  border:2px solid color-mix(in srgb, var(--pm-red) 80%, #000 20%);
+  border-radius:.25rem;
+  transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+  box-shadow: 0 10px 24px rgba(206,17,38,0.28);
+}
+.btn-secondary-red:hover{ transform: translateY(-1px); filter: brightness(1.05); }
+.btn-secondary-red:focus-visible{ outline:none; box-shadow: 0 0 0 3px rgba(206,17,38,.35); }
+
+/* Header call-now button (shared look) */
+.btn-call-now{
+  @apply px-4 py-2 text-sm md:text-base font-semibold;
+  color:#fff;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--pm-red) 92%, #ff8888), var(--pm-red));
+  border:2px solid color-mix(in srgb, var(--pm-red) 80%, #000 20%);
+  border-radius:.25rem;
+  box-shadow: 0 10px 24px rgba(206,17,38,0.28);
+  transition: transform .15s ease, filter .15s ease;
+}
+.btn-call-now:hover{ transform: translateY(-1px); filter: brightness(1.05); }
+
+/* Primary CTA — Plaza green with continuous shimmer “flash” */
+@keyframes pulseNeo {
+  0%,100% { transform: translateY(0) scale(1); box-shadow: 0 0 0 0 rgba(0,104,71,0); }
+  50% { transform: translateY(-1px) scale(1.01); box-shadow: 0 0 36px 8px rgba(0,104,71,0.25); }
+}
+@keyframes shimmerSweep {
+  0% { transform: translateX(-130%) skewX(-12deg); opacity:.0; }
+  15% { opacity:.55; }
+  50% { transform: translateX(130%) skewX(-12deg); opacity:.0; }
+  100% { transform: translateX(130%) skewX(-12deg); opacity:0; }
+}
+.btn-menu-neo{
+  position: relative;
+  display:inline-block;
+  padding: .9rem 2rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color:#07110c;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--pm-green) 85%, #4ade80), var(--pm-green));
+  border:2px solid color-mix(in srgb, var(--pm-green) 80%, #000 20%);
+  border-radius:.25rem;
+  text-shadow: 0 1px 0 rgba(255,255,255,.45);
+  box-shadow: 0 14px 28px rgba(0,104,71,.30), inset 0 1px 0 rgba(255,255,255,.6);
+  transition: transform .15s ease, filter .15s ease, box-shadow .15s ease;
+  animation: pulseNeo 3s ease-in-out infinite;
+  overflow:hidden;
+}
+/* continuous shimmer “flash” */
+.btn-menu-neo::after{
+  content:"";
+  position:absolute; top:0; bottom:0; left:0; right:0;
+  background: linear-gradient(120deg, transparent 40%, rgba(255,255,255,.55) 50%, transparent 60%);
+  border-radius:.25rem;
+  animation: shimmerSweep 2.8s linear infinite;
+  pointer-events:none;
+}
+.btn-menu-neo:hover{ filter:saturate(1.06); }
+
+/* Simple content animations */
+@keyframes fadeUp { from {opacity:0; transform:translateY(12px);} to {opacity:1; transform:translateY(0);} }
+@keyframes fadeDown { from {opacity:0; transform:translateY(-12px);} to {opacity:1; transform:translateY(0);} }
+@keyframes grow { from {transform:scaleX(0);} to {transform:scaleX(1);} }
+.animate-fade-up { animation: fadeUp .6s ease forwards; opacity: 0; }
+.animate-fade-down { animation: fadeDown .6s ease forwards; opacity: 0; }
+.animate-grow { transform-origin: left; animation: grow .45s ease forwards; }

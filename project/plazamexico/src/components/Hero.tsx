@@ -1,82 +1,81 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import Button from './Button';
-import Container from './Container';
+import React from "react";
+import { Link } from "react-router-dom";
+import site from "../content/site.json";
 
-interface HeroProps {
-  title: string;
-  subtitle: string;
-  backgroundImage?: string;
-  showButtons?: boolean;
-  height?: 'sm' | 'md' | 'lg' | 'full';
-}
-
-const Hero: React.FC<HeroProps> = ({ 
-  title, 
-  subtitle, 
-  backgroundImage = '/images/hero.jpg',
-  showButtons = true,
-  height = 'lg'
-}) => {
-  const heightClasses = {
-    sm: 'h-96',
-    md: 'h-[500px]',
-    lg: 'h-[600px]',
-    full: 'h-screen'
-  };
-
-  const scrollToMenu = () => {
-    const menuSection = document.getElementById('featured-dishes');
-    if (menuSection) {
-      menuSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+export default function Hero() {
+  const base = (import.meta as any).env.BASE_URL || "/";
+  const logo = base + "images/logo.png";
+  const interior = base + "images/restaurant-interior.jpg";
 
   return (
-    <div 
-      className={`relative ${heightClasses[height]} flex items-center justify-center bg-cover bg-center bg-no-repeat`}
-      style={{ backgroundImage: `url('${backgroundImage}')` }}
-    >
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-black/40"></div>
-      
-      <Container className="relative z-10 text-center text-white">
-        <motion.h1 
-          className="font-heading text-5xl md:text-7xl lg:text-8xl font-bold mb-6 text-shadow-lg"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-        >
-          {title}
-        </motion.h1>
-        
-        <motion.p 
-          className="text-xl md:text-2xl lg:text-3xl mb-8 max-w-3xl mx-auto text-shadow-md"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-        >
-          {subtitle}
-        </motion.p>
-        
-        {showButtons && (
-          <motion.div 
-            className="flex flex-col sm:flex-row gap-4 justify-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-          >
-            <Button size="lg" onClick={scrollToMenu}>
-              View Menu
-            </Button>
-            <Button variant="outline" size="lg" href="tel:(555) 123-4567">
-              Call Now
-            </Button>
-          </motion.div>
-        )}
-      </Container>
-    </div>
-  );
-};
+    <section className="relative min-h-[92svh] flex items-center justify-center bg-black text-white overflow-hidden">
+      {/* Background */}
+      <div
+        className="absolute inset-0 bg-center bg-cover"
+        style={{ backgroundImage: `url(${interior})` }}
+        aria-hidden
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/85 via-black/70 to-black/90" />
 
-export default Hero;
+      {/* Content */}
+      <div className="relative z-10 w-full max-w-5xl mx-auto px-4 text-center">
+        <img
+          src={logo}
+          alt={site.name}
+          className="mx-auto w-56 md:w-72 drop-shadow-[0_6px_24px_rgba(0,0,0,0.45)] animate-fade-down"
+          loading="eager"
+        />
+
+        <h1 className="mt-4 text-4xl md:text-6xl font-extrabold tracking-tight leading-tight animate-fade-up text-white">
+          {site.heroHeadline || "Plaza Mexico"}
+        </h1>
+
+        <p
+          className="mt-3 text-lg md:text-2xl animate-fade-up"
+          style={{ animationDelay: "120ms", color: "var(--pm-gold)" }}
+        >
+          {site.heroSubheadline || "Authentic Mexican flavors served hot daily"}
+        </p>
+
+        <div
+          className="mt-7 flex flex-col sm:flex-row gap-3 justify-center animate-fade-up"
+          style={{ animationDelay: "240ms" }}
+        >
+          <Link to="/menu" className="btn-menu-neo">
+            View Menu
+          </Link>
+          <a
+            href={`tel:${site.phone}`}
+            className="btn-secondary-red"
+          >
+            Call {site.phone}
+          </a>
+        </div>
+
+        {/* Info cards */}
+        <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm md:text-base">
+          <div className="card-glass-square animate-fade-up" style={{ animationDelay: "320ms" }}>
+            <div className="font-semibold" style={{ color: "var(--pm-green)" }}>Hours</div>
+            <ul className="mt-2 space-y-1 text-neutral-200">
+              {site.hours?.map((h) => (
+                <li key={h.day}>
+                  {h.day}: {h.open}–{h.close}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="card-glass-square animate-fade-up" style={{ animationDelay: "380ms" }}>
+            <div className="font-semibold" style={{ color: "var(--pm-red)" }}>Address</div>
+            <div className="mt-2 text-neutral-200">{site.address}</div>
+          </div>
+
+          <div className="card-glass-square animate-fade-up" style={{ animationDelay: "440ms" }}>
+            <div className="font-semibold" style={{ color: "var(--pm-gold)" }}>Special</div>
+            <div className="mt-2 text-neutral-200">{site.dailySpecials}</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

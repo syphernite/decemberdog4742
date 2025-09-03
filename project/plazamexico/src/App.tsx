@@ -8,9 +8,9 @@ import ContactPage from './pages/ContactPage';
 
 function App() {
   return (
-    <div className="min-h-screen flex flex-col bg-crema font-body">
+    <div className="min-h-screen flex flex-col bg-black text-white">
       <Header />
-      <main className="flex-1">
+      <main className="flex-1 pt-16">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/menu" element={<MenuPage />} />
