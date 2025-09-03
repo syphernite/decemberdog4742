@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "src": "/images/restaurant-interior.jpg",
+    "alt": "Warm and inviting restaurant interior with Mexican decorations",
+    "category": "interior"
+  },
+  {
+    "id": 2,
+    "src": "/images/tacos-al-pastor.jpg",
+    "alt": "Delicious al pastor tacos with pineapple and cilantro",
+    "category": "food"
+  },
+  {
+    "id": 3,
+    "src": "/images/fajitas.jpg",
+    "alt": "Sizzling chicken fajitas with peppers and onions",
+    "category": "food"
+  },
+  {
+    "id": 4,
+    "src": "/images/margaritas.jpg",
+    "alt": "Fresh lime margaritas with salt rim",
+    "category": "drinks"
+  },
+  {
+    "id": 5,
+    "src": "/images/kitchen.jpg",
+    "alt": "Clean modern kitchen with chefs preparing fresh Mexican food",
+    "category": "kitchen"
+  },
+  {
+    "id": 6,
+    "src": "/images/outdoor-seating.jpg",
+    "alt": "Comfortable outdoor patio seating area",
+    "category": "interior"
+  },
+  {
+    "id": 7,
+    "src": "/images/fresh-ingredients.jpg",
+    "alt": "Fresh vegetables and ingredients used in our Mexican dishes",
+    "category": "ingredients"
+  },
+  {
+    "id": 8,
+    "src": "/images/family-dinner.jpg",
+    "alt": "Happy family enjoying dinner at Plaza Mexico",
+    "category": "atmosphere"
+  }
+]

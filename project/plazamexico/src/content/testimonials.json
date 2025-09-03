@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "name": "Maria Rodriguez",
+    "rating": 5,
+    "text": "The best Mexican food in town! The al pastor tacos are incredible and the service is always friendly. This is our go-to spot for family dinners.",
+    "date": "2024-01-15"
+  },
+  {
+    "id": 2,
+    "name": "James Wilson",
+    "rating": 5,
+    "text": "Authentic flavors and generous portions. The fajitas are sizzling hot and the guacamole is made fresh. Highly recommend!",
+    "date": "2024-01-10"
+  },
+  {
+    "id": 3,
+    "name": "Sarah Chen",
+    "rating": 5,
+    "text": "Plaza Mexico has become our weekly tradition. The staff remembers our orders and the food is consistently delicious. Love the atmosphere!",
+    "date": "2024-01-08"
+  },
+  {
+    "id": 4,
+    "name": "Carlos Mendez",
+    "rating": 5,
+    "text": "As someone from Mexico, I can say this food is the real deal. The flavors remind me of home. The carnitas are perfect!",
+    "date": "2024-01-05"
+  },
+  {
+    "id": 5,
+    "name": "Jennifer Taylor",
+    "rating": 5,
+    "text": "Fast service and amazing food. Perfect for lunch breaks. The Tuesday taco special is unbeatable!",
+    "date": "2024-01-03"
+  }
+]

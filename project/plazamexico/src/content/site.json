@@ -1,0 +1,35 @@
+{
+  "name": "Plaza Mexico Restaurant Bar & Grill",
+  "tagline": "Authentic Mexican grill",
+  "phone": "(252) 808-3700",
+  "address": "5167 US-70, Morehead City, NC 28557",
+  "hours": [
+    {
+      "day": "Mon-Thu",
+      "open": "11:00",
+      "close": "21:00"
+    },
+    {
+      "day": "Fri-Sat",
+      "open": "11:00",
+      "close": "22:00"
+    },
+    {
+      "day": "Sun",
+      "open": "11:00",
+      "close": "20:00"
+    }
+  ],
+  "email": "business@plaza-mexico.com",
+  "socials": {
+    "facebook": "https://facebook.com/plazamexico",
+    "instagram": "https://instagram.com/plazamexico",
+    "tiktok": "https://tiktok.com/@plazamexico"
+  },
+  "mapsUrl": "https://www.google.com/maps?q=5167+US-70,+Morehead+City,+NC+28557&output=embed",
+  "formspreeEndpoint": "https://formspree.io/f/yourid",
+  "priceRange": "$$",
+  "dailySpecials": "Try our Tuesday Taco Special - 3 tacos for $9.99! Available all day Tuesday.",
+  "heroHeadline": "Plaza Mexico",
+  "heroSubheadline": "Authentic Mexican flavors served hot daily"
+}

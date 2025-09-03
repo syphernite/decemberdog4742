@@ -1,0 +1,123 @@
+{
+  "categories": [
+    { 
+      "name": "Appetizers", 
+      "id": "appetizers",
+      "items": [
+        {"name":"Chips and Queso","desc":"Melted cheese dip with house-made tortilla chips","price":6.99,"tags":["popular"]},
+        {"name":"Fresh Guacamole","desc":"Made fresh daily with ripe avocados, lime, cilantro, and jalapeños","price":7.99,"tags":["popular"]},
+        {"name":"Jalapeño Poppers","desc":"Cream cheese stuffed jalapeños, bacon wrapped","price":8.49,"tags":["spicy"]},
+        {"name":"Nachos Supreme","desc":"Chips loaded with cheese, beans, jalapeños, sour cream","price":11.99}
+      ]
+    },
+    { 
+      "name": "Street Tacos", 
+      "id": "street-tacos",
+      "items": [
+        {"name":"Al Pastor","desc":"Marinated pork with pineapple, onion, cilantro on corn tortillas","price":10.99,"featured":true,"image":"/images/tacos-al-pastor.jpg","tags":["popular"]},
+        {"name":"Carne Asada","desc":"Grilled steak with onion, cilantro on corn tortillas","price":11.99,"featured":true},
+        {"name":"Pollo Asado","desc":"Grilled chicken with pico de gallo, crema","price":10.49},
+        {"name":"Carnitas","desc":"Slow-cooked pork with onion, cilantro","price":10.99},
+        {"name":"Fish Tacos","desc":"Grilled tilapia with cabbage slaw, chipotle crema","price":11.49}
+      ]
+    },
+    { 
+      "name": "Fajitas", 
+      "id": "fajitas",
+      "items": [
+        {"name":"Chicken Fajitas","desc":"Sizzling chicken with peppers and onions, served with tortillas, rice, and beans","price":15.99,"featured":true,"image":"/images/fajitas.jpg"},
+        {"name":"Steak Fajitas","desc":"Tender beef strips with peppers and onions","price":17.99},
+        {"name":"Shrimp Fajitas","desc":"Grilled shrimp with vegetables","price":18.99},
+        {"name":"Combo Fajitas","desc":"Choice of two proteins","price":19.99,"tags":["popular"]}
+      ]
+    },
+    { 
+      "name": "Burritos", 
+      "id": "burritos",
+      "items": [
+        {"name":"California Burrito","desc":"Carne asada, french fries, pico de gallo, sour cream, cheese","price":12.99,"featured":true,"tags":["popular"]},
+        {"name":"Bean and Rice Burrito","desc":"Refried beans, Spanish rice, cheese, lettuce","price":8.99,"tags":["vegetarian"]},
+        {"name":"Chicken Burrito","desc":"Grilled chicken, rice, beans, cheese, salsa","price":11.49},
+        {"name":"Chorizo Burrito","desc":"Mexican sausage, eggs, potatoes, cheese","price":10.99,"tags":["spicy"]}
+      ]
+    },
+    { 
+      "name": "Enchiladas", 
+      "id": "enchiladas",
+      "items": [
+        {"name":"Enchiladas Verdes","desc":"Chicken enchiladas with tomatillo sauce, served with rice and beans","price":13.49,"featured":true},
+        {"name":"Cheese Enchiladas","desc":"Three cheese enchiladas with red sauce","price":11.99,"tags":["vegetarian"]},
+        {"name":"Beef Enchiladas","desc":"Ground beef enchiladas with red sauce","price":12.99},
+        {"name":"Enchiladas Suizas","desc":"Chicken enchiladas with creamy white sauce","price":13.99}
+      ]
+    },
+    { 
+      "name": "Quesadillas", 
+      "id": "quesadillas",
+      "items": [
+        {"name":"Cheese Quesadilla","desc":"Large flour tortilla with melted cheese","price":8.99,"tags":["vegetarian"]},
+        {"name":"Chicken Quesadilla","desc":"Grilled chicken and cheese","price":11.49},
+        {"name":"Steak Quesadilla","desc":"Carne asada and cheese","price":12.99},
+        {"name":"Veggie Quesadilla","desc":"Peppers, onions, mushrooms, cheese","price":10.49,"tags":["vegetarian"]}
+      ]
+    },
+    { 
+      "name": "Combos", 
+      "id": "combos",
+      "items": [
+        {"name":"Two Item Combo","desc":"Choose from tacos, enchiladas, or tamales with rice and beans","price":13.99,"tags":["popular"]},
+        {"name":"Three Item Combo","desc":"Mix and match any three items","price":16.99},
+        {"name":"Taco Platter","desc":"Three tacos of your choice with rice and beans","price":14.49}
+      ]
+    },
+    { 
+      "name": "Lunch Specials", 
+      "id": "lunch-specials",
+      "items": [
+        {"name":"Lunch Chimichanga","desc":"Fried burrito with choice of meat, served with rice and beans","price":9.99},
+        {"name":"Lunch Fajitas","desc":"Smaller portion of our famous fajitas","price":11.99},
+        {"name":"Speedy Gonzales","desc":"One taco, one enchilada, rice or beans","price":8.99}
+      ]
+    },
+    { 
+      "name": "Kids", 
+      "id": "kids",
+      "items": [
+        {"name":"Kids Quesadilla","desc":"Small cheese quesadilla served with rice","price":6.99},
+        {"name":"Kids Taco","desc":"One soft taco with cheese and rice","price":6.49},
+        {"name":"Chicken Nuggets","desc":"Served with fries","price":7.99}
+      ]
+    },
+    { 
+      "name": "Sides", 
+      "id": "sides",
+      "items": [
+        {"name":"Spanish Rice","desc":"Traditional seasoned rice","price":2.99},
+        {"name":"Refried Beans","desc":"Creamy refried pinto beans","price":2.99},
+        {"name":"Black Beans","desc":"Seasoned black beans","price":2.99},
+        {"name":"Extra Tortillas","desc":"Flour or corn (3)","price":1.99}
+      ]
+    },
+    { 
+      "name": "Desserts", 
+      "id": "desserts",
+      "items": [
+        {"name":"Churros","desc":"Fried dough sticks with cinnamon sugar and chocolate dipping sauce","price":5.99,"featured":true},
+        {"name":"Flan","desc":"Traditional Mexican custard","price":4.99},
+        {"name":"Sopapillas","desc":"Fried pastry with honey and cinnamon","price":4.49},
+        {"name":"Tres Leches Cake","desc":"Three milk cake","price":5.49}
+      ]
+    },
+    { 
+      "name": "Beverages", 
+      "id": "beverages",
+      "items": [
+        {"name":"Horchata","desc":"Traditional rice and cinnamon drink","price":3.49},
+        {"name":"Jarritos","desc":"Mexican sodas - various flavors","price":2.99},
+        {"name":"Fresh Lime Agua Fresca","desc":"Refreshing lime water","price":2.99},
+        {"name":"Coffee","desc":"Regular or decaf","price":2.49},
+        {"name":"Soft Drinks","desc":"Coke, Pepsi, Sprite, Dr Pepper","price":2.79}
+      ]
+    }
+  ]
+}
