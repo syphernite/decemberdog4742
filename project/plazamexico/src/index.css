@@ -93,3 +93,72 @@
 .animate-fade-up { animation: fadeUp .6s ease forwards; opacity: 0; }
 .animate-fade-down { animation: fadeDown .6s ease forwards; opacity: 0; }
 .animate-grow { transform-origin: left; animation: grow .45s ease forwards; }
+
+/* --- Menu + Contact theme extensions --- */
+
+/* Chips for category links */
+.chip{
+  display:inline-block;
+  padding:.5rem .8rem;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  border:2px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.06);
+  color:#fff;
+  border-radius:.25rem;
+  transition:transform .15s ease, background-color .15s ease, border-color .15s ease;
+}
+.chip:hover{ transform: translateY(-1px); background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.28); }
+
+/* Menu cards */
+.menu-card{
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: .25rem;
+  overflow: hidden;
+  box-shadow: 0 10px 24px rgba(0,0,0,.35);
+}
+.menu-card .price{
+  color: var(--pm-gold);
+  font-weight: 800;
+}
+.tag{
+  display:inline-block; padding:.2rem .5rem; font-size:.75rem; font-weight:700; border-radius:.25rem;
+  border:1px solid rgba(255,255,255,.18); color:#fff; background: rgba(255,255,255,.06);
+}
+.tag-red{ background: color-mix(in srgb, var(--pm-red) 20%, #000); border-color: color-mix(in srgb, var(--pm-red) 50%, #000); }
+.tag-green{ background: color-mix(in srgb, var(--pm-green) 20%, #000); border-color: color-mix(in srgb, var(--pm-green) 50%, #000); }
+
+/* Contact form surfaces */
+.form-card{
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.05);
+  border-radius:.25rem;
+  padding:1.25rem;
+  box-shadow: 0 10px 24px rgba(0,0,0,.35);
+}
+.input-square, .textarea-square{
+  width:100%;
+  background:#0f0f0f;
+  color:#fff;
+  border:2px solid rgba(255,255,255,.16);
+  border-radius:.25rem;
+  padding:.75rem .9rem;
+  outline:none;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+.input-square:focus, .textarea-square:focus{
+  border-color: color-mix(in srgb, var(--pm-green) 80%, #fff 20%);
+  box-shadow: 0 0 0 3px rgba(0,104,71,.25);
+}
+
+/* Outline button for maps link */
+.btn-outline{
+  padding:.6rem 1rem;
+  border:2px solid rgba(255,255,255,.35);
+  border-radius:.25rem;
+  color:#fff;
+  transition: transform .15s ease, background-color .15s ease, border-color .15s ease;
+}
+.btn-outline:hover{ transform: translateY(-1px); background: rgba(255,255,255,.08); border-color:#fff; }
