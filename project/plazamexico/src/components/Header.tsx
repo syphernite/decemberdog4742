@@ -45,50 +45,6 @@ export default function Header() {
     </Link>
   );
 
-  const HoursBlock = () => {
-    const h: unknown = (site as any).hours;
-    if (!h) return <div>Hours: See menu for hours</div>;
-    if (typeof h === "string") return <div>Hours: {h}</div>;
-    if (Array.isArray(h)) {
-      return (
-        <div>
-          <div>Hours:</div>
-          <ul className="mt-1 space-y-0.5">
-            {h.map((row: any, i: number) => (
-              <li key={i}>
-                {row?.day ?? "Day"}: {row?.open ?? "—"}–{row?.close ?? "—"}
-              </li>
-            ))}
-          </ul>
-        </div>
-      );
-    }
-    // object fallback
-    try {
-      const entries = Object.entries(h as Record<string, any>);
-      return (
-        <div>
-          <div>Hours:</div>
-          <ul className="mt-1 space-y-0.5">
-            {entries.map(([k, v]) => (
-              <li key={k}>
-                {k}: {typeof v === "string" ? v : JSON.stringify(v)}
-              </li>
-            ))}
-          </ul>
-        </div>
-      );
-    } catch {
-      return <div>Hours: See menu for hours</div>;
-    }
-  };
-
-  const AddressLine = () => {
-    const a: unknown = (site as any).address;
-    if (!a) return <div>Location: See contact page</div>;
-    return <div>Location: {typeof a === "string" ? a : JSON.stringify(a)}</div>;
-  };
-
   return (
     <header className="fixed inset-x-0 top-0 z-50">
       <div
@@ -110,6 +66,7 @@ export default function Header() {
           <Nav to="/" label="Home" />
           <Nav to="/menu" label="Menu" />
           <Nav to="/contact" label="Contact" />
+          <Nav to="/our-story" label="Our Story" />
         </nav>
 
         {/* Mobile burger */}
@@ -141,7 +98,7 @@ export default function Header() {
         </button>
       </div>
 
-      {/* Mobile overlay */}
+      {/* Mobile menu overlay */}
       <div
         className={[
           "md:hidden fixed inset-0 z-40 transition-colors",
@@ -181,11 +138,12 @@ export default function Header() {
           <Nav to="/" label="Home" onClick={() => setOpen(false)} />
           <Nav to="/menu" label="Menu" onClick={() => setOpen(false)} />
           <Nav to="/contact" label="Contact" onClick={() => setOpen(false)} />
+          <Nav to="/our-story" label="Our Story" onClick={() => setOpen(false)} />
         </div>
 
         <div className="mt-auto p-4 text-xs text-neutral-400 space-y-2">
-          <HoursBlock />
-          <AddressLine />
+          <div>Hours: {typeof site.hours === "string" ? site.hours : "See menu for hours"}</div>
+          <div>Location: {site.address ?? "See contact page"}</div>
         </div>
       </nav>
     </header>
