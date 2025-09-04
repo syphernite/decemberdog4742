@@ -1,7 +1,7 @@
 // src/pages/MenuPage.tsx
 import React from "react";
 import { motion } from "framer-motion";
-import { ExternalLink, FileText, Utensils } from "lucide-react";
+import { FileText, Utensils } from "lucide-react";
 
 type Dish = {
   name: string;
@@ -23,7 +23,7 @@ const curated: Dish[] = [
   {
     name: "Mar y Tierra",
     desc: "Rib eye steak and shrimp. Served with rice & guacamole salad.",
-    price: "$—",
+    price: "$19.99",
     image: `${BASE}menu/mar_y_tierra.jpg`,
     tag: "popular",
   },
@@ -31,14 +31,14 @@ const curated: Dish[] = [
     name: "Chilaquiles Rojos",
     desc:
       "Tortilla casserole smothered in red salsa and grilled chicken. Topped with cilantro, onions, guaca, queso and sour cream. Served with beans and guacamole salad.",
-    price: "$—",
+    price: "$14.99",
     image: `${BASE}menu/chilaquiles_rojos.jpg`,
   },
   {
     name: "Tacos de Cochinita",
     desc:
       "Special marinated shredded pork, served with sliced onions and avocado-lime salsa.",
-    price: "$—",
+    price: "$14.99",
     image: `${BASE}menu/tacos_de_cochinita.jpg`,
   },
   {
@@ -53,13 +53,13 @@ const curated: Dish[] = [
     name: "Loaded Potato Fajita",
     desc:
       "Your choice of steak or chicken fajita, chorizo, and topped with cheese.",
-    price: "$—",
+    price: "$17.99",
     image: `${BASE}menu/loaded_potato_fajita.jpg`,
   },
   {
     name: "Enchiladas Bandera",
     desc: "Served with rice and sour cream salad.",
-    price: "$—",
+    price: "$17.99",
     image: `${BASE}menu/enchiladas_bandera.jpg`,
   },
 ];
@@ -88,15 +88,27 @@ export default function MenuPage() {
           </p>
         </motion.div>
 
-        <div className="mb-10 flex flex-wrap items-center justify-center gap-3">
+        {/* Primary actions: big, centered, highly visible */}
+        <div className="mb-10 flex flex-wrap items-center justify-center gap-4">
           <MotionButton
             as="a"
             href={ORDER_URL}
             target="_blank"
             rel="noopener noreferrer"
-            icon={<Utensils className="h-4 w-4" />}
+            icon={<Utensils className="h-5 w-5" />}
             label="Order Online"
             variant="primary"
+            big
+          />
+          <MotionButton
+            as="a"
+            href={PDF_MENU_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            icon={<FileText className="h-5 w-5" />}
+            label="View Full Menu (PDF)"
+            variant="pdf"
+            big
           />
         </div>
 
@@ -108,15 +120,6 @@ export default function MenuPage() {
 
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-2xl font-medium">Featured Dishes</h2>
-          <a
-            href={PDF_MENU_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-sm text-white/80 hover:text-white transition"
-          >
-            <FileText className="h-4 w-4" />
-            Full menu PDF
-          </a>
         </div>
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -125,15 +128,26 @@ export default function MenuPage() {
           ))}
         </div>
 
-        <div className="mt-12 flex justify-center">
+        {/* Repeat actions at bottom for visibility */}
+        <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
           <MotionButton
             as="a"
             href={ORDER_URL}
             target="_blank"
             rel="noopener noreferrer"
-            icon={<Utensils className="h-4 w-4" />}
+            icon={<Utensils className="h-5 w-5" />}
             label="Start Order"
             variant="primary"
+            big
+          />
+          <MotionButton
+            as="a"
+            href={PDF_MENU_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            icon={<FileText className="h-5 w-5" />}
+            label="Full Menu PDF"
+            variant="pdf"
             big
           />
         </div>
@@ -190,7 +204,7 @@ function MotionButton(props: {
   rel?: string;
   icon?: React.ReactNode;
   label: string;
-  variant?: "primary" | "ghost";
+  variant?: "primary" | "ghost" | "pdf";
   big?: boolean;
 }) {
   const {
@@ -207,11 +221,13 @@ function MotionButton(props: {
   const Comp: any = as;
 
   const base =
-    "inline-flex items-center gap-2 rounded-xl transition will-change-transform";
+    "inline-flex items-center gap-2 rounded-xl transition will-change-transform focus:outline-none";
   const size = big ? "px-6 py-3 text-base" : "px-4 py-2 text-sm";
   const style =
     variant === "primary"
       ? "bg-red-600 hover:bg-red-500 active:scale-[0.98] text-white shadow-lg shadow-red-600/30"
+      : variant === "pdf"
+      ? "bg-yellow-400 text-black hover:bg-yellow-300 active:scale-[0.98] shadow-lg shadow-yellow-400/30"
       : "bg-white/10 hover:bg-white/15 active:scale-[0.98] text-white ring-1 ring-white/20";
 
   return (
