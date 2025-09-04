@@ -61,7 +61,7 @@ export default function OurStoryPage() {
       {/* Values */}
       <section className="bg-zinc-900 py-20">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl font-semibold mb-12 text-center text-red-600">
+          <h2 className="text-3xl font-semibold mb-12 text-center text-white-600">
             Our Values
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -105,7 +105,7 @@ export default function OurStoryPage() {
       {/* Testimonials */}
       <section className="py-20">
         <div className="max-w-5xl mx-auto px-6">
-          <h2 className="text-3xl font-semibold mb-12 text-center text-red-600">
+          <h2 className="text-3xl font-semibold mb-12 text-center text-white-600">
             What Our Customers Say
           </h2>
           <div className="flex justify-center">
