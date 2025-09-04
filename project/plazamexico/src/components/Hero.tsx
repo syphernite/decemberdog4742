@@ -10,7 +10,6 @@ export default function Hero() {
   const logo = base + "images/logo.png";
   const storefront = base + "images/storefront.jpg";
 
-  // Subtle mouse parallax
   const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
   const onMove: React.MouseEventHandler = (e) => {
     const { innerWidth: w, innerHeight: h } = window;
@@ -19,13 +18,11 @@ export default function Hero() {
     setTilt({ rx: y * -3.5, ry: x * 3.5 });
   };
 
-  // Hours guard
   const hours = useMemo(() => {
     const h: any = (site as any).hours;
     return Array.isArray(h) ? (h as Array<{ day: string; open: string; close: string }>) : null;
   }, []);
 
-  // Shared variants
   const fadeUp = (d = 0) => ({
     initial: { opacity: 0, y: 10 },
     animate: { opacity: 1, y: 0, transition: { duration: 0.5, delay: d } },
@@ -36,7 +33,6 @@ export default function Hero() {
       onMouseMove={onMove}
       className="relative min-h-[92svh] flex items-center justify-center bg-black text-white overflow-hidden"
     >
-      {/* Effects */}
       <style>{`
         @keyframes kenburns {
           0% { background-position: 50% 50%; transform: scale(1.02); }
@@ -78,15 +74,14 @@ export default function Hero() {
           pointer-events: none;
         }
 
-        /* Orbiting pips */
+        /* Orbiting pips (renamed to avoid Tailwind .group) */
         .orbits { pointer-events: none; }
-        .group {
+        .orbitGroup {
           position:absolute; left:50%; top:50%;
           will-change: transform;
         }
-        /* mirror: symmetric horizontal offsets from center */
-        .group.left  { transform: translate(calc(-50% - min(28vw, 300px)), -50%); }
-        .group.right { transform: translate(calc(-50% + min(28vw, 300px)), -50%); }
+        .orbitGroup.left  { transform: translate(calc(-50% - min(28vw, 300px)), -50%); }
+        .orbitGroup.right { transform: translate(calc(-50% + min(28vw, 300px)), -50%); }
 
         .orbit {
           position:relative;
@@ -108,8 +103,8 @@ export default function Hero() {
         }
 
         @media (max-width: 640px) {
-          .group.left  { transform: translate(calc(-50% - min(22vw, 180px)), -50%); }
-          .group.right { transform: translate(calc(-50% + min(22vw, 180px)), -50%); }
+          .orbitGroup.left  { transform: translate(calc(-50% - min(22vw, 180px)), -50%); }
+          .orbitGroup.right { transform: translate(calc(-50% + min(22vw, 180px)), -50%); }
           .o1 { width: 28rem; height: 28rem; }
           .o2 { width: 20rem; height: 20rem; }
           .pip { width: 7px; height: 7px; }
@@ -134,8 +129,7 @@ export default function Hero() {
 
       {/* Mirrored orbiting accent pips */}
       <div className="orbits absolute inset-0 -z-0" aria-hidden>
-        {/* LEFT GROUP */}
-        <div className="group left">
+        <div className="orbitGroup left">
           <div className="orbit o1">
             {[
               { a:   0,  c: "#dc2626" },
@@ -176,8 +170,7 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* RIGHT GROUP (mirror) */}
-        <div className="group right">
+        <div className="orbitGroup right">
           <div className="orbit o1">
             {[
               { a:   0,  c: "#dc2626" },
@@ -224,7 +217,6 @@ export default function Hero() {
         className="relative z-10 w-full max-w-6xl mx-auto px-6 text-center will-change-transform"
         style={{ transform: `perspective(1100px) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)` }}
       >
-        {/* Logo */}
         <motion.img
           src={logo}
           alt={(site as any).name ?? "Plaza Mexico"}
@@ -239,7 +231,6 @@ export default function Hero() {
           }}
         />
 
-        {/* Subheadline + animated accent rule */}
         <motion.div {...fadeUp(0.12)} className="mt-3 inline-block">
           <p className="text-lg md:text-2xl" style={{ color: "var(--pm-gold)" }}>
             {(site as any).heroSubheadline || "Authentic Mexican flavors served hot daily"}
@@ -252,7 +243,6 @@ export default function Hero() {
           />
         </motion.div>
 
-        {/* CTAs with micro-interactions */}
         <motion.div
           {...fadeUp(0.22)}
           className="mt-6 flex flex-col sm:flex-row gap-4 justify-center"
@@ -294,7 +284,6 @@ export default function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* Info cards with staggered reveal */}
         <div className="mt-9 grid grid-cols-1 sm:grid-cols-3 gap-6 text-base md:text-lg">
           {[0.08, 0.14, 0.2].map((d, i) => (
             <motion.div
@@ -339,7 +328,6 @@ export default function Hero() {
           ))}
         </div>
 
-        {/* Scroll cue */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
