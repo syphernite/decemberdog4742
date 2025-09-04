@@ -21,7 +21,7 @@ const products: Product[] = [
   {
     id: 'pink-shirt',
     name: 'Pink Logo Tee',
-    price: '$28',
+    price: '$50',
     images: ['pink_shirt.png', 'pink_shirt2.png'],
     sizes: ['S', 'M', 'L', 'XL'],
     desc: 'Soft-weight cotton tee with front logo. Classic fit.',
@@ -32,7 +32,7 @@ const products: Product[] = [
   {
     id: 'red-shirt',
     name: 'Crimson Script Tee',
-    price: '$28',
+    price: '$50',
     images: ['red_shirt.png', 'red_shirt2.png'],
     sizes: ['S', 'M', 'L', 'XL'],
     desc: 'Mid-weight tee with script graphic. True to size.',
@@ -43,7 +43,7 @@ const products: Product[] = [
   {
     id: 'gray-jacket',
     name: 'Graphite Zip Jacket',
-    price: '$56',
+    price: '$100',
     images: ['gray_jacket.png', 'gray_jacket2.png', 'gray_jacket3.png'],
     sizes: ['S', 'M', 'L', 'XL'],
     desc: 'Lightweight zip jacket with rib cuffs. Relaxed fit.',
@@ -54,7 +54,7 @@ const products: Product[] = [
   {
     id: 'bst-pants',
     name: 'BST Pants',
-    price: '$42',
+    price: '$70',
     images: ['bst_pants.png', 'bst_pants2.png', 'bst_pants3.png'],
     sizes: ['S', 'M', 'L', 'XL'],
     desc: 'Relaxed fit pants with elastic waistband and embroidered logo.',
@@ -145,8 +145,16 @@ const ClothingPage = () => {
       {/* Header */}
       <header className="pt-24 pb-6 px-6">
         <div className="max-w-5xl mx-auto text-center">
-          <img src={pub('staks_logo.png')} alt="Staks Logo" className="h-40 md:h-56 mx-auto mb-4" />
-          <h1 className="text-5xl md:text-7xl font-light tracking-[0.4em] mb-2 mx-auto leading-none">S T A K S</h1>
+          {/* 200% larger logo */}
+          <img
+            src={pub('staks_logo.png')}
+            alt="Staks Logo"
+            className="mx-auto mb-4 h-[20rem] md:h-[28rem]"
+          />
+          {/* Shorter STAKS (reduced tracking) */}
+          <h1 className="text-5xl md:text-7xl font-light tracking-[0.1em] mb-2 mx-auto leading-none">
+            STAKS
+          </h1>
           <p className="text-base md:text-lg text-gray-300 tracking-widest">CLOTHING COLLECTION</p>
         </div>
       </header>
