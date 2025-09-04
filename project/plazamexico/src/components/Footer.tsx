@@ -1,9 +1,16 @@
-// src/components/Footer.tsx
 import React from "react";
+import site from "../content/site.json";
 
 const Footer: React.FC = () => {
+  const address: string =
+    (site as any).address ||
+    "Plaza Mexico Bar and Grill, Morehead City, NC";
+  const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(
+    address
+  )}&output=embed`;
+
   return (
-    <footer className="bg-black text-white py-10 mt-16 relative overflow-hidden">
+    <footer className="bg-black text-white pt-10 mt-16 relative overflow-hidden">
       <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
         {/* Left side */}
         <div className="text-center md:text-left space-y-2">
@@ -11,7 +18,9 @@ const Footer: React.FC = () => {
           <p className="text-sm text-gray-300">
             Authentic Mexican flavors served hot daily.
           </p>
-          <p className="text-xs text-gray-400">© {new Date().getFullYear()} Plaza Mexico. All rights reserved.</p>
+          <p className="text-xs text-gray-400">
+            © {new Date().getFullYear()} Plaza Mexico. All rights reserved.
+          </p>
         </div>
 
         {/* Right side with animated button */}
@@ -21,11 +30,24 @@ const Footer: React.FC = () => {
             target="_blank"
             rel="noopener noreferrer"
             className="relative px-6 py-3 bg-[#e63946] text-white font-bold uppercase text-sm shadow-lg
-                       transition-all duration-300 ease-in-out overflow-hidden btn-menu-neo"
+                       transition-all duration-300 ease-in-out overflow-hidden btn-menu-neo rounded-lg"
           >
             <span className="relative z-10">View Full Menu</span>
             <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer" />
           </a>
+        </div>
+      </div>
+
+      {/* Map */}
+      <div className="container mx-auto px-6 mt-8 pb-10">
+        <div className="rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.35)]">
+          <iframe
+            title="Plaza Mexico location"
+            src={mapSrc}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            className="w-full h-[300px] md:h-[380px] border-0"
+          />
         </div>
       </div>
     </footer>
