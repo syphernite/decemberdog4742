@@ -114,7 +114,6 @@ const Home = () => {
               className="bg-white text-ocean-blue py-3 px-6 rounded-md w-full sm:w-auto flex items-center justify-center gap-2"
             >
               <img src={`${base}images/doordash.png`} alt="DoorDash" className="h-6" loading="lazy" width={96} height={24} />
-              <span>Order Delivery</span>
             </button>
             <Link to="/menu" className="btn-primary w-full sm:w-auto">View Menu</Link>
           </div>
@@ -204,7 +203,6 @@ const Home = () => {
               className="bg-white text-ocean-blue py-3 px-6 rounded-md w-full sm:w-auto flex items-center justify-center gap-2"
             >
               <img src={`${base}images/doordash.png`} alt="DoorDash" className="h-6" loading="lazy" width={96} height={24} />
-              <span>Order Delivery</span>
             </button>
             <Link to="/menu" className="btn-primary inline-flex justify-center">View Menu</Link>
           </div>
