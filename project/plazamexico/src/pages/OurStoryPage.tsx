@@ -55,7 +55,7 @@ export default function OurStoryPage() {
       <div className="relative">
         {/* Story */}
         <section className="max-w-5xl mx-auto px-6 py-20">
-          <h1 className="text-4xl md:text-6xl font-bold text-center mb-8 text-white-600">
+          <h1 className="text-4xl md:text-6xl font-bold text-center mb-8 text-red-600">
             Our Story
           </h1>
           <p className="text-lg text-gray-200 leading-relaxed mb-6">
@@ -76,7 +76,7 @@ export default function OurStoryPage() {
         {/* Values */}
         <section className="bg-zinc-900/70 border-t border-white/10 py-20">
           <div className="max-w-6xl mx-auto px-6">
-            <h2 className="text-3xl font-semibold mb-12 text-center text-red-600">
+            <h2 className="text-3xl font-semibold mb-12 text-center text-white-600">
               Our Values
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
