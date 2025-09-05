@@ -1,23 +1,28 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { MapPin, Phone, Clock, Instagram, Facebook } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from "react";
+import { MapPin, Phone, Clock, Instagram, Facebook } from "lucide-react";
 
 const Contact = () => {
   useEffect(() => {
     const observer = new IntersectionObserver(
-      (entries) => entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add('fade-in-up')),
+      (entries) =>
+        entries.forEach(
+          (entry) => entry.isIntersecting && entry.target.classList.add("fade-in-up")
+        ),
       { threshold: 0.1 }
     );
-    document.querySelectorAll('.animate-on-scroll').forEach((el) => observer.observe(el));
+    document.querySelectorAll(".animate-on-scroll").forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, []);
 
   // --- Map ---
-  const ADDRESS = '105 S 6th St, Morehead City, NC 28557';
-  const [isDesktop, setIsDesktop] = useState<boolean>(typeof window !== 'undefined' ? window.innerWidth >= 1024 : false);
+  const ADDRESS = "105 S 6th St, Morehead City, NC 28557";
+  const [isDesktop, setIsDesktop] = useState<boolean>(
+    typeof window !== "undefined" ? window.innerWidth >= 1024 : false
+  );
   useEffect(() => {
     const onResize = () => setIsDesktop(window.innerWidth >= 1024);
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
   }, []);
   const mapSrc = useMemo(() => {
     const q = encodeURIComponent(ADDRESS);
@@ -31,21 +36,71 @@ const Contact = () => {
       <section className="relative min-h-[50vh] flex items-center bg-gradient-to-br from-ocean-blue to-slate-900 py-16 md:py-20">
         <div className="water-ripple"></div>
         <div className="max-w-4xl mx-auto text-center px-4">
-          <h1 className="font-display text-5xl md:text-6xl text-white mb-4 neon-glow">Get in Touch</h1>
+          <h1 className="font-display text-5xl md:text-6xl text-white mb-4 neon-glow">
+            Get in Touch
+          </h1>
           <p className="text-lg text-sandy-beige mb-6 animate-on-scroll">
             We'd love to hear from you! Come visit us in beautiful Morehead City
           </p>
-          <a href="tel:252-726-7800" className="btn-secondary inline-flex items-center space-x-2">
-            <Phone className="h-5 w-5" />
+
+          {/* Primary phone CTA — bold, glowing, tappable */}
+          <a
+            href="tel:252-726-7800"
+            className="inline-flex items-center justify-center gap-3 px-7 py-4 rounded-full
+                       bg-gradient-to-r from-amber-300 via-yellow-300 to-amber-400 text-ocean-blue
+                       font-extrabold text-xl md:text-2xl shadow-[0_10px_30px_rgba(255,200,0,0.4)]
+                       ring-2 ring-white/60 hover:ring-white
+                       hover:shadow-[0_12px_36px_rgba(255,210,0,0.55)]
+                       transition-all duration-300 hover:-translate-y-0.5 focus:outline-none
+                       focus-visible:ring-4 focus-visible:ring-amber-300/70 pulse-glow"
+            aria-label="Call Beach Bumz now"
+          >
+            <Phone className="h-6 w-6 md:h-7 md:w-7" />
             <span>Call Now: (252) 726-7800</span>
           </a>
+
+          {/* Subtext */}
+          <div className="mt-3 text-sandy-beige/90 text-sm">
+            Tap to call and place an order or ask about today’s specials
+          </div>
         </div>
       </section>
 
       {/* Contact Info only (no form) */}
       <section className="py-20 bg-sandy-beige sand-texture">
         <div className="max-w-4xl mx-auto px-4">
-          <h2 className="font-display text-4xl text-ocean-blue mb-8 text-center">Visit Beach Bumz</h2>
+          <h2 className="font-display text-4xl text-ocean-blue mb-8 text-center">
+            Visit Beach Bumz
+          </h2>
+
+          {/* Phone highlight card */}
+          <div className="mb-8 rounded-2xl p-6 md:p-7 bg-white shadow-xl border border-yellow-300/40 relative overflow-hidden">
+            <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-yellow-200/40 blur-2xl" />
+            <div className="absolute -left-10 -bottom-10 h-40 w-40 rounded-full bg-amber-200/40 blur-2xl" />
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 relative">
+              <div className="flex items-center gap-3">
+                <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-amber-300 text-ocean-blue shadow-md">
+                  <Phone className="h-5 w-5" />
+                </span>
+                <div>
+                  <div className="text-sm text-gray-600">Call us</div>
+                  <div className="text-2xl font-extrabold tracking-tight text-ocean-blue">
+                    (252) 726-7800
+                  </div>
+                </div>
+              </div>
+              <a
+                href="tel:252-726-7800"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full
+                           bg-ocean-blue text-white font-semibold shadow-lg hover:shadow-xl
+                           hover:bg-ocean-blue/90 transition-colors"
+              >
+                Tap to Call
+                <Phone className="h-5 w-5" />
+              </a>
+            </div>
+          </div>
+
           <div className="space-y-6">
             <div className="flex items-start space-x-4 bg-white/80 rounded-lg p-6 shadow-lg hover-lift beach-card tilt-on-hover">
               <MapPin className="h-6 w-6 text-turquoise mt-1 flex-shrink-0 bounce-subtle" />
@@ -65,26 +120,19 @@ const Contact = () => {
             </div>
 
             <div className="flex items-start space-x-4 bg-white/80 rounded-lg p-6 shadow-lg hover-lift beach-card tilt-on-hover">
-              <Phone className="h-6 w-6 text-turquoise mt-1 flex-shrink-0" />
-              <div>
-                <h3 className="font-semibold text-ocean-blue mb-2">Phone</h3>
-                <a
-                  href="tel:252-726-7800"
-                  className="text-gray-700 hover:text-sunset-orange transition-colors duration-300 text-lg font-medium"
-                >
-                  (252) 726-7800
-                </a>
-              </div>
-            </div>
-
-            <div className="flex items-start space-x-4 bg-white/80 rounded-lg p-6 shadow-lg hover-lift beach-card tilt-on-hover">
               <Clock className="h-6 w-6 text-turquoise mt-1 flex-shrink-0 starfish-spin" />
               <div>
                 <h3 className="font-semibold text-ocean-blue mb-2">Hours</h3>
                 <div className="space-y-1 text-gray-700">
-                  <p><span className="font-medium">Mon - Thu:</span> 11:00 AM - 9:00 PM</p>
-                  <p><span className="font-medium">Fri - Sat:</span> 11:00 AM - 10:00 PM</p>
-                  <p><span className="font-medium">Sunday:</span> 11:00 AM - 9:00 PM</p>
+                  <p>
+                    <span className="font-medium">Mon - Thu:</span> 11:00 AM - 9:00 PM
+                  </p>
+                  <p>
+                    <span className="font-medium">Fri - Sat:</span> 11:00 AM - 10:00 PM
+                  </p>
+                  <p>
+                    <span className="font-medium">Sunday:</span> 11:00 AM - 9:00 PM
+                  </p>
                 </div>
               </div>
             </div>
@@ -93,7 +141,14 @@ const Contact = () => {
               <Instagram className="h-6 w-6 text-coral-pink mt-1 flex-shrink-0" />
               <div>
                 <h3 className="font-semibold text-ocean-blue mb-2">Instagram</h3>
-                <a href="https://www.instagram.com/beachbumzmc" target="_blank" rel="noreferrer" className="text-gray-700 hover:text-coral-pink transition-colors duration-300">@beachbumz</a>
+                <a
+                  href="https://www.instagram.com/beachbumzmc"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-gray-700 hover:text-coral-pink transition-colors duration-300"
+                >
+                  @beachbumz
+                </a>
               </div>
             </div>
 
@@ -101,7 +156,14 @@ const Contact = () => {
               <Facebook className="h-6 w-6 text-coral-pink mt-1 flex-shrink-0" />
               <div>
                 <h3 className="font-semibold text-ocean-blue mb-2">Facebook</h3>
-                <a href="https://www.facebook.com/p/Beach-Bumz-Pub-Pizzaria-100063510343151/" target="_blank" rel="noreferrer" className="text-gray-700 hover:text-coral-pink transition-colors duration-300">Facebook</a>
+                <a
+                  href="https://www.facebook.com/p/Beach-Bumz-Pub-Pizzaria-100063510343151/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-gray-700 hover:text-coral-pink transition-colors duration-300"
+                >
+                  Facebook
+                </a>
               </div>
             </div>
           </div>
@@ -140,6 +202,18 @@ const Contact = () => {
           </a>
         </div>
       </section>
+
+      {/* Floating mobile call button */}
+      <a
+        href="tel:252-726-7800"
+        className="fixed bottom-5 right-4 z-40 flex items-center gap-2 px-5 py-3 rounded-full
+                   bg-amber-400 text-ocean-blue font-bold shadow-xl ring-2 ring-white/70
+                   md:hidden hover:bg-amber-300 transition-colors pulse-glow"
+        aria-label="Call Beach Bumz"
+      >
+        <Phone className="h-5 w-5" />
+        Call Now
+      </a>
     </div>
   );
 };
