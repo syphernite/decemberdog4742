@@ -9,7 +9,6 @@ const JPG = import.meta.env.BASE_URL + "beachbumz-logo.jpg";
 const NAV = [
   { to: "/", label: "Home" },
   { to: "/menu", label: "Menu" },
-  { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
 ];
 

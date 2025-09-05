@@ -60,6 +60,11 @@ const Home = () => {
       "_blank"
     );
 
+  const handleScrollToSpecials = () => {
+    const specialsEl = document.getElementById("specials");
+    if (specialsEl) specialsEl.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   const instagramPosts = [
     { id: 1, image: "https://images.pexels.com/photos/33406006/pexels-photo-33406006.png?auto=compress&cs=tinysrgb&w=400", caption: "Fresh pizza perfection! 🍕" },
     { id: 2, image: "https://images.pexels.com/photos/33406008/pexels-photo-33406008.png?auto=compress&cs=tinysrgb&w=400", caption: "Wings that hit different 🔥" },
@@ -69,7 +74,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen">
-      {/* sky layer: clouds/birds */}
+      {/* sky layer */}
       <div className="sky-bird">🕊️</div>
       <div className="sky-bird delay-1">🕊️</div>
 
@@ -133,38 +138,20 @@ const Home = () => {
             Where Comfort Meets the Coast
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mb-10 fade-in-up" style={{ animationDelay: "0.6s" }}>
+          {/* Slimmer CTA row */}
+          <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-center items-center mb-2 fade-in-up" style={{ animationDelay: "0.6s" }}>
             <Link to="/menu" className="btn-primary w-full sm:w-auto">View Menu</Link>
             <button onClick={handleOrderClick} className="btn-secondary w-full sm:w-auto inline-flex items-center justify-center gap-2">
               <span>Order on DoorDash</span><ExternalLink className="h-4 w-4" />
             </button>
-            <Link to="/contact#map" className="btn-outline w-full sm:w-auto">Find Us</Link>
-          </div>
-
-          <div
-            className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 text-center fade-in-up -mb-4 md:mb-0"
-            style={{ animationDelay: "0.8s" }}
-          >
-            <div className="bg-white/10 backdrop-blur-md rounded-lg p-5 sm:p-6 hover-lift beach-card tilt-on-hover">
-              <Award className="h-7 w-7 sm:h-8 sm:w-8 text-sunset-orange mx-auto mb-3 coconut-bounce" />
-              <h3 className="font-semibold text-white mb-1.5 sm:mb-2">Diverse Drink Menu TBD</h3>
-              <p className="text-sandy-beige text-sm">Craft cocktails and premium spirits</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-md rounded-lg p-5 sm:p-6 hover-lift beach-card tilt-on-hover" style={{ animationDelay: "0.2s" }}>
-              <Star className="h-7 w-7 sm:h-8 sm:w-8 text-turquoise mx-auto mb-3 starfish-spin" />
-              <h3 className="font-semibold text-white mb-1.5 sm:mb-2">Fan Favorites</h3>
-              <p className="text-sandy-beige text-sm">Pizza, wings, subs and more</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-md rounded-lg p-5 sm:p-6 hover-lift beach-card tilt-on-hover" style={{ animationDelay: "0.4s" }}>
-              <Users className="h-7 w-7 sm:h-8 sm:w-8 text-coral-pink mx-auto mb-3 bounce-subtle" />
-              <h3 className="font-semibold text-white mb-1.5 sm:mb-2">Beach Community Hub</h3>
-              <p className="text-sandy-beige text-sm">Where locals and visitors unite</p>
-            </div>
+            <button onClick={handleScrollToSpecials} className="btn-primary w-full sm:w-auto">
+              View Today’s Specials
+            </button>
           </div>
         </div>
       </section>
 
-      {/* Sand bridge + wave divider */}
+      {/* Sand bridge */}
       <div className="relative z-0 -mt-2 sm:-mt-3 md:-mt-4 lg:-mt-6">
         <div className="h-10 sm:h-12 md:h-14 bg-sandy-beige" />
         <div className="-mt-6 sm:-mt-8 md:-mt-10">
@@ -185,13 +172,15 @@ const Home = () => {
               <p className="text-lg text-white/90 mb-6 leading-relaxed">
                 Step into Beach Bumz Pub & Pizzeria, where every meal feels like a coastal escape.
                 Located in the heart of Morehead City, we serve fresh pizzas, crispy wings, hearty subs,
-                and ice-cold drinks that capture the spirit of beach living.
+                and ice cold drinks that capture the spirit of beach living.
               </p>
               <p className="text-lg text-white/90 mb-8 leading-relaxed">
                 With a full bar, enjoy craft cocktails and premium spirits alongside your favorites.
                 Locals and visitors welcome.
               </p>
-              <div className="flex items-center gap-6">
+
+              {/* Details + Find Us */}
+              <div className="flex flex-wrap items-center gap-4 sm:gap-6 mb-6">
                 <div className="flex items-center gap-2">
                   <MapPin className="h-5 w-5 text-turquoise bounce-subtle" />
                   <span className="font-semibold text-white">Morehead City, NC</span>
@@ -200,6 +189,9 @@ const Home = () => {
                   <Clock className="h-5 w-5 text-sunset-orange palm-sway" />
                   <span className="font-semibold text-white">Open Daily</span>
                 </div>
+                <Link to="/contact#map" className="btn-outline !py-2 !px-4">
+                  Find Us
+                </Link>
               </div>
             </div>
 
@@ -214,11 +206,33 @@ const Home = () => {
               </div>
             </div>
           </div>
+
+          {/* Feature cards */}
+          <div
+            className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 text-center mt-10 animate-on-scroll fade-in-up"
+            style={{ animationDelay: "0.15s" }}
+          >
+            <div className="bg-white/10 backdrop-blur-md rounded-lg p-5 sm:p-6 hover-lift beach-card tilt-on-hover">
+              <Award className="h-7 w-7 sm:h-8 sm:w-8 text-sunset-orange mx-auto mb-3 coconut-bounce" />
+              <h3 className="font-semibold text-white mb-1.5 sm:mb-2">Diverse Drink Menu TBD</h3>
+              <p className="text-sandy-beige text-sm">Craft cocktails and premium spirits</p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-md rounded-lg p-5 sm:p-6 hover-lift beach-card tilt-on-hover">
+              <Star className="h-7 w-7 sm:h-8 sm:w-8 text-turquoise mx-auto mb-3 starfish-spin" />
+              <h3 className="font-semibold text-white mb-1.5 sm:mb-2">Fan Favorites</h3>
+              <p className="text-sandy-beige text-sm">Pizza, wings, subs and more</p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-md rounded-lg p-5 sm:p-6 hover-lift beach-card tilt-on-hover">
+              <Users className="h-7 w-7 sm:h-8 sm:w-8 text-coral-pink mx-auto mb-3 bounce-subtle" />
+              <h3 className="font-semibold text-white mb-1.5 sm:mb-2">Beach Community Hub</h3>
+              <p className="text-sandy-beige text-sm">Where locals and visitors unite</p>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* ===== Today's Specials ===== */}
-      <section className="py-20 bg-ocean-blue/80">
+      <section id="specials" className="py-20 bg-ocean-blue/80">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-10 animate-on-scroll zoom-in">
             <h2 className="font-display text-4xl md:text-5xl text-white mb-3">Today’s Specials</h2>
@@ -234,11 +248,21 @@ const Home = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 animate-on-scroll fade-in-up">
             {activeSpecials.map((s, i) => (
               <article key={`${s.name}-${i}`} className="rounded-xl overflow-hidden border border-white/10 bg-white/5 hover-lift beach-card">
-                {s.image ? (
-                  <img src={toDirectImageURL(s.image)} alt={s.name} className="w-full h-48 object-cover" loading="lazy" />
-                ) : (
-                  <div className="w-full h-48 bg-white/10 grid place-items-center text-white/60">No image</div>
-                )}
+                {/* Image wrapper: prevents cropping */}
+                <div className="w-full aspect-[16/9] bg-white/10 flex items-center justify-center">
+                  {s.image ? (
+                    <img
+                      src={toDirectImageURL(s.image)}
+                      alt={s.name}
+                      loading="lazy"
+                      className="max-w-full max-h-full object-contain"
+                      style={{ display: "block" }}
+                    />
+                  ) : (
+                    <div className="grid place-items-center w-full h-full text-white/60">No image</div>
+                  )}
+                </div>
+
                 <div className="p-4">
                   <div className="flex items-start justify-between gap-3">
                     <h3 className="text-lg font-semibold">{s.name}</h3>
@@ -302,19 +326,25 @@ const Home = () => {
       <section className="py-20 cta-bg">
         <div className="max-w-4xl mx-auto text-center px-4 animate-on-scroll zoom-in">
           <h2 className="font-display text-4xl md:text-5xl text-white mb-6">Ready to Dive In?</h2>
-          <p className="text-xl text-white/90 mb-8">Experience the best coastal dining Morehead City has to offer</p>
+          <p className="text-xl text-white/90 mb-8">Experience the best coastal dining in Morehead City</p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
             <Link
               to="/menu"
-              className="bg-white text-ocean-blue hover:bg-gray-100 font-semibold py-4 px-8 rounded-none transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:rotate-1 w-full sm:w-auto"
+              className="bg-white text-ocean-blue hover:bg-gray-100 font-semibold py-4 px-8 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:rotate-1 w-full sm:w-auto"
             >
               Explore Our Menu
             </Link>
             <button
               onClick={handleOrderClick}
-              className="border-2 border-white text-white hover:bg-white hover:text-ocean-blue font-semibold py-4 px-8 rounded-none transition-all duration-300 transform hover:scale-105 hover:-rotate-1 w-full sm:w-auto"
+              className="border-2 border-white text-white hover:bg-white hover:text-ocean-blue font-semibold py-4 px-8 transition-all duration-300 transform hover:scale-105 hover:-rotate-1 w-full sm:w-auto"
             >
               Order Now
+            </button>
+            <button
+              onClick={handleScrollToSpecials}
+              className="bg-turquoise text-black hover:bg-white hover:text-ocean-blue font-semibold py-4 px-8 transition-all duration-300 transform hover:scale-105 w-full sm:w-auto"
+            >
+              Jump to Specials
             </button>
           </div>
         </div>
@@ -327,7 +357,6 @@ export default Home;
 
 /* ---------- utils ---------- */
 function parseCSV(input: string): SpecialRow[] {
-  // Strip UTF-8 BOM if present to avoid header "\ufeffname"
   const clean = input.replace(/^\uFEFF/, "");
   const lines = clean.replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
   if (!lines.length) return [];
