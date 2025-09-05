@@ -19,6 +19,9 @@ const Home = () => {
   const [specials, setSpecials] = useState<SpecialRow[]>([]);
   const [specialsErr, setSpecialsErr] = useState<string | null>(null);
 
+  // Use Vite base for assets in public/ to support subpath deploys
+  const base = (import.meta as any).env.BASE_URL || "/";
+
   useEffect(() => {
     const io = new IntersectionObserver(
       (entries) => entries.forEach((e) => e.isIntersecting && (e.target as HTMLElement).classList.add("fade-in-up")),
@@ -138,15 +141,43 @@ const Home = () => {
             Where Comfort Meets the Coast
           </p>
 
-          {/* Slimmer CTA row */}
+          {/* CTA Row */}
           <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-center items-center mb-2 fade-in-up" style={{ animationDelay: "0.6s" }}>
-            <Link to="/menu" className="btn-primary w-full sm:w-auto">View Menu</Link>
-            <button onClick={handleOrderClick} className="btn-secondary w-full sm:w-auto inline-flex items-center justify-center gap-2">
-              <span>Order on DoorDash</span><ExternalLink className="h-4 w-4" />
-            </button>
+            {/* Specials first */}
             <button onClick={handleScrollToSpecials} className="btn-primary w-full sm:w-auto">
               View Today’s Specials
             </button>
+
+            {/* Clover Order Pickup */}
+            <a
+              href="https://www.clover.com/online-ordering/beach-bumz-morehead-city"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-white text-ocean-blue hover:bg-gray-100 font-semibold py-3 px-6 rounded-md transition-all duration-300 transform hover:scale-105 hover:shadow-xl flex items-center gap-2 w-full sm:w-auto"
+            >
+              <span>Order Pickup</span>
+            </a>
+
+            {/* DoorDash Delivery logo from public/images/doordash.png with base path */}
+            <button
+              onClick={handleOrderClick}
+              className="btn-secondary w-full sm:w-auto flex items-center justify-center gap-2"
+            >
+              <img
+                src={`${base}images/doordash.png`}
+                alt="DoorDash"
+                className="h-6"
+                loading="lazy"
+                width={96}
+                height={24}
+              />
+              <span className="sr-only">Order Delivery</span>
+            </button>
+
+            {/* Menu last */}
+            <Link to="/menu" className="btn-primary w-full sm:w-auto">
+              View Menu
+            </Link>
           </div>
         </div>
       </section>
@@ -162,74 +193,6 @@ const Home = () => {
           </div>
         </div>
       </div>
-
-      {/* Welcome */}
-      <section className="py-20 beach-gradient">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center">
-            <div className="animate-on-scroll slide-in-left">
-              <h2 className="font-display text-4xl md:text-5xl text-white mb-6">Welcome to Paradise</h2>
-              <p className="text-lg text-white/90 mb-6 leading-relaxed">
-                Step into Beach Bumz Pub & Pizzeria, where every meal feels like a coastal escape.
-                Located in the heart of Morehead City, we serve fresh pizzas, crispy wings, hearty subs,
-                and ice cold drinks that capture the spirit of beach living.
-              </p>
-              <p className="text-lg text-white/90 mb-8 leading-relaxed">
-                With a full bar, enjoy craft cocktails and premium spirits alongside your favorites.
-                Locals and visitors welcome.
-              </p>
-
-              {/* Details + Find Us */}
-              <div className="flex flex-wrap items-center gap-4 sm:gap-6 mb-6">
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-5 w-5 text-turquoise bounce-subtle" />
-                  <span className="font-semibold text-white">Morehead City, NC</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Clock className="h-5 w-5 text-sunset-orange palm-sway" />
-                  <span className="font-semibold text-white">Open Daily</span>
-                </div>
-                <Link to="/contact#map" className="btn-outline !py-2 !px-4">
-                  Find Us
-                </Link>
-              </div>
-            </div>
-
-            <div className="animate-on-scroll slide-in-right">
-              <div className="relative">
-                <img
-                  src="https://images.pexels.com/photos/1566837/pexels-photo-1566837.jpeg?auto=compress&cs=tinysrgb&w=800"
-                  alt="Beach Bumz interior"
-                  className="rounded-lg shadow-2xl w-full h-72 sm:h-80 object-cover hover-lift tilt-on-hover wave-animation"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-ocean-blue/30 to-transparent rounded-lg" />
-              </div>
-            </div>
-          </div>
-
-          {/* Feature cards */}
-          <div
-            className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 text-center mt-10 animate-on-scroll fade-in-up"
-            style={{ animationDelay: "0.15s" }}
-          >
-            <div className="bg-white/10 backdrop-blur-md rounded-lg p-5 sm:p-6 hover-lift beach-card tilt-on-hover">
-              <Award className="h-7 w-7 sm:h-8 sm:w-8 text-sunset-orange mx-auto mb-3 coconut-bounce" />
-              <h3 className="font-semibold text-white mb-1.5 sm:mb-2">Diverse Drink Menu</h3>
-              <p className="text-sandy-beige text-sm">Craft cocktails and premium spirits</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-md rounded-lg p-5 sm:p-6 hover-lift beach-card tilt-on-hover">
-              <Star className="h-7 w-7 sm:h-8 sm:w-8 text-turquoise mx-auto mb-3 starfish-spin" />
-              <h3 className="font-semibold text-white mb-1.5 sm:mb-2">Fan Favorites</h3>
-              <p className="text-sandy-beige text-sm">Pizza, wings, subs and more</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-md rounded-lg p-5 sm:p-6 hover-lift beach-card tilt-on-hover">
-              <Users className="h-7 w-7 sm:h-8 sm:w-8 text-coral-pink mx-auto mb-3 bounce-subtle" />
-              <h3 className="font-semibold text-white mb-1.5 sm:mb-2">Beach Community Hub</h3>
-              <p className="text-sandy-beige text-sm">Where locals and visitors unite</p>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* ===== Today's Specials ===== */}
       <section id="specials" className="py-20 bg-ocean-blue/80">
@@ -248,7 +211,6 @@ const Home = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 animate-on-scroll fade-in-up">
             {activeSpecials.map((s, i) => (
               <article key={`${s.name}-${i}`} className="rounded-xl overflow-hidden border border-white/10 bg-white/5 hover-lift beach-card">
-                {/* Image wrapper: prevents cropping */}
                 <div className="w-full aspect-[16/9] bg-white/10 flex items-center justify-center">
                   {s.image ? (
                     <img
@@ -262,7 +224,6 @@ const Home = () => {
                     <div className="grid place-items-center w-full h-full text-white/60">No image</div>
                   )}
                 </div>
-
                 <div className="p-4">
                   <div className="flex items-start justify-between gap-3">
                     <h3 className="text-lg font-semibold">{s.name}</h3>
@@ -282,71 +243,6 @@ const Home = () => {
           {!specialsErr && activeSpecials.length === 0 && (
             <div className="text-center text-white/75 mt-6">No active specials today.</div>
           )}
-        </div>
-      </section>
-
-      {/* Instagram */}
-      <section className="py-20 bg-ocean-blue">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center mb-12 animate-on-scroll zoom-in">
-            <h2 className="font-display text-4xl md:text-5xl text-white mb-4">
-              Live the <span className="text-gradient">Beach Bumz</span> Life
-            </h2>
-            <p className="text-sandy-beige text-lg mb-8">Follow us on Instagram for updates</p>
-            <a
-              href="https://www.instagram.com/beachbumzmc"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-turquoise hover:text-sunset-orange transition-colors duration-300 bounce-subtle"
-            >
-              <Instagram className="h-6 w-6" />
-              <span className="font-semibold">@beachbumzpub</span>
-            </a>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 animate-on-scroll fade-in-up">
-            {instagramPosts.map((post) => (
-              <div key={post.id} className="group relative overflow-hidden rounded-lg hover-lift cursor-pointer beach-card tilt-on-hover">
-                <img src={post.image} alt={post.caption} className="w-full h-40 sm:h-48 object-cover transition-transform duration-300 group-hover:scale-110" />
-                <div className="absolute inset-0 bg-gradient-to-t from-ocean-blue/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="absolute bottom-3 left-3 right-3">
-                    <p className="text-white text-sm font-medium">{post.caption}</p>
-                  </div>
-                </div>
-                <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <Instagram className="h-5 w-5 text-white bounce-subtle" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-20 cta-bg">
-        <div className="max-w-4xl mx-auto text-center px-4 animate-on-scroll zoom-in">
-          <h2 className="font-display text-4xl md:text-5xl text-white mb-6">Ready to Dive In?</h2>
-          <p className="text-xl text-white/90 mb-8">Experience the best coastal dining in Morehead City</p>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
-            <Link
-              to="/menu"
-              className="bg-white text-ocean-blue hover:bg-gray-100 font-semibold py-4 px-8 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:rotate-1 w-full sm:w-auto"
-            >
-              Explore Our Menu
-            </Link>
-            <button
-              onClick={handleOrderClick}
-              className="border-2 border-white text-white hover:bg-white hover:text-ocean-blue font-semibold py-4 px-8 transition-all duration-300 transform hover:scale-105 hover:-rotate-1 w-full sm:w-auto"
-            >
-              Order Now
-            </button>
-            <button
-              onClick={handleScrollToSpecials}
-              className="bg-turquoise text-black hover:bg-white hover:text-ocean-blue font-semibold py-4 px-8 transition-all duration-300 transform hover:scale-105 w-full sm:w-auto"
-            >
-              Jump to Specials
-            </button>
-          </div>
         </div>
       </section>
     </div>
@@ -380,7 +276,6 @@ function splitCSVLine(line: string): string[] {
 
   for (let i = 0; i < line.length; i++) {
     const ch = line[i];
-
     if (ch === '"') {
       if (inQuotes && line[i + 1] === '"') {
         cur += '"';
@@ -390,13 +285,11 @@ function splitCSVLine(line: string): string[] {
       }
       continue;
     }
-
     if (ch === "," && !inQuotes) {
       out.push(cur);
       cur = "";
       continue;
     }
-
     cur += ch;
   }
   out.push(cur);
