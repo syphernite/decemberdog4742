@@ -214,7 +214,7 @@ const Home = () => {
           >
             <div className="bg-white/10 backdrop-blur-md rounded-lg p-5 sm:p-6 hover-lift beach-card tilt-on-hover">
               <Award className="h-7 w-7 sm:h-8 sm:w-8 text-sunset-orange mx-auto mb-3 coconut-bounce" />
-              <h3 className="font-semibold text-white mb-1.5 sm:mb-2">Diverse Drink Menu TBD</h3>
+              <h3 className="font-semibold text-white mb-1.5 sm:mb-2">Diverse Drink Menu</h3>
               <p className="text-sandy-beige text-sm">Craft cocktails and premium spirits</p>
             </div>
             <div className="bg-white/10 backdrop-blur-md rounded-lg p-5 sm:p-6 hover-lift beach-card tilt-on-hover">
