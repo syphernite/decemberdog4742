@@ -153,15 +153,16 @@ const Home = () => {
               href="https://www.clover.com/online-ordering/beach-bumz-morehead-city"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-white text-ocean-blue hover:bg-gray-100 font-semibold py-3 px-6 rounded-md transition-all duration-300 transform hover:scale-105 hover:shadow-xl flex items-center gap-2 w-full sm:w-auto"
+              className="bg-white text-ocean-blue hover:bg-gray-100 font-semibold py-3 px-6 rounded-md transition-all duration-300 transform hover:scale-105 hover:shadow-xl flex items-center gap-2 w-full sm:w-auto justify-center text-center"
             >
               <span>Order Pickup</span>
             </a>
 
-            {/* DoorDash Delivery logo from public/images/doordash.png with base path */}
+            {/* DoorDash Delivery with same white button styling and centered content */}
             <button
               onClick={handleOrderClick}
-              className="btn-secondary w-full sm:w-auto flex items-center justify-center gap-2"
+              aria-label="Order Delivery on DoorDash"
+              className="bg-white text-ocean-blue hover:bg-gray-100 font-semibold py-3 px-6 rounded-md transition-all duration-300 transform hover:scale-105 hover:shadow-xl flex items-center gap-2 w-full sm:w-auto justify-center text-center"
             >
               <img
                 src={`${base}images/doordash.png`}
@@ -171,7 +172,6 @@ const Home = () => {
                 width={96}
                 height={24}
               />
-              <span className="sr-only">Order Delivery</span>
             </button>
 
             {/* Menu last */}
