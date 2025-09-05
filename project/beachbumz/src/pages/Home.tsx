@@ -1,6 +1,7 @@
+// src/pages/Home.tsx
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { ExternalLink, Star, MapPin, Instagram, Clock, Award, Users, Anchor } from "lucide-react";
+import { ExternalLink, Star, Award, Users, Anchor } from "lucide-react";
 
 type SpecialRow = {
   name: string;
@@ -19,7 +20,6 @@ const Home = () => {
   const [specials, setSpecials] = useState<SpecialRow[]>([]);
   const [specialsErr, setSpecialsErr] = useState<string | null>(null);
 
-  // Use Vite base for assets in public/ to support subpath deploys
   const base = (import.meta as any).env.BASE_URL || "/";
 
   useEffect(() => {
@@ -68,65 +68,34 @@ const Home = () => {
     if (specialsEl) specialsEl.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const instagramPosts = [
-    { id: 1, image: "https://images.pexels.com/photos/33406006/pexels-photo-33406006.png?auto=compress&cs=tinysrgb&w=400", caption: "Fresh pizza perfection! 🍕" },
-    { id: 2, image: "https://images.pexels.com/photos/33406008/pexels-photo-33406008.png?auto=compress&cs=tinysrgb&w=400", caption: "Wings that hit different 🔥" },
-    { id: 3, image: "https://images.pexels.com/photos/1639562/pexels-photo-1639562.jpeg?auto=compress&cs=tinysrgb&w=400", caption: "Beachside vibes daily ✨" },
-    { id: 4, image: "https://images.pexels.com/photos/5490915/pexels-photo-5490915.jpeg?auto=compress&cs=tinysrgb&w=400", caption: "Cold drinks, hot food 🍻" },
-  ];
-
   return (
     <div className="min-h-screen">
       {/* sky layer */}
       <div className="sky-bird">🕊️</div>
       <div className="sky-bird delay-1">🕊️</div>
 
-      {/* ===== Hero Section ===== */}
+      {/* ===== Hero Section (animated scene) ===== */}
       <section
         ref={heroRef}
         className="relative overflow-hidden pt-safe min-h-[88vh] md:min-h-screen flex items-center justify-center pb-14 md:pb-24 lg:pb-28"
       >
-        {/* BACKDROP */}
+        {/* BACKDROP / SCENE */}
         <div className="absolute inset-0 scene">
           <div aria-hidden className="pointer-events-none absolute right-6 sm:right-12 top-10 sm:top-12">
             <Anchor className="h-12 w-12 sm:h-16 sm:w-16 text-white/80 drop-shadow-[0_6px_12px_rgba(0,0,0,.35)] anchor-bob" strokeWidth={1.75} />
           </div>
-
-          <div className="clouds">
-            <div className="cloud c1" /><div className="cloud c2" /><div className="cloud c3" />
-            <div className="cyclone" />
-          </div>
-
-          <div className="caustics" />
-          <div className="water-ripple" />
-          <div className="surface-waves">
-            <div className="crest a" /><div className="crest b" /><div className="crest c" />
-          </div>
-
-          <div className="floating-bubbles">
-            {Array.from({ length: 18 }).map((_, i) => (<div key={i} className="bubble" />))}
-          </div>
-
+          <div className="clouds"><div className="cloud c1" /><div className="cloud c2" /><div className="cloud c3" /><div className="cyclone" /></div>
+          <div className="caustics" /><div className="water-ripple" />
+          <div className="surface-waves"><div className="crest a" /><div className="crest b" /><div className="crest c" /></div>
+          <div className="floating-bubbles">{Array.from({ length: 18 }).map((_, i) => (<div key={i} className="bubble" />))}</div>
           <div className="dunes back" /><div className="dunes mid" /><div className="dunes front" />
-
           <div className="underwater">
-            <div className="reef">
-              <div className="kelp k1" /><div className="kelp k2" /><div className="kelp k3" />
-              <div className="starfish" /><div className="shell" />
-            </div>
-            <div className="shoal s1">
-              {Array.from({ length: 8 }).map((_, i) => (<span key={i} className="fish f" />))}
-            </div>
-            <div className="shoal s2">
-              {Array.from({ length: 10 }).map((_, i) => (<span key={i} className="fish f small" />))}
-            </div>
-            <div className="jelly j1" /><div className="jelly j2" />
-            <div className="manta" />
+            <div className="reef"><div className="kelp k1" /><div className="kelp k2" /><div className="kelp k3" /><div className="starfish" /><div className="shell" /></div>
+            <div className="shoal s1">{Array.from({ length: 8 }).map((_, i) => (<span key={i} className="fish f" />))}</div>
+            <div className="shoal s2">{Array.from({ length: 10 }).map((_, i) => (<span key={i} className="fish f small" />))}</div>
+            <div className="jelly j1" /><div className="jelly j2" /><div className="manta" />
           </div>
-
-          <div className="shoreline">
-            <div className="foam f1" /><div className="foam f2" /><div className="foam f3" />
-          </div>
+          <div className="shoreline"><div className="foam f1" /><div className="foam f2" /><div className="foam f3" /></div>
         </div>
 
         {/* CONTENT */}
@@ -134,50 +103,20 @@ const Home = () => {
           <h1 className="font-display leading-tight text-white mb-4 neon-glow zoom-in text-4xl sm:text-5xl md:text-7xl lg:text-8xl">
             BEACH BUMZ
           </h1>
-          <p className="font-display text-turquoise mb-3 slide-in-left text-xl sm:text-2xl md:text-3xl" style={{ animationDelay: "0.2s" }}>
-            PUB & PIZZERIA
-          </p>
-          <p className="text-sandy-beige mb-8 font-light slide-in-right text-base sm:text-lg md:text-2xl" style={{ animationDelay: "0.4s" }}>
-            Where Comfort Meets the Coast
-          </p>
-
-          {/* CTA Row */}
-          <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-center items-center mb-2 fade-in-up" style={{ animationDelay: "0.6s" }}>
-            {/* Specials first */}
-            <button onClick={handleScrollToSpecials} className="btn-primary w-full sm:w-auto">
-              View Today’s Specials
-            </button>
-
-            {/* Clover Order Pickup */}
-            <a
-              href="https://www.clover.com/online-ordering/beach-bumz-morehead-city"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-white text-ocean-blue hover:bg-gray-100 font-semibold py-3 px-6 rounded-md transition-all duration-300 transform hover:scale-105 hover:shadow-xl flex items-center gap-2 w-full sm:w-auto justify-center text-center"
-            >
-              <span>Order Pickup</span>
-            </a>
-
-            {/* DoorDash Delivery with same white button styling and centered content */}
+          <p className="font-display text-turquoise mb-3 text-xl sm:text-2xl md:text-3xl">PUB & PIZZERIA</p>
+          <p className="text-sandy-beige mb-8 font-light text-base sm:text-lg md:text-2xl">Where Comfort Meets the Coast</p>
+          <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-center items-center mb-2">
+            <button onClick={handleScrollToSpecials} className="btn-primary w-full sm:w-auto">View Today’s Specials</button>
+            <a href="https://www.clover.com/online-ordering/beach-bumz-morehead-city" target="_blank" rel="noopener noreferrer" className="bg-white text-ocean-blue py-3 px-6 rounded-md w-full sm:w-auto">Order Pickup</a>
+            {/* DoorDash button updated to white style */}
             <button
               onClick={handleOrderClick}
-              aria-label="Order Delivery on DoorDash"
-              className="bg-white text-ocean-blue hover:bg-gray-100 font-semibold py-3 px-6 rounded-md transition-all duration-300 transform hover:scale-105 hover:shadow-xl flex items-center gap-2 w-full sm:w-auto justify-center text-center"
+              className="bg-white text-ocean-blue py-3 px-6 rounded-md w-full sm:w-auto flex items-center justify-center gap-2"
             >
-              <img
-                src={`${base}images/doordash.png`}
-                alt="DoorDash"
-                className="h-6"
-                loading="lazy"
-                width={96}
-                height={24}
-              />
+              <img src={`${base}images/doordash.png`} alt="DoorDash" className="h-6" loading="lazy" width={96} height={24} />
+              <span>Order Delivery</span>
             </button>
-
-            {/* Menu last */}
-            <Link to="/menu" className="btn-primary w-full sm:w-auto">
-              View Menu
-            </Link>
+            <Link to="/menu" className="btn-primary w-full sm:w-auto">View Menu</Link>
           </div>
         </div>
       </section>
@@ -186,43 +125,25 @@ const Home = () => {
       <div className="relative z-0 -mt-2 sm:-mt-3 md:-mt-4 lg:-mt-6">
         <div className="h-10 sm:h-12 md:h-14 bg-sandy-beige" />
         <div className="-mt-6 sm:-mt-8 md:-mt-10">
-          <div className="wave-divider">
-            <div className="wave wave-back"></div>
-            <div className="wave wave-mid"></div>
-            <div className="wave wave-front"></div>
-          </div>
+          <div className="wave-divider"><div className="wave wave-back"></div><div className="wave wave-mid"></div><div className="wave wave-front"></div></div>
         </div>
       </div>
 
-      {/* ===== Today's Specials ===== */}
+      {/* Specials */}
       <section id="specials" className="py-20 bg-ocean-blue/80">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-10 animate-on-scroll zoom-in">
             <h2 className="font-display text-4xl md:text-5xl text-white mb-3">Today’s Specials</h2>
             <p className="text-sandy-beige text-lg">Updated daily</p>
           </div>
-
-          {specialsErr && (
-            <div className="rounded-lg border border-red-400/40 bg-red-500/10 p-4 text-sm text-white/90 mb-8">
-              Failed to load specials: {specialsErr}
-            </div>
-          )}
-
+          {specialsErr && <div className="rounded-lg border border-red-400/40 bg-red-500/10 p-4 text-sm text-white/90 mb-8">Failed to load specials: {specialsErr}</div>}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 animate-on-scroll fade-in-up">
             {activeSpecials.map((s, i) => (
               <article key={`${s.name}-${i}`} className="rounded-xl overflow-hidden border border-white/10 bg-white/5 hover-lift beach-card">
                 <div className="w-full aspect-[16/9] bg-white/10 flex items-center justify-center">
                   {s.image ? (
-                    <img
-                      src={toDirectImageURL(s.image)}
-                      alt={s.name}
-                      loading="lazy"
-                      className="max-w-full max-h-full object-contain"
-                      style={{ display: "block" }}
-                    />
-                  ) : (
-                    <div className="grid place-items-center w-full h-full text-white/60">No image</div>
-                  )}
+                    <img src={toDirectImageURL(s.image)} alt={s.name} loading="lazy" className="max-w-full max-h-full object-contain" />
+                  ) : (<div className="grid place-items-center w-full h-full text-white/60">No image</div>)}
                 </div>
                 <div className="p-4">
                   <div className="flex items-start justify-between gap-3">
@@ -230,19 +151,63 @@ const Home = () => {
                     {s.price && <span className="text-white/90">{s.price}</span>}
                   </div>
                   {s.desc && <p className="mt-2 text-sm text-white/80 leading-relaxed">{s.desc}</p>}
-                  {s.badge && (
-                    <div className="mt-3 inline-flex px-2 py-1 rounded-md text-xs bg-sunset-orange text-black font-semibold">
-                      {s.badge}
-                    </div>
-                  )}
+                  {s.badge && <div className="mt-3 inline-flex px-2 py-1 rounded-md text-xs bg-sunset-orange text-black font-semibold">{s.badge}</div>}
                 </div>
               </article>
             ))}
           </div>
+          {!specialsErr && activeSpecials.length === 0 && <div className="text-center text-white/75 mt-6">No active specials today.</div>}
+        </div>
+      </section>
 
-          {!specialsErr && activeSpecials.length === 0 && (
-            <div className="text-center text-white/75 mt-6">No active specials today.</div>
-          )}
+      {/* About */}
+      <section className="py-20 bg-black">
+        <div className="max-w-3xl mx-auto text-center px-4 animate-on-scroll fade-in-up">
+          <h2 className="font-display text-3xl md:text-4xl text-white mb-4">Comfort Meets the Coast</h2>
+          <p className="text-white/80 leading-relaxed">
+            Beach Bumz is your pub-and-pizzeria near the waterfront. Stone-baked pies, crowd-favorite wings, and a full bar.
+            Swing through for game day, family dinners, or a laid-back night with friends.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3 justify-center">
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-white/10 text-white/90 text-sm"><Award className="h-4 w-4" /> Local Favorite</span>
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-white/10 text-white/90 text-sm"><Users className="h-4 w-4" /> Family Friendly</span>
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-white/10 text-white/90 text-sm"><Star className="h-4 w-4" /> Great Service</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-16 bg-ocean-blue/80">
+        <div className="max-w-6xl mx-auto px-4">
+          <h3 className="font-display text-2xl md:text-3xl text-white text-center mb-10">What Guests Say</h3>
+          <div className="grid md:grid-cols-3 gap-6 animate-on-scroll fade-in-up">
+            {TESTIMONIALS.map((t, i) => (
+              <blockquote key={i} className="rounded-xl bg-white/5 border border-white/10 p-5 text-white/90">
+                <p className="leading-relaxed">“{t.text}”</p>
+                <footer className="mt-4 text-sm text-white/70">— {t.name}, <span className="opacity-80">{t.role}</span></footer>
+              </blockquote>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Bottom */}
+      <section className="py-20 bg-black">
+        <div className="max-w-5xl mx-auto px-4 text-center">
+          <h3 className="font-display text-3xl md:text-4xl text-white mb-4">Ready for good food and easy vibes?</h3>
+          <p className="text-white/80 mb-6">Order online or swing by. We’ll take care of the rest.</p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <a href="https://www.clover.com/online-ordering/beach-bumz-morehead-city" target="_blank" rel="noreferrer" className="btn-primary inline-flex justify-center">Order Pickup</a>
+            {/* DoorDash button updated to white style */}
+            <button
+              onClick={handleOrderClick}
+              className="bg-white text-ocean-blue py-3 px-6 rounded-md w-full sm:w-auto flex items-center justify-center gap-2"
+            >
+              <img src={`${base}images/doordash.png`} alt="DoorDash" className="h-6" loading="lazy" width={96} height={24} />
+              <span>Order Delivery</span>
+            </button>
+            <Link to="/menu" className="btn-primary inline-flex justify-center">View Menu</Link>
+          </div>
         </div>
       </section>
     </div>
@@ -273,7 +238,6 @@ function splitCSVLine(line: string): string[] {
   const out: string[] = [];
   let cur = "";
   let inQuotes = false;
-
   for (let i = 0; i < line.length; i++) {
     const ch = line[i];
     if (ch === '"') {
@@ -308,3 +272,10 @@ function toDirectImageURL(url: string) {
     return url;
   }
 }
+
+/* ---------- local data ---------- */
+const TESTIMONIALS = [
+  { text: "The staff was friendly and we did not feel rushed. The food was wonderful and so was the service. The restaurant was very clean as well.", name: "Sherie L.", role: "TripAdvisor Review" },
+  { text: "Their salsa and chips are above the rest – so thick, so much flavor. Employees are so nice and very attentive.", name: "Loretta W.", role: "TripAdvisor Review" },
+  { text: "Everything we tried was delicious. The service was prompt and enthusiastic, and the music was very festive. We recommend you give them a try.", name: "Rhiannon V.", role: "TripAdvisor Review" },
+];
