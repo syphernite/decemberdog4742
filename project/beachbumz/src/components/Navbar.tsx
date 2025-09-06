@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { Menu, X, Phone } from "lucide-react";
 
@@ -15,9 +15,38 @@ const NAV = [
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [src, setSrc] = useState(PNG);
+  const [logoActive, setLogoActive] = useState(false); // mobile tap-to-enlarge
   const { pathname } = useLocation();
+  const logoWrapRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => setOpen(false), [pathname]);
+  // Close mobile drawer and reset logoActive on route change
+  useEffect(() => {
+    setOpen(false);
+    setLogoActive(false);
+  }, [pathname]);
+
+  // Click outside to collapse the mobile enlarged logo
+  useEffect(() => {
+    if (!logoActive) return;
+    const onDocClick = (e: MouseEvent) => {
+      const el = logoWrapRef.current;
+      if (!el) return;
+      if (!el.contains(e.target as Node)) setLogoActive(false);
+    };
+    document.addEventListener("click", onDocClick);
+    return () => document.removeEventListener("click", onDocClick);
+  }, [logoActive]);
+
+  const isMobile = () => typeof window !== "undefined" && window.innerWidth < 768;
+
+  // Intercept logo click on mobile: first tap enlarges, second tap allows navigation
+  const handleLogoClick: React.MouseEventHandler<HTMLAnchorElement> = (e) => {
+    if (!isMobile()) return;
+    if (!logoActive) {
+      e.preventDefault();
+      setLogoActive(true);
+    } // if active, allow navigation
+  };
 
   const linkClass =
     ({ isActive }: { isActive: boolean }) =>
@@ -45,20 +74,57 @@ export default function Navbar() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 h-16 md:h-20">
-      {/* EXACT match to logo background: pure black */}
       <div className="absolute inset-0 bg-black" />
 
       <div className="relative mx-auto max-w-6xl h-full px-4 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-3 min-w-0">
-          {/* Logo wrapped with same pure-black background */}
-          <div className="bg-black">
+        {/* Logo + wordmark */}
+        <Link
+          to="/"
+          onClick={handleLogoClick}
+          className="flex items-center gap-3 min-w-0 group"
+          aria-label="Go to home"
+        >
+          {/* Logo wrapper. Scales on desktop :hover via group-hover. On mobile, scales when logoActive=true. */}
+          <div
+            ref={logoWrapRef}
+            className={[
+              "relative bg-black will-change-transform",
+              "transition-transform duration-300 ease-out",
+              "motion-reduce:transition-none motion-reduce:transform-none",
+              // Desktop hover scale
+              "md:[transform-origin:center] md:group-hover:scale-150",
+              // Glow on desktop hover
+              "md:group-hover:[filter:drop-shadow(0_0_12px_rgba(37,211,197,0.55))]",
+              // Mobile active scale and glow
+              logoActive ? "scale-150 [filter:drop-shadow(0_0_12px_rgba(37,211,197,0.6))]" : "",
+              // Keep the scaled logo above neighbors without affecting layout
+              "z-40",
+            ].join(" ")}
+            // Prevent layout shift by letting the scaled element overflow out of header
+            style={{ transformOrigin: "center" }}
+          >
+            {/* Halo ring behind when active or hovered */}
+            <div
+              aria-hidden
+              className={[
+                "pointer-events-none absolute inset-[-10px] rounded-full blur-lg",
+                "transition-opacity duration-300",
+                (logoActive ? "opacity-60" : "opacity-0"),
+                "md:group-hover:opacity-60",
+              ].join(" ")}
+              style={{
+                background:
+                  "radial-gradient(closest-side, rgba(37,211,197,0.45), rgba(37,211,197,0.12), transparent 70%)",
+              }}
+            />
             <img
               src={src}
               onError={() => setSrc(JPG)}
               alt="Beach Bumz Pub & Pizzaria"
-              className="block h-8 w-auto md:h-10 object-contain m-0 p-0"
+              className="relative block h-8 w-auto md:h-10 object-contain m-0 p-0"
             />
           </div>
+
           <div className="hidden sm:flex flex-col leading-tight select-none">
             <span className="text-white font-extrabold tracking-wide text-sm md:text-base">BEACH BUMZ</span>
             <span className="text-turquoise text-[10px] md:text-xs">PUB & PIZZARIA</span>
@@ -79,8 +145,6 @@ export default function Navbar() {
             <Phone className="h-4 w-4" />
             (252) 726-7800
           </a>
-
-          {/* Desktop credit */}
           <Credit className="ml-3 hidden lg:block" />
         </nav>
 
@@ -106,7 +170,13 @@ export default function Navbar() {
           >
             <div className="flex items-center justify-between p-4 border-b border-white/10">
               <div className="flex items-center gap-2">
-                <div className="bg-black">
+                <div className={[
+                  "bg-black",
+                  "transition-transform duration-300 ease-out",
+                  "motion-reduce:transition-none motion-reduce:transform-none",
+                  // in drawer, use simple hover enlarge on mobile too
+                  "hover:scale-125",
+                ].join(" ")}>
                   <img src={src} onError={() => setSrc(JPG)} alt="Logo" className="h-8 w-auto block" />
                 </div>
                 <span className="font-semibold">BEACH BUMZ</span>
@@ -132,7 +202,6 @@ export default function Navbar() {
                 </a>
               </div>
 
-              {/* Mobile credit pinned to bottom */}
               <div className="p-4 border-t border-white/10">
                 <Credit />
               </div>
