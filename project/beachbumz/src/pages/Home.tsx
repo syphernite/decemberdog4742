@@ -101,7 +101,7 @@ const Home = () => {
         {/* CONTENT */}
         <div className="relative z-10 text-center px-4 sm:px-6 max-w-5xl mx-auto pb-32 md:pb-40 lg:pb-44">
           <h1 className="font-display leading-tight text-white mb-4 neon-glow zoom-in text-4xl sm:text-5xl md:text-7xl lg:text-8xl">
-            BEACH BUMZ
+            <span className="floating-title">BEACH BUMZ</span>
           </h1>
           <p className="font-display text-turquoise mb-3 text-xl sm:text-2xl md:text-3xl">PUB & PIZZERIA</p>
           <p className="text-sandy-beige mb-8 font-light text-base sm:text-lg md:text-2xl">Where Comfort Meets the Coast</p>
@@ -114,7 +114,6 @@ const Home = () => {
               className="bg-white text-ocean-blue py-3 px-6 rounded-md w-full sm:w-auto flex items-center justify-center gap-2"
             >
               <img src={`${base}images/doordash.png`} alt="DoorDash" className="h-6" loading="lazy" width={96} height={24} />
-              <span>Order Delivery</span>
             </button>
             <Link to="/menu" className="btn-primary w-full sm:w-auto">View Menu</Link>
           </div>
@@ -204,12 +203,31 @@ const Home = () => {
               className="bg-white text-ocean-blue py-3 px-6 rounded-md w-full sm:w-auto flex items-center justify-center gap-2"
             >
               <img src={`${base}images/doordash.png`} alt="DoorDash" className="h-6" loading="lazy" width={96} height={24} />
-              <span>Order Delivery</span>
             </button>
             <Link to="/menu" className="btn-primary inline-flex justify-center">View Menu</Link>
           </div>
         </div>
       </section>
+
+      {/* local styles for floating title */}
+      <style>{`
+        .floating-title {
+          display: inline-block;
+          animation: floatY 6.2s ease-in-out infinite;
+          will-change: transform;
+          transform: translateZ(0);
+        }
+        @keyframes floatY {
+          0% { transform: translateY(0); }
+          25% { transform: translateY(-8px); }
+          50% { transform: translateY(-12px); }
+          75% { transform: translateY(-8px); }
+          100% { transform: translateY(0); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .floating-title { animation: none; }
+        }
+      `}</style>
     </div>
   );
 };
