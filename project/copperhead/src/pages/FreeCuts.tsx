@@ -154,9 +154,9 @@ export default function FreeCutsPage() {
           </div>
         </section>
 
-        {/* How to manage */}
+        {/* Manage via Google Sheets. Columns required: Date, Start, End, Location, Notes. */}
         <section className="mt-10 text-xs text-white/50">
-          Manage via Google Sheets. Columns required: Date, Start, End, Location, Notes.
+          
         </section>
       </div>
     </main>
