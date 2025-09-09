@@ -1,151 +1,48 @@
-// src/pages/Home.tsx
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Smartphone, Clock, CreditCard, ArrowRight, Star } from 'lucide-react';
-import { BadgeCounter } from '../components/BadgeCounter';
-import { TestimonialCard } from '../components/TestimonialCard';
-import { MapEmbed } from '../components/MapEmbed';
-import { Gallery } from '../components/Gallery';
-import siteData from '../content/site.json';
+import { Link } from 'react-router-dom';
 
-export const Home: React.FC = () => {
-  const featuredGallery = siteData.gallery.slice(0, 6);
+export function Home() {
+  const base = (import.meta as any).env.BASE_URL || '/';
+  const logo = base + 'logo.png';
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <motion.section initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="bg-gradient-to-br from-copper/10 to-bone py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
-              <h1 className="text-5xl lg:text-6xl font-bold text-charcoal mb-6">Copperhead Cuts</h1>
-              <p className="text-2xl text-bone mb-8">Mobile barber. On your schedule.</p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link
-                  to="/book"
-                  className="bg-copper text-bone px-8 py-4 rounded-lg hover:bg-copper/90 transition-colors text-lg font-semibold text-center focus:outline-none focus:ring-2 focus:ring-copper focus:ring-offset-2"
-                >
-                  Book a Cut
-                </Link>
-                <Link
-                  to="/prices"
-                  className="bg-bone text-copper border border-copper px-8 py-4 rounded-lg hover:bg-copper/5 transition-colors text-lg font-semibold text-center focus:outline-none focus:ring-2 focus:ring-copper focus:ring-offset-2"
-                >
-                  See Prices
-                </Link>
-              </div>
-            </motion.div>
+    <section className="relative min-h-[92svh] bg-ink overflow-hidden">
+      <div className="absolute -inset-20 copper-gradient opacity-40 blur-3xl rounded-[100%]"></div>
+      <div className="absolute inset-0 grain"></div>
 
-            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="relative">
-              <img
-                src="https://images.pexels.com/photos/1813272/pexels-photo-1813272.jpeg"
-                alt="Professional barber providing mobile service"
-                className="w-full h-auto rounded-lg shadow-2xl"
-                loading="eager"
-              />
-              <div className="absolute -top-4 -right-4">
-                <BadgeCounter count={siteData.freeCuts.totalGiven} label="Free Cuts Given" />
-              </div>
-            </motion.div>
+      <div className="relative max-w-6xl mx-auto px-6 pt-20 pb-24 grid md:grid-cols-2 items-center gap-10">
+        <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .7 }} className="text-bone">
+          <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-3 py-1 text-xs text-white/80">
+            Mobile • Faith-driven • Community-first
           </div>
-        </div>
-      </motion.section>
-
-      {/* USP Grid */}
-      <motion.section initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-bone rounded-lg p-6 shadow-lg text-center">
-              <Smartphone className="w-12 h-12 text-copper mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-charcoal mb-2">Mobile Service</h3>
-              <p className="text-bone">We come to you wherever you are.</p>
-            </motion.div>
-
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-bone rounded-lg p-6 shadow-lg text-center">
-              <Clock className="w-12 h-12 text-copper mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-charcoal mb-2">Same Day Available</h3>
-              <p className="text-bone">Book today and get cut today.</p>
-            </motion.div>
-
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-bone rounded-lg p-6 shadow-lg text-center">
-              <CreditCard className="w-12 h-12 text-copper mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-charcoal mb-2">Cash or Card</h3>
-              <p className="text-bone">Pay however works best for you.</p>
-            </motion.div>
-          </div>
-        </div>
-      </motion.section>
-
-      {/* Service Area Map */}
-      <motion.section initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="py-20 bg-charcoal">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <MapEmbed />
-          </motion.div>
-        </div>
-      </motion.section>
-
-      {/* Featured Gallery */}
-      <motion.section initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-charcoal mb-4">Our Work</h2>
-            <p className="text-xl text-bone">Quality cuts that speak for themselves.</p>
-          </motion.div>
-
-          <Gallery images={featuredGallery} />
-
-          <div className="text-center mt-8">
-            <Link
-              to="/gallery"
-              className="inline-flex items-center gap-2 bg-copper text-bone px-6 py-3 rounded-lg hover:bg-copper/90 transition-colors focus:outline-none focus:ring-2 focus:ring-copper focus:ring-offset-2"
-            >
-              View Full Gallery
-              <ArrowRight size={20} />
+          <h1 className="mt-4 text-4xl md:text-6xl font-black leading-tight">
+            Fresh fades with <span className="copper-text">Copperhead</span> precision
+          </h1>
+          <p className="mt-4 text-white/75 max-w-prose">
+            Lawton’s mobile barbershop bringing the chair to you. Book on Booksy. Free community cut events featured on KSWO.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <a href="https://booksy.com/en-us/1282324_copperhead-cutz_barber-shop_32141_lawton" target="_blank" rel="noreferrer" className="btn-shine px-5 py-3 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold">
+              Book on Booksy
+            </a>
+            <Link to="/gallery" className="px-5 py-3 rounded-xl" style={{ backgroundColor: 'var(--copper-600)', color: 'white' }}>
+              View Gallery
             </Link>
           </div>
-        </div>
-      </motion.section>
-
-      {/* Reviews */}
-      <motion.section initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="py-20 bg-charcoal">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-charcoal mb-4">What Clients Say</h2>
-            <div className="flex items-center justify-center gap-1 mb-4">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} size={24} className="text-yellow-400 fill-current" />
-              ))}
-              <span className="ml-2 text-lg font-semibold text-bone">5.0 Stars</span>
-            </div>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {siteData.testimonials.map((testimonial, index) => (
-              <TestimonialCard key={testimonial.name} {...testimonial} index={index} />
-            ))}
+          <div className="mt-10 grid grid-cols-3 gap-3">
+            <div className="pole h-20 w-4 rounded-full"></div>
+            <div className="pole h-20 w-4 rounded-full"></div>
+            <div className="pole h-20 w-4 rounded-full"></div>
           </div>
-        </div>
-      </motion.section>
-
-      {/* Free Cut Banner */}
-      <motion.section initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="bg-success text-bone py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div>
-              <h3 className="text-2xl font-bold mb-2">Next Free Cut Day: February 15th</h3>
-              <p className="text-success-100">Join our community giveback program and get notified of free cut events.</p>
-            </div>
-            <Link
-              to="/free-cuts"
-              className="bg-bone text-success px-6 py-3 rounded-lg hover:bg-charcoal transition-colors font-semibold focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-success"
-            >
-              Join the List
-            </Link>
+        </motion.div>
+        <motion.div initial={{ opacity: 0, scale: .9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: .8 }} className="relative">
+          <div className="absolute -inset-8 rounded-[2rem] copper-gradient opacity-30 blur-2xl"></div>
+          <div className="relative rounded-[2rem] overflow-hidden ring-1 ring-white/10">
+            <img src={logo} alt="Copperhead Cutz logo" className="w-full h-full object-contain bg-black/60 p-6" />
           </div>
-        </div>
-      </motion.section>
-    </div>
+        </motion.div>
+      </div>
+    </section>
   );
-};
+}

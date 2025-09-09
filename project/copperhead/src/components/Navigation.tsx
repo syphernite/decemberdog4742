@@ -1,117 +1,53 @@
-import { openSMS } from '../lib/sms'
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React from 'react';
+import { Link, NavLink } from 'react-router-dom';
+import { Scissors, Facebook, Instagram } from 'lucide-react';
 
-export const Navigation: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation();
-
-  const navLinks = [
-    { path: '/', label: 'Home' },
-    { path: '/prices', label: 'Prices' },
-    { path: '/gallery', label: 'Gallery' },
-    { path: '/book', label: 'Book' },
-    { path: '/free-cuts', label: 'Free Cuts' },
+export function Navigation() {
+  const nav = [
+    { to: '/', label: 'Home' },
+    { to: '/book', label: 'Book' },
+    { to: '/prices', label: 'Prices' },
+    { to: '/gallery', label: 'Gallery' },
+    { to: '/freecuts', label: 'Free Cuts' },
+    { to: '/contact', label: 'Contact' },
   ];
-
-  const isActive = (path: string) => location.pathname === path;
+  const base = (import.meta as any).env.BASE_URL || '/';
+  const logo = base + 'logo.png';
 
   return (
-    <nav className="sticky top-0 bg-bone shadow-lg z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link to="/" className="flex items-center">
-            <span className="text-2xl font-bold text-copper">Copperhead Cuts</span>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-copper ${
-                  isActive(link.path)
-                    ? 'text-copper bg-copper/10'
-                    : 'text-charcoal hover:text-copper hover:bg-copper/5'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
-            <Link
-              to="/book"
-              className="btn-ghost"
-            >
-              Book a Cut
-            </Link>
-            <a
-              href="tel:+1-555-0100"
-              className="btn-ghost"
-            >
-              <Phone size={16} />
-              Text to Book
-            </a>
+    <header className="sticky top-0 z-40 bg-ink/85 backdrop-blur border-b border-white/10">
+      <div className="max-w-6xl mx-auto px-4 py-3 flex items-center gap-4">
+        <Link to="/" className="flex items-center gap-3 group">
+          <div className="size-10 rounded-full overflow-hidden ring-2 ring-white/20">
+            <img src={logo} alt="Copperhead Cutz" className="w-full h-full object-cover" />
           </div>
-
-          {/* Mobile menu button */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 rounded-md text-charcoal hover:bg-copper/5 focus:outline-none focus:ring-2 focus:ring-copper"
-            aria-label="Toggle menu"
-          >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
+          <div className="font-bold tracking-wide text-bone">
+            <span className="copper-text">Copperhead</span> Cutz
+          </div>
+        </Link>
+        <nav className="ml-auto hidden md:flex items-center gap-1">
+          {nav.map((n) => (
+            <NavLink
+              key={n.to}
+              to={n.to}
+              className={({ isActive }) =>
+                `px-3 py-2 rounded-xl text-sm transition ${isActive ? 'bg-white/10 text-white' : 'text-white/70 hover:text-white hover:bg:white/5'}`
+              }
+            >
+              {n.label}
+            </NavLink>
+          ))}
+          <a href="https://www.facebook.com/copperheadcutz/" target="_blank" rel="noreferrer" className="p-2 text-white/70 hover:text-white">
+            <Facebook size={18} />
+          </a>
+          <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" className="p-2 text-white/70 hover:text-white">
+            <Instagram size={18} />
+          </a>
+          <a href="https://booksy.com/en-us/1282324_copperhead-cutz_barber-shop_32141_lawton" target="_blank" rel="noreferrer" className="ml-2 btn-shine px-3 py-2 rounded-xl bg-white/10 text-white hover:bg-white/15 flex items-center gap-2">
+            <Scissors size={16} /> Book
+          </a>
+        </nav>
       </div>
-
-      {/* Mobile Navigation */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-bone border-t border-copper/20"
-          >
-            <div className="px-4 py-4 space-y-2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  onClick={() => setIsOpen(false)}
-                  className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                    isActive(link.path)
-                      ? 'text-copper bg-copper/10'
-                      : 'text-charcoal hover:text-copper hover:bg-copper/5'
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <div className="pt-4 space-y-2">
-                <Link
-                  to="/book"
-                  onClick={() => setIsOpen(false)}
-                  className="btn-ghost"
-                >
-                  Book a Cut
-                </Link>
-                <a
-                  href="tel:+1-555-0100"
-                  className="btn-ghost"
-                >
-                  <Phone size={16} />
-                  Text to Book
-                </a>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </nav>
+    </header>
   );
-};
+}
