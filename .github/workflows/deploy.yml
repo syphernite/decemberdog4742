@@ -20,6 +20,8 @@ jobs:
 
       # 3) Build each client demo (skip landingpage)
       - name: Build demos
+        env:
+          VITE_FREECUTS_CSV_URL: ${{ secrets.VITE_FREECUTS_CSV_URL }}
         run: |
           for dir in project/*/; do
             slug=$(basename "$dir")
@@ -40,6 +42,8 @@ jobs:
 
       # 4) Build & copy landing page into root
       - name: Build landing page
+        env:
+          VITE_FREECUTS_CSV_URL: ${{ secrets.VITE_FREECUTS_CSV_URL }}
         run: |
           cd project/landingpage
           npm ci
@@ -57,18 +61,18 @@ jobs:
           <body>
             <script>
               // Split path segments
-              const parts = location.pathname.split('/').filter(Boolean)
+              const parts = location.pathname.split('/').filter(Boolean);
               if (parts.length > 0) {
                 // first segment is the demo slug
-                const slug = parts[0]
+                const slug = parts[0];
                 // rest after slug
-                const rest = parts.slice(1).join('/')
+                const rest = parts.slice(1).join('/');
                 // build target URL: /<slug>/index.html#/<rest>
-                const hash = rest ? '#/' + rest : ''
-                window.location.replace(/${slug}/index.html${hash})
+                const hash = rest ? '#/' + rest : '';
+                window.location.replace(`/${slug}/index.html${hash}`);
               } else {
                 // no slug → root landing page
-                window.location.replace('/index.html')
+                window.location.replace('/index.html');
               }
             </script>
             <p>Redirecting…</p>
