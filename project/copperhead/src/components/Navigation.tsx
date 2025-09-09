@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { Scissors, Facebook, Instagram, Menu, X } from 'lucide-react';
+import { Scissors, Facebook, Menu, X } from 'lucide-react';
 
 export function Navigation() {
   const [open, setOpen] = useState(false);
@@ -53,15 +53,6 @@ export function Navigation() {
             aria-label="Facebook"
           >
             <Facebook size={18} />
-          </a>
-          <a
-            href="https://www.instagram.com/"
-            target="_blank"
-            rel="noreferrer"
-            className="p-2 text-white/70 hover:text-white"
-            aria-label="Instagram"
-          >
-            <Instagram size={18} />
           </a>
           <a
             href="https://booksy.com/en-us/1282324_copperhead-cutz_barber-shop_32141_lawton"
@@ -119,15 +110,6 @@ export function Navigation() {
                 aria-label="Facebook"
               >
                 <Facebook size={18} />
-              </a>
-              <a
-                href="https://www.instagram.com/"
-                target="_blank"
-                rel="noreferrer"
-                className="p-2 rounded-lg bg-white/5 text-white/80 hover:text-white"
-                aria-label="Instagram"
-              >
-                <Instagram size={18} />
               </a>
               <a
                 href="https://booksy.com/en-us/1282324_copperhead-cutz_barber-shop_32141_lawton"
