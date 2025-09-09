@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { Scissors, Facebook, Instagram } from 'lucide-react';
@@ -14,6 +13,7 @@ export function Navigation() {
   ];
   const base = (import.meta as any).env.BASE_URL || '/';
   const logo = base + 'logo.png';
+
   return (
     <header className="sticky top-0 z-40 bg-ink/85 backdrop-blur border-b border-white/10">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center gap-4">
@@ -31,13 +31,21 @@ export function Navigation() {
               key={n.to}
               to={n.to}
               className={({ isActive }) =>
-                `px-3 py-2 rounded-xl text-sm transition ${isActive ? 'bg-white/10 text-white' : 'text-white/70 hover:text-white hover:bg-white/5'}`
+                `px-3 py-2 rounded-xl text-sm transition ${isActive ? 'bg-white/10 text-white' : 'text-white/70 hover:text-white hover:bg:white/5'}`
               }
-            >{n.label}</NavLink>
+            >
+              {n.label}
+            </NavLink>
           ))}
-          <a href="https://www.facebook.com/copperheadcutz/" target="_blank" rel="noreferrer" className="p-2 text-white/70 hover:text-white"><Facebook size={18}/></a>
-          <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" className="p-2 text-white/70 hover:text-white"><Instagram size={18}/></a>
-          <a href="tel:+15805852072" className="ml-2 btn-shine px-3 py-2 rounded-xl bg-white/10 text-white hover:bg-white/15 flex items-center gap-2"><Scissors size={16}/> Book</a>
+          <a href="https://www.facebook.com/copperheadcutz/" target="_blank" rel="noreferrer" className="p-2 text-white/70 hover:text-white">
+            <Facebook size={18} />
+          </a>
+          <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" className="p-2 text-white/70 hover:text-white">
+            <Instagram size={18} />
+          </a>
+          <a href="https://booksy.com/en-us/1282324_copperhead-cutz_barber-shop_32141_lawton" target="_blank" rel="noreferrer" className="ml-2 btn-shine px-3 py-2 rounded-xl bg-white/10 text-white hover:bg-white/15 flex items-center gap-2">
+            <Scissors size={16} /> Book
+          </a>
         </nav>
       </div>
     </header>

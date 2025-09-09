@@ -1,5 +1,5 @@
-
 import React from 'react';
+
 export function Prices() {
   const items = [
     { name: 'Mens Haircut', price: 30 },
@@ -24,5 +24,5 @@ export function Prices() {
         <p className="text-white/60 text-sm mt-4">Final pricing may vary. See Booksy for live rates.</p>
       </div>
     </section>
-  );
+  )
 }

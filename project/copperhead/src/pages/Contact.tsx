@@ -1,6 +1,6 @@
-
 import React from 'react';
 import { Phone, Facebook, MapPin, Clock } from 'lucide-react';
+
 export function Contact() {
   return (
     <section className="min-h-[92svh] bg-ink text-bone">
@@ -27,5 +27,5 @@ export function Contact() {
         </div>
       </div>
     </section>
-  );
+  )
 }

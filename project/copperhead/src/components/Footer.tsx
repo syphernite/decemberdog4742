@@ -1,6 +1,6 @@
-
 import React from 'react';
 import { Facebook, Mail, Phone } from 'lucide-react';
+
 export function Footer() {
   return (
     <footer className="bg-ink border-t border-white/10">
@@ -14,10 +14,12 @@ export function Footer() {
           <div className="flex items-center gap-2 mt-2"><Mail size={16}/> <a href="mailto:info@copperheadcutz.com">info@copperheadcutz.com</a></div>
         </div>
         <div className="md:text-right">
-          <a className="inline-flex items-center gap-2 text-white/80 hover:text-white" href="https://www.facebook.com/copperheadcutz/" target="_blank" rel="noreferrer"><Facebook size={16}/> Facebook</a>
+          <a className="inline-flex items-center gap-2 text-white/80 hover:text-white" href="https://www.facebook.com/copperheadcutz/" target="_blank" rel="noreferrer">
+            <Facebook size={16}/> Facebook
+          </a>
         </div>
       </div>
       <div className="text-center text-xs text-white/50 py-4 border-t border-white/10">© {new Date().getFullYear()} Copperhead Cutz</div>
     </footer>
-  );
+  )
 }

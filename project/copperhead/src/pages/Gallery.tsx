@@ -1,13 +1,14 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { loadGallery, GalleryImage } from '../lib/gallery';
+
 export function Gallery() {
   const [images, setImages] = useState<GalleryImage[]>([]);
   const trackRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => { loadGallery().then(setImages); }, []);
+
   useEffect(() => {
-    const el = trackRef.current;
-    if (!el) return;
+    const el = trackRef.current; if (!el) return;
     const onScroll = () => {
       const cards = Array.from(el.querySelectorAll<HTMLElement>('.bay-card'));
       const center = el.scrollLeft + el.clientWidth / 2;
@@ -18,10 +19,10 @@ export function Gallery() {
         card.classList.toggle('is-center', distance < rect.width * 0.25);
       });
     };
-    el.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
+    el.addEventListener('scroll', onScroll, { passive: true }); onScroll();
     return () => el.removeEventListener('scroll', onScroll);
   }, [images]);
+
   return (
     <section className="min-h-[92svh] bg-ink text-bone">
       <div className="max-w-6xl mx-auto px-6 py-14">
@@ -36,9 +37,6 @@ export function Gallery() {
               </figure>
             ))}
           </div>
-        </div>
-        <div className="mt-10 text-sm text-white/70">
-          Want your cut featured? Tag <span className="text-white">@copperheadcutz</span> or send to our Facebook inbox.
         </div>
       </div>
     </section>
