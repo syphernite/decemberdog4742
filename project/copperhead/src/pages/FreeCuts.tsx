@@ -2,8 +2,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { MapPin, Calendar, Clock, AlertTriangle } from 'lucide-react';
 
-const SHEET_CSV_URL: string | undefined = (import.meta as any).env
-  .VITE_FREECUTS_CSV_URL;
+// Always try env, fallback to empty string so the app doesn't break
+const SHEET_CSV_URL: string =
+  (import.meta as any).env?.VITE_FREECUTS_CSV_URL || '';
 
 type EventRow = {
   date: string;
@@ -20,7 +21,6 @@ function stripBOM(s: string) {
 }
 
 function headerKey(raw: string) {
-  // normalize: lowercase, remove spaces/punctuation
   return raw.toLowerCase().replace(/[^a-z]/g, '');
 }
 
@@ -28,11 +28,8 @@ function parseCsv(csv: string): EventRow[] {
   const lines = stripBOM(csv).trim().split(/\r?\n/);
   if (lines.length === 0) return [];
 
-  const headers = lines[0]
-    .split(',')
-    .map((h) => headerKey(h));
+  const headers = lines[0].split(',').map((h) => headerKey(h));
 
-  // map common variants to canonical keys
   const want = {
     date: ['date', 'eventdate'],
     start: ['start', 'starttime', 'time', 'from'],
@@ -95,24 +92,20 @@ function splitCsvLine(line: string): string[] {
   return res;
 }
 
-// Robust date parsing: ISO, US, and Google serial numbers
 function parseWhen(dateStr: string): Date {
   const s = dateStr.trim();
 
   // Google Sheets serial number
   if (/^\d+(\.\d+)?$/.test(s)) {
     const serial = parseFloat(s);
-    // Excel/Sheets epoch: 1899-12-30
     const epoch = new Date(Date.UTC(1899, 11, 30));
     const ms = serial * 86400000;
     return new Date(epoch.getTime() + ms);
   }
 
-  // Prefer ISO first
   const iso = new Date(s);
   if (!isNaN(iso.getTime())) return iso;
 
-  // Try US mm/dd/yyyy
   const m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
   if (m) {
     const mm = parseInt(m[1], 10) - 1;
@@ -121,7 +114,6 @@ function parseWhen(dateStr: string): Date {
     return new Date(yyyy, mm, dd);
   }
 
-  // Fallback invalid date
   return new Date('Invalid');
 }
 
@@ -141,13 +133,17 @@ export default function FreeCutsPage() {
 
   useEffect(() => {
     if (!SHEET_CSV_URL) {
-      setErr('Missing VITE_FREECUTS_CSV_URL.');
+      setErr('VITE_FREECUTS_CSV_URL not set. Add it to your .env file.');
       setLoading(false);
       return;
     }
 
     let alive = true;
-    const url = SHEET_CSV_URL + (SHEET_CSV_URL.includes('?') ? '&' : '?') + 'cb=' + Date.now();
+    const url =
+      SHEET_CSV_URL +
+      (SHEET_CSV_URL.includes('?') ? '&' : '?') +
+      'cb=' +
+      Date.now();
 
     fetch(url, { cache: 'no-store', mode: 'cors' })
       .then((r) => (r.ok ? r.text() : Promise.reject(r.status + ' ' + r.statusText)))
@@ -171,7 +167,7 @@ export default function FreeCutsPage() {
   }, []);
 
   const upcoming: ParsedRow[] = useMemo(() => {
-    const today = new Date(new Date().toDateString()); // midnight today
+    const today = new Date(new Date().toDateString());
     return rows
       .map((r) => ({ ...r, when: parseWhen(r.date) }))
       .filter((r) => !isNaN(r.when.getTime()) && r.when >= today)
@@ -186,21 +182,16 @@ export default function FreeCutsPage() {
         <h1 className="text-4xl font-extrabold mb-2">
           <span className="copper-text">Free Cuts</span>
         </h1>
-        <p className="text-white/60 mb-8">Weekly free haircut. Updated from Google Sheets.</p>
+        <p className="text-white/60 mb-8">
+          Weekly free haircut. Updated from Google Sheets.
+        </p>
 
         {loading ? (
           <div className="text-white/70 mb-6">Loading…</div>
         ) : err ? (
           <div className="mb-6 flex items-start gap-2 text-amber-300">
             <AlertTriangle size={18} className="mt-0.5" />
-            <div>
-              {err}
-              {import.meta.env.DEV && SHEET_CSV_URL ? (
-                <div className="mt-2 text-xs text-white/50 break-all">
-                  Using URL: <code>{SHEET_CSV_URL}</code>
-                </div>
-              ) : null}
-            </div>
+            <div>{err}</div>
           </div>
         ) : null}
 
@@ -237,17 +228,18 @@ export default function FreeCutsPage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {upcoming.map((e, i) => (
               <div key={i} className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <div className="font-medium mb-1">{fmtRange(e.when, e.start, e.end)}</div>
+                <div className="font-medium mb-1">
+                  {fmtRange(e.when, e.start, e.end)}
+                </div>
                 <div className="text-white/80">
                   <span className="copper-text">{e.location}</span>
                 </div>
-                {e.notes ? <div className="text-white/60 mt-1">{e.notes}</div> : null}
+                {e.notes ? (
+                  <div className="text-white/60 mt-1">{e.notes}</div>
+                ) : null}
               </div>
             ))}
           </div>
-        </section>
-
-        <section className="mt-10 text-xs text-white/50">
         </section>
       </div>
     </main>
