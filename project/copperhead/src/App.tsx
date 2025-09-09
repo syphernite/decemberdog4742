@@ -5,7 +5,6 @@ import Prices from './pages/Prices';
 import Contact from './pages/Contact';
 import GalleryPage from './pages/Gallery';
 import FreeCutsPage from './pages/FreeCuts';
-import Book from './pages/Book';
 import { Navigation } from './components/Navigation';
 import { Footer } from './components/Footer';
 import IntroGate from './components/IntroGate';
@@ -21,7 +20,6 @@ export default function App() {
         <Navigation />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/book" element={<Book />} />
           <Route path="/prices" element={<Prices />} />
           <Route path="/gallery" element={<GalleryPage />} />
           <Route path="/freecuts" element={<FreeCutsPage />} />

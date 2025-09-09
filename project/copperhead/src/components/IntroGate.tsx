@@ -15,8 +15,13 @@ export default function IntroGate({ logoSrc, onOpened, minShowMs = 600 }: Props)
   const [done, setDone] = useState(false);
   const [mountedAt] = useState(() => Date.now());
   const [root, setRoot] = useState<HTMLElement | null>(null);
+  const [promptReady, setPromptReady] = useState(false);
 
   useEffect(() => setRoot(document.body), []);
+  useEffect(() => {
+    const t = window.setTimeout(() => setPromptReady(true), 1000);
+    return () => window.clearTimeout(t);
+  }, []);
 
   const triggerOpen = useCallback(() => {
     if (done || open) return;
@@ -81,6 +86,8 @@ export default function IntroGate({ logoSrc, onOpened, minShowMs = 600 }: Props)
     []
   );
 
+  const showPrompt = !open && !armed && promptReady;
+
   if (!root || done) return null;
 
   return createPortal(
@@ -103,19 +110,46 @@ export default function IntroGate({ logoSrc, onOpened, minShowMs = 600 }: Props)
           <div className="absolute inset-0 grain" />
 
           <div className="relative h-full w-full flex items-center justify-center">
+            {/* Dim + blur the logo when prompting */}
             <motion.img
               src={logoSrc}
               alt="Site logo"
-              className="w-full h-full object-contain select-none cursor-pointer"
+              className={[
+                "w-full h-full object-contain select-none cursor-pointer transition-[filter,transform,opacity] duration-300",
+                showPrompt ? "blur-md" : ""
+              ].join(" ")}
               draggable={false}
               variants={logoVar}
               onClick={triggerOpen}
             />
+
+            {/* Scrim for contrast */}
+            {showPrompt && (
+              <div className="absolute inset-0 bg-black/45 pointer-events-none" aria-hidden />
+            )}
+
+            {/* Centered CTA */}
+            {showPrompt && (
+              <motion.button
+                type="button"
+                onClick={triggerOpen}
+                className="absolute mx-auto px-6 py-3 rounded-full bg-white text-black font-semibold tracking-wide shadow-2xl ring-2 ring-white/80 focus:outline-none focus:ring-4 focus:ring-white/90"
+                initial={{ scale: 0.98, opacity: 0 }}
+                animate={{ scale: [1, 1.03, 1], opacity: 1 }}
+                transition={{ duration: 1.2, repeat: Infinity, repeatType: "reverse" }}
+                aria-label="Click to enter"
+              >
+                Click to enter
+              </motion.button>
+            )}
           </div>
 
-          {!armed && (
+          {/* Helper hint before 1s */}
+          {!promptReady && (
             <div className="absolute bottom-10 left-0 right-0 flex justify-center">
-              <div className="text-white/80 text-xs tracking-wide">Scroll or click logo to enter</div>
+              <div className="text-white/90 text-xs tracking-wide bg-black/30 px-3 py-1 rounded-full">
+                Scroll or click logo to enter
+              </div>
             </div>
           )}
         </motion.div>
