@@ -1,3 +1,4 @@
+// src/pages/Contact.tsx
 import React from 'react';
 import { Phone, Facebook, MapPin, Clock } from 'lucide-react';
 
@@ -6,14 +7,16 @@ function Contact() {
     <section className="min-h-[92svh] bg-ink text-bone">
       <div className="max-w-6xl mx-auto px-6 py-14 grid md:grid-cols-2 gap-10">
         <div>
-          <h1 className="text-4xl md:text-5xl font-black copper-text">Contact</h1>
+          <h1 className="text-4xl md:text-5xl font-black">
+            <span className="copper-text">Contact</span>
+          </h1>
           <p className="mt-3 text-white/80">
             Reach out to book the mobile chair or ask about community events.
           </p>
           <div className="mt-6 space-y-3 text-white/80">
             <div className="flex items-center gap-3">
               <Phone size={18} />
-              <a href="tel:+15805852072" className="hover:underline">
+              <a href="tel:+15805852072" className="hover:underline copper-text">
                 580-585-2072
               </a>
             </div>
@@ -30,7 +33,17 @@ function Contact() {
             </div>
             <div className="flex items-center gap-3">
               <Clock size={18} />
-              By appointment • Booksy
+              <span>
+                By appointment •{' '}
+                <a
+                  href="https://booksy.com/en-us/1282324_copperhead-cutz_barber-shop_32141_lawton"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:underline copper-text"
+                >
+                  Booksy
+                </a>
+              </span>
             </div>
             <div className="flex items-center gap-3">
               <MapPin size={18} />
