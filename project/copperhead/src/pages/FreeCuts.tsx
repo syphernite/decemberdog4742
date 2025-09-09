@@ -2,9 +2,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { MapPin, Calendar, Clock } from 'lucide-react';
 
-const SHEET_CSV_URL =
-  import.meta.env.VITE_FREECUTS_CSV_URL ||
-  'https://docs.google.com/spreadsheets/d/e/REPLACE_WITH_YOUR_PUBLISHED_SHEET_ID/pub?output=csv';
+const SHEET_CSV_URL: string | undefined = import.meta.env.VITE_FREECUTS_CSV_URL;
 
 type EventRow = { date: string; start: string; end?: string; location: string; notes?: string };
 
@@ -28,17 +26,29 @@ function parseCsv(csv: string): EventRow[] {
 }
 
 function splitCsvLine(line: string): string[] {
-  const res: string[] = []; let cur = ''; let quoted = false;
+  const res: string[] = [];
+  let cur = '';
+  let quoted = false;
   for (let i = 0; i < line.length; i++) {
     const ch = line[i];
     if (quoted) {
-      if (ch === '"' && line[i + 1] === '"') { cur += '"'; i++; }
-      else if (ch === '"') { quoted = false; }
-      else { cur += ch; }
+      if (ch === '"' && line[i + 1] === '"') {
+        cur += '"';
+        i++;
+      } else if (ch === '"') {
+        quoted = false;
+      } else {
+        cur += ch;
+      }
     } else {
-      if (ch === ',') { res.push(cur); cur = ''; }
-      else if (ch === '"') { quoted = true; }
-      else { cur += ch; }
+      if (ch === ',') {
+        res.push(cur);
+        cur = '';
+      } else if (ch === '"') {
+        quoted = true;
+      } else {
+        cur += ch;
+      }
     }
   }
   res.push(cur);
@@ -46,7 +56,11 @@ function splitCsvLine(line: string): string[] {
 }
 
 function fmtRange(d: Date, start: string, end?: string) {
-  const dStr = d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+  const dStr = d.toLocaleDateString(undefined, {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+  });
   return end ? `${dStr} • ${start} – ${end}` : `${dStr} • ${start}`;
 }
 
@@ -55,12 +69,21 @@ export default function FreeCutsPage() {
   const [err, setErr] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!SHEET_CSV_URL) {
+      setErr('Missing sheet URL in environment (VITE_FREECUTS_CSV_URL).');
+      return;
+    }
     let alive = true;
     fetch(SHEET_CSV_URL, { cache: 'no-store' })
       .then((r) => (r.ok ? r.text() : Promise.reject(r.statusText)))
-      .then((text) => { if (!alive) return; setRows(parseCsv(text)); })
+      .then((text) => {
+        if (!alive) return;
+        setRows(parseCsv(text));
+      })
       .catch(() => alive && setErr('Unable to load schedule.'));
-    return () => { alive = false; };
+    return () => {
+      alive = false;
+    };
   }, []);
 
   const upcoming = useMemo(() => {
@@ -117,12 +140,19 @@ export default function FreeCutsPage() {
           <h3 className="text-lg font-semibold mb-3">Schedule</h3>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {upcoming.map((e, i) => (
-              <div key={i} className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <div className="font-medium mb-1">{fmtRange(e.when, e.start, e.end)}</div>
+              <div
+                key={i}
+                className="rounded-2xl border border-white/10 bg-white/5 p-4"
+              >
+                <div className="font-medium mb-1">
+                  {fmtRange(e.when, e.start, e.end)}
+                </div>
                 <div className="text-white/80">
                   <span className="copper-text">{e.location}</span>
                 </div>
-                {e.notes ? <div className="text-white/60 mt-1">{e.notes}</div> : null}
+                {e.notes ? (
+                  <div className="text-white/60 mt-1">{e.notes}</div>
+                ) : null}
               </div>
             ))}
           </div>
