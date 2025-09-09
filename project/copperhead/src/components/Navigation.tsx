@@ -7,7 +7,6 @@ export function Navigation() {
 
   const nav = [
     { to: '/', label: 'Home' },
-    { to: '/book', label: 'Book' },
     { to: '/prices', label: 'Prices' },
     { to: '/gallery', label: 'Gallery' },
     { to: '/freecuts', label: 'Free Cuts' },
