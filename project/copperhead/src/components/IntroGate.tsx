@@ -148,7 +148,6 @@ export default function IntroGate({ logoSrc, onOpened, minShowMs = 600 }: Props)
           {!promptReady && (
             <div className="absolute bottom-10 left-0 right-0 flex justify-center">
               <div className="text-white/90 text-xs tracking-wide bg-black/30 px-3 py-1 rounded-full">
-                Scroll or click logo to enter
               </div>
             </div>
           )}
