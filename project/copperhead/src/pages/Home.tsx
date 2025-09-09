@@ -41,15 +41,13 @@ function Home() {
             >
               <span className="copper-text">Book on Booksy</span>
             </a>
-            <Link to="/gallery" className="px-5 py-3 rounded-xl" style={{ backgroundColor: 'var(--copper-600)', color: 'white' }}>
+            <Link
+              to="/gallery"
+              className="px-5 py-3 rounded-xl"
+              style={{ backgroundColor: 'var(--copper-600)', color: 'white' }}
+            >
               View Gallery
             </Link>
-          </div>
-
-          <div className="mt-10 flex justify-center gap-6 md:grid md:grid-cols-3 md:gap-3">
-            <div className="pole h-20 w-4 rounded-full will-change-transform" />
-            <div className="pole h-20 w-4 rounded-full will-change-transform" />
-            <div className="pole h-20 w-4 rounded-full will-change-transform" />
           </div>
         </motion.div>
 
@@ -61,7 +59,13 @@ function Home() {
         >
           <div className="absolute -inset-8 rounded-[2rem] copper-gradient opacity-20 blur-lg md:opacity-30 md:blur-2xl" />
           <div className="relative rounded-[2rem] overflow-hidden ring-1 ring-white/10">
-            <img src={logo} alt="Copperhead Cutz logo" className="w-full h-full object-contain bg-black/60 p-6" loading="eager" decoding="async" />
+            <img
+              src={logo}
+              alt="Copperhead Cutz logo"
+              className="w-full h-full object-contain bg-black/60 p-6"
+              loading="eager"
+              decoding="async"
+            />
           </div>
         </motion.div>
       </div>
