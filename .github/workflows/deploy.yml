@@ -22,6 +22,7 @@ jobs:
       - name: Build demos
         env:
           VITE_FREECUTS_CSV_URL: ${{ secrets.VITE_FREECUTS_CSV_URL }}
+          VITE_SPECIALS_CSV: ${{ secrets.VITE_SPECIALS_CSV }}
         run: |
           for dir in project/*/; do
             slug=$(basename "$dir")
@@ -44,6 +45,7 @@ jobs:
       - name: Build landing page
         env:
           VITE_FREECUTS_CSV_URL: ${{ secrets.VITE_FREECUTS_CSV_URL }}
+          VITE_SPECIALS_CSV: ${{ secrets.VITE_SPECIALS_CSV }}
         run: |
           cd project/landingpage
           npm ci
