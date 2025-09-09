@@ -183,7 +183,6 @@ export default function FreeCutsPage() {
           <span className="copper-text">Free Cuts</span>
         </h1>
         <p className="text-white/60 mb-8">
-          Weekly free haircut. Updated from Google Sheets.
         </p>
 
         {loading ? (
