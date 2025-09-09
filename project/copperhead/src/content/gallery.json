@@ -1,9 +1,11 @@
+// public/content/gallery.json
 {
   "images": [
-    { "src": "images/gallery1.jpg", "caption": "Classic taper" },
-    { "src": "images/gallery2.jpg", "caption": "Skin fade" },
-    { "src": "images/gallery3.jpg", "caption": "Beard sculpt" },
-    { "src": "images/gallery4.jpg", "caption": "Kids cut" },
-    { "src": "images/gallery5.jpg", "caption": "Razor lineup" }
+    "images/gallery1.jpg",
+    "images/gallery2.jpg",
+    "images/gallery3.jpg",
+    "images/gallery4.jpg",
+    "images/gallery5.jpg",
+    "images/gallery6.jpg"
   ]
 }

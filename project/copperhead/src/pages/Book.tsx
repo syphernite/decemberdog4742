@@ -1,3 +1,4 @@
+// src/pages/Book.tsx
 import React from 'react';
 import { ExternalLink } from 'lucide-react';
 
@@ -5,7 +6,9 @@ function Book() {
   return (
     <section className="min-h-[92svh] bg-ink text-bone grid place-items-center px-6">
       <div className="max-w-2xl text-center">
-        <h1 className="text-4xl md:text-5xl font-black">Book a Cut</h1>
+        <h1 className="text-4xl md:text-5xl font-black">
+          <span className="copper-text">Book</span> a Cut
+        </h1>
         <p className="mt-3 text-white/80">
           Reserve your mobile appointment on Booksy.
         </p>
@@ -15,7 +18,7 @@ function Book() {
           rel="noreferrer"
           className="inline-flex items-center gap-2 mt-5 px-5 py-3 rounded-xl bg-white/10 hover:bg-white/15"
         >
-          Open Booksy <ExternalLink size={16} />
+          <span className="copper-text">Open Booksy</span> <ExternalLink size={16} />
         </a>
       </div>
     </section>
