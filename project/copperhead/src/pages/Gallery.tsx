@@ -1,44 +1,47 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { loadGallery, GalleryImage } from '../lib/gallery';
+// src/pages/Gallery.tsx
+import React, { useEffect, useState } from 'react';
+import { loadGallery } from '../lib/gallery';
 
-export function Gallery() {
-  const [images, setImages] = useState<GalleryImage[]>([]);
-  const trackRef = useRef<HTMLDivElement>(null);
+type Img = { src: string; caption?: string };
 
-  useEffect(() => { loadGallery().then(setImages); }, []);
+export default function GalleryPage() {
+  const [items, setItems] = useState<Img[]>([]);
+  const [err, setErr] = useState<string | null>(null);
 
   useEffect(() => {
-    const el = trackRef.current; if (!el) return;
-    const onScroll = () => {
-      const cards = Array.from(el.querySelectorAll<HTMLElement>('.bay-card'));
-      const center = el.scrollLeft + el.clientWidth / 2;
-      cards.forEach((card) => {
-        const rect = card.getBoundingClientRect();
-        const cx = rect.left + rect.width / 2 - el.getBoundingClientRect().left;
-        const distance = Math.abs(cx - el.clientWidth / 2);
-        card.classList.toggle('is-center', distance < rect.width * 0.25);
-      });
+    let alive = true;
+    loadGallery()
+      .then((imgs) => alive && setItems(imgs))
+      .catch(() => alive && setErr('Failed to load gallery.'));
+    return () => {
+      alive = false;
     };
-    el.addEventListener('scroll', onScroll, { passive: true }); onScroll();
-    return () => el.removeEventListener('scroll', onScroll);
-  }, [images]);
+  }, []);
 
   return (
-    <section className="min-h-[92svh] bg-ink text-bone">
-      <div className="max-w-6xl mx-auto px-6 py-14">
-        <h1 className="text-4xl md:text-5xl font-black copper-text">Gallery</h1>
-        <p className="mt-2 text-white/70">Swipe or scroll horizontally.</p>
-        <div className="bay-window mt-8">
-          <div ref={trackRef} className="bay-track">
-            {images.map((img, i) => (
-              <figure key={i} className="bay-card">
-                <img className="bay-img" src={img.src} alt={img.caption || `Gallery ${i+1}`} loading="lazy" />
-                <figcaption className="bay-caption">{img.caption || ''}</figcaption>
-              </figure>
-            ))}
-          </div>
+    <main className="min-h-[80svh] bg-ink text-bone">
+      <div className="max-w-6xl mx-auto px-4 py-10">
+        <h1 className="text-4xl font-extrabold text-copper mb-2">Gallery</h1>
+        <p className="text-white/60 mb-8">Swipe or scroll horizontally.</p>
+
+        {err ? <div className="text-red-400 mb-4">{err}</div> : null}
+
+        <div className="flex gap-6 overflow-x-auto pb-6 snap-x snap-mandatory">
+          {items.map((img, i) => (
+            <article
+              key={i}
+              className="shrink-0 w-[280px] h-[360px] rounded-3xl bg-white/5 border border-white/10 shadow-2xl snap-start overflow-hidden"
+            >
+              <img
+                src={img.src}
+                alt={img.caption || `Gallery ${i + 1}`}
+                loading="lazy"
+                className="w-full h-full object-cover"
+              />
+            </article>
+          ))}
         </div>
       </div>
-    </section>
+    </main>
   );
 }
