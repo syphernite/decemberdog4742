@@ -248,7 +248,6 @@ export default function FreeCutsPage() {
         </section>
 
         <section className="mt-10 text-xs text-white/50">
-          Required columns (any capitalization): Date, Start, End, Location, Notes.
         </section>
       </div>
     </main>
