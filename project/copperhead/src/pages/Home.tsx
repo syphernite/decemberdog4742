@@ -21,7 +21,7 @@ function Home() {
           className="text-bone will-change-transform"
         >
           <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-3 py-1 text-xs text-white/80">
-            Mobile • Faith-driven • Community-first
+            Mobile • Community-first
           </div>
 
           <h1 className="mt-4 text-4xl md:text-6xl font-black leading-tight">
@@ -29,7 +29,7 @@ function Home() {
           </h1>
 
           <p className="mt-4 text-white/75 max-w-prose">
-            Lawton’s mobile barbershop bringing the chair to you. Book on Booksy. Free community cut events featured on KSWO.
+            Lawton’s first mobile barbershop bringing the chair to you. Book on Booksy. Stay tuned for Free Community Cut events.
           </p>
 
           <div className="mt-6 flex flex-wrap gap-3">
