@@ -36,6 +36,15 @@ const toNumber = (val: any): number => {
 
 const PAGE_SIZE = 20;
 
+// Use GitHub secret / env variable for CSV
+const PUBKEY = import.meta.env.VITE_SNEAKERS_PUBKEY as string | undefined;
+const GID = import.meta.env.VITE_SNEAKERS_GID as string | undefined;
+const DIRECT = import.meta.env.VITE_SNEAKERS_CSV as string | undefined;
+
+const CSV_URL = DIRECT
+  ? DIRECT
+  : `https://docs.google.com/spreadsheets/d/e/${PUBKEY}/pub?gid=${GID}&single=true&output=csv`;
+
 const SneakersPage = () => {
   const features = [
     { icon: ShoppingCart, title: "BUY", description: "Curated selection of authentic sneakers" },
@@ -47,9 +56,7 @@ const SneakersPage = () => {
   const [visible, setVisible] = useState(PAGE_SIZE);
 
   useEffect(() => {
-    fetch(
-      "https://docs.google.com/spreadsheets/d/e/2PACX-1vRLoBlBjeSeUiwN8QOo0EWS5W9qgradVwK-XW0shLbqCdbxu-AAEkmTnqgKBiq3_FrVTZu1uPDYd6tD/pub?gid=0&single=true&output=csv"
-    )
+    fetch(CSV_URL)
       .then((res) => res.text())
       .then((text) => {
         const rows = text

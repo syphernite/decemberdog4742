@@ -23,6 +23,9 @@ jobs:
         env:
           VITE_FREECUTS_CSV_URL: ${{ secrets.VITE_FREECUTS_CSV_URL }}
           VITE_SPECIALS_CSV: ${{ secrets.VITE_SPECIALS_CSV }}
+          VITE_SNEAKERS_CSV: ${{ secrets.VITE_SNEAKERS_CSV }}
+          VITE_SNEAKERS_PUBKEY: ${{ secrets.VITE_SNEAKERS_PUBKEY }}
+          VITE_SNEAKERS_GID: ${{ secrets.VITE_SNEAKERS_GID }}
         run: |
           for dir in project/*/; do
             slug=$(basename "$dir")
@@ -46,6 +49,9 @@ jobs:
         env:
           VITE_FREECUTS_CSV_URL: ${{ secrets.VITE_FREECUTS_CSV_URL }}
           VITE_SPECIALS_CSV: ${{ secrets.VITE_SPECIALS_CSV }}
+          VITE_SNEAKERS_CSV: ${{ secrets.VITE_SNEAKERS_CSV }}
+          VITE_SNEAKERS_PUBKEY: ${{ secrets.VITE_SNEAKERS_PUBKEY }}
+          VITE_SNEAKERS_GID: ${{ secrets.VITE_SNEAKERS_GID }}
         run: |
           cd project/landingpage
           npm ci
@@ -96,3 +102,10 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
           publish_dir: ./
+
+      # 8) Expose sneaker inventory secrets
+      - name: Set Sneakers CSV Secrets
+        run: |
+          echo "VITE_SNEAKERS_CSV=${{ secrets.VITE_SNEAKERS_CSV }}" >> $GITHUB_ENV
+          echo "VITE_SNEAKERS_PUBKEY=${{ secrets.VITE_SNEAKERS_PUBKEY }}" >> $GITHUB_ENV
+          echo "VITE_SNEAKERS_GID=${{ secrets.VITE_SNEAKERS_GID }}" >> $GITHUB_ENV
