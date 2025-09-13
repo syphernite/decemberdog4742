@@ -1,4 +1,4 @@
-// src/pages/DemoShowcase.tsx
+// File: src/pages/DemoShowcase.tsx
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -17,91 +17,16 @@ type Demo = {
 
 const withTrailingSlash = (u: string) => (u.endsWith("/") ? u : u + "/");
 
-// ✅ include DEMOS here so the file is self-contained
 const DEMOS: Demo[] = [
-  {
-    title: "Photography",
-    slug: "photography",
-    externalUrl: "https://built4you.org/photography/",
-    badge: "Portfolio",
-    tagline: "Visual-first galleries with booking.",
-    keywords: ["gallery", "portfolio", "booking", "lightbox", "photographer"],
-    features: ["responsive", "contact form", "seo", "image grid", "hero slideshow"],
-  },
-  {
-    title: "Barbershop",
-    slug: "barbershop",
-    externalUrl: "https://built4you.org/barbershop/",
-    badge: "Services",
-    tagline: "Appointments, pricing tables, reviews.",
-    keywords: ["barber", "appointments", "pricing", "reviews", "map"],
-    features: ["mobile-first", "contact form", "maps", "social links"],
-  },
-  {
-    title: "Detailer",
-    slug: "detailer",
-    externalUrl: "https://built4you.org/detailer/",
-    badge: "Auto",
-    tagline: "Before/after gallery, service tiers, mobile-first.",
-    keywords: ["auto", "detailing", "before/after", "packages", "mobile"],
-    features: ["gallery", "contact form", "pricing tiers"],
-  },
-  {
-    title: "Food Truck",
-    slug: "foodtruck",
-    externalUrl: "https://built4you.org/foodtruck/",
-    badge: "Food",
-    tagline: "Menu, schedule, locations, events.",
-    keywords: ["menu", "events", "schedule", "locations", "truck"],
-    features: ["map", "contact form", "social links"],
-    pricingPlanKey: "basic",
-  },
-  {
-    title: "Contractor",
-    slug: "trades",
-    externalUrl: "https://built4you.org/plumbing/",
-    badge: "Professional",
-    tagline: "Trust-building, licensing, quotes, service areas.",
-    keywords: ["plumber", "electrician", "contractor", "quote", "service area"],
-    features: ["contact form", "badges", "testimonials"],
-  },
-  {
-    title: "Tattoo",
-    slug: "tattooshop",
-    externalUrl: "https://built4you.org/tattooshop/",
-    badge: "Portfolio",
-    tagline: "Artist profiles, galleries, booking forms.",
-    keywords: ["tattoo", "artists", "portfolio", "booking", "instagram"],
-    features: ["gallery", "contact form", "profiles"],
-  },
-  {
-    title: "Pest Control",
-    slug: "pestcontrol",
-    externalUrl: "https://built4you.org/pestcontrol/",
-    badge: "Home Services",
-    tagline: "Instant service requests.",
-    keywords: ["pest", "bugs", "seasonal", "services"],
-    features: ["service plans", "contact form", "pricing tiers"],
-  },
-  {
-    title: "Ecommerce",
-    slug: "ecommerce",
-    externalUrl: "https://built4you.org/ecommerce/",
-    badge: "Online Store",
-    tagline: "Products, cart, checkout, promos.",
-    keywords: ["store", "cart", "checkout", "stripe", "shopify"],
-    features: ["products", "search", "filters", "checkout"],
-    pricingPlanKey: "ecom-starter",
-  },
-  {
-    title: "Influencer / Creator",
-    slug: "creator",
-    externalUrl: "https://built4you.org/creator/",
-    badge: "Personal Brand",
-    tagline: "Link hub, content, email capture, offers.",
-    keywords: ["creator", "influencer", "newsletter", "links", "offers"],
-    features: ["email capture", "social links", "landing page"],
-  },
+  { title: "Photography", slug: "photography", externalUrl: "https://built4you.org/photography/", badge: "Portfolio", tagline: "Visual-first galleries with booking.", keywords: ["gallery","portfolio","booking","lightbox","photographer"], features: ["responsive","contact form","seo","image grid","hero slideshow"] },
+  { title: "Barbershop", slug: "barbershop", externalUrl: "https://built4you.org/barbershop/", badge: "Services", tagline: "Appointments, pricing tables, reviews.", keywords: ["barber","appointments","pricing","reviews","map"], features: ["mobile-first","contact form","maps","social links"] },
+  { title: "Detailer", slug: "detailer", externalUrl: "https://built4you.org/detailer/", badge: "Auto", tagline: "Before/after gallery, service tiers, mobile-first.", keywords: ["auto","detailing","before/after","packages","mobile"], features: ["gallery","contact form","pricing tiers"] },
+  { title: "Food Truck", slug: "foodtruck", externalUrl: "https://built4you.org/foodtruck/", badge: "Food", tagline: "Menu, schedule, locations, events.", keywords: ["menu","events","schedule","locations","truck"], features: ["map","contact form","social links"], pricingPlanKey: "basic" },
+  { title: "Contractor", slug: "trades", externalUrl: "https://built4you.org/plumbing/", badge: "Professional", tagline: "Trust-building, licensing, quotes, service areas.", keywords: ["plumber","electrician","contractor","quote","service area"], features: ["contact form","badges","testimonials"] },
+  { title: "Tattoo", slug: "tattooshop", externalUrl: "https://built4you.org/tattooshop/", badge: "Portfolio", tagline: "Artist profiles, galleries, booking forms.", keywords: ["tattoo","artists","portfolio","booking","instagram"], features: ["gallery","contact form","profiles"] },
+  { title: "Pest Control", slug: "pestcontrol", externalUrl: "https://built4you.org/pestcontrol/", badge: "Home Services", tagline: "Instant service requests.", keywords: ["pest","bugs","seasonal","services"], features: ["service plans","contact form","pricing tiers"] },
+  { title: "Ecommerce", slug: "ecommerce", externalUrl: "https://built4you.org/ecommerce/", badge: "Online Store", tagline: "Products, cart, checkout, promos.", keywords: ["store","cart","checkout","stripe","shopify"], features: ["products","search","filters","checkout"], pricingPlanKey: "ecom-starter" },
+  { title: "Influencer / Creator", slug: "creator", externalUrl: "https://built4you.org/creator/", badge: "Personal Brand", tagline: "Link hub, content, email capture, offers.", keywords: ["creator","influencer","newsletter","links","offers"], features: ["email capture","social links","landing page"] },
 ];
 
 const useInView = (options?: IntersectionObserverInit) => {
@@ -195,7 +120,7 @@ const DemoShowcase: React.FC = () => {
   };
 
   return (
-    <main className="min-h-screen bg-transparent text-white">
+    <main className="min-h-screen bg-black text-white">
       <section className="px-4 sm:px-6 lg:px-8 pt-20 pb-8">
         <div className="max-w-7xl mx-auto flex flex-col items-center text-center gap-4">
           <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight">Demo Showcase</h1>
