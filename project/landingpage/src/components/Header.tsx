@@ -24,6 +24,7 @@ const Header: React.FC = () => {
     { name: "About", path: "/about" },
     { name: "Our Mission", path: "/why-we-exist" },
     { name: "Our Work", path: "/demos" },
+    { name: "Careers", path: "/careers" },
     { name: "Contact", path: "/contact" },
   ];
 
@@ -82,7 +83,6 @@ const Header: React.FC = () => {
           aria-modal="true"
           className="fixed inset-0 z-[100] bg-slate-950/95 backdrop-blur-md"
           style={{
-            // Ensure full coverage on iOS Safari
             minHeight: "100dvh",
             paddingTop: "calc(env(safe-area-inset-top) + 1rem)",
             paddingBottom: "calc(env(safe-area-inset-bottom) + 1rem)",
