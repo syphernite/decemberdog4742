@@ -1,9 +1,26 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
   <head>
-    <meta http-equiv="refresh" content="0; url=/" />
+    <meta charset="utf-8" />
+    <title>Redirecting…</title>
+    <script>
+      (function(l) {
+        // For a custom domain at the root (built4you.org), keep = 0.
+        // If deploying at user.github.io/REPO_NAME, set keep = 1.
+        var keep = 0;
+
+        var path = l.pathname.slice(1).split("/");
+        var base = "/" + path.slice(0, keep).join("/");
+        if (keep) base += "/";
+
+        var rest = path.slice(keep).join("/");
+        var search = l.search ? l.search.slice(1).replace(/&/g, "~and~") : "";
+        var hash = l.hash || "";
+
+        var target = base + "?p=/" + rest + (search ? "&q=" + search : "") + hash;
+        l.replace(target);
+      })(window.location);
+    </script>
   </head>
-  <body>
-    <p>Redirecting...</p>
-  </body>
+  <body></body>
 </html>
