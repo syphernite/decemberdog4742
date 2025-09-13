@@ -95,6 +95,12 @@ const Footer: React.FC = () => {
             </p>
             <div className="flex space-x-6">
               <Link
+                to="/careers"
+                className="text-slate-400 hover:text-emerald-400 text-sm transition-colors duration-200"
+              >
+                Careers
+              </Link>
+              <Link
                 to="/privacy-policy"
                 className="text-slate-400 hover:text-emerald-400 text-sm transition-colors duration-200"
               >

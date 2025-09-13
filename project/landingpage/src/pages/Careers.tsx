@@ -1,22 +1,59 @@
-import React, { useState } from "react";
+// File: src/pages/Careers.tsx
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
+import { useLocation, useNavigate } from "react-router-dom";
 
 type ModalState =
   | { open: false }
-  | { open: true; title: string; url: string; height?: number };
+  | { open: true; title: string; url: string; height?: number; slug: string };
 
 export default function Careers() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [modal, setModal] = useState<ModalState>({ open: false });
+  const prevPathRef = useRef<string>(location.pathname + location.search);
 
-  // --- Google Form embeds (applications + skills checks) ---
+  // Google Form embeds
   const GOOGLE_FORM_SALES =
-    "https://docs.google.com/forms/d/e/1FAIpQLSeF13qog72tavwJXw6yeBogVCgQWpHSBDUbL1a_CsLgU0TaxA/viewform?embedded=true"; // height: 3128
+    "https://docs.google.com/forms/d/e/1FAIpQLSeF13qog72tavwJXw6yeBogVCgQWpHSBDUbL1a_CsLgU0TaxA/viewform?embedded=true"; // Sales Application
   const GOOGLE_FORM_DESIGN =
-    "https://docs.google.com/forms/d/e/1FAIpQLSe8HiwRx1t9Ikr-TJTcBtgMVx1-gA8dUs4rxQyREMxaNm1_wQ/viewform?embedded=true"; // height: 3062
+    "https://docs.google.com/forms/d/e/1FAIpQLSe8HiwRx1t9Ikr-TJTcBtgMVx1-gA8dUs4rxQyREMxaNm1_wQ/viewform?embedded=true"; // Web Design Application
   const GOOGLE_FORM_SKILLS_SALES =
-    "https://docs.google.com/forms/d/e/1FAIpQLSfsgBsEao8tH9Y0aU63ej9UWBLgKGJMPqPPl_Rpd4rLJEMgcw/viewform?embedded=true"; // height: 1440
+    "https://docs.google.com/forms/d/e/1FAIpQLSfsgBsEao8tH9Y0aU63ej9UWBLgKGJMPqPPl_Rpd4rLJEMgcw/viewform?embedded=true"; // Sales Assessment
   const GOOGLE_FORM_SKILLS_DESIGN =
-    "https://docs.google.com/forms/d/e/1FAIpQLSf2ioVLlF-8C2goLNJiE4kat0fr8HqcZ20Ei6tygr3BJVLhsA/viewform?embedded=true"; // height: 1484
+    "https://docs.google.com/forms/d/e/1FAIpQLSf2ioVLlF-8C2goLNJiE4kat0fr8HqcZ20Ei6tygr3BJVLhsA/viewform?embedded=true"; // Web Dev Assessment
+
+  const openModal = (opts: { title: string; url: string; height: number; slug: string }) => {
+    setModal({ open: true, ...opts });
+    prevPathRef.current = location.pathname + location.search;
+    const params = new URLSearchParams(location.search);
+    params.set("modal", opts.slug);
+    navigate({ pathname: location.pathname, search: params.toString() }, { replace: false });
+  };
+
+  const closeModal = () => {
+    setModal({ open: false });
+    const params = new URLSearchParams(location.search);
+    if (params.has("modal")) {
+      params.delete("modal");
+      navigate({ pathname: location.pathname, search: params.toString() }, { replace: false });
+    }
+  };
+
+  const activeModalFromURL = useMemo(
+    () => new URLSearchParams(location.search).get("modal"),
+    [location.search]
+  );
+  useEffect(() => {
+    if (!activeModalFromURL && modal.open) setModal({ open: false });
+  }, [activeModalFromURL]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!modal.open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && closeModal();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [modal.open]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <main className="relative min-h-[92svh] bg-black text-white">
@@ -34,7 +71,7 @@ export default function Careers() {
         <div className="absolute inset-0 bg-gradient-to-b from-violet-900/30 via-black to-black" />
         <div className="max-w-6xl mx-auto px-6 py-20 relative">
           <div className="text-center space-y-6">
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
+            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
               Join the Built4You Contractor Network
             </h1>
             <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto">
@@ -63,7 +100,9 @@ export default function Careers() {
           {/* Sales Card */}
           <article className="group bg-white/5 rounded-3xl p-8 ring-1 ring-white/10 hover:ring-violet-500/40 transition">
             <header className="mb-6">
-              <h2 className="text-2xl font-semibold">Sales Contractor</h2>
+              <h2 className="text-2xl font-extrabold bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
+                Sales Contractor
+              </h2>
               <p className="text-white/70 mt-2">
                 Prospect, qualify, and close local small businesses. We provide assets, demos, and a simple playbook.
               </p>
@@ -79,11 +118,11 @@ export default function Careers() {
               <button
                 className="rounded-xl bg-violet-600 px-5 py-3 text-sm font-semibold hover:bg-violet-500"
                 onClick={() =>
-                  setModal({
-                    open: true,
+                  openModal({
                     title: "Sales Application",
                     url: GOOGLE_FORM_SALES,
-                    height: 3128,
+                    height: 1100,
+                    slug: "sales-app",
                   })
                 }
               >
@@ -92,11 +131,11 @@ export default function Careers() {
               <button
                 className="rounded-xl bg-white/10 px-5 py-3 text-sm font-semibold hover:bg-white/20"
                 onClick={() =>
-                  setModal({
-                    open: true,
+                  openModal({
                     title: "Sales Skills Check",
                     url: GOOGLE_FORM_SKILLS_SALES,
-                    height: 1440,
+                    height: 900,
+                    slug: "sales-assessment",
                   })
                 }
               >
@@ -112,15 +151,17 @@ export default function Careers() {
           {/* Design Card */}
           <article className="group bg-white/5 rounded-3xl p-8 ring-1 ring-white/10 hover:ring-emerald-500/40 transition">
             <header className="mb-6">
-              <h2 className="text-2xl font-semibold">Web Design Contractor</h2>
+              <h2 className="text-2xl font-extrabold bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
+                Web Design Contractor
+              </h2>
               <p className="text-white/70 mt-2">
-                Build fast sites with React + Vite + Tailwind. Follow our components and Pages deploy workflow.
+                Build fast sites with React + Vite + Tailwind. Follow our components and deployment workflow.
               </p>
             </header>
 
             <ul className="grid gap-2 text-white/80 mb-8">
               <li>• Convert briefs into polished demos</li>
-              <li>• Use our GitHub Pages matrix deploy</li>
+              <li>• Use our deployment workflow</li>
               <li>• Mobile-first, accessible, and performant</li>
             </ul>
 
@@ -128,11 +169,11 @@ export default function Careers() {
               <button
                 className="rounded-xl bg-emerald-600 px-5 py-3 text-sm font-semibold hover:bg-emerald-500"
                 onClick={() =>
-                  setModal({
-                    open: true,
+                  openModal({
                     title: "Designer Application",
                     url: GOOGLE_FORM_DESIGN,
-                    height: 3062,
+                    height: 1100,
+                    slug: "design-app",
                   })
                 }
               >
@@ -141,11 +182,11 @@ export default function Careers() {
               <button
                 className="rounded-xl bg-white/10 px-5 py-3 text-sm font-semibold hover:bg-white/20"
                 onClick={() =>
-                  setModal({
-                    open: true,
+                  openModal({
                     title: "Designer Skills Check",
                     url: GOOGLE_FORM_SKILLS_DESIGN,
-                    height: 1484,
+                    height: 900,
+                    slug: "design-assessment",
                   })
                 }
               >
@@ -184,16 +225,29 @@ export default function Careers() {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
           role="dialog"
           aria-modal="true"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) closeModal();
+          }}
         >
           <div className="w-full max-w-5xl rounded-2xl bg-zinc-900 ring-1 ring-white/10 overflow-hidden">
             <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
-              <h4 className="font-semibold">{modal.title}</h4>
-              <button
+              <div className="flex items-center gap-2">
+                <button
+                  className="rounded-md bg-white/10 px-3 py-1.5 text-sm hover:bg-white/20"
+                  onClick={closeModal}
+                >
+                  Back
+                </button>
+                <h4 className="font-semibold">{modal.title}</h4>
+              </div>
+              <a
+                href={modal.url.replace("?embedded=true", "")}
+                target="_blank"
+                rel="noreferrer"
                 className="rounded-md bg-white/10 px-3 py-1.5 text-sm hover:bg-white/20"
-                onClick={() => setModal({ open: false })}
               >
-                Close
-              </button>
+                Open in new tab
+              </a>
             </div>
 
             <div className="p-0">
@@ -201,21 +255,12 @@ export default function Careers() {
                 title={modal.title}
                 src={modal.url}
                 className="w-full"
-                style={{ height: `${modal.height ?? 1200}px` }}
+                style={{ height: `min(${modal.height ?? 1000}px, 90vh)` }}
               />
             </div>
 
             <div className="px-5 py-4 border-t border-white/10 text-xs text-white/60">
-              Having trouble with the embed?{" "}
-              <a
-                href={modal.url.replace("?embedded=true", "")}
-                target="_blank"
-                rel="noreferrer"
-                className="underline hover:text-white"
-              >
-                Open in a new tab
-              </a>
-              .
+              Press <kbd>Esc</kbd> or click Back to close.
             </div>
           </div>
         </div>
