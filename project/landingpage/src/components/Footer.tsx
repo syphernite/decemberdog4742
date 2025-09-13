@@ -9,6 +9,7 @@ const Footer: React.FC = () => {
     { name: 'About', path: '/about' },
     { name: 'Our Mission', path: '/why-we-exist' },
     { name: 'Our Work', path: '/demos' },
+    { name: 'Careers', path: '/careers' },
     { name: 'Contact', path: '/contact' },
   ];
 
@@ -47,7 +48,7 @@ const Footer: React.FC = () => {
             <div className="space-y-2">
               <div className="flex items-center space-x-3">
                 <Phone className="h-5 w-5 text-emerald-400" />
-                <span className="text-slate-300">(302) 551-7227</span>
+                <span className="text-slate-300">PHONE NUMBER</span>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin className="h-5 w-5 text-emerald-400" />

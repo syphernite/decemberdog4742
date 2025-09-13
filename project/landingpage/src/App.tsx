@@ -11,6 +11,7 @@ import TermsOfService from "./pages/TermsOfService";
 import WhyWeCreatedBuilt4You from "./pages/WhyWeExist";
 import SolarPricing from "./pages/SolarPricing";
 import DemoShowcase from "./pages/DemoShowcase";
+import Careers from "./pages/Careers";
 import Galaxy from "./components/Galaxy";
 import { WalkthroughProvider } from "./context/Walkthrough";
 import WalkthroughModal from "./components/WalkthroughModal";
@@ -76,6 +77,7 @@ export default function App() {
           <Route path="terms-of-service" element={<TermsOfService />} />
           <Route path="why-we-exist" element={<WhyWeCreatedBuilt4You />} />
           <Route path="demos" element={<DemoShowcase />} />
+          <Route path="careers" element={<Careers />} />
         </Route>
         <Route
           path="/pricing"
