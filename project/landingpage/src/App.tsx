@@ -1,3 +1,4 @@
+// File: src/App.tsx
 import React, { useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -25,9 +26,11 @@ function ScrollToTopOnRouteChange() {
 }
 
 export default function App() {
+  const location = useLocation();
+  const hideGalaxy = location.pathname.startsWith("/demos"); // disable heavy bg on demos
+
   return (
     <WalkthroughProvider>
-      {/* Default SEO for the whole app. Individual pages can override with their own <Helmet>. */}
       <Helmet>
         <title>Built4You — Custom websites for small businesses</title>
         <meta
@@ -45,25 +48,29 @@ export default function App() {
         <meta name="twitter:card" content="summary_large_image" />
       </Helmet>
 
-      {/* global animated background */}
-      <div className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-black" />
-        <Galaxy
-          mouseInteraction
-          mouseRepulsion
-          transparent={true}
-          density={1.9}
-          glowIntensity={0.3}
-          saturation={0.9}
-          hueShift={100}
-          twinkleIntensity={0.7}
-          rotationSpeed={0.25}
-          repulsionStrength={5}
-          autoCenterRepulsion={0}
-          starSpeed={0.5}
-          speed={2.1}
-        />
-      </div>
+      {/* background */}
+      {!hideGalaxy ? (
+        <div className="pointer-events-none fixed inset-0 -z-10">
+          <div className="absolute inset-0 bg-black" />
+          <Galaxy
+            mouseInteraction
+            mouseRepulsion
+            transparent={true}
+            density={1.9}
+            glowIntensity={0.3}
+            saturation={0.9}
+            hueShift={100}
+            twinkleIntensity={0.7}
+            rotationSpeed={0.25}
+            repulsionStrength={5}
+            autoCenterRepulsion={0}
+            starSpeed={0.5}
+            speed={2.1}
+          />
+        </div>
+      ) : (
+        <div className="fixed inset-0 -z-10 bg-black" />
+      )}
 
       <ScrollToTopOnRouteChange />
 
@@ -97,7 +104,6 @@ export default function App() {
         />
       </Routes>
 
-      {/* global walkthrough modal overlay */}
       <WalkthroughModal />
     </WalkthroughProvider>
   );
