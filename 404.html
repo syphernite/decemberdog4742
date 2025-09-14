@@ -4,37 +4,34 @@
 <body>
   <script>
     (function () {
-      // Normalize and split the current path
-      const raw = location.pathname.replace(/^\/+/, ''); // drop leading slashes
-      const parts = raw.split('/').filter(Boolean);      // ["slug", "rest", ...] or []
-      
-      // Preserve original query and hash
+      const DEMO_SLUGS = ['barbershop','beachbumz','bst','chickenmacandmore','colorshift','copperhead','creator','detailer','ecommerce','foodtruck','monolith','pestcontrol','photography','plazamexico','plumbing','studio','tattooshop','thairiverside','tufamilia','wakefield'];
+
+      const raw = location.pathname.replace(/^\/+/, '');
+      const parts = raw.split('/').filter(Boolean);
       const q = location.search || '';
       const h = location.hash || '';
 
       if (parts.length === 0) {
-        // Root → send to root index.html
-        window.location.replace('/index.html' + q + h);
+        location.replace('/index.html' + q + h);
         return;
       }
 
       const slug = parts[0];
-      const restParts = parts.slice(1);
-      const rest = restParts.join('/');
+      const rest = parts.slice(1).join('/');
 
-      // If already at /<slug>/index.html or /<slug>/404.html, do not append #/<index.html>
-      if (
-        rest === '' ||
-        restParts[0] === 'index.html' ||
-        restParts[0] === '404.html'
-      ) {
-        window.location.replace(`/${slug}/index.html${q}${h}`);
+      if (DEMO_SLUGS.includes(slug)) {
+        if (rest === '' || rest.startsWith('index.html') || rest.startsWith('404.html')) {
+          location.replace('/' + slug + '/index.html' + q + h);
+        } else {
+          location.replace('/' + slug + '/index.html#/' + rest + q + h);
+        }
         return;
       }
 
-      // For deep paths under a slug, route to that slug's index with hash
-      // Example: /services/faq -> /services/index.html#/faq
-      window.location.replace(`/${slug}/index.html#/${rest}${q}${h}`);
+      // Not a demo slug → root SPA route. Encode original path.
+      const query = q ? '&q=' + q.slice(1).replace(/&/g, '~and~') : '';
+      const p = '?p=/' + raw + query + h;
+      location.replace('/' + p);
     })();
   </script>
   <p>Redirecting…</p>
