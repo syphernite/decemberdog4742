@@ -5,24 +5,32 @@
     <title>Redirecting…</title>
     <script>
       (function () {
+        // Directory-safe SPA redirect for GitHub Pages.
+        // Works whether this 404.html is at / or inside a subfolder like /services/ or /careers/.
         var l = window.location;
-        var path = l.pathname || "/";
+
+        // Preserve query and hash from the original request
         var q = l.search ? "&q=" + l.search.slice(1).replace(/&/g, "~and~") : "";
         var h = l.hash || "";
-        var p = "?p=" + path + q + h;
 
-        // Instead of hardcoding "/", reuse the base path
-        var base = l.origin;
-        var segments = path.split("/");
-        if (segments.length > 1 && segments[1]) {
-          base += "/" + segments[1]; // preserves "/services", "/careers", etc.
-        }
+        // Build ?p=<full-requested-path> (including leading slash)
+        var requestedPath = l.pathname || "/"; // e.g., "/services/faq"
+        var p = "?p=" + requestedPath + q + h;
 
-        window.location.replace(base + "/" + p);
+        // Compute the directory that holds this 404.html, then redirect to its index with ?p=...
+        // Example: if at "https://built4you.org/services/404.html", baseDir becomes "/services"
+        var segments = requestedPath.split("/");
+        // Remove last segment to get current directory path; if path ends with "/", keep as-is
+        if (segments[segments.length - 1] !== "") segments.pop();
+        var currentDir = segments.join("/") || "/"; // e.g., "/services" or "/"
+        // Ensure trailing slash for directory
+        if (currentDir.slice(-1) !== "/") currentDir += "/";
+
+        // Redirect to the index in the same directory (prevents loops like /services/index.html#/index.html)
+        var target = l.origin + currentDir + p;
+        window.location.replace(target);
       })();
     </script>
   </head>
-  <body>
-    Redirecting…
-  </body>
+  <body>Redirecting…</body>
 </html>
