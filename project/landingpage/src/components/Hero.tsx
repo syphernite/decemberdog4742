@@ -78,16 +78,10 @@ const TextType = ({
 
   useEffect(() => {
     if (!startOnVisible || !containerRef.current) return;
-
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) setIsVisible(true);
-        });
-      },
+      (entries) => entries.forEach((e) => e.isIntersecting && setIsVisible(true)),
       { threshold: 0.1 }
     );
-
     observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, [startOnVisible]);
@@ -109,7 +103,6 @@ const TextType = ({
     if (!isVisible) return;
 
     let timeout: NodeJS.Timeout;
-
     const currentText = textArray[currentTextIndex];
     const processedText = reverseMode
       ? currentText.split("").reverse().join("")
@@ -120,41 +113,28 @@ const TextType = ({
         if (displayedText === "") {
           setIsDeleting(false);
           if (currentTextIndex === textArray.length - 1 && !loop) return;
-
-          if (onSentenceComplete) {
-            onSentenceComplete(textArray[currentTextIndex], currentTextIndex);
-          }
-
-          setCurrentTextIndex((prev) => (prev + 1) % textArray.length);
+          onSentenceComplete?.(textArray[currentTextIndex], currentTextIndex);
+          setCurrentTextIndex((p) => (p + 1) % textArray.length);
           setCurrentCharIndex(0);
         } else {
-          timeout = setTimeout(() => {
-            setDisplayedText((prev) => prev.slice(0, -1));
-          }, deletingSpeed);
+          timeout = setTimeout(() => setDisplayedText((p) => p.slice(0, -1)), deletingSpeed);
         }
       } else {
         if (currentCharIndex < processedText.length) {
-          timeout = setTimeout(
-            () => {
-              setDisplayedText((prev) => prev + processedText[currentCharIndex]);
-              setCurrentCharIndex((prev) => prev + 1);
-            },
-            variableSpeed ? getRandomSpeed() : typingSpeed
-          );
+          timeout = setTimeout(() => {
+            setDisplayedText((p) => p + processedText[currentCharIndex]);
+            setCurrentCharIndex((p) => p + 1);
+          }, variableSpeed ? getRandomSpeed() : typingSpeed);
         } else if (textArray.length > 1) {
           if (currentTextIndex === textArray.length - 1 && !loop) {
-            // last phrase typed — fade out cursor and subtly emphasize text
             setFinalDone(true);
-            if (cursorRef.current) {
-              gsap.to(cursorRef.current, { opacity: 0, duration: 0.5, ease: "power2.out" });
-            }
-            if (textRef.current) {
+            cursorRef.current && gsap.to(cursorRef.current, { opacity: 0, duration: 0.5, ease: "power2.out" });
+            textRef.current &&
               gsap.fromTo(
                 textRef.current,
                 { opacity: 0.75, scale: 0.985, filter: "brightness(0.95)" },
                 { opacity: 1, scale: 1, filter: "brightness(1)", duration: 0.6, ease: "power2.out" }
               );
-            }
             return;
           }
           timeout = setTimeout(() => setIsDeleting(true), pauseDuration);
@@ -167,7 +147,6 @@ const TextType = ({
     } else {
       executeTypingAnimation();
     }
-
     return () => clearTimeout(timeout);
   }, [
     currentCharIndex,
@@ -192,15 +171,8 @@ const TextType = ({
 
   return createElement(
     Component,
-    {
-      ref: containerRef,
-      className: `inline-block whitespace-pre-wrap tracking-tight ${className}`,
-      ...props,
-    },
-    <span
-      ref={textRef}
-      className="inline bg-gradient-to-r from-emerald-300 to-sky-300 bg-clip-text text-transparent"
-    >
+    { ref: containerRef, className: `inline-block whitespace-pre-wrap tracking-tight ${className}`, ...props },
+    <span ref={textRef} className="inline bg-gradient-to-r from-emerald-300 to-sky-300 bg-clip-text text-transparent">
       {displayedText}
     </span>,
     showCursor && !finalDone && (
@@ -218,12 +190,38 @@ const TextType = ({
 const Hero: React.FC = () => {
   const navigate = useNavigate();
   const { open } = useWalkthrough();
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReduced || !sectionRef.current) return;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(".hero-bg-1", { opacity: 0 }, { opacity: 1, duration: 0.8, ease: "power2.out" });
+      gsap.fromTo(".hero-bg-2", { opacity: 0 }, { opacity: 0.9, duration: 0.8, ease: "power2.out", delay: 0.1 });
+
+      gsap.from(".hero-sub", { y: 14, opacity: 0, duration: 0.7, ease: "power2.out", delay: 0.15 });
+
+      // removed CTA tween to avoid hidden state; buttons remain fully visible
+      gsap.from(".hero-stat", {
+        y: 20,
+        opacity: 0,
+        scale: 0.95,
+        duration: 0.7,
+        ease: "power2.out",
+        stagger: 0.08,
+        delay: 0.35,
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <section id="hero" className="relative min-h-[78vh] flex items-center justify-center px-6">
+    <section id="hero" ref={sectionRef} className="relative min-h-[78vh] flex items-center justify-center px-6">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/15 to-transparent" />
-        <div className="absolute inset-0 bg-[radial-gradient(800px_400px_at_50%_20%,rgba(0,0,0,0.35),transparent_70%)]" />
+        <div className="hero-bg-1 absolute inset-0 bg-gradient-to-b from-black/35 via-black/15 to-transparent" />
+        <div className="hero-bg-2 absolute inset-0 bg-[radial-gradient(800px_400px_at_50%_20%,rgba(0,0,0,0.35),transparent_70%)]" />
       </div>
 
       <div className="relative z-10 w-full max-w-5xl text-center">
@@ -244,19 +242,19 @@ const Hero: React.FC = () => {
               deletingSpeed={15}
               pauseDuration={700}
               initialDelay={200}
-              loop={false}   // stops on last phrase
+              loop={false}
               startOnVisible
               variableSpeed={{ min: 95, max: 110 }}
-              showCursor={false} // fades out on last phrase
+              showCursor={false}
             />
           </h1>
         </div>
 
-        <p className="mt-5 text-lg md:text-xl text-slate-200/90 max-w-3xl mx-auto">
+        <p className="hero-sub mt-5 text-lg md:text-xl text-slate-200/90 max-w-3xl mx-auto">
           Professional, responsive websites that grow your business. No templates. No compromises. Built for results.
         </p>
 
-        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <div className="hero-cta relative z-20 mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
           <button
             onClick={() => navigate("/contact")}
             className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 text-white font-semibold hover:bg-emerald-500 transition"
@@ -264,7 +262,7 @@ const Hero: React.FC = () => {
             Get Started <ArrowRight className="h-5 w-5" />
           </button>
 
-        <button
+          <button
             onClick={open}
             className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-6 py-3 text-white hover:bg-white/15 transition backdrop-blur-sm"
           >
@@ -273,20 +271,20 @@ const Hero: React.FC = () => {
           </button>
         </div>
 
-        <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto">
-          <div className="rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm px-5 py-4">
+        <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto items-stretch">
+          <div className="hero-stat rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm px-5 py-4">
             <div className="text-2xl font-bold text-emerald-300">
               <CountUp to={50} duration={1.2} />+
             </div>
             <div className="text-slate-200/80 text-sm">Projects Delivered</div>
           </div>
-          <div className="rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm px-5 py-4">
+          <div className="hero-stat rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm px-5 py-4">
             <div className="text-2xl font-bold text-emerald-300">
               <CountUp to={100} duration={1.2} delay={0.15} />%
             </div>
             <div className="text-slate-200/80 text-sm">Client Satisfaction</div>
           </div>
-          <div className="rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm px-5 py-4">
+          <div className="hero-stat rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm px-5 py-4">
             <div className="text-2xl font-bold text-emerald-300">
               <CountUp to={7} duration={1.2} delay={0.3} /> Days
             </div>
