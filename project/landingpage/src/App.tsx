@@ -9,7 +9,6 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
-import WhyWeCreatedBuilt4You from "./pages/WhyWeExist";
 import SolarPricing from "./pages/SolarPricing";
 import DemoShowcase from "./pages/DemoShowcase";
 import Careers from "./pages/Careers";
@@ -82,7 +81,6 @@ export default function App() {
           <Route path="contact" element={<Contact />} />
           <Route path="privacy-policy" element={<PrivacyPolicy />} />
           <Route path="terms-of-service" element={<TermsOfService />} />
-          <Route path="why-we-exist" element={<WhyWeCreatedBuilt4You />} />
           <Route path="demos" element={<DemoShowcase />} />
           <Route path="careers" element={<Careers />} />
         </Route>
