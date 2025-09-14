@@ -4,12 +4,22 @@
     <meta charset="utf-8" />
     <title>Redirecting…</title>
     <script>
-      // Store the original path in ?p= so index.html can decode it
-      var l = window.location;
-      var q = l.search ? "&q=" + l.search.slice(1).replace(/&/g, "~and~") : "";
-      var h = l.hash || "";
-      var p = "?p=" + (l.pathname || "/") + q + h;
-      window.location.replace("/" + p);
+      (function () {
+        var l = window.location;
+        var path = l.pathname || "/";
+        var q = l.search ? "&q=" + l.search.slice(1).replace(/&/g, "~and~") : "";
+        var h = l.hash || "";
+        var p = "?p=" + path + q + h;
+
+        // Instead of hardcoding "/", reuse the base path
+        var base = l.origin;
+        var segments = path.split("/");
+        if (segments.length > 1 && segments[1]) {
+          base += "/" + segments[1]; // preserves "/services", "/careers", etc.
+        }
+
+        window.location.replace(base + "/" + p);
+      })();
     </script>
   </head>
   <body>
