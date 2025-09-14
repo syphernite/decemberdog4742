@@ -5,29 +5,25 @@
     <title>Redirecting…</title>
     <script>
       (function () {
-        // Directory-safe SPA redirect for GitHub Pages.
-        // Works whether this 404.html is at / or inside a subfolder like /services/ or /careers/.
         var l = window.location;
 
-        // Preserve query and hash from the original request
+        // Preserve original request details
         var q = l.search ? "&q=" + l.search.slice(1).replace(/&/g, "~and~") : "";
         var h = l.hash || "";
+        var requestedPath = l.pathname || "/"; // e.g. /careers or /services/faq
 
-        // Build ?p=<full-requested-path> (including leading slash)
-        var requestedPath = l.pathname || "/"; // e.g., "/services/faq"
+        // Build ?p=<requestedPath> so index.html can restore it
         var p = "?p=" + requestedPath + q + h;
 
-        // Compute the directory that holds this 404.html, then redirect to its index with ?p=...
-        // Example: if at "https://built4you.org/services/404.html", baseDir becomes "/services"
-        var segments = requestedPath.split("/");
-        // Remove last segment to get current directory path; if path ends with "/", keep as-is
-        if (segments[segments.length - 1] !== "") segments.pop();
-        var currentDir = segments.join("/") || "/"; // e.g., "/services" or "/"
-        // Ensure trailing slash for directory
-        if (currentDir.slice(-1) !== "/") currentDir += "/";
+        // Redirect to the index that lives in THIS directory
+        // Example: if this 404.html is served from /, target is "/" + ?p=...
+        // If it is served from /services/, target is "/services/" + ?p=...
+        var dir = requestedPath.endsWith("/") ? requestedPath : requestedPath.replace(/[^/]+$/, "");
+        if (!dir) dir = "/";                // root
+        if (dir.slice(-1) !== "/") dir += "/";
 
-        // Redirect to the index in the same directory (prevents loops like /services/index.html#/index.html)
-        var target = l.origin + currentDir + p;
+        // Keep origin and directory. Avoid adding "index.html" or an extra hash.
+        var target = l.origin + dir + p;
         window.location.replace(target);
       })();
     </script>

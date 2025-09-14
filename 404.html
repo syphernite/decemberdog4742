@@ -3,20 +3,39 @@
 <head><meta charset="utf-8"><title>Redirecting…</title></head>
 <body>
   <script>
-    // Split path segments
-    const parts = location.pathname.split('/').filter(Boolean);
-    if (parts.length > 0) {
-      // first segment is the demo slug
+    (function () {
+      // Normalize and split the current path
+      const raw = location.pathname.replace(/^\/+/, ''); // drop leading slashes
+      const parts = raw.split('/').filter(Boolean);      // ["slug", "rest", ...] or []
+      
+      // Preserve original query and hash
+      const q = location.search || '';
+      const h = location.hash || '';
+
+      if (parts.length === 0) {
+        // Root → send to root index.html
+        window.location.replace('/index.html' + q + h);
+        return;
+      }
+
       const slug = parts[0];
-      // rest after slug
-      const rest = parts.slice(1).join('/');
-      // build target URL: /<slug>/index.html#/<rest>
-      const hash = rest ? '#/' + rest : '';
-      window.location.replace(`/${slug}/index.html${hash}`);
-    } else {
-      // no slug → root landing page
-      window.location.replace('/index.html');
-    }
+      const restParts = parts.slice(1);
+      const rest = restParts.join('/');
+
+      // If already at /<slug>/index.html or /<slug>/404.html, do not append #/<index.html>
+      if (
+        rest === '' ||
+        restParts[0] === 'index.html' ||
+        restParts[0] === '404.html'
+      ) {
+        window.location.replace(`/${slug}/index.html${q}${h}`);
+        return;
+      }
+
+      // For deep paths under a slug, route to that slug's index with hash
+      // Example: /services/faq -> /services/index.html#/faq
+      window.location.replace(`/${slug}/index.html#/${rest}${q}${h}`);
+    })();
   </script>
   <p>Redirecting…</p>
 </body>
