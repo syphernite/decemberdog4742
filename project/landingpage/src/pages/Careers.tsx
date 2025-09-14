@@ -71,7 +71,7 @@ export default function Careers() {
         <div className="absolute inset-0 bg-gradient-to-b from-violet-900/30 via-black to-black" />
         <div className="max-w-6xl mx-auto px-6 py-20 relative">
           <div className="text-center space-y-6">
-            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
+            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight text-white bg-clip-text text-transparent">
               Join the Built4You Contractor Network
             </h1>
             <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto">
