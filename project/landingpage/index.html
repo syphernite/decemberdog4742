@@ -4,20 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Built4You</title>
-    <meta name="description" content="Built4You builds fast, mobile-first custom websites for small businesses. Ask us about our free website plan. Subscription or one-time pricing for complex builds.">
+    <meta name="description" content="Built4You builds fast, mobile-first custom websites for small businesses. $0 demos. Subscription or one-time pricing.">
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
 
-    <!-- SPA decode for GitHub Pages -->
+    <!-- Decode ?p=... written by 404.html and restore the path -->
     <script>
       (function () {
         var l = window.location;
-        if (l.search && l.search.indexOf('?p=') === 0) {
+        if (l.search && l.search.indexOf("?p=") === 0) {
           var params = new URLSearchParams(l.search);
-          var p = params.get('p') || '/';
-          var q = params.get('q');
-          if (q) p += '?' + q.replace(/~and~/g, '&');
-          // Keep any hash that was present during redirect
-          var h = l.hash || '';
+          var p = params.get("p") || "/";
+          var q = params.get("q");
+          if (q) p += "?" + q.replace(/~and~/g, "&");
+          var h = l.hash || "";
           window.history.replaceState(null, null, p + h);
         }
       })();
