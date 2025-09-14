@@ -1,3 +1,4 @@
+// src/components/Menu.tsx
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, Flame } from 'lucide-react';
 
@@ -9,62 +10,62 @@ const Menu = () => {
       id: 'appetizers',
       title: 'Appetizers',
       items: [
-        { name: 'Crab Rangoon', price: '$8.95', description: 'Crispy wontons filled with crab and cream cheese' },
-        { name: 'Spring Rolls', price: '$7.95', description: 'Fresh vegetables wrapped in rice paper' },
-        { name: 'Chicken Satay', price: '$9.95', description: 'Grilled chicken skewers with peanut sauce' },
-        { name: 'Tom Yum Soup', price: '$6.95', description: 'Spicy and sour soup with shrimp' },
-      ]
+        { name: 'Crispy Rangoons', price: '$8.95', description: 'Crispy wontons with creamy filling' },
+        { name: 'Veggie Spring Rolls', price: '$7.95', description: 'Fresh vegetables wrapped in rice paper' },
+        { name: 'Skewers with Peanut Sauce', price: '$9.95', description: 'Grilled skewers served with house sauce' },
+        { name: 'Hot and Sour Soup', price: '$6.95', description: 'Bright and savory broth' },
+      ],
     },
     {
       id: 'noodles',
       title: 'Noodles',
       items: [
-        { name: 'Pad Thai', price: '$12.95', description: 'Classic stir-fried rice noodles with tamarind sauce' },
-        { name: 'Drunken Noodles', price: '$13.95', description: 'Spicy wide rice noodles with basil', spicy: true },
-        { name: 'Pad See Ew', price: '$12.95', description: 'Sweet soy sauce noodles with Chinese broccoli' },
-        { name: 'Lo Mein', price: '$11.95', description: 'Soft noodles stir-fried with vegetables' },
-      ]
+        { name: 'Stir-Fry Noodles', price: '$12.95', description: 'Rice noodles with savory sauce' },
+        { name: 'Spicy Basil Noodles', price: '$13.95', description: 'Wide noodles with basil and chilies', spicy: true },
+        { name: 'Sweet Soy Noodles', price: '$12.95', description: 'Noodles with greens and sweet soy' },
+        { name: 'Lo Mein', price: '$11.95', description: 'Soft noodles with mixed vegetables' },
+      ],
     },
     {
       id: 'curries',
       title: 'Curries',
       items: [
-        { name: 'Massaman Curry', price: '$14.95', description: 'Rich and mild curry with potatoes and peanuts' },
-        { name: 'Red Curry', price: '$13.95', description: 'Spicy coconut curry with bamboo shoots', spicy: true },
-        { name: 'Green Curry', price: '$13.95', description: 'Very spicy curry with Thai eggplant', spicy: true },
-        { name: 'Yellow Curry', price: '$13.95', description: 'Mild curry with pineapple and bell peppers' },
-      ]
+        { name: 'Mild Curry', price: '$14.95', description: 'Rich curry with potatoes and onions' },
+        { name: 'Red Curry', price: '$13.95', description: 'Spicy coconut curry with bamboo', spicy: true },
+        { name: 'Green Curry', price: '$13.95', description: 'Very spicy curry with eggplant', spicy: true },
+        { name: 'Yellow Curry', price: '$13.95', description: 'Mild curry with pineapple and peppers' },
+      ],
     },
     {
       id: 'rice',
       title: 'Fried Rice',
       items: [
-        { name: 'Pineapple Fried Rice', price: '$14.95', description: 'Jasmine rice with pineapple, cashews, and curry powder' },
-        { name: 'Mango Fried Rice', price: '$13.95', description: 'Sweet and tangy rice with fresh mango' },
-        { name: 'Thai Fried Rice', price: '$11.95', description: 'Classic fried rice with egg and vegetables' },
-        { name: 'Basil Fried Rice', price: '$12.95', description: 'Spicy fried rice with holy basil', spicy: true },
-      ]
+        { name: 'Pineapple Fried Rice', price: '$14.95', description: 'Jasmine rice with pineapple and cashews' },
+        { name: 'House Fried Rice', price: '$11.95', description: 'Classic fried rice with egg and vegetables' },
+        { name: 'Basil Fried Rice', price: '$12.95', description: 'Fried rice with basil and chilies', spicy: true },
+        { name: 'Veggie Fried Rice', price: '$11.95', description: 'Vegetarian friendly favorite' },
+      ],
     },
     {
       id: 'specials',
       title: 'Chef Specials',
       items: [
-        { name: 'Shrimp Paradise', price: '$18.95', description: 'Grilled shrimp served in a fresh pineapple' },
-        { name: 'Chicken Fancy', price: '$16.95', description: 'Crispy chicken with sweet and sour sauce' },
-        { name: 'Whole Fish', price: '$22.95', description: 'Deep-fried whole fish with Thai herbs' },
-        { name: 'Duck Curry', price: '$19.95', description: 'Roasted duck in red curry sauce' },
-      ]
+        { name: 'Grilled Shrimp Plate', price: '$18.95', description: 'Seasoned shrimp with citrus glaze' },
+        { name: 'Crispy Chicken Plate', price: '$16.95', description: 'Crispy chicken with sweet sauce' },
+        { name: 'Whole Fish', price: '$22.95', description: 'Fried whole fish with herbs' },
+        { name: 'Roast Duck Curry', price: '$19.95', description: 'Roasted duck in red curry' },
+      ],
     },
     {
       id: 'vegetarian',
       title: 'Vegan & Vegetarian',
       items: [
-        { name: 'Tofu Pad Thai', price: '$11.95', description: 'Classic pad thai with crispy tofu' },
+        { name: 'Tofu Noodles', price: '$11.95', description: 'Rice noodles with crispy tofu' },
         { name: 'Vegetable Green Curry', price: '$12.95', description: 'Mixed vegetables in coconut curry', spicy: true },
-        { name: 'Mushroom Larb', price: '$10.95', description: 'Spicy mushroom salad with mint and cilantro' },
-        { name: 'Eggplant Basil', price: '$11.95', description: 'Stir-fried eggplant with holy basil' },
-      ]
-    }
+        { name: 'Mushroom Salad', price: '$10.95', description: 'Spicy mushroom salad with herbs' },
+        { name: 'Eggplant Basil', price: '$11.95', description: 'Stir-fried eggplant with basil' },
+      ],
+    },
   ];
 
   const toggleCategory = (categoryId: string) => {
@@ -78,12 +79,12 @@ const Menu = () => {
         <div className="absolute top-40 left-10 w-24 h-24 bg-accent-400 rounded-full blur-2xl"></div>
         <div className="absolute bottom-40 right-10 w-32 h-32 bg-warm-400 rounded-full blur-2xl"></div>
       </div>
-      
+
       <div className="container mx-auto px-6 relative">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
             <div className="inline-flex items-center bg-white/80 backdrop-blur-sm px-6 py-2 rounded-full mb-6 shadow-warm">
-              <span className="text-accent-600 font-medium text-sm tracking-wider uppercase">Culinary Excellence</span>
+              <span className="text-accent-600 font-medium text-sm tracking-wider uppercase">Sample Menu</span>
             </div>
             <h2 className="text-4xl md:text-6xl font-display font-bold text-gray-900 mb-8">
               <span className="bg-gradient-to-r from-accent-700 via-warm-600 to-accent-700 bg-clip-text text-transparent">
@@ -92,10 +93,8 @@ const Menu = () => {
             </h2>
             <div className="w-32 h-1 bg-gradient-to-r from-accent-400 to-warm-400 mx-auto mb-8"></div>
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-warm inline-block">
-              <p className="text-lg text-gray-600 mb-3 flex items-center justify-center">
-              </p>
               <p className="text-sm text-gray-500 font-medium">
-                Many dishes available vegetarian or vegan — just ask our friendly staff!
+                Demo content. Items and prices are placeholders.
               </p>
             </div>
           </div>
@@ -118,7 +117,7 @@ const Menu = () => {
                     )}
                   </div>
                 </button>
-                
+
                 {expandedCategory === category.id && (
                   <div className="px-8 pb-6 bg-gradient-to-br from-white/50 to-accent-50/30">
                     <div className="space-y-6">
@@ -142,7 +141,7 @@ const Menu = () => {
                           </div>
                           <div className="flex-shrink-0">
                             <span className="text-2xl font-bold text-accent-600 bg-gradient-to-r from-accent-600 to-warm-600 bg-clip-text text-transparent">
-                            {item.price}
+                              {item.price}
                             </span>
                           </div>
                         </div>

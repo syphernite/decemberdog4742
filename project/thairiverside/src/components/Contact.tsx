@@ -1,3 +1,4 @@
+// src/components/Contact.tsx
 import React, { useState } from 'react';
 import { Phone, Mail, MessageCircle, Facebook, Instagram } from 'lucide-react';
 
@@ -28,7 +29,7 @@ const Contact = () => {
         <div className="absolute top-20 left-20 w-32 h-32 bg-accent-400 rounded-full blur-3xl"></div>
         <div className="absolute bottom-20 right-20 w-40 h-40 bg-warm-400 rounded-full blur-3xl"></div>
       </div>
-      
+
       <div className="container mx-auto px-6 relative">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
@@ -42,10 +43,10 @@ const Contact = () => {
             </h2>
             <div className="w-32 h-1 bg-gradient-to-r from-accent-400 to-warm-400 mx-auto mb-8"></div>
             <p className="text-xl text-gray-600 font-light max-w-2xl mx-auto">
-              Get in Touch
+              Questions about our sample menu or booking a table? Reach out.
             </p>
             <p className="text-lg text-gray-600">
-              Have questions or want to make a reservation? We'd love to hear from you!
+              Demo content only. Replace with your real details when ready.
             </p>
           </div>
 
@@ -54,13 +55,11 @@ const Contact = () => {
             <div className="space-y-8">
               <div className="text-center lg:text-left mb-12">
                 <a
-                  href="https://www.doordash.com/store/thai-riverside-24555226/"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="#"
                   className="group bg-gradient-to-r from-accent-500 to-warm-500 hover:from-accent-600 hover:to-warm-600 text-white px-12 py-5 rounded-full text-xl font-bold transition-all duration-300 transform hover:scale-105 hover:shadow-warm-lg inline-block relative overflow-hidden"
                 >
                   <span className="relative z-10">
-                    Order on DoorDash
+                    Order Online (Demo)
                   </span>
                   <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </a>
@@ -68,38 +67,38 @@ const Contact = () => {
 
               <div className="bg-white/90 backdrop-blur-sm p-8 rounded-3xl shadow-warm hover:shadow-warm-lg transition-all duration-300 border border-accent-100/20">
                 <h3 className="font-bold text-gray-900 mb-6 text-xl font-display">Contact Information</h3>
-                
+
                 <div className="space-y-6">
                   <div className="flex items-center space-x-4 group/contact">
                     <div className="p-3 bg-gradient-to-br from-accent-50 to-warm-50 rounded-2xl shadow-inner-warm group-hover/contact:shadow-warm transition-all">
                       <Phone className="w-6 h-6 text-accent-600" />
                     </div>
-                    <a 
-                      href="tel:+14237651570"
+                    <a
+                      href="tel:+15551234567"
                       className="text-gray-700 hover:text-accent-600 transition-colors font-semibold text-lg"
                     >
-                      +1 (423) 765-1570
+                      (555) 123-4567
                     </a>
                   </div>
-                  
+
                   <div className="flex items-center space-x-4 group/contact">
                     <div className="p-3 bg-gradient-to-br from-accent-50 to-warm-50 rounded-2xl shadow-inner-warm group-hover/contact:shadow-warm transition-all">
                       <Mail className="w-6 h-6 text-accent-600" />
                     </div>
-                    <a 
-                      href="mailto:info@thairiverside.com"
+                    <a
+                      href="mailto:hello@example.com"
                       className="text-gray-700 hover:text-accent-600 transition-colors font-semibold text-lg"
                     >
-                      info@thairiverside.com
+                      hello@example.com
                     </a>
                   </div>
-                  
+
                   <div className="flex items-center space-x-4 group/contact">
                     <div className="p-3 bg-gradient-to-br from-accent-50 to-warm-50 rounded-2xl shadow-inner-warm group-hover/contact:shadow-warm transition-all">
                       <MessageCircle className="w-6 h-6 text-accent-600" />
                     </div>
                     <span className="text-gray-700 font-semibold text-lg">
-                      1837 Netherland Inn Rd, Kingsport, TN
+                      123 Demo St, Your City, ST 00000
                     </span>
                   </div>
                 </div>
@@ -109,7 +108,7 @@ const Contact = () => {
                 <h3 className="font-bold text-gray-900 mb-6 text-xl font-display">Follow Us</h3>
                 <div className="flex space-x-6">
                   <a
-                    href="https://facebook.com/ThaiRiversideTN"
+                    href="#"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group flex items-center justify-center w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-2xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-110 shadow-lg hover:shadow-xl"
@@ -117,7 +116,7 @@ const Contact = () => {
                     <Facebook className="w-6 h-6 group-hover:scale-110 transition-transform" />
                   </a>
                   <a
-                    href="https://www.instagram.com/thairiverside?igsh=eml4cmlkWRrZmVl"
+                    href="#"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group flex items-center justify-center w-14 h-14 bg-gradient-to-br from-pink-500 to-pink-600 text-white rounded-2xl hover:from-pink-600 hover:to-pink-700 transition-all duration-300 transform hover:scale-110 shadow-lg hover:shadow-xl"
@@ -131,7 +130,7 @@ const Contact = () => {
             {/* Contact Form */}
             <div className="bg-white/90 backdrop-blur-sm p-8 rounded-3xl shadow-warm hover:shadow-warm-lg transition-all duration-300 border border-accent-100/20">
               <h3 className="font-bold text-gray-900 mb-6 text-xl font-display">Send us a Message</h3>
-              
+
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wider">
@@ -147,7 +146,7 @@ const Contact = () => {
                     className="w-full px-6 py-4 border-2 border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-accent-400 focus:border-accent-400 transition-all duration-300 bg-white/80 backdrop-blur-sm text-lg"
                   />
                 </div>
-                
+
                 <div>
                   <label htmlFor="email" className="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wider">
                     Email
@@ -162,7 +161,7 @@ const Contact = () => {
                     className="w-full px-6 py-4 border-2 border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-accent-400 focus:border-accent-400 transition-all duration-300 bg-white/80 backdrop-blur-sm text-lg"
                   />
                 </div>
-                
+
                 <div>
                   <label htmlFor="message" className="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wider">
                     Message
@@ -177,7 +176,7 @@ const Contact = () => {
                     className="w-full px-6 py-4 border-2 border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-accent-400 focus:border-accent-400 transition-all duration-300 bg-white/80 backdrop-blur-sm text-lg resize-none"
                   />
                 </div>
-                
+
                 <button
                   type="submit"
                   className="group w-full bg-gradient-to-r from-accent-500 to-warm-500 hover:from-accent-600 hover:to-warm-600 text-white py-5 px-8 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-warm-lg relative overflow-hidden"
