@@ -1,11 +1,12 @@
+// src/components/Location.tsx
 import React from 'react';
 import { MapPin, Clock, Phone } from 'lucide-react';
 
 const Location = () => {
   const hours = [
-    { day: 'Monday - Friday', time: '11am - 2pm, 4pm - 8pm' },
-    { day: 'Saturday', time: '11am - 3pm, 5pm - 8pm' },
-    { day: 'Sunday', time: '11am - 3pm, 5pm - 8pm' },
+    { day: 'Monday - Friday', time: '11:00 AM - 2:00 PM, 4:00 PM - 8:00 PM' },
+    { day: 'Saturday', time: '11:00 AM - 3:00 PM, 5:00 PM - 8:00 PM' },
+    { day: 'Sunday', time: '11:00 AM - 3:00 PM, 5:00 PM - 8:00 PM' },
   ];
 
   return (
@@ -17,7 +18,7 @@ const Location = () => {
               Location & Hours
             </h2>
             <p className="text-lg text-gray-600">
-              Find us along the beautiful Holston River
+              Find us in the heart of Your City
             </p>
           </div>
 
@@ -25,14 +26,14 @@ const Location = () => {
             {/* Map */}
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3201.234!2d-82.5615!3d36.5484!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x885a9b8c8f8c8f8f%3A0x8f8c8f8c8f8c8f8f!2s1837%20Netherland%20Inn%20Rd%2C%20Kingsport%2C%20TN%2037660!5e0!3m2!1sen!2sus!4v1234567890"
+                src="https://www.google.com/maps?q=Your%20City%2C%20ST&z=13&output=embed"
                 width="100%"
                 height="400"
                 style={{ border: 0 }}
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Thai Riverside Location"
+                title="Location Map"
               ></iframe>
             </div>
 
@@ -44,8 +45,8 @@ const Location = () => {
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-2">Address</h3>
                     <p className="text-gray-600">
-                      1837 Netherland Inn Road<br />
-                      Kingsport, TN 37660
+                      123 Demo Street<br />
+                      Your City, ST 00000
                     </p>
                   </div>
                 </div>
@@ -60,9 +61,7 @@ const Location = () => {
                       {hours.map((item, index) => (
                         <div key={index} className="flex justify-between">
                           <span className="text-gray-700">{item.day}</span>
-                          <span className={`font-medium ${
-                            item.day === 'Monday' ? 'text-red-500' : 'text-gray-900'
-                          }`}>
+                          <span className="font-medium text-gray-900">
                             {item.time}
                           </span>
                         </div>
@@ -77,14 +76,15 @@ const Location = () => {
                   <Phone className="w-6 h-6 text-primary-600 mt-1 flex-shrink-0" />
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-2">Phone</h3>
-                    <a 
-                      href="tel:+14237651570"
+                    <a
+                      href="tel:+15551234567"
                       className="text-primary-600 hover:text-primary-700 transition-colors"
                     >
-                      (423) 765-1570
+                      (555) 123-4567
                     </a>
                   </div>
                 </div>
+                <p className="text-xs text-gray-500 mt-3">Demo content. Replace with your details.</p>
               </div>
             </div>
           </div>
