@@ -1,3 +1,4 @@
+// src/pages/Entry.tsx
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { gsap } from "gsap";
@@ -182,7 +183,7 @@ function FreeSiteModal({
       setTimeout(() => {
         onClose();
         onSuccessRedirect();
-      }, 2500); // let the check animation complete
+      }, 2500);
     } catch {
       setSubmitting(false);
     }
@@ -201,9 +202,9 @@ function FreeSiteModal({
           <>
             <div className="mb-6">
               <h3 className="text-2xl font-bold">
-                Get a <span className="bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">Free</span> mockup
+                Get a <span className="bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">Free</span> Website
               </h3>
-              <p className="mt-1 text-sm text-slate-300">Fast, custom websites, Built 4 You</p>
+              <p className="mt-1 text-sm text-slate-300">Fast, custom websites. Just pay hosting!</p>
             </div>
 
             <form onSubmit={submit} className="mt-2 flex flex-col gap-3 md:flex-row">
@@ -285,9 +286,6 @@ export default function Entry() {
   }, []);
 
   const handleEnter = () => {
-    try {
-      localStorage.setItem("b4y_seen_entry", "1");
-    } catch {}
     const tl = gsap.timeline();
     tl.to(ctaRef.current, { scale: 0.96, duration: 0.08, ease: "power1.out" })
       .to(rocketRef.current, { y: -220, x: 120, rotation: -25, scale: 1.2, duration: 0.6, ease: "power2.in" }, "<")
@@ -344,7 +342,7 @@ export default function Entry() {
           <div>
             <button
               onClick={() => setFreeOpen(true)}
-              className="rounded-2xl border border-white/15 bg-white/5 px-6 py-3 text-base font-semibold text-white backdrop-blur-sm transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black"
+              className="rounded-2xl border border-white/15 bg-white/5 px-6 py-4 text-base font-semibold text-white backdrop-blur-sm transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black"
             >
               Want a Free site?
             </button>
@@ -356,13 +354,13 @@ export default function Entry() {
               href="https://www.instagram.com/built4youonline?igsh=MWJ6MmViMmlzemsyOA=="
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-5 py-3 text-base font-semibold text-white backdrop-blur-sm transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black"
+              className="flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-6 py-4 text-base font-semibold text-white backdrop-blur-sm transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black"
             >
               <Instagram className="h-5 w-5" />
             </a>
             <a
               href="tel:5805076262"
-              className="flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-5 py-3 text-base font-semibold text-white backdrop-blur-sm transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black"
+              className="flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-6 py-4 text-base font-semibold text-white backdrop-blur-sm transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black"
             >
               <Phone className="h-5 w-5" />
             </a>

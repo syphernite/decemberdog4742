@@ -1,3 +1,4 @@
+// src/App.tsx
 import React, { useEffect } from "react";
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -24,12 +25,8 @@ function ScrollToTopOnRouteChange() {
   return null;
 }
 
-/** Show splash at "/" unless already seen. Add ?intro=1 to force it. */
+/** Always show Entry at "/" */
 function Gate() {
-  const search = typeof window !== "undefined" ? window.location.search : "";
-  const forceIntro = new URLSearchParams(search).get("intro") === "1";
-  const seen = !forceIntro && typeof window !== "undefined" && localStorage.getItem("b4y_seen_entry") === "1";
-  if (seen) return <Navigate to="/home" replace />;
   return <Entry />;
 }
 
@@ -83,7 +80,7 @@ export default function App() {
       <ScrollToTopOnRouteChange />
 
       <Routes>
-        {/* Splash gate */}
+        {/* Entry always at root */}
         <Route path="/" element={<Gate />} />
 
         {/* Main app */}
@@ -125,8 +122,8 @@ export default function App() {
           }
         />
 
-        {/* Fallback to main app */}
-        <Route path="*" element={<Navigate to="/home" replace />} />
+        {/* Fallback: redirect unknown paths to Entry */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 
       <WalkthroughModal />
