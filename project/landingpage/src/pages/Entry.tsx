@@ -205,7 +205,7 @@ function FreeSiteModal({
 <<<<<<< Updated upstream
                 Get a <span className="bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">Free</span> Website
               </h3>
-              <p className="mt-1 text-sm text-slate-300">Fast, custom websites. Just pay hosting!</p>
+              <p className="mt-1 text-sm text-slate-300">Just pay hosting!</p>
 =======
                 Get a <span className="bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">Free</span> website
               </h3>
