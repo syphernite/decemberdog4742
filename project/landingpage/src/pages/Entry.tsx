@@ -202,9 +202,15 @@ function FreeSiteModal({
           <>
             <div className="mb-6">
               <h3 className="text-2xl font-bold">
+<<<<<<< Updated upstream
                 Get a <span className="bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">Free</span> Website
               </h3>
               <p className="mt-1 text-sm text-slate-300">Fast, custom websites. Just pay hosting!</p>
+=======
+                Get a <span className="bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">Free</span> website
+              </h3>
+              <p className="mt-1 text-sm text-slate-300">Just pay hosting.</p>
+>>>>>>> Stashed changes
             </div>
 
             <form onSubmit={submit} className="mt-2 flex flex-col gap-3 md:flex-row">
