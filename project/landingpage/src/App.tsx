@@ -1,6 +1,5 @@
-// File: src/App.tsx
 import React, { useEffect } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
@@ -15,6 +14,7 @@ import Careers from "./pages/Careers";
 import Galaxy from "./components/Galaxy";
 import { WalkthroughProvider } from "./context/Walkthrough";
 import WalkthroughModal from "./components/WalkthroughModal";
+import Entry from "./pages/Entry";
 
 function ScrollToTopOnRouteChange() {
   const location = useLocation();
@@ -24,9 +24,19 @@ function ScrollToTopOnRouteChange() {
   return null;
 }
 
+/** Show splash at "/" unless already seen. Add ?intro=1 to force it. */
+function Gate() {
+  const search = typeof window !== "undefined" ? window.location.search : "";
+  const forceIntro = new URLSearchParams(search).get("intro") === "1";
+  const seen = !forceIntro && typeof window !== "undefined" && localStorage.getItem("b4y_seen_entry") === "1";
+  if (seen) return <Navigate to="/home" replace />;
+  return <Entry />;
+}
+
 export default function App() {
   const location = useLocation();
-  const hideGalaxy = location.pathname.startsWith("/demos"); // disable heavy bg on demos
+  const onEntry = location.pathname === "/";
+  const hideGalaxy = onEntry || location.pathname.startsWith("/demos");
 
   return (
     <WalkthroughProvider>
@@ -47,14 +57,13 @@ export default function App() {
         <meta name="twitter:card" content="summary_large_image" />
       </Helmet>
 
-      {/* background */}
       {!hideGalaxy ? (
         <div className="pointer-events-none fixed inset-0 -z-10">
           <div className="absolute inset-0 bg-black" />
           <Galaxy
             mouseInteraction
             mouseRepulsion
-            transparent={true}
+            transparent
             density={1.9}
             glowIntensity={0.3}
             saturation={0.9}
@@ -74,7 +83,11 @@ export default function App() {
       <ScrollToTopOnRouteChange />
 
       <Routes>
-        <Route path="/" element={<Layout />}>
+        {/* Splash gate */}
+        <Route path="/" element={<Gate />} />
+
+        {/* Main app */}
+        <Route path="/home" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="services" element={<Services />} />
           <Route path="about" element={<About />} />
@@ -84,6 +97,17 @@ export default function App() {
           <Route path="demos" element={<DemoShowcase />} />
           <Route path="careers" element={<Careers />} />
         </Route>
+
+        {/* Legacy redirects */}
+        <Route path="/services" element={<Navigate to="/home/services" replace />} />
+        <Route path="/about" element={<Navigate to="/home/about" replace />} />
+        <Route path="/contact" element={<Navigate to="/home/contact" replace />} />
+        <Route path="/privacy-policy" element={<Navigate to="/home/privacy-policy" replace />} />
+        <Route path="/terms-of-service" element={<Navigate to="/home/terms-of-service" replace />} />
+        <Route path="/demos" element={<Navigate to="/home/demos" replace />} />
+        <Route path="/careers" element={<Navigate to="/home/careers" replace />} />
+
+        {/* Pricing standalone */}
         <Route
           path="/pricing"
           element={
@@ -100,6 +124,9 @@ export default function App() {
             </>
           }
         />
+
+        {/* Fallback to main app */}
+        <Route path="*" element={<Navigate to="/home" replace />} />
       </Routes>
 
       <WalkthroughModal />

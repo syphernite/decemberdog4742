@@ -16,6 +16,10 @@ export default {
         'bounce-slow': 'bounce 2s infinite',
         'pulse-slow': 'pulse 3s infinite',
         'float': 'float 6s ease-in-out infinite',
+
+        // Star border animations
+        'star-bottom': 'starMoveBottom 3s linear infinite alternate',
+        'star-top': 'starMoveTop 3s linear infinite alternate',
       },
       keyframes: {
         glowSlide: {
@@ -42,6 +46,16 @@ export default {
         float: {
           '0%, 100%': { transform: 'translateY(0)' },
           '50%': { transform: 'translateY(-20px)' },
+        },
+
+        // Star border keyframes
+        starMoveBottom: {
+          '0%': { transform: 'translate(0%, 0%)', opacity: '1' },
+          '100%': { transform: 'translate(-100%, 0%)', opacity: '0' },
+        },
+        starMoveTop: {
+          '0%': { transform: 'translate(0%, 0%)', opacity: '1' },
+          '100%': { transform: 'translate(100%, 0%)', opacity: '0' },
         },
       },
     },
