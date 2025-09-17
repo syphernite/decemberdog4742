@@ -1,4 +1,3 @@
-# File: .github/workflows/deploy.yml
 name: 🚀 Build & Deploy All Clients
 
 on:
@@ -10,15 +9,13 @@ jobs:
   pages:
     runs-on: ubuntu-latest
     steps:
-      # 1) Checkout code
       - uses: actions/checkout@v4
 
-      # 2) Setup Node.js
       - uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      # 3) Build each client demo (skip landingpage)
+      # Build each client demo (skip landingpage)
       - name: Build demos
         env:
           VITE_FREECUTS_CSV_URL: ${{ secrets.VITE_FREECUTS_CSV_URL }}
@@ -38,13 +35,12 @@ jobs:
             npm run build
             cd ../../
 
-            # Copy dist into its own folder
             rm -rf "$slug"
             mkdir -p "$slug"
             cp -r "project/$slug/dist/." "$slug/"
           done
 
-      # 4) Build & copy landing page into root
+      # Build & copy landing page into root
       - name: Build landing page
         env:
           VITE_FREECUTS_CSV_URL: ${{ secrets.VITE_FREECUTS_CSV_URL }}
@@ -59,43 +55,71 @@ jobs:
           cd ../../
           cp -r project/landingpage/dist/* .
 
-      # 5) Dynamic SPA fallback for ALL paths
+      # Dynamic SPA fallback: send to demo folder only if that folder exists.
+      # Otherwise treat as a root SPA route (e.g., /careers).
       - name: Create smart 404.html
         run: |
-          cat > 404.html << 'EOF'
+          SLUGS=()
+          for d in */ ; do
+            d="${d%/}"
+            case "$d" in
+              project|.git|.github|node_modules) continue ;;
+            esac
+            if [ -f "$d/index.html" ]; then
+              SLUGS+=("$d")
+            fi
+          done
+          printf -v SLUGS_JS "'%s'," "${SLUGS[@]}"
+          SLUGS_JS="[${SLUGS_JS%,}]"
+
+          cat > 404.html << EOF
           <!DOCTYPE html>
           <html>
           <head><meta charset="utf-8"><title>Redirecting…</title></head>
           <body>
             <script>
-              // Split path segments
-              const parts = location.pathname.split('/').filter(Boolean);
-              if (parts.length > 0) {
-                // first segment is the demo slug
+              (function () {
+                const DEMO_SLUGS = ${SLUGS_JS};
+
+                const raw = location.pathname.replace(/^\/+/, '');
+                const parts = raw.split('/').filter(Boolean);
+                const q = location.search || '';
+                const h = location.hash || '';
+
+                if (parts.length === 0) {
+                  location.replace('/index.html' + q + h);
+                  return;
+                }
+
                 const slug = parts[0];
-                // rest after slug
                 const rest = parts.slice(1).join('/');
-                // build target URL: /<slug>/index.html#/<rest>
-                const hash = rest ? '#/' + rest : '';
-                window.location.replace(`/${slug}/index.html${hash}`);
-              } else {
-                // no slug → root landing page
-                window.location.replace('/index.html');
-              }
+
+                if (DEMO_SLUGS.includes(slug)) {
+                  if (rest === '' || rest.startsWith('index.html') || rest.startsWith('404.html')) {
+                    location.replace('/' + slug + '/index.html' + q + h);
+                  } else {
+                    location.replace('/' + slug + '/index.html#/' + rest + q + h);
+                  }
+                  return;
+                }
+
+                // Not a demo slug → root SPA route. Encode original path.
+                const query = q ? '&q=' + q.slice(1).replace(/&/g, '~and~') : '';
+                const p = '?p=/' + raw + query + h;
+                location.replace('/' + p);
+              })();
             </script>
             <p>Redirecting…</p>
           </body>
           </html>
           EOF
 
-      # 6) Debug: list everything that will be published
       - name: Show publish directory
         run: |
           echo "=== publish contents ==="
           ls -R .
           echo "========================"
 
-      # 7) Deploy to GitHub Pages (gh-pages branch)
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
@@ -103,7 +127,6 @@ jobs:
           publish_branch: gh-pages
           publish_dir: ./
 
-      # 8) Expose sneaker inventory secrets
       - name: Set Sneakers CSV Secrets
         run: |
           echo "VITE_SNEAKERS_CSV=${{ secrets.VITE_SNEAKERS_CSV }}" >> $GITHUB_ENV

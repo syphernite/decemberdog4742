@@ -1,26 +1,32 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
   <head>
     <meta charset="utf-8" />
     <title>Redirecting…</title>
     <script>
-      (function(l) {
-        // For a custom domain at the root (built4you.org), keep = 0.
-        // If deploying at user.github.io/REPO_NAME, set keep = 1.
-        var keep = 0;
+      (function () {
+        var l = window.location;
 
-        var path = l.pathname.slice(1).split("/");
-        var base = "/" + path.slice(0, keep).join("/");
-        if (keep) base += "/";
+        // Preserve original request details
+        var q = l.search ? "&q=" + l.search.slice(1).replace(/&/g, "~and~") : "";
+        var h = l.hash || "";
+        var requestedPath = l.pathname || "/"; // e.g. /careers or /services/faq
 
-        var rest = path.slice(keep).join("/");
-        var search = l.search ? l.search.slice(1).replace(/&/g, "~and~") : "";
-        var hash = l.hash || "";
+        // Build ?p=<requestedPath> so index.html can restore it
+        var p = "?p=" + requestedPath + q + h;
 
-        var target = base + "?p=/" + rest + (search ? "&q=" + search : "") + hash;
-        l.replace(target);
-      })(window.location);
+        // Redirect to the index that lives in THIS directory
+        // Example: if this 404.html is served from /, target is "/" + ?p=...
+        // If it is served from /services/, target is "/services/" + ?p=...
+        var dir = requestedPath.endsWith("/") ? requestedPath : requestedPath.replace(/[^/]+$/, "");
+        if (!dir) dir = "/";                // root
+        if (dir.slice(-1) !== "/") dir += "/";
+
+        // Keep origin and directory. Avoid adding "index.html" or an extra hash.
+        var target = l.origin + dir + p;
+        window.location.replace(target);
+      })();
     </script>
   </head>
-  <body></body>
+  <body>Redirecting…</body>
 </html>
