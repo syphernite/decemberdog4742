@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="utf-8" />
@@ -6,25 +6,13 @@
     <script>
       (function () {
         var l = window.location;
-
-        // Preserve original request details
+        // Preserve the originally requested path and hash so SPA can restore it.
+        var path = l.pathname || "/";
         var q = l.search ? "&q=" + l.search.slice(1).replace(/&/g, "~and~") : "";
         var h = l.hash || "";
-        var requestedPath = l.pathname || "/"; // e.g. /careers or /services/faq
-
-        // Build ?p=<requestedPath> so index.html can restore it
-        var p = "?p=" + requestedPath + q + h;
-
-        // Redirect to the index that lives in THIS directory
-        // Example: if this 404.html is served from /, target is "/" + ?p=...
-        // If it is served from /services/, target is "/services/" + ?p=...
-        var dir = requestedPath.endsWith("/") ? requestedPath : requestedPath.replace(/[^/]+$/, "");
-        if (!dir) dir = "/";                // root
-        if (dir.slice(-1) !== "/") dir += "/";
-
-        // Keep origin and directory. Avoid adding "index.html" or an extra hash.
-        var target = l.origin + dir + p;
-        window.location.replace(target);
+        // Send user to root with ?p=<requestedPath>
+        var target = l.origin + "/?p=" + encodeURIComponent(path) + q + h;
+        l.replace(target);
       })();
     </script>
   </head>

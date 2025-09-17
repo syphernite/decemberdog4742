@@ -1,8 +1,8 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
 export default defineConfig({
-  // Use relative paths so built index.html refers to "assets/…" rather than "/assets/…"
-  base: './',
+  // Root custom domain (built4you.org). Use absolute base.
+  base: "/",
   plugins: [react()],
-})
+});
