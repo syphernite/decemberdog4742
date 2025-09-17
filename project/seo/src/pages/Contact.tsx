@@ -1,73 +1,33 @@
-import React from 'react';
-import { Mail, MessageSquare } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { ContactForm } from '../components/Contact/ContactForm';
-import { tokens } from '../styles/tokens';
+// src/pages/Contact.tsx
+import React from "react";
+import { Mail, MessageSquare } from "lucide-react";
+import { motion } from "framer-motion";
+import { ContactForm } from "../components/ContactForm";
+import { tokens } from "../styles/tokens";
 
-export const Contact: React.FC = () => {
+export const Contact = () => {
   return (
-    <div className={tokens.section}>
-      <div className={tokens.container}>
-        <div className="max-w-5xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-20"
-          >
-            <h1 className={tokens.heading.h2}>
-              Get In Touch
-            </h1>
-            <p className={`${tokens.text.bodyLarge} mt-6 max-w-2xl mx-auto`}>
-              Ready to boost your search rankings? Let's discuss your SEO goals and create a custom strategy for your business.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
-            <motion.div
-              initial={{ opacity: 0, x: -40 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="lg:col-span-1 space-y-8"
-            >
-              <div className={`${tokens.card} p-8`}>
-                <div className="w-12 h-12 bg-neutral-100 rounded-lg flex items-center justify-center mb-6">
-                  <Mail size={24} className="text-neutral-700" />
-                </div>
-                <h3 className={`${tokens.heading.h3} text-lg mb-4`}>
-                  Email Us
-                </h3>
-                <p className={tokens.text.body}>
-                  We'll respond within 24 hours
-                </p>
-              </div>
-
-              <div className={`${tokens.card} p-8`}>
-                <div className="w-12 h-12 bg-neutral-100 rounded-lg flex items-center justify-center mb-6">
-                  <MessageSquare size={24} className="text-neutral-700" />
-                </div>
-                <h3 className={`${tokens.heading.h3} text-lg mb-4`}>
-                  Start a Conversation
-                </h3>
-                <p className={tokens.text.body}>
-                  Tell us about your SEO challenges and goals
-                </p>
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 40 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="lg:col-span-2"
-            >
-              <div className={`${tokens.card} p-12`}>
-                <ContactForm />
-              </div>
-            </motion.div>
-          </div>
-        </div>
+    <section className="relative py-24">
+      <div className="container mx-auto px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="rounded-2xl bg-neutral-900 p-8 shadow-xl"
+        >
+          <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
+            <Mail className="w-7 h-7 text-emerald-400" />
+            Contact Us
+          </h2>
+          <p className="text-neutral-400 mb-8 flex items-center gap-2">
+            <MessageSquare className="w-5 h-5" />
+            Fill out the form and we’ll get back to you shortly.
+          </p>
+          <ContactForm />
+        </motion.div>
       </div>
-    </div>
+    </section>
   );
 };
+
+export default Contact;

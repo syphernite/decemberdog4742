@@ -1,8 +1,9 @@
+// src/components/Why.tsx
 import React from 'react';
 import { CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useScrollAnimation } from '../../hooks/useScrollAnimation';
-import { tokens } from '../../styles/tokens';
+import { useScrollAnimation } from '../hooks/useScrollAnimation';
+import { tokens } from '../styles/tokens';
 
 const reasons = [
   'Data-driven strategies with transparent reporting and regular performance updates to track your progress.',
@@ -39,7 +40,7 @@ export const Why: React.FC = () => {
               transition={{ duration: 0.8, delay: index * 0.2 }}
               className="flex items-start gap-6 group"
             >
-              <div className="flex-shrink-0 w-8 h-8 bg-neutral-900 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <div className="flex-shrink-0 w-8 h-8 bg-neutral-900/60 border border-white/10 rounded-full grid place-items-center group-hover:scale-110 transition-transform duration-300">
                 <CheckCircle size={20} className="text-white" />
               </div>
               <p className={`${tokens.text.bodyLarge} leading-relaxed`}>
@@ -52,3 +53,5 @@ export const Why: React.FC = () => {
     </section>
   );
 };
+
+export default Why;

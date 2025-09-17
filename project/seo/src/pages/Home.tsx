@@ -1,18 +1,19 @@
-import React from 'react';
-import { Hero } from '../components/Home/Hero';
-import { Services } from '../components/Home/Services';
-import { Why } from '../components/Home/Why';
-import { Testimonials } from '../components/Home/Testimonials';
-import { Partnership } from '../components/Home/Partnership';
+// src/pages/Home.tsx
+import React from "react";
+import { Hero } from "../components/Hero";
+import { Services } from "../components/Services";
+import { Why } from "../components/Why";
+import { Testimonials } from "../components/Testimonials";
 
-export const Home: React.FC = () => {
+export const Home = () => {
   return (
     <>
       <Hero />
       <Services />
       <Why />
       <Testimonials />
-      <Partnership />
     </>
   );
 };
+
+export default Home;
