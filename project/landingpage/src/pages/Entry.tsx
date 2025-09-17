@@ -201,48 +201,50 @@ function FreeSiteModal({
         {!done ? (
           <>
             <div className="mb-6">
-              <h3 className="text-2xl font-bold">
-                Get a <span className="bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">Free</span> Website
-              </h3>
-              <p className="mt-1 text-sm text-slate-300">Fast, custom websites. Just pay hosting!</p>
-            </div>
+  <h3 className="text-2xl font-bold">
+    Get a <span className="bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">Free</span> Website
+  </h3>
+  <p className="mt-1 text-sm text-slate-300">Just pay hosting!</p>
+</div>
 
-            <form onSubmit={submit} className="mt-2 flex flex-col gap-3 md:flex-row">
-              <input
-                type="text"
-                name="business"
-                value={business}
-                onChange={(e) => setBusiness(e.target.value)}
-                placeholder="Business name"
-                className="w-full flex-1 rounded-xl border border-white/10 bg-black/60 px-4 py-3 text-white placeholder-slate-400 outline-none focus:ring-2 focus:ring-emerald-400"
-                required
-              />
-              <input
-                type="tel"
-                name="phone"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="Phone number"
-                className="w-full flex-1 rounded-xl border border-white/10 bg-black/60 px-4 py-3 text-white placeholder-slate-400 outline-none focus:ring-2 focus:ring-emerald-400"
-                required
-              />
+            <>
+              <form onSubmit={submit} className="mt-2 flex flex-col gap-3 md:flex-row">
+                <input
+                  type="text"
+                  name="business"
+                  value={business}
+                  onChange={(e) => setBusiness(e.target.value)}
+                  placeholder="Business name"
+                  className="w-full flex-1 rounded-xl border border-white/10 bg-black/60 px-4 py-3 text-white placeholder-slate-400 outline-none focus:ring-2 focus:ring-emerald-400"
+                  required
+                />
+                <input
+                  type="tel"
+                  name="phone"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="Phone number"
+                  className="w-full flex-1 rounded-xl border border-white/10 bg-black/60 px-4 py-3 text-white placeholder-slate-400 outline-none focus:ring-2 focus:ring-emerald-400"
+                  required
+                />
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="rounded-xl bg-emerald-600 px-6 py-3 font-semibold text-white transition hover:bg-emerald-500 disabled:opacity-60"
+                >
+                  {submitting ? "Submitting..." : "Submit"}
+                </button>
+              </form>
+
               <button
-                type="submit"
-                disabled={submitting}
-                className="rounded-xl bg-emerald-600 px-6 py-3 font-semibold text-white transition hover:bg-emerald-500 disabled:opacity-60"
+                onClick={onClose}
+                className="absolute right-3 top-3 rounded-full p-2 text-slate-300 hover:bg-white/10"
+                aria-label="Close"
+                type="button"
               >
-                {submitting ? "Submitting..." : "Submit"}
+                ✕
               </button>
-            </form>
-
-            <button
-              onClick={onClose}
-              className="absolute right-3 top-3 rounded-full p-2 text-slate-300 hover:bg-white/10"
-              aria-label="Close"
-              type="button"
-            >
-              ✕
-            </button>
+            </>
           </>
         ) : (
           <div className="flex flex-col items-center justify-center py-12">
