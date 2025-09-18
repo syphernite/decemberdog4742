@@ -1,55 +1,42 @@
-// Professional monotone design tokens
+// Professional monotone design tokens for Tailwind utility composition
 export const tokens = {
-  // Colors - Monotone palette
-  colors: {
-    background: 'bg-neutral-50',
-    surface: 'bg-white',
-    surfaceElevated: 'bg-neutral-100',
-    border: 'border-neutral-200',
-    borderSubtle: 'border-neutral-100',
-    text: {
-      primary: 'text-neutral-900',
-      secondary: 'text-neutral-600',
-      tertiary: 'text-neutral-500',
-    },
-    accent: 'bg-neutral-900',
-    accentText: 'text-white',
-  },
-  
-  // Cards and surfaces
-  card: 'bg-white border border-neutral-200 rounded-lg shadow-sm',
-  cardHover: 'hover:shadow-md hover:border-neutral-300 transition-all duration-300',
-  
-  // Typography
+  // Headings
   heading: {
-    h1: 'text-5xl md:text-7xl font-light text-neutral-900 leading-tight tracking-tight',
-    h2: 'text-3xl md:text-5xl font-light text-neutral-900 tracking-tight',
-    h3: 'text-xl md:text-2xl font-medium text-neutral-900',
-    h4: 'text-lg font-medium text-neutral-900',
+    h1: 'text-4xl md:text-6xl font-semibold tracking-tight text-neutral-900',
+    h2: 'text-3xl md:text-4xl font-semibold tracking-tight text-neutral-900',
+    h3: 'text-xl md:text-2xl font-semibold text-neutral-900',
   },
-  
-  // Text styles
+
+  // Body text
   text: {
-    body: 'text-neutral-600 leading-relaxed',
-    bodyLarge: 'text-lg text-neutral-600 leading-relaxed',
-    caption: 'text-sm text-neutral-500',
+    lead: 'text-lg md:text-xl text-neutral-700',
+    body: 'text-base text-neutral-700',
+    muted: 'text-sm text-neutral-600',
   },
-  
+
   // Buttons
   button: {
-    primary: 'px-8 py-4 bg-neutral-900 text-white font-medium rounded-lg hover:bg-neutral-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:ring-offset-2',
-    secondary: 'px-8 py-4 border border-neutral-300 text-neutral-900 font-medium rounded-lg hover:bg-neutral-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:ring-offset-2',
-    ghost: 'px-4 py-2 text-neutral-600 hover:text-neutral-900 transition-colors duration-200 focus:outline-none focus:text-neutral-900',
+    primary:
+      'inline-flex items-center justify-center rounded-full px-5 py-3 bg-neutral-900 text-white hover:bg-neutral-800 transition-colors',
+    secondary:
+      'inline-flex items-center justify-center rounded-full px-5 py-3 bg-neutral-100 text-neutral-900 hover:bg-neutral-200 transition-colors',
+    ghost:
+      'inline-flex items-center justify-center rounded-full px-5 py-3 border border-neutral-200 hover:bg-neutral-50 transition-colors',
   },
-  
-  // Form elements
-  input: 'w-full px-4 py-3 bg-white border border-neutral-300 rounded-lg text-neutral-900 placeholder-neutral-500 focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 focus:outline-none transition-colors',
-  
+
+  // Cards
+  card:
+    'rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow space-y-3',
+
+  // Inputs
+  input:
+    'w-full px-4 py-3 bg-white border border-neutral-300 rounded-xl focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-900/40 outline-none transition',
+
   // Layout
-  container: 'max-w-6xl mx-auto px-6 sm:px-8 lg:px-12',
-  section: 'py-20 md:py-32',
-  
-  // Spacing
+  container: 'max-w-5xl mx-auto px-4 sm:px-6 lg:px-8',
+  section: 'py-12 md:py-16',
+
+  // Spacing scale
   spacing: {
     xs: 'space-y-4',
     sm: 'space-y-6',

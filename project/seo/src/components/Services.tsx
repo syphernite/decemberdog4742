@@ -1,65 +1,40 @@
 // src/components/Services.tsx
 import React from "react";
-import { MapPin, FileText, Settings } from "lucide-react";
-import { motion } from "framer-motion";
-import { useScrollAnimation } from "../hooks/useScrollAnimation";
+import { BarChart3, MapPin, FileSearch } from "lucide-react";
 import { tokens } from "../styles/tokens";
 
-const services = [
+const items = [
+  {
+    icon: FileSearch,
+    title: "Audit",
+    desc: "Technical crawl, on-page checks, speed, indexing, and content gaps. Clear actions in 24 hours.",
+  },
+  {
+    icon: BarChart3,
+    title: "Monthly SEO",
+    desc: "Execute the plan. Content, links, tech fixes. One number to watch: qualified leads.",
+  },
   {
     icon: MapPin,
     title: "Local SEO",
-    description:
-      "Boost visibility in your area with optimized listings and geo-targeted strategies.",
-  },
-  {
-    icon: FileText,
-    title: "Content Strategy",
-    description:
-      "Engaging, keyword-rich content designed to attract, inform, and convert your audience.",
-  },
-  {
-    icon: Settings,
-    title: "Technical SEO",
-    description:
-      "Site speed, crawlability, and structure improvements that search engines love.",
+    desc: "Maps and reviews. Citations cleaned. Rankings where it matters: near your customers, wherever they are.",
   },
 ];
 
-export const Services: React.FC = () => {
-  const { elementRef, isVisible } = useScrollAnimation();
-
+export const Services = () => {
   return (
-    <section id="services" className={tokens.section} ref={elementRef}>
+    <section className={tokens.section}>
       <div className={tokens.container}>
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-20"
-        >
-          <h2 className={tokens.heading.h2}>Our Services</h2>
-          <p className={`${tokens.text.bodyLarge} mt-6 max-w-2xl mx-auto`}>
-            Comprehensive solutions designed to cover every aspect of SEO and
-            digital presence.
-          </p>
-        </motion.div>
+        <h2 className={tokens.heading.h2}>Simple services that compound</h2>
+        <p className={`${tokens.text.muted} mt-2`}>Pick one. Upgrade later. No long contracts.</p>
 
-        <div className="grid gap-12 md:grid-cols-3">
-          {services.map((service, idx) => (
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0, y: 40 }}
-              animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-              transition={{ duration: 0.8, delay: idx * 0.2 }}
-              className="rounded-xl bg-neutral-900 p-8 shadow-lg border border-white/5"
-            >
-              <service.icon className="w-10 h-10 text-emerald-400 mb-4" />
-              <h3 className="text-xl font-semibold text-white mb-2">
-                {service.title}
-              </h3>
-              <p className="text-neutral-400">{service.description}</p>
-            </motion.div>
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {items.map(({ icon: Icon, title, desc }) => (
+            <div key={title} className={tokens.card}>
+              <Icon className="h-6 w-6" />
+              <h3 className={tokens.heading.h3}>{title}</h3>
+              <p className={tokens.text.body}>{desc}</p>
+            </div>
           ))}
         </div>
       </div>

@@ -1,26 +1,26 @@
+<!-- index.html -->
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SeoEcon - SEO Agency | All eyes on your business</title>
-    <meta name="description" content="Demo SEO agency website showcasing local SEO, content clusters, and technical SEO services. Portfolio showcase only - not actual client results." />
-    <link rel="canonical" href="https://seoecon.com" />
-    
-    <!-- Open Graph -->
-    <meta property="og:title" content="SeoEcon - Demo SEO Agency" />
-    <meta property="og:description" content="Demo SEO agency website for portfolio showcase purposes." />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://seoecon.com" />
-    
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="SeoEcon - Demo SEO Agency" />
-    <meta name="twitter:description" content="Demo SEO agency website for portfolio showcase purposes." />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <title>SEO Tools</title>
+    <!-- use a relative favicon so it works at /seo and /seo/ -->
+    <link rel="icon" href="favicon.ico" />
+    <!-- GitHub Pages deep-link restore: /seo/404.html -> /seo/?p=/seo/route -->
+    <script>
+      (function () {
+        try {
+          var p = new URLSearchParams(location.search).get("p");
+          if (p) history.replaceState(null, "", p);
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
+    <!-- dev-safe entry: Vite serves this at /src/main.tsx; build injects hashed assets -->
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
