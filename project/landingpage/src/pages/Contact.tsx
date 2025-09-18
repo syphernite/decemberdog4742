@@ -1,69 +1,81 @@
 /**
  * Contact.tsx
  *
- * Key behaviors:
+ * Key behaviors (kept):
  * - Reads ?plan=<slug>&step=2&lock=1 using useSearchParams.
  * - currentStep defaults to 1 but initializes from valid "step" query (1..3).
  * - Only shows the "Chosen plan" chip if the URL includes an exact known plan slug.
- * - Normal visits (header/CTA clicks with no plan in URL) default the select to the placeholder, no chip.
- * - form.plan is a controlled <select> bound to a label value (e.g., "VIP Flex") resolved from exact semantic slugs only.
- * - Optional lock: toggle LOCK_PLAN_FROM_QUERY to true to force-lock globally, or pass ?lock=1 to lock per-visit.
- * - Persists user-chosen plan to localStorage after they change it; but does NOT preload from localStorage on normal visits.
+ * - Normal visits (no plan in URL) default the select to the placeholder, no chip.
+ * - form.plan is a controlled <select> bound to a label value resolved from exact semantic slugs only.
+ * - Optional lock: toggle LOCK_PLAN_FROM_QUERY or pass ?lock=1 to lock per-visit.
+ * - Persists user-chosen plan to localStorage after they change it; does NOT preload from localStorage on normal visits.
  * - # of Pages is required (min 1). Step order: Business/Pages first, Identity second, Message third.
  *
- * Exact slug-to-label resolution (chip shows only for these slugs in the URL):
- *  startup -> "Startup"
- *  starter -> "Startup" (alias)
- *  basic -> "Basic"
- *  pro -> "Pro"
- *  elite -> "Elite Build"
- *  business -> "Business"
- *  business-pro -> "Business Pro"
- *  ecom-starter -> "Ecommerce Starter"
- *  vip-flex -> "VIP Flex"
- *  vip-plus -> "VIP Flex" (alias)
- *  custom -> "Custom"
+ * Updated exact slug-to-label resolution to match new pricing:
+ *  monthly:
+ *    low-orbit      -> "Low Orbit"
+ *    deep-space     -> "Deep Space"
+ *    interstellar   -> "Interstellar"
+ *    space-pirate   -> "Space Pirate"
+ *    supernova      -> "Supernova"
+ *  one-time:
+ *    space-traveler -> "Space Traveler"
+ *    orbital-nomad  -> "Orbital Nomad"
+ *    cosmic-titan   -> "Cosmic Titan"
+ *  custom:
+ *    custom         -> "Custom"
  */
 
 import React, { useEffect, useMemo, useState, ReactNode } from "react";
 import { useSearchParams } from "react-router-dom";
 
+/* ================= Plans ================= */
+
 type Plan =
-  | "Startup"
-  | "Basic"
-  | "Pro"
-  | "Elite Build"
-  | "Business"
-  | "Business Pro"
-  | "Ecommerce Starter"
-  | "VIP Flex"
+  | "Low Orbit"
+  | "Deep Space"
+  | "Interstellar"
+  | "Space Pirate"
+  | "Supernova"
+  | "Space Traveler"
+  | "Orbital Nomad"
+  | "Cosmic Titan"
   | "Custom"
   | "";
 
+const MONTHLY_PLANS: Exclude<Plan, "">[] = [
+  "Low Orbit",
+  "Deep Space",
+  "Interstellar",
+  "Space Pirate",
+  "Supernova",
+];
+
+const ONETIME_PLANS: Exclude<Plan, "">[] = [
+  "Space Traveler",
+  "Orbital Nomad",
+  "Cosmic Titan",
+];
+
 const ALL_PLANS: Exclude<Plan, "">[] = [
-  "Startup",
-  "Basic",
-  "Pro",
-  "Elite Build",
-  "Business",
-  "Business Pro",
-  "Ecommerce Starter",
-  "VIP Flex",
+  ...MONTHLY_PLANS,
+  ...ONETIME_PLANS,
   "Custom",
 ];
 
 // Exact semantic slug -> label
 const SLUG_TO_LABEL: Record<string, Exclude<Plan, "">> = {
-  startup: "Startup",
-  starter: "Startup", // alias
-  basic: "Basic",
-  pro: "Pro",
-  elite: "Elite Build",
-  business: "Business",
-  "business-pro": "Business Pro",
-  "ecom-starter": "Ecommerce Starter",
-  "vip-flex": "VIP Flex",
-  "vip-plus": "VIP Flex", // alias
+  // monthly
+  "low-orbit": "Low Orbit",
+  "deep-space": "Deep Space",
+  interstellar: "Interstellar",
+  "space-pirate": "Space Pirate",
+  supernova: "Supernova",
+  // one-time
+  "space-traveler": "Space Traveler",
+  "orbital-nomad": "Orbital Nomad",
+  "cosmic-titan": "Cosmic Titan",
+  // custom
   custom: "Custom",
 };
 
@@ -74,6 +86,8 @@ const LABEL_TO_SLUG = Object.fromEntries(
 
 // Lock behavior: can be forced here, or enabled per-visit with ?lock=1
 const LOCK_PLAN_FROM_QUERY = false;
+
+/* ================= UI tokens ================= */
 
 const INPUT =
   "w-full rounded-xl px-4 py-3 text-[15px] leading-tight text-white placeholder-white/70 \
@@ -91,7 +105,7 @@ type StepperProps = {
   getNextDisabled?: (index: number) => boolean;
   nextLabel?: string;
   backLabel?: string;
-  initialIndex?: number; // starting step index (0-based)
+  initialIndex?: number;
 };
 function EmbeddedStepper({
   children,
@@ -179,7 +193,7 @@ const initialForm = {
 const Contact: React.FC = () => {
   const [search] = useSearchParams();
 
-  // Determine if URL carries an EXACT known slug (chip should show only in this case)
+  // Determine if URL carries an EXACT known slug (chip shows only in this case)
   const { exactLabelFromQuery, hasExactPlanInQuery } = useMemo(() => {
     const rawPlan = (
       search.get("plan") ||
@@ -191,7 +205,7 @@ const Contact: React.FC = () => {
       .toLowerCase()
       .trim();
 
-    const exactLabel = SLUG_TO_LABEL[rawPlan]; // only exact, no loose matching
+    const exactLabel = SLUG_TO_LABEL[rawPlan];
     return {
       exactLabelFromQuery: (exactLabel as Plan) || "",
       hasExactPlanInQuery: !!exactLabel,
@@ -209,9 +223,7 @@ const Contact: React.FC = () => {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
-  // On mount:
-  // - If URL has an exact plan slug, preselect it and show the chip (and optionally lock).
-  // - Otherwise, DO NOT preload from localStorage; leave as placeholder (first option).
+  // On mount: preselect ONLY if URL has an exact slug; else keep placeholder.
   useEffect(() => {
     if (hasExactPlanInQuery && exactLabelFromQuery && ALL_PLANS.includes(exactLabelFromQuery as Exclude<Plan, "">)) {
       setPlan(exactLabelFromQuery);
@@ -220,13 +232,13 @@ const Contact: React.FC = () => {
         localStorage.setItem("contact.plan", exactLabelFromQuery);
       } catch {}
     } else {
-      setPlan(""); // placeholder
+      setPlan("");
       setShowChosenChip(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // run once on mount
+  }, []); // once
 
-  // Persist whenever user changes to a valid plan (user-driven choice)
+  // Persist whenever user selects a valid plan
   useEffect(() => {
     if (plan && ALL_PLANS.includes(plan as Exclude<Plan, "">)) {
       try {
@@ -247,7 +259,7 @@ const Contact: React.FC = () => {
   const identityInvalid = !(formData.name.trim().length > 0) || !isEmail(formData.email);
   const messageInvalid = !(formData.message.trim().length > 0);
 
-  // Only lock if the selection originated from an exact plan in the URL
+  // Only lock if selection originated from an exact plan in the URL
   const disabledSelect = hasExactPlanInQuery && !!plan && (LOCK_PLAN_FROM_QUERY || lockFromQuery);
 
   const handleSubmit = async () => {
@@ -306,7 +318,6 @@ const Contact: React.FC = () => {
           onFinish={handleSubmit}
           initialIndex={initialIndex}
           getNextDisabled={(i) => {
-            // Enforce pages on all steps, identity on step 2, message on step 3
             if (i === 0) return pagesInvalid;
             if (i === 1) return identityInvalid || pagesInvalid;
             if (i === 2) return messageInvalid || pagesInvalid;
@@ -368,18 +379,28 @@ const Contact: React.FC = () => {
                   value={plan}
                   onChange={(e) => {
                     setPlan(e.target.value as Plan);
-                    // If user manually changes, hide chip because it's no longer a pure redirect preselect
-                    if (!hasExactPlanInQuery) setShowChosenChip(false);
+                    // Manual change hides the chip regardless of how we arrived
+                    setShowChosenChip(false);
                   }}
                   className={INPUT}
                   disabled={disabledSelect}
                 >
                   <option value="">Select a plan</option>
-                  {ALL_PLANS.map((p) => (
-                    <option key={p} value={p}>
-                      {p}
-                    </option>
-                  ))}
+                  <optgroup label="Monthly">
+                    {MONTHLY_PLANS.map((p) => (
+                      <option key={p} value={p}>
+                        {p}
+                      </option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="One-time">
+                    {ONETIME_PLANS.map((p) => (
+                      <option key={p} value={p}>
+                        {p}
+                      </option>
+                    ))}
+                  </optgroup>
+                  <option value="Custom">Custom</option>
                 </select>
                 {disabledSelect && !!plan && (
                   <p className="mt-2 text-[11px] text-white/60">
