@@ -38,8 +38,8 @@ export default function Home() {
                 ))}
               </ul>
 
-              {/* CRAZY CTA replaces the old anchor */}
-              <div className="mt-8">
+              {/* Hide CTA on mobile; desktop shows the big animated button */}
+              <div className="mt-8 hidden md:block">
                 <CrazyCTA to={plan.cta.href} label={plan.cta.label} />
               </div>
             </div>
