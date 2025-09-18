@@ -1,3 +1,4 @@
+// src/App.tsx
 import React, { useEffect } from "react";
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -96,15 +97,15 @@ export default function App() {
       <ScrollToTopOnRouteChange />
 
       <Routes>
-        {/* Entry at root */}
+        {/* Entry at root only */}
         <Route path="/" element={<Gate />} />
 
-        {/* Main app routes WITHOUT /home prefix */}
+        {/* Rewrite any /home/* to root paths */}
         <Route path="/home/*" element={<StripHomePrefix />} />
 
-        {/* If your Layout renders <Outlet/>, these are top-level pages with header/footer */}
+        {/* Main site under Layout. Do not define an index route here */}
         <Route element={<Layout />}>
-          <Route index element={<Home />} /> {/* optional if you want Home also at "/" */}
+          <Route path="/home" element={<Home />} />
           <Route path="/services" element={<Services />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
