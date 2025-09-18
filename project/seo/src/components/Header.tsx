@@ -10,9 +10,22 @@ type NavItem = { label: string; type: "route" | "section"; to: string };
 
 const NAV: NavItem[] = [
   { label: "Home", type: "route", to: "/" },
-  { label: "Pricing", type: "section", to: "pricing" }, // element with id="pricing" on Home
+  { label: "Pricing", type: "section", to: "pricing" },
+  { label: "Free Audit", type: "section", to: "audit" },
   { label: "Contact", type: "route", to: "/contact" },
 ];
+
+function useIsMobile() {
+  const [mobile, setMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const upd = () => setMobile(mq.matches);
+    upd();
+    mq.addEventListener ? mq.addEventListener("change", upd) : mq.addListener(upd);
+    return () => (mq.removeEventListener ? mq.removeEventListener("change", upd) : mq.removeListener(upd));
+  }, []);
+  return mobile;
+}
 
 function findAnchor(id: string): HTMLElement | null {
   const root = document.getElementById(id);
@@ -25,12 +38,12 @@ function findAnchor(id: string): HTMLElement | null {
 
 function headerOffsetPx(headerEl: HTMLElement | null): number {
   const h = headerEl ? headerEl.offsetHeight : 72;
-  return h + 12; // small breathing room
+  return h + 12;
 }
 
 export default function Header() {
   const [open, setOpen] = useState(false);
-  const [visible, setVisible] = useState(true); // auto-hide on scroll down, show on scroll up
+  const [visible, setVisible] = useState(true);
   const [atTop, setAtTop] = useState(true);
   const lastY = useRef<number>(0);
   const ticking = useRef(false);
@@ -38,9 +51,14 @@ export default function Header() {
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const isMobile = useIsMobile();
 
-  // Auto-hide/show logic
+  // Auto-hide on desktop only
   useEffect(() => {
+    if (isMobile) {
+      setVisible(true);
+      return;
+    }
     const onScroll = () => {
       if (ticking.current) return;
       ticking.current = true;
@@ -48,14 +66,9 @@ export default function Header() {
         const y = window.scrollY;
         const dy = y - lastY.current;
         setAtTop(y < 8);
-        // show when scrolling up or near top; hide when scrolling down past 80px
-        if (y < 80) {
-          setVisible(true);
-        } else if (dy > 2) {
-          setVisible(false);
-        } else if (dy < -2) {
-          setVisible(true);
-        }
+        if (y < 80) setVisible(true);
+        else if (dy > 2) setVisible(false);
+        else if (dy < -2) setVisible(true);
         lastY.current = y;
         ticking.current = false;
       });
@@ -63,12 +76,11 @@ export default function Header() {
     lastY.current = window.scrollY;
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [isMobile]);
 
   const scrollWithOffset = useCallback((id: string) => {
     const target = findAnchor(id);
     if (!target) return;
-    // ensure header is visible before measuring
     setVisible(true);
     const y =
       target.getBoundingClientRect().top +
@@ -91,25 +103,24 @@ export default function Header() {
     [navigate, pathname, scrollWithOffset]
   );
 
+  const translateClass = isMobile ? "translate-y-0" : visible ? "translate-y-0" : "-translate-y-full";
+
   return (
     <>
-      {/* Fixed header that hides on scroll down and reveals on scroll up */}
       <header
         ref={headerRef as any}
         className={[
           "fixed inset-x-0 top-0 z-50 transition-transform duration-300",
-          visible ? "translate-y-0" : "-translate-y-full",
+          translateClass,
           "bg-white/90 backdrop-blur border-b border-neutral-200",
           atTop ? "" : "shadow-sm",
         ].join(" ")}
       >
         <div className={`${tokens.container} h-16 flex items-center justify-between relative`}>
-          {/* Left: Logo */}
           <Link to="/" className="flex items-center" aria-label="Home" onClick={() => setOpen(false)}>
             <img src={logo} alt="Logo" className="h-12 w-12 md:h-14 md:w-14" />
           </Link>
 
-          {/* Center: perfectly centered desktop nav */}
           <nav
             className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2"
             aria-label="Primary"
@@ -132,14 +143,12 @@ export default function Header() {
             )}
           </nav>
 
-          {/* Right: CTA */}
           <div className="hidden md:block">
             <button type="button" className={tokens.button.primary} onClick={() => goSection("pricing")}>
               Get popular today
             </button>
           </div>
 
-          {/* Mobile toggle */}
           <button
             aria-label="Toggle menu"
             className="md:hidden rounded-lg p-2 hover:bg-neutral-100"
@@ -149,7 +158,6 @@ export default function Header() {
           </button>
         </div>
 
-        {/* Mobile menu */}
         <AnimatePresence>
           {open && (
             <motion.div
@@ -199,7 +207,6 @@ export default function Header() {
         </AnimatePresence>
       </header>
 
-      {/* Spacer preserves layout under fixed header */}
       <div aria-hidden className="h-16" />
     </>
   );
