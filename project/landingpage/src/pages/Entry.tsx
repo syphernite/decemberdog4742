@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { gsap } from "gsap";
 import { Instagram, Phone } from "lucide-react";
 
+const NEWSLETTER_FORMSPREE = "https://formspree.io/f/mrblknpq";
+const FREE_SITE_FORMSPREE = "https://formspree.io/f/xyzdqejn";
+
 /** Tiny gradient particles */
 function GradientParticles() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -58,6 +61,11 @@ function GradientParticles() {
     }
 
     function step() {
+      const canvas = canvasRef.current!;
+      const ctx = canvas.getContext("2d")!;
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+
       ctx.clearRect(0, 0, width, height);
 
       const grdTop = ctx.createRadialGradient(
@@ -162,7 +170,7 @@ function FreeSiteModal({
     if (!business.trim() || !phone.trim()) return;
     setSubmitting(true);
     try {
-      const res = await fetch("https://formspree.io/f/xyzdqejn", {
+      const res = await fetch(FREE_SITE_FORMSPREE, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({ formName: "Entry Free Site Modal", business, phone }),
@@ -201,11 +209,13 @@ function FreeSiteModal({
         {!done ? (
           <>
             <div className="mb-6">
-  <h3 className="text-2xl font-bold">
-    Get a <span className="bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">Free</span> Website
-  </h3>
-  <p className="mt-1 text-sm text-slate-300">Just pay hosting!</p>
-</div>
+              <h3 className="text-2xl font-bold">
+                Get a{" "}
+                <span className="bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">Free</span>{" "}
+                Website
+              </h3>
+              <p className="mt-1 text-sm text-slate-300">Just pay hosting</p>
+            </div>
 
             <>
               <form onSubmit={submit} className="mt-2 flex flex-col gap-3 md:flex-row">
@@ -268,6 +278,62 @@ function FreeSiteModal({
   );
 }
 
+/** Newsletter signup (single input) */
+function Newsletter() {
+  const [email, setEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [done, setDone] = useState(false);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setSubmitting(true);
+    try {
+      const res = await fetch(NEWSLETTER_FORMSPREE, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ formName: "Newsletter", email }),
+      });
+      if (!res.ok) throw new Error("submit failed");
+      setDone(true);
+    } catch {
+      setSubmitting(false);
+    }
+  };
+
+  if (done) {
+    return (
+      <div className="mx-auto w-full max-w-xl rounded-2xl border border-white/10 bg-white/5 p-4 text-center text-sm text-emerald-300">
+        Subscribed. Check your inbox.
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={submit} className="mx-auto flex w-full max-w-xl flex-col gap-3 sm:flex-row">
+      <input
+        type="email"
+        name="email"
+        inputMode="email"
+        autoComplete="email"
+        required
+        placeholder="Enter your email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className="w-full flex-1 rounded-xl border border-white/10 bg-black/60 px-4 py-3 text-white placeholder-slate-400 outline-none focus:ring-2 focus:ring-emerald-400"
+        aria-label="Email address"
+      />
+      <button
+        type="submit"
+        disabled={submitting}
+        className="rounded-xl bg-gradient-to-r from-emerald-600 to-blue-600 px-6 py-3 font-semibold text-white shadow-2xl transition hover:opacity-95 disabled:opacity-60"
+      >
+        {submitting ? "Joining..." : "Join newsletter"}
+      </button>
+    </form>
+  );
+}
+
 export default function Entry() {
   const navigate = useNavigate();
   const rootRef = useRef<HTMLDivElement>(null);
@@ -311,26 +377,26 @@ export default function Entry() {
         <GradientParticles />
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 flex min-h-svh flex-col items-center justify-center px-6">
+      {/* Scaled content wrapper */}
+      <div className="relative z-10 flex min-h-svh flex-col items-center justify-center px-6 scale-[0.85] origin-top">
         <div ref={logoRef} className="select-none text-center">
           <h1 className="text-[12vw] leading-none font-extrabold tracking-tight md:text-8xl">
             Built
             <span className="bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">4</span>
             You
           </h1>
-          <p className="mt-3 text-slate-300 text-base md:text-lg">Custom sites. Fast results.</p>
+          <p className="mt-3 text-base text-slate-300 md:text-lg">Custom sites. Fast results.</p>
         </div>
 
-        {/* Launch button with rocket */}
-        <div className="mt-14">
+        {/* Launch button */}
+        <div className="mt-10 md:mt-12">
           <div className="relative inline-block overflow-hidden rounded-[24px]">
             <div className="pointer-events-none absolute -bottom-3 right-[-250%] h-1/2 w-[300%] rounded-full opacity-70 bg-gradient-to-r from-emerald-600 to-blue-600 animate-star-bottom" />
             <div className="pointer-events-none absolute -top-3 left-[-250%] h-1/2 w-[300%] rounded-full opacity-70 bg-gradient-to-r from-emerald-600 to-blue-600 animate-star-top" />
             <button
               ref={ctaRef}
               onClick={handleEnter}
-              className="relative z-[1] flex items-center gap-3 rounded-[24px] border border-[#222] bg-gradient-to-r from-emerald-600 to-blue-600 px-12 py-5 text-xl font-bold text-white shadow-2xl transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black"
+              className="relative z-[1] flex items-center gap-3 rounded-[24px] border border-[#222] bg-gradient-to-r from-emerald-600 to-blue-600 px-10 py-4 text-lg font-bold text-white shadow-2xl transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black md:px-12 md:py-5 md:text-xl"
               aria-label="Enter site"
             >
               Launch
@@ -340,32 +406,39 @@ export default function Entry() {
         </div>
 
         {/* Secondary CTA and social/phone */}
-        <div className="mt-8 text-center space-y-4">
+        <div className="mt-4 text-center space-y-4 md:mt-5">
           <div>
             <button
               onClick={() => setFreeOpen(true)}
-              className="rounded-2xl border border-white/15 bg-white/5 px-6 py-4 text-base font-semibold text-white backdrop-blur-sm transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black"
+              className="rounded-2xl border border-white/15 bg-white/5 px-5 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black md:px-6 md:py-4 md:text-base"
             >
               Want a Free site?
             </button>
-            <div className="mt-2 text-xs text-slate-400"></div>
           </div>
 
-          <div className="flex justify-center gap-4">
+          <div className="flex justify-center gap-3 md:gap-4">
             <a
               href="https://www.instagram.com/built4youonline?igsh=MWJ6MmViMmlzemsyOA=="
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-6 py-4 text-base font-semibold text-white backdrop-blur-sm transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black"
+              className="flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-5 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black md:px-6 md:py-4 md:text-base"
             >
               <Instagram className="h-5 w-5" />
             </a>
             <a
               href="tel:5805076262"
-              className="flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-6 py-4 text-base font-semibold text-white backdrop-blur-sm transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black"
+              className="flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-5 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black md:px-6 md:py-4 md:text-base"
             >
               <Phone className="h-5 w-5" />
             </a>
+          </div>
+        </div>
+
+        {/* Newsletter closer to buttons */}
+        <div className="mt-6 w-full px-2 sm:px-0">
+          <div className="mx-auto w-full max-w-2xl text-center">
+            <Newsletter />
+            <p className="mt-2 text-xs text-slate-400">No spam. Unsubscribe anytime.</p>
           </div>
         </div>
       </div>
