@@ -1,482 +1,186 @@
-/**
- * SolarPricing.tsx
- *
- * Changes in this version:
- * - Removed LocalHeader to avoid double header with the global site header.
- * - Kept a top spacer to clear the fixed global header.
- * - Orbit wrapper pointer-events-none; planet buttons pointer-events-auto.
- */
-
-import React, { useMemo, useRef, useState, useEffect, useLayoutEffect } from "react";
+// src/pages/SolarPricing.tsx
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 
-/* --------------------------- BACKGROUND LAYERS --------------------------- */
-const BackgroundLayer: React.FC = () => (
-  <>
-    <div className="absolute inset-0 -z-20 bg-gradient-to-b from-[#0a0b14] via-[#0a0f26] to-[#05060c]" />
-    <div
-      className="absolute inset-0 -z-20 pointer-events-none opacity-25"
-      style={{
-        backgroundImage:
-          "radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.6) 0, transparent 2px),\
-           radial-gradient(1px 1px at 70% 20%, rgba(255,255,255,0.5) 0, transparent 2px),\
-           radial-gradient(1px 1px at 40% 70%, rgba(255,255,255,0.4) 0, transparent 2px),\
-           radial-gradient(1px 1px at 85% 60%, rgba(255,255,255,0.5) 0, transparent 2px),\
-           radial-gradient(1px 1px at 15% 80%, rgba(255,255,255,0.35) 0, transparent 2px)"
-      }}
-    />
-    <div className="absolute inset-0 -z-20 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_60%,rgba(0,0,0,0.65)_100%)]" />
-    <div className="absolute inset-0 -z-20 sm:hidden bg-black/78" />
-  </>
-);
-
-type PlanKind = "core" | "optional" | "one-time" | "custom";
+type BillingMode = "monthly" | "onetime";
 
 type Plan = {
-  key: string;
+  slug: string;
   name: string;
   price: string;
   cadence: string;
-  kind: PlanKind;
-  shortBullets: string[];
+  blurb?: string;
   features: string[];
-  notIncluded?: string[];
-  addOns?: string[];
-  spotlightColor?: string;
-  cta?: { label: string };
+  highlight?: boolean;
+  bestFor?: string;
 };
 
-const PLANS_IN_ORDER: Plan[] = [
-  { key: "startup", name: "Startup", price: "$79", cadence: "/month", kind: "optional", shortBullets: ["Up to 3 Pages", "Hosting + Domain", "1 Edit Batch per Month"], features: ["Up to 3 Pages", "Hosting and 1 Domain", "1 Edit Batch per Month", "Contact Form", "Support within 72 hours"], notIncluded: ["Unlimited edits", "Strategy calls", "SEO reports"], spotlightColor: "ring-blue-400", cta: { label: "Get Your Free Demo Today" } },
-  { key: "basic", name: "Basic", price: "$350", cadence: "One-Time", kind: "core", shortBullets: ["1 Page Site", "Responsive", "Contact Form"], features: ["1 Page Website", "Mobile Responsive", "Contact Form", "Basic SEO Setup"], notIncluded: ["Hosting", "Edits after delivery", "Extra pages"], spotlightColor: "ring-emerald-400", cta: { label: "Get Your Free Demo Today" } },
-  { key: "pro", name: "Pro", price: "$600", cadence: "One-Time", kind: "core", shortBullets: ["Up to 5 Pages", "Gallery", "Maps + Socials"], features: ["Up to 5 Pages", "Photo Gallery", "Google Maps and Social Media Links", "Custom Domain Setup"], notIncluded: ["Hosting", "Ongoing support", "Advanced integrations"], addOns: ["Extra Page - $50", "Logo Design - $75", "Rush Delivery 72 hours - +$250"], spotlightColor: "ring-cyan-400", cta: { label: "Get Your Free Demo Today" } },
-  { key: "elite", name: "Elite Build", price: "$1,200", cadence: "One-Time", kind: "one-time", shortBullets: ["Up to 8 Pages", "Advanced Styling", "Post-Launch Support"], features: ["Up to 8 Pages", "Advanced Styling: custom fonts, scroll animations, hover effects, parallax, layered overlays, section transitions, sticky elements, microinteractions, dark mode toggle, animated SVGs or icons, custom cursors, video backgrounds with mobile fallback", "Mobile and Tablet Optimization", "Photo Gallery and Google Maps", "Contact Form with Conditional Logic", "Custom Domain Setup", "1 Week of Post-Launch Support", "SEO Foundations: headers, meta, structure"], notIncluded: ["Hosting and domain unless added", "Ongoing edits after 1 week", "Booking or store setups"], addOns: ["Hosting Only - $30 per month", "Logo Design - $75", "Rush Delivery 72 hours - +$250", "Extra Page - $50 per page"], spotlightColor: "ring-yellow-400", cta: { label: "Get Your Free Demo Today" } },
-  { key: "business", name: "Business", price: "$129", cadence: "/month", kind: "core", shortBullets: ["Unlimited Edits", "Hosting + Domain", "Monthly Reports"], features: ["Unlimited Edits, Mon to Fri, 24 to 48 hour turnaround", "Hosting and 1 Domain", "Monthly Reports", "Contact Form, Google Maps and Socials, optional Photo Gallery", "Basic SEO Maintenance", "Priority Email Support"], notIncluded: ["Strategy calls", "Advanced integrations"], spotlightColor: "ring-violet-400", cta: { label: "Get Your Free Demo Today" } },
-  { key: "business-pro", name: "Business Pro", price: "$199", cadence: "/month", kind: "core", shortBullets: ["Same Day Edits", "Strategy Calls", "Custom Integrations"], features: ["Everything in Business", "Same Day Edits, Mon to Fri, cutoff 2 PM", "Biweekly Strategy Calls", "Custom Integrations: bookings, menus, payments", "Advanced Contact Forms with conditional logic", "VIP Support"], notIncluded: ["Large ecommerce builds", "Full redesigns without quote"], spotlightColor: "ring-fuchsia-400", cta: { label: "Get Your Free Demo Today" } },
-  { key: "ecom-starter", name: "Ecommerce Starter", price: "$299", cadence: "/month", kind: "optional", shortBullets: ["Store Setup", "Up to 10 Products", "Hosting + Domain"], features: ["Store Setup with Stripe, PayPal, or Shopify Lite", "Up to 10 Products Uploaded", "Hosting and 1 Domain", "1 Edit Batch per Month", "Basic Support"], notIncluded: ["Subscriptions", "Advanced filtering", "Shipping calculators"], spotlightColor: "ring-rose-400", cta: { label: "Get Your Free Demo Today" } },
-  { key: "vip-flex", name: "VIP Flex", price: "$499", cadence: "/month", kind: "optional", shortBullets: ["Unlimited Same Day Edits", "Weekly Calls", "Quarterly Redesigns"], features: ["Unlimited Same Day Edits, Mon to Fri", "Weekly Strategy Calls", "Advanced Performance Tracking", "Quarterly Redesigns", "Socials, Reviews, Google Business Management", "Dedicated Account Manager"], notIncluded: ["Large ecommerce without quote", "Complex data migrations without quote"], spotlightColor: "ring-amber-400", cta: { label: "Get Your Free Demo Today" } },
-  { key: "custom", name: "Custom", price: "Quote", cadence: "Only", kind: "custom", shortBullets: ["Fully Custom", "Complex Integrations", "PM Included"], features: ["Fully Custom Design", "Ecommerce, Booking, Membership Setup", "Complex Integrations or Dashboards", "Multi-Step Forms or Funnels", "Custom CMS or Admin Panel", "Dedicated Project Manager"], spotlightColor: "ring-sky-400", cta: { label: "Request Custom Quote" } }
+const monthlyPlans: Plan[] = [
+  { slug: "low-orbit", name: "Low Orbit", price: "$49", cadence: "/month", blurb: "Starter presence", bestFor: "Best for small mobile businesses", features: ["1 page", "Contact form", "Basic SEO"] },
+  { slug: "deep-space", name: "Deep Space", price: "$79", cadence: "/month", blurb: "Up to 3 pages", bestFor: "Best for standard businesses", features: ["Up to 3 pages", "Hosting + domain", "1 edit batch / month"] },
+  { slug: "interstellar", name: "Interstellar", price: "$129", cadence: "/month", blurb: "Most popular", bestFor: "Best for daily updating", highlight: true, features: ["Unlimited edits", "Hosting + domain", "Monthly report"] },
+  { slug: "space-pirate", name: "Space Pirate", price: "$299", cadence: "/month", bestFor: "Best for ecommerce", features: ["Same day edits", "Strategy calls", "Custom integrations"] },
+  { slug: "supernova", name: "Supernova", price: "$499", cadence: "/month", bestFor: "Best for big projects", features: ["Unlimited same day edits", "Weekly calls", "Quarterly redesigns"] },
 ];
 
-const ORDER_KEYS = ["startup", "basic", "pro", "elite", "business", "business-pro", "ecom-starter", "vip-flex", "custom"] as const;
-type PlanKey = typeof ORDER_KEYS[number];
+const onetimePlans: Plan[] = [
+  { slug: "space-traveler", name: "Space Traveler", price: "$350", cadence: "One time", blurb: "Then $30/month hosting if needed", bestFor: "Best for small one-page builds", features: ["1 page site", "Responsive", "Contact form"] },
+  { slug: "orbital-nomad", name: "Orbital Nomad", price: "$600", cadence: "One time", blurb: "Then $30/month hosting if needed", bestFor: "Best for multi-page small business sites", highlight: true, features: ["Up to 5 pages", "Gallery + Maps", "Custom domain setup"] },
+  { slug: "cosmic-titan", name: "Cosmic Titan", price: "$1200", cadence: "One time", blurb: "Then $30/month hosting if needed", bestFor: "Best for larger custom designs", features: ["Up to 8 pages", "Advanced styling", "1 week post-launch support"] },
+];
 
-/* ---------------------------------- PAGE --------------------------------- */
-const Pricing: React.FC = () => {
+const pageWrap = "relative min-h-screen text-white bg-transparent";
+const cardBase = "group relative flex flex-col rounded-2xl border border-white/15 bg-white/5 backdrop-blur-xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.35)]";
+const cardRing = "absolute inset-0 rounded-2xl ring-1 ring-white/10 group-hover:ring-white/20 transition";
+
+const fadeSwap = {
+  initial: { opacity: 0, y: 12, filter: "blur(4px)" },
+  animate: { opacity: 1, y: 0, filter: "blur(0px)" },
+  exit: { opacity: 0, y: -12, filter: "blur(4px)" },
+  transition: { duration: 0.28, ease: "easeInOut" },
+};
+
+const emojiFor = (slug: string) => {
+  switch (slug) {
+    case "low-orbit": return "🚀";
+    case "deep-space": return "🪐";
+    case "interstellar": return "✨";
+    case "space-pirate": return "🏴‍☠️";
+    case "supernova": return "🕳️";
+    case "space-traveler": return "👨‍🚀";
+    case "orbital-nomad": return "🛰️";
+    case "cosmic-titan": return "🌌";
+    default: return "💫";
+  }
+};
+
+const SolarPricing: React.FC = () => {
   const navigate = useNavigate();
+  const [mode, setMode] = useState<BillingMode>("monthly");
 
   useEffect(() => {
     document.documentElement.classList.add("dark");
-    try {
-      localStorage.setItem("theme", "dark");
-    } catch {}
+    try { localStorage.setItem("theme", "dark"); } catch {}
   }, []);
 
-  const orderedPlans = useMemo(() => ORDER_KEYS.map((k) => PLANS_IN_ORDER.find((p) => p.key === k)!).filter(Boolean), []);
-  const plansByKey = useMemo(() => Object.fromEntries(orderedPlans.map((p) => [p.key, p])) as Record<PlanKey, Plan>, [orderedPlans]);
+  const plans = useMemo(() => (mode === "monthly" ? monthlyPlans : onetimePlans), [mode]);
+  const gridCols =
+    mode === "monthly"
+      ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5"
+      : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
 
-  const initialKey: PlanKey = useMemo(() => {
-    if (typeof window === "undefined") return ORDER_KEYS[0];
-    const href = window.location.href;
-    const hashIdx = href.indexOf("#");
-    if (hashIdx >= 0) {
-      const afterHash = href.slice(hashIdx + 1);
-      const qIdx = afterHash.indexOf("?");
-      if (qIdx >= 0) {
-        const qs = new URLSearchParams(afterHash.slice(qIdx + 1));
-        const plan = (qs.get("plan") || "").toLowerCase();
-        return (ORDER_KEYS as readonly string[]).includes(plan) ? (plan as PlanKey) : ORDER_KEYS[0];
-      }
-    }
-    const url = new URL(href);
-    const plan = (url.searchParams.get("plan") || "").toLowerCase();
-    return (ORDER_KEYS as readonly string[]).includes(plan) ? (plan as PlanKey) : ORDER_KEYS[0];
-  }, []);
-
-  const [activeKey, setActiveKey] = useState<PlanKey>(initialKey);
-  const [legendOpen, setLegendOpen] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const href = window.location.href;
-    const hashIdx = href.indexOf("#");
-    if (hashIdx >= 0) {
-      const before = href.slice(0, hashIdx + 1);
-      const after = href.slice(hashIdx + 1);
-      const qIdx = after.indexOf("?");
-      const path = qIdx >= 0 ? after.slice(0, qIdx) : after;
-      const qs = qIdx >= 0 ? new URLSearchParams(after.slice(qIdx + 1)) : new URLSearchParams();
-      qs.set("plan", activeKey);
-      const newUrl = `${before}${path}?${qs.toString()}`;
-      window.history.replaceState({}, "", newUrl);
-    } else {
-      const url = new URL(href);
-      url.searchParams.set("plan", activeKey);
-      window.history.replaceState({}, "", url.toString());
-    }
-  }, [activeKey]);
-
-  const len = orderedPlans.length;
-  const activeIndex = ORDER_KEYS.indexOf(activeKey);
-  const current = plansByKey[activeKey];
-
-  const next = () => setActiveKey(ORDER_KEYS[(activeIndex + 1) % len]);
-  const prev = () => setActiveKey(ORDER_KEYS[(activeIndex - 1 + len) % len]);
-
-  // Mobile swipe
-  const carouselRef = useRef<HTMLDivElement | null>(null);
-  const touchStart = useRef<{ x: number; y: number } | null>(null);
-
-  const onTouchStart = (e: React.TouchEvent) => {
-    const t = e.touches[0];
-    touchStart.current = { x: t.clientX, y: t.clientY };
-  };
-  const onTouchEnd = (e: React.TouchEvent) => {
-    if (!touchStart.current) return;
-    const t = e.changedTouches[0];
-    const dx = t.clientX - touchStart.current.x;
-    const dy = t.clientY - touchStart.current.y;
-    touchStart.current = null;
-    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
-      if (dx < 0) next();
-      else prev();
-    }
-  };
-
-  // Reduced motion flag
-  const [animEnabled, setAnimEnabled] = useState(true);
-  useEffect(() => {
-    const q = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setAnimEnabled(!q.matches);
-    update();
-    q.addEventListener?.("change", update);
-    return () => q.removeEventListener?.("change", update);
-  }, []);
-
-  /* ---------- Orbit geometry ---------- */
-  const orbitRef = useRef<HTMLDivElement | null>(null);
-  const centerRef = useRef<HTMLDivElement | null>(null);
-  const samplePlanetRef = useRef<HTMLDivElement | null>(null);
-
-  const [centerRadius, setCenterRadius] = useState(0);
-  const [planetRadius, setPlanetRadius] = useState(44);
-  useLayoutEffect(() => {
-    const measure = () => {
-      if (centerRef.current) setCenterRadius(centerRef.current.getBoundingClientRect().width / 2);
-      if (samplePlanetRef.current) setPlanetRadius(samplePlanetRef.current.offsetWidth / 2);
-    };
-    measure();
-    const ro1 = new ResizeObserver(measure);
-    const ro2 = new ResizeObserver(measure);
-    if (centerRef.current) ro1.observe(centerRef.current);
-    if (orbitRef.current) ro2.observe(orbitRef.current);
-    window.addEventListener("resize", measure, { passive: true });
-    return () => {
-      ro1.disconnect();
-      ro2.disconnect();
-      window.removeEventListener("resize", measure);
-    };
-  }, []);
-
-  const total = orderedPlans.length;
-  const cardClass =
-    "rounded-3xl border border-white/15 bg-black/72 backdrop-blur-md p-6 sm:p-8 shadow-[0_0_30px_rgba(0,0,0,0.35)] sm:bg-white/5 sm:backdrop-blur-0";
-
-  const goContact = (slug: PlanKey, lock = false, step: "1" | "2" = "2") => {
-    const qs = new URLSearchParams({ plan: slug, step });
-    if (lock) qs.set("lock", "1");
+  const goContact = (p: Plan | { slug: string }) => {
+    const qs = new URLSearchParams({ plan: p.slug, billing: mode });
     navigate(`/contact?${qs.toString()}`);
   };
 
   return (
-    <div className="relative min-h-screen text-white overflow-hidden">
-      <BackgroundLayer />
+    <div className={pageWrap}>
+      <div className="h-20 sm:h-24" />
+      <main className="mx-auto w-full max-w-[1400px] px-4 sm:px-6 pb-24">
+        <header className="text-center mb-8">
+          <p className="text-[11px] uppercase tracking-[0.22em] text-white/70">Our Pricing Plans</p>
+          <h1 className="mt-2 text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">Pricing and Plans</h1>
+          <p className="mt-2 text-white/70">Transparent background. Glass cards. Space icons.</p>
+        </header>
 
-      {/* Spacer for the global fixed header height */}
-      <div className="h-20 sm:h-24" aria-hidden="true" />
-
-      <main>
-        {/* top controls */}
-        <div className="relative z-10 flex items-center justify-end px-4 sm:px-6 py-2">
-          <div className="flex items-center gap-3">
+        <div className="mx-auto mb-12 flex w-full max-w-md items-center justify-center">
+          <div className="relative grid w-full grid-cols-2 rounded-xl border border-white/15 bg-white/10 backdrop-blur-md p-1">
             <button
-              className="sm:hidden inline-flex items-center px-3 py-2 rounded-xl border border-white/15 bg-black/70 backdrop-blur-md hover:bg-black/80 transition"
-              onClick={() => setLegendOpen((v) => !v)}
-              aria-expanded={legendOpen}
-            >
-              {legendOpen ? "Hide Plans" : "Show Plans"}
+              onClick={() => setMode("monthly")}
+              className={`z-10 rounded-lg px-4 py-2 text-sm font-semibold transition ${mode === "monthly" ? "text-black" : "text-white/85 hover:text-white"}`}>
+              Pay Monthly
             </button>
-
-            <div className="hidden sm:flex items-center gap-2">
-              {orderedPlans.map((p, i) => (
-                <button
-                  key={p.key}
-                  type="button"
-                  onClick={() => setActiveKey(ORDER_KEYS[i])}
-                  className={`px-3 py-1 rounded-lg text-sm border transition ${
-                    i === ORDER_KEYS.indexOf(activeKey) ? "border-white/60 bg-white/10" : "border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10"
-                  }`}
-                  title={p.name}
-                  aria-pressed={i === ORDER_KEYS.indexOf(activeKey)}
-                >
-                  {p.name}
-                </button>
-              ))}
-            </div>
+            <button
+              onClick={() => setMode("onetime")}
+              className={`z-10 rounded-lg px-4 py-2 text-sm font-semibold transition ${mode === "onetime" ? "text-black" : "text-white/85 hover:text-white"}`}>
+              One Time
+            </button>
+            <motion.div layout className="absolute top-1 bottom-1 left-1 right-1 rounded-lg bg-gradient-to-r from-emerald-400 to-blue-500"
+              style={{ width: "calc(50% - 4px)" }}
+              animate={{ x: mode === "monthly" ? 0 : "100%" }}
+              transition={{ type: "spring", stiffness: 300, damping: 28 }} />
           </div>
         </div>
 
-        {/* mobile legend */}
-        {legendOpen && (
-          <div className="relative z-10 sm:hidden px-4 pb-2">
-            <div className="rounded-2xl border border-white/15 bg-black/75 backdrop-blur-md p-2 grid grid-cols-2 gap-2">
-              {orderedPlans.map((p, i) => (
-                <button
-                  key={p.key}
-                  type="button"
-                  onClick={() => {
-                    setActiveKey(ORDER_KEYS[i]);
-                    setLegendOpen(false);
-                  }}
-                  className={`w-full px-3 py-2 rounded-xl text-left text-sm border transition ${
-                    i === ORDER_KEYS.indexOf(activeKey) ? "border-white/60 bg-white/10" : "border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10"
-                  }`}
-                  aria-pressed={i === ORDER_KEYS.indexOf(activeKey)}
-                >
-                  {p.name}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* MOBILE CAROUSEL */}
-        <div className="relative z-10 sm:hidden px-4 pb-6">
-          <div className="w-full" ref={carouselRef} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-            <div className={cardClass} key={activeKey}>
-              <div className="text-xs uppercase tracking-widest text-white/80 mb-2 text-center">In focus</div>
-              <h2 className="text-2xl font-bold text-center bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent" style={{ textShadow: "0 1px 2px rgba(0,0,0,0.65)" }}>
-                {current.name}
-              </h2>
-              <div className="mt-1 text-lg font-semibold text-center">
-                {current.price} <span className="text-white/80">{current.cadence}</span>
-              </div>
-              <ul className="mt-3 space-y-1 text-sm text-white/90 list-none">
-                {current.shortBullets.map((b, idx) => (
-                  <li key={idx} className="flex items-center justify-center gap-2">
-                    <span className="inline-block h-1.5 w-1.5 rounded-full bg-white/90" />
-                    {b}
-                  </li>
-                ))}
-              </ul>
-              <button
-                onClick={() => goContact(current.key as PlanKey, false, "1")}
-                className="mt-4 mx-auto w-full inline-flex items-center justify-center px-5 sm:px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-blue-500 text-black font-semibold hover:opacity-90 transition shadow whitespace-nowrap overflow-visible leading-tight min-h-[44px]"
-              >
-                {current.cta?.label ?? "Get Started"}
-              </button>
-
-              <div className="mt-5 flex items-center justify-center gap-1.5">
-                {orderedPlans.map((_, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => setActiveKey(ORDER_KEYS[i])}
-                    className={`h-2 w-2 rounded-full transition ${i === ORDER_KEYS.indexOf(activeKey) ? "bg-cyan-400" : "bg-white/40 hover:bg-white/70"}`}
-                    aria-label={`Go to ${orderedPlans[i].name}`}
-                    aria-pressed={i === ORDER_KEYS.indexOf(activeKey)}
-                  />
-                ))}
-              </div>
-
-              <div className="mt-3 text-center text-xs text-white/70">Swipe for next plan</div>
-            </div>
-          </div>
-        </div>
-
-        {/* DESKTOP ORBIT */}
-        <div className="relative z-10 hidden sm:flex items-center justify-center pt-6 pb-8 sm:pb-12">
-          <style>{`
-            @keyframes orbit-rotate { 0%{transform:rotate(0)}100%{transform:rotate(360deg)} }
-            @keyframes orbit-rotate-reverse { 0%{transform:rotate(0)}100%{transform:rotate(-360deg)} }
-          `}</style>
-
-          <div ref={orbitRef} className="relative w-[92vw] max-w-[1120px] aspect-square" style={{ willChange: "transform", transform: "translateZ(0)" }}>
-            {/* Center orb */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div
-                ref={centerRef}
-                className={`relative w-[46vw] max-w-[400px] aspect-square rounded-full bg-white/5 border ${(orderedPlans[ORDER_KEYS.indexOf(activeKey)]?.spotlightColor as string) || "ring-cyan-400"} ring-2 ring-inset border-white/10 shadow-[0_0_40px_rgba(0,255,255,0.2)]`}
-                key={activeKey}
-              >
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-                  <div className="text-xs uppercase tracking-widest text-white/70 mb-2">In focus</div>
-                  <h2 className="text-2xl sm:text-3xl font-bold drop-shadow bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">
-                    {orderedPlans[ORDER_KEYS.indexOf(activeKey)].name}
-                  </h2>
-                  <div className="mt-1 text-lg sm:text-xl font-semibold">
-                    {orderedPlans[ORDER_KEYS.indexOf(activeKey)].price} <span className="text-white/70">{orderedPlans[ORDER_KEYS.indexOf(activeKey)].cadence}</span>
+        <AnimatePresence mode="wait">
+          <motion.section key={mode} {...fadeSwap} className={`grid ${gridCols} gap-6`}>
+            {plans.map((p) => (
+              <motion.article key={p.slug} {...fadeSwap} className={`${cardBase} min-h-[540px]`} whileHover={{ y: -6 }}
+                transition={{ type: "spring", stiffness: 260, damping: 22 }}>
+                <div className={cardRing} />
+                <div className="absolute -top-6 left-6">
+                  <div className="h-12 w-12 rounded-full border border-white/25 bg-white/10 backdrop-blur-md grid place-items-center shadow-[0_6px_18px_rgba(0,0,0,0.35)]">
+                    <span className="text-2xl">{emojiFor(p.slug)}</span>
                   </div>
-                  <ul className="mt-3 space-y-1 text-sm text-white/80 list-none">
-                    {orderedPlans[ORDER_KEYS.indexOf(activeKey)].shortBullets.map((b, idx) => (
-                      <li key={idx} className="flex items-center justify-center gap-2">
-                        <span className="inline-block h-1.5 w-1.5 rounded-full bg-white/70" />
-                        {b}
-                      </li>
-                    ))}
-                  </ul>
                 </div>
-              </div>
-            </div>
 
-            {/* Rotating wrapper */}
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                animation: animEnabled ? "orbit-rotate 32s linear infinite" : "none",
-                willChange: "transform",
-                transformOrigin: "50% 50%"
-              }}
-            >
-              {orderedPlans.map((plan, slotIdx) => {
-                const angleDeg = -90 + (360 / total) * slotIdx;
-                const radius = centerRadius + 56 + 44;
+                {/* No special badge now — highlight handled only by styling */}
+                {p.highlight && (
+                  <div className="absolute -top-6 right-6">
+                    <span className="rounded-full bg-emerald-500/90 text-black px-3 py-1 text-[11px] font-semibold tracking-wide shadow-md">
+                      Best choice
+                    </span>
+                  </div>
+                )}
 
-                return (
-                  <button
-                    key={plan.key}
-                    type="button"
-                    onClick={() => setActiveKey(ORDER_KEYS[slotIdx])}
-                    className="absolute pointer-events-auto"
-                    style={{
-                      left: "50%",
-                      top: "50%",
-                      transform: `translate(-50%, -50%) rotate(${angleDeg}deg) translateX(${radius}px) rotate(${-angleDeg}deg)`,
-                      willChange: "transform"
-                    }}
-                    title={plan.name}
-                    aria-label={plan.name}
-                    aria-pressed={ORDER_KEYS[slotIdx] === activeKey}
-                  >
-                    <div
-                      ref={slotIdx === 0 ? samplePlanetRef : undefined}
-                      className={`relative w-[5.5rem] h-[5.5rem] overflow-hidden rounded-full bg-white/10 border border-white/15 ring-2 ${plan.spotlightColor || "ring-cyan-400"} hover:scale-105 transition-transform shadow-[0_0_24px_rgba(255,255,255,0.14)]`}
-                    >
-                      <div className="absolute inset-0 rounded-full bg-black/30" />
-                      <div
-                        className="absolute inset-0 flex flex-col items-center justify-center text-center px-1 leading-tight"
-                        style={{ animation: animEnabled ? "orbit-rotate-reverse 32s linear infinite" : "none", willChange: "transform" }}
-                      >
-                        <div className="text-[10px] uppercase tracking-wider text-white/70">Plan</div>
-                        <div className="text-[12px] font-semibold break-words text-center px-1">{plan.name}</div>
-                        <div className="text-[11px] text-white/80 text-center">
-                          {plan.price} <span className="opacity-70">{plan.cadence}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
+                <div className="mt-6 text-[11px] uppercase tracking-[0.18em] text-white/70">Plan</div>
+                <h3 className="text-2xl font-bold">{p.name}</h3>
+                {p.bestFor && <p className="mt-1 text-sm text-emerald-300">{p.bestFor}</p>}
 
-            {/* arrows */}
-            <div className="hidden sm:block">
-              <button onClick={prev} className="absolute left-2 top-1/2 -translate-y-1/2 px-3 py-2 rounded-xl border border-white/15 bg-white/10 hover:bg-white/20" aria-label="Previous plan" title="Previous plan" type="button">
-                ←
-              </button>
-              <button onClick={next} className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-2 rounded-xl border border-white/15 bg-white/10 hover:bg-white/20" aria-label="Next plan" title="Next plan" type="button">
-                →
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* DETAILS */}
-        <div className="relative z-20 mx-auto w-full max-w-4xl px-4 sm:px-6 pb-16">
-          <div className={cardClass} key={`details-${activeKey}`}>
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <h3 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent" style={{ textShadow: "0 1px 2px rgba(0,0,0,0.6)" }}>
-                  {current.name} Details
-                </h3>
-                <div className="text-white/90">
-                  <span className="font-semibold">{current.price}</span> {current.cadence}
+                <div className="mt-4 flex items-baseline gap-2">
+                  <div className="text-4xl font-extrabold">{p.price}</div>
+                  <div className="text-white/70">{p.cadence}</div>
                 </div>
-              </div>
-              <div className="hidden sm:flex items-center gap-2">
-                <button onClick={prev} className="px-3 py-2 rounded-lg border border-white/15 bg-white/10 hover:bg-white/20" title="Previous" type="button">
-                  Previous
-                </button>
-                <button onClick={next} className="px-3 py-2 rounded-lg border border-white/15 bg-white/10 hover:bg-white/20" title="Next" type="button">
-                  Next
-                </button>
-              </div>
-            </div>
+                {p.blurb && <p className="mt-1 text-sm text-white/75">{p.blurb}</p>}
 
-            <div className="mt-6 grid gap-8 sm:grid-cols-2">
-              <div>
-                <div className="text-sm uppercase tracking-wider text-white/80 mb-2">Included</div>
-                <ul className="space-y-2 list-none">
-                  {current.features.map((f, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <span className="mt-1 h-2 w-2 rounded-full bg-emerald-300 flex-shrink-0" />
-                      <span className="leading-relaxed text-white/95">{f}</span>
+                <ul className="mt-6 space-y-3 text-[15px] text-white/95">
+                  {p.features.map((f, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-gradient-to-r from-emerald-400 to-blue-400" />
+                      <span>{f}</span>
                     </li>
                   ))}
                 </ul>
+
+                <div className="mt-auto pt-6">
+                  <button onClick={() => goContact(p)} className="relative w-full rounded-xl bg-gradient-to-r from-emerald-500 to-blue-500 px-5 py-3 font-semibold text-black transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400">
+                    Choose Plan
+                    <span className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-black/10" />
+                  </button>
+                  {mode === "onetime" && <p className="mt-3 text-xs text-white/65">Hosting available at $30 per month after launch.</p>}
+                  {mode === "monthly" && <p className="mt-3 text-xs text-emerald-300">Month to month. Cancel anytime.</p>}
+                </div>
+                <div className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 group-hover:opacity-100 transition duration-300 bg-[radial-gradient(60%_60%_at_50%_-10%,rgba(59,130,246,.22),transparent_60%)]" />
+              </motion.article>
+            ))}
+          </motion.section>
+        </AnimatePresence>
+
+        {/* Lost CTA with perfectly centered satellite */}
+        <div className="relative mt-16 flex justify-center">
+          <div className="relative flex items-center justify-center h-40 w-40">
+            <motion.div aria-hidden className="absolute h-full w-full rounded-full border border-white/10" />
+            <motion.div aria-hidden className="absolute" style={{ transformOrigin: "50% 50%" }}
+              animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 14, ease: "linear" }}>
+              <div className="translate-x-[80px]">
+                <span className="text-2xl drop-shadow">🛰️</span>
               </div>
-
-              <div>
-                {current.notIncluded && current.notIncluded.length > 0 && (
-                  <>
-                    <div className="text-sm uppercase tracking-wider text-white/80 mb-2">Not Included</div>
-                    <ul className="space-y-2 list-none">
-                      {current.notIncluded.map((f, i) => (
-                        <li key={i} className="flex items-start gap-3">
-                          <span className="mt-1 h-2 w-2 rounded-full bg-rose-300 flex-shrink-0" />
-                          <span className="leading-relaxed text-white/95">{f}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                )}
-              </div>
-            </div>
-
-            <div className="mt-8 pt-6 border-t border-white/10">
-              <div className="text-sm uppercase tracking-wider text-white/80 mb-2">Universal Add Ons</div>
-              <ul className="grid sm:grid-cols-2 gap-2 list-none">
-                <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-white/80" /> Extra Page - $50 per page</li>
-                <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-white/80" /> Logo Design - $75 one time</li>
-                <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-white/80" /> Hosting Only - $25 per month</li>
-                <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-white/80" />  Rush Delivery 72 hours - +$250</li>
-              </ul>
-
-              {current.cadence.includes("/month") && <p className="mt-4 text-emerald-300 font-semibold">Monthly plans are month to month. Cancel anytime. No contracts.</p>}
-
-              <div className="mt-4 text-xs text-white/75">Large ecommerce and complex data migrations require a quote.</div>
-
-              <div className="mt-6 flex items-center justify-end gap-3">
-                <button onClick={() => goContact(current.key as PlanKey, false, "1")} className="px-4 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-blue-500 text-black font-semibold hover:opacity-90 transition shadow">
-                  {current.cta?.label ?? "Get Started"}
-                </button>
-              </div>
-
-              <div className="mt-6 flex sm:hidden items-center justify-end gap-2">
-                <button onClick={prev} className="px-3 py-2 rounded-lg border border-white/15 bg-black/60 hover:bg-black/70 backdrop-blur-md" title="Previous" type="button">
-                  Previous
-                </button>
-                <button onClick={next} className="px-3 py-2 rounded-lg border border-white/15 bg-black/60 hover:bg-black/70 backdrop-blur-md" title="Next" type="button">
-                  Next
-                </button>
-              </div>
-            </div>
+            </motion.div>
+            <button
+              onClick={() => goContact({ slug: "custom" })}
+              className="absolute z-10 rounded-xl border border-white/15 bg-white/10 px-6 py-3 text-sm font-semibold text-white/90 backdrop-blur-md hover:bg-white/15 hover:border-white/25 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+            >
+              Lost? Get a custom quote
+            </button>
           </div>
         </div>
+
+        <p className="mt-10 text-center text-xs text-white/60">Large ecommerce or complex data work is quoted separately.</p>
       </main>
     </div>
   );
 };
 
-export default Pricing;
+export default SolarPricing;
