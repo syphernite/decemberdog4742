@@ -164,11 +164,6 @@ function FreeSiteModal({
         const length = checkRef.current.getTotalLength();
         gsap.set(checkRef.current, { strokeDasharray: length, strokeDashoffset: length });
         gsap.to(checkRef.current, { strokeDashoffset: 0, duration: 0.6, ease: "power2.out" });
-        gsap.fromTo(
-          checkRef.current,
-          { scale: 0.9, opacity: 0.8 },
-          { scale: 1, opacity: 1, duration: 0.3, ease: "power2.out", delay: 0.1 }
-        );
       }
       setTimeout(() => {
         onClose();
@@ -190,7 +185,7 @@ function FreeSiteModal({
       >
         {!done ? (
           <>
-            <div className="mb-6">
+            <div className="mb-6 text-center">
               <h3 className="text-2xl font-bold">
                 Get a{" "}
                 <span className="bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">Free</span>{" "}
@@ -199,7 +194,7 @@ function FreeSiteModal({
               <p className="mt-1 text-sm text-slate-300">Just pay hosting</p>
             </div>
 
-            <form onSubmit={submit} className="mt-2 flex flex-col gap-3 md:flex-row">
+            <form onSubmit={submit} className="mt-2 flex flex-col items-center gap-3 md:flex-row">
               <input
                 type="text"
                 name="business"
@@ -258,11 +253,39 @@ function FreeSiteModal({
   );
 }
 
-/* ------------------------------ Newsletter -------------------------------- */
-function Newsletter() {
+/* --------------------------- Newsletter modal ------------------------------ */
+function NewsletterModal({
+  open,
+  onClose,
+}: {
+  open: boolean;
+  onClose: () => void;
+}) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const checkRef = useRef<SVGPathElement>(null);
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+    if (open) document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open, onClose]);
+
+  useEffect(() => {
+    if (!open) return;
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        cardRef.current,
+        { y: 18, opacity: 0, scale: 0.98 },
+        { y: 0, opacity: 1, scale: 1, duration: 0.25, ease: "power2.out" }
+      );
+    });
+    return () => ctx.revert();
+  }, [open]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -276,43 +299,83 @@ function Newsletter() {
       });
       if (!res.ok) throw new Error("submit failed");
       setDone(true);
+
+      if (checkRef.current) {
+        const length = checkRef.current.getTotalLength();
+        gsap.set(checkRef.current, { strokeDasharray: length, strokeDashoffset: length });
+        gsap.to(checkRef.current, { strokeDashoffset: 0, duration: 0.5, ease: "power2.out" });
+      }
+      setTimeout(onClose, 1600);
     } catch {
       setSubmitting(false);
     }
   };
 
-  if (done) {
-    return (
-      <div className="mx-auto w-full max-w-xl rounded-2xl border border-white/10 bg-white/5 p-4 text-center text-sm text-emerald-300">
-        Subscribed.
-      </div>
-    );
-  }
+  if (!open) return null;
 
   return (
-    <form onSubmit={submit} className="mx-auto flex w-full max-w-xl flex-col gap-3 sm:flex-row">
-      <div className="w-full flex-1 rounded-xl p-[2px] bg-gradient-to-r from-emerald-600 to-blue-600">
-        <input
-          type="email"
-          name="email"
-          inputMode="email"
-          autoComplete="email"
-          required
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full rounded-[10px] bg-black/60 px-4 py-3 text-white placeholder-slate-400 outline-none"
-          aria-label="Email address"
-        />
-      </div>
-      <button
-        type="submit"
-        disabled={submitting}
-        className="rounded-xl bg-gradient-to-r from-emerald-600 to-blue-600 px-6 py-3 font-semibold text-white shadow-2xl transition hover:opacity-95 disabled:opacity-60"
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" aria-modal="true" role="dialog">
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div
+        ref={cardRef}
+        className="relative z-10 w-full max-w-lg rounded-2xl border border-white/10 bg-neutral-900/90 p-6 text-white shadow-2xl"
       >
-        {submitting ? "Joining..." : "Join newsletter"}
-      </button>
-    </form>
+        {!done ? (
+          <>
+            <div className="mb-4 text-center">
+              <h3 className="text-xl font-semibold">Subscribe to Newsletter</h3>
+              <p className="mt-1 text-sm text-slate-300">Get updates. No spam.</p>
+            </div>
+            <form onSubmit={submit} className="flex flex-col items-center gap-3 sm:flex-row">
+              <input
+                type="email"
+                name="email"
+                inputMode="email"
+                autoComplete="email"
+                required
+                placeholder="you@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full flex-1 rounded-xl border border-white/10 bg-black/60 px-4 py-3 text-white placeholder-slate-400 outline-none focus:ring-2 focus:ring-blue-400"
+                aria-label="Email address"
+              />
+              <button
+                type="submit"
+                disabled={submitting}
+                className="rounded-xl bg-gradient-to-r from-emerald-600 to-blue-600 px-6 py-3 font-semibold text-white transition hover:opacity-95 disabled:opacity-60"
+              >
+                {submitting ? "Joining..." : "Subscribe"}
+              </button>
+            </form>
+
+            <button
+              onClick={onClose}
+              className="absolute right-3 top-3 rounded-full p-2 text-slate-300 hover:bg-white/10"
+              aria-label="Close"
+              type="button"
+            >
+              ✕
+            </button>
+          </>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-10">
+            <svg width="84" height="84" viewBox="0 0 84 84" className="mb-4">
+              <circle cx="42" cy="42" r="40" fill="none" stroke="#60A5FA" strokeWidth="3" className="opacity-30" />
+              <path
+                ref={checkRef}
+                d="M22 44 L36 56 L62 28"
+                fill="none"
+                stroke="#60A5FA"
+                strokeWidth="6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <div className="text-lg font-semibold text-blue-300">Subscribed</div>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -326,6 +389,7 @@ export default function Entry() {
   const rocketRef = useRef<HTMLSpanElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const [freeOpen, setFreeOpen] = useState(false);
+  const [newsletterOpen, setNewsletterOpen] = useState(false);
 
   useEffect(() => {
     if (!rootRef.current) return;
@@ -364,70 +428,76 @@ export default function Entry() {
         <GradientParticles />
       </div>
 
-      {/* Content wrapper. Scaled down 15% as requested */}
-      <div className="relative z-10 flex min-h-svh flex-col items-center justify-center px-6 scale-[0.85] origin-top">
-        <div ref={logoRef} className="select-none text-center">
-          <h1 className="text-[12vw] leading-none font-extrabold tracking-tight md:text-8xl">
-            Built
-            <span className="bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">4</span>
-            You
-          </h1>
-          <p className="mt-3 text-base text-slate-300 md:text-lg">Custom sites. Fast results.</p>
-        </div>
+      {/* Layout: everything centered, subscribe button pinned to bottom */}
+      <div className="relative z-10 flex min-h-svh flex-col items-center">
+        {/* Center block */}
+        <div className="flex-1 flex w-full flex-col items-center justify-center px-6 scale-[0.85] origin-top text-center">
+          <div ref={logoRef} className="select-none">
+            <h1 className="text-[12vw] leading-none font-extrabold tracking-tight md:text-8xl">
+              Built
+              <span className="bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">4</span>
+              You
+            </h1>
+            <p className="mt-3 text-base text-slate-300 md:text-lg">Custom sites. Fast results.</p>
+          </div>
 
-        {/* Launch button */}
-        <div className="mt-10 md:mt-12">
-          <button
-            ref={ctaRef}
-            onClick={handleEnter}
-            className="relative z-[1] flex items-center gap-3 rounded-[24px] border border-[#222] bg-gradient-to-r from-emerald-600 to-blue-600 px-10 py-4 text-lg font-bold text-white shadow-2xl transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black md:px-12 md:py-5 md:text-xl"
-            aria-label="Enter site"
-          >
-            Launch <span ref={rocketRef} className="inline-block select-none will-change-transform">🚀</span>
-          </button>
-        </div>
-
-        {/* Secondary CTA and social/phone */}
-        <div className="mt-4 text-center space-y-4">
-          <button
-            onClick={() => setFreeOpen(true)}
-            className="rounded-2xl border border-white/15 bg-white/5 px-6 py-4 text-base font-semibold text-white backdrop-blur-sm transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black"
-          >
-            Want a Free site?
-          </button>
-
-          <div className="flex justify-center gap-3">
-            <a
-              href="https://www.instagram.com/built4youonline?igsh=MWJ6MmViMmlzemsyOA=="
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-2xl border border-white/15 bg-white/5 p-3 backdrop-blur-sm transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black"
+          {/* Launch button */}
+          <div className="mt-10 md:mt-12">
+            <button
+              ref={ctaRef}
+              onClick={handleEnter}
+              className="relative z-[1] inline-flex items-center gap-3 rounded-[24px] border border-[#222] bg-gradient-to-r from-emerald-600 to-blue-600 px-10 py-4 text-lg font-bold text-white shadow-2xl transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black md:px-12 md:py-5 md:text-xl"
+              aria-label="Enter site"
             >
-              <Instagram className="h-5 w-5" />
-            </a>
-            <a
-              href="tel:5805076262"
-              className="rounded-2xl border border-white/15 bg-white/5 p-3 backdrop-blur-sm transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black"
+              Launch <span ref={rocketRef} className="inline-block select-none will-change-transform">🚀</span>
+            </button>
+          </div>
+
+          {/* Secondary CTA and social */}
+          <div className="mt-6 space-y-4">
+            <button
+              onClick={() => setFreeOpen(true)}
+              className="rounded-2xl border border-white/15 bg-white/5 px-6 py-4 text-base font-semibold text-white backdrop-blur-sm transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black"
             >
-              <Phone className="h-5 w-5" />
-            </a>
+              Want a Free site?
+            </button>
+
+            <div className="flex justify-center gap-3">
+              <a
+                href="https://www.instagram.com/built4youonline?igsh=MWJ6MmViMmlzemsyOA=="
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-2xl border border-white/15 bg-white/5 p-3 backdrop-blur-sm transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black"
+              >
+                <Instagram className="h-5 w-5" />
+              </a>
+              <a
+                href="tel:5805076262"
+                className="rounded-2xl border border-white/15 bg-white/5 p-3 backdrop-blur-sm transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black"
+              >
+                <Phone className="h-5 w-5" />
+              </a>
+            </div>
           </div>
         </div>
 
-        {/* Newsletter close to buttons */}
-        <div className="mt-6 w-full px-2 sm:px-0">
-          <div className="mx-auto w-full max-w-2xl text-center">
-            <Newsletter />
-            <p className="mt-2 text-xs text-slate-400">No spam. Unsubscribe anytime.</p>
-          </div>
+        {/* Bottom subscribe button */}
+        <div className="w-full flex justify-center pb-8 px-6">
+          <button
+            onClick={() => setNewsletterOpen(true)}
+            className="rounded-2xl border border-white/15 bg-white/5 px-6 py-4 text-base font-semibold text-white backdrop-blur-sm transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-black"
+          >
+            Subscribe to Newsletter for Updates
+          </button>
         </div>
       </div>
 
       {/* Fade overlay for route transition */}
       <div ref={overlayRef} className="pointer-events-none absolute inset-0 bg-black opacity-0" aria-hidden="true" />
 
-      {/* Modal */}
+      {/* Modals */}
       <FreeSiteModal open={freeOpen} onClose={() => setFreeOpen(false)} onSuccessRedirect={() => navigate("/")} />
+      <NewsletterModal open={newsletterOpen} onClose={() => setNewsletterOpen(false)} />
     </section>
   );
 }
