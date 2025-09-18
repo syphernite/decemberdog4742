@@ -58,7 +58,7 @@ export default function Careers() {
   return (
     <main className="relative min-h-[92svh] bg-black text-white">
       <Helmet>
-        <title>Careers — Built4You</title>
+        <title>Careers at Built4You</title>
         <meta
           name="description"
           content="Join the Built4You contractor network. Earn 25–50% commission. Sales and Web Design roles with quick skills checks."
@@ -72,7 +72,7 @@ export default function Careers() {
         <div className="max-w-6xl mx-auto px-6 py-20 relative">
           <div className="text-center space-y-6">
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight text-white bg-clip-text text-transparent">
-              Join the Built4You Contractor Network
+              Join the Built4You Network
             </h1>
             <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto">
               Earn <span className="font-semibold text-violet-300">25–50% commission</span> per deal. Choose your path. Prove your skills. Start fast.
@@ -101,7 +101,7 @@ export default function Careers() {
           <article className="group bg-white/5 rounded-3xl p-8 ring-1 ring-white/10 hover:ring-violet-500/40 transition">
             <header className="mb-6">
               <h2 className="text-2xl font-extrabold bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
-                Sales Contractor
+                Sales
               </h2>
               <p className="text-white/70 mt-2">
                 Prospect, qualify, and close local small businesses. We provide assets, demos, and a simple playbook.
@@ -152,17 +152,17 @@ export default function Careers() {
           <article className="group bg-white/5 rounded-3xl p-8 ring-1 ring-white/10 hover:ring-emerald-500/40 transition">
             <header className="mb-6">
               <h2 className="text-2xl font-extrabold bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
-                Web Design Contractor
+                Web Design
               </h2>
               <p className="text-white/70 mt-2">
-                Build fast sites with React + Vite + Tailwind. Follow our components and deployment workflow.
+                Build fast sites with React + Vite + Tailwind. Learn our components and deployment workflow.
               </p>
             </header>
 
             <ul className="grid gap-2 text-white/80 mb-8">
               <li>• Convert briefs into polished demos</li>
               <li>• Use our deployment workflow</li>
-              <li>• Mobile-first, accessible, and performant</li>
+              <li>• Mobile-first, accessible, and clean</li>
             </ul>
 
             <div className="flex flex-wrap gap-3">
