@@ -85,7 +85,7 @@ export default function App() {
             <div className="flex items-center gap-3 mb-6 animate-in">
               <Calendar className="h-6 w-6 text-brand-primary" />
               <h2 className="text-2xl font-semibold">
-                <span className="text-brand-primary">Live Events</span> & Specials
+
               </h2>
             </div>
             <SheetsSpecials />
