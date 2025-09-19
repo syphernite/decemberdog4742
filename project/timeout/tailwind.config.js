@@ -1,34 +1,22 @@
 /** @type {import('tailwindcss').Config} */
-export default {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+module.exports = {
+  content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
-        charcoal: '#0d1117',
-        slate: {
-          850: '#111827',
+        base: {
+          bg: "#0b0f14",
+          card: "#121821",
+          border: "#1f2a37",
+          text: "#ffffff",
+          muted: "#9ca3af"
         },
-        amber: {
-          500: '#f59e0b',
-        },
-        red: {
-          500: '#ef4444',
-        },
-        gray: {
-          400: '#9ca3af',
-          700: '#1f2937',
-        }
-      },
-      animation: {
-        'glow': 'glow 0.2s ease-in-out',
-      },
-      keyframes: {
-        glow: {
-          '0%': { boxShadow: '0 0 0 0 rgba(245, 158, 11, 0)' },
-          '100%': { boxShadow: '0 0 0 4px rgba(245, 158, 11, 0.3)' },
+        brand: {
+          primary: "#f59e0b", // amber-500
+          secondary: "#ef4444" // red-500
         }
       }
-    },
+    }
   },
-  plugins: [],
-};
+  plugins: []
+}
