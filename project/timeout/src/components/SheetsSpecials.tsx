@@ -1,107 +1,136 @@
-import React, { useEffect, useMemo, useState } from "react"
+// src/components/LiveSpecials.tsx
+import React from "react";
 
-/**
- * GOOGLE SHEETS SETUP
- * Publish a sheet or specific tab as CSV, then paste its CSV URL below.
- * Example URL format:
- *   https://docs.google.com/spreadsheets/d/<SHEET_ID>/gviz/tq?tqx=out:csv&sheet=<TAB_NAME>
- *
- * Expected columns (order flexible, header names case-insensitive):
- *   title | date | time | details | price | link
- */
-const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRHgAkbYaPZxYRk64At8SGv7bJNHDNqKhrFOiCzEOTtcTSlMlS48ofyVS4ZZiAIlrE2JtKMDAgIVAxH/pub?output=csv"
+type Special = {
+  title: string;
+  subtitle?: string;
+  when?: string;
+  desc?: string;
+  img?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+};
 
-type Row = {
-  title?: string
-  date?: string
-  time?: string
-  details?: string
-  price?: string
-  link?: string
-}
-
-function parseCSV(csv: string): Row[] {
-  // simple CSV parser for commas within quotes
-  const lines = csv.split(/\r?\n/).filter(Boolean)
-  if (!lines.length) return []
-  const headers = lines[0]
-    .split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/)
-    .map(h => h.replace(/^"|"$/g, "").trim().toLowerCase())
-
-  return lines.slice(1).map(line => {
-    const cols = line.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(c => c.replace(/^"|"$/g, "").trim())
-    const obj: Row = {}
-    headers.forEach((h, i) => {
-      const v = cols[i] ?? ""
-      if (["title","event","name"].includes(h)) obj.title = v
-      else if (["date","day"].includes(h)) obj.date = v
-      else if (["time","when"].includes(h)) obj.time = v
-      else if (["details","desc","notes"].includes(h)) obj.details = v
-      else if (["price","cost"].includes(h)) obj.price = v
-      else if (["link","url"].includes(h)) obj.link = v
-    })
-    return obj
-  })
-}
-
-export default function SheetsSpecials() {
-  const [rows, setRows] = useState<Row[] | null>(null)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    async function run() {
-      try {
-        const res = await fetch(SHEET_CSV_URL, { cache: "no-store" })
-        if (!res.ok) throw new Error(`HTTP ${res.status}`)
-        const text = await res.text()
-        const parsed = parseCSV(text).filter(r => r.title)
-        setRows(parsed)
-      } catch (e: any) {
-        setError("Unable to load events right now.")
-        console.error(e)
-      }
-    }
-    run()
-  }, [])
-
-  const hasData = useMemo(() => rows && rows.length > 0, [rows])
-
-  if (error) {
-    return <div className="text-sm text-red-400">{error}</div>
+const specials: Special[] = [
+  {
+    title: "Acoustic Night",
+    subtitle: "Local Artists",
+    when: "Fridays • 7–10 PM",
+    desc: "Laid-back sets, classic covers, and tavern vibes.",
+    img: "https://images.pexels.com/photos/164745/pexels-photo-164745.jpeg?auto=compress&cs=tinysrgb&w=1280",
+    ctaLabel: "Details",
+    ctaHref: "/events"
+  },
+  {
+    title: "Trivia + Prizes",
+    subtitle: "Teams up to 6",
+    when: "Wednesdays • 7 PM",
+    desc: "Five rounds. Gift cards and swag for winners.",
+    img: "https://images.pexels.com/photos/4881619/pexels-photo-4881619.jpeg?auto=compress&cs=tinysrgb&w=1280",
+    ctaLabel: "Sign Up",
+    ctaHref: "/events"
+  },
+  {
+    title: "Wing Night",
+    subtitle: "House Sauces",
+    when: "Tuesdays • 5–9 PM",
+    desc: "$0.75 wings with drink purchase. Dine-in only.",
+    img: "https://images.pexels.com/photos/4109112/pexels-photo-4109112.jpeg?auto=compress&cs=tinysrgb&w=1280",
+    ctaLabel: "See Specials",
+    ctaHref: "/specials"
   }
+];
 
-  if (!hasData) {
-    return (
-      <div className="card p-5">
-        <p className="text-sm text-base-muted">
-          Events will appear here when the Google Sheet is connected.
-        </p>
-        <p className="text-xs text-base-muted mt-2">
-          Update <code>SHEET_CSV_URL</code> in <code>SheetsSpecials.tsx</code> with your published CSV link.
-        </p>
-      </div>
-    )
-  }
-
+export default function LiveSpecials() {
   return (
-    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      {rows!.map((r, i) => (
-        <article key={i} className="card p-5">
-          <div className="flex items-start justify-between gap-3">
-            <h3 className="font-medium">{r.title}</h3>
-            {r.price ? <span className="text-xs bg-brand-primary/20 text-brand-primary px-2 py-1 rounded">{r.price}</span> : null}
-          </div>
-          <div className="mt-2 text-sm text-base-muted">
-            {(r.date || r.time) && <div>{[r.date, r.time].filter(Boolean).join(" • ")}</div>}
-            {r.details && <p className="mt-1">{r.details}</p>}
-          </div>
-          {r.link ? (
-            <a href={r.link} target="_blank" rel="noreferrer" className="btn btn-outline mt-4 text-sm">
-              Learn More
-            </a>
-          ) : null}
-        </article>
-      ))}
-    </div>
-  )
+    <section className="relative py-14">
+      {/* Stylized title (mirrors “Menu” header style) */}
+      <div className="relative mx-auto max-w-3xl">
+        <div className="pointer-events-none absolute inset-0 -z-10 blur-3xl opacity-30">
+          <div className="mx-auto h-24 w-3/4 rounded-full bg-[radial-gradient(circle_at_50%_50%,rgba(185,28,28,0.25),rgba(17,24,39,0))]" />
+        </div>
+        <h2 className="text-center text-4xl md:text-5xl font-extrabold tracking-wide">
+          <span className="relative inline-block">
+            <span className="absolute -inset-1 rounded-lg bg-red-900/20 blur-sm" />
+            <span className="relative bg-gradient-to-b from-red-200 via-red-100 to-gray-200 bg-clip-text text-transparent drop-shadow">
+              LIVE EVENTS &amp; SPECIALS
+            </span>
+          </span>
+        </h2>
+        <div className="mt-3 flex items-center justify-center gap-3">
+          <span className="h-px w-12 bg-white/15" />
+          <span className="text-xs uppercase tracking-[0.25em] text-white/50">Happenings</span>
+          <span className="h-px w-12 bg-white/15" />
+        </div>
+      </div>
+
+      {/* Cards */}
+      <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {specials.map((s) => (
+          <article
+            key={s.title}
+            className={[
+              // dark transparent glass
+              "group relative overflow-hidden rounded-2xl border border-white/10",
+              "bg-neutral-900/45 backdrop-blur-md",
+              // subtle glow ring
+              "ring-1 ring-red-800/20",
+              // subtle float animation
+              "animate-float-slow will-change-transform",
+              // soft hover lift
+              "transition-transform duration-300 hover:-translate-y-1"
+            ].join(" ")}
+          >
+            {s.img && (
+              <div className="h-36 w-full">
+                <img
+                  src={s.img}
+                  alt={s.title}
+                  className="h-full w-full object-cover opacity-90 transition-opacity duration-300 group-hover:opacity-100"
+                  loading="lazy"
+                />
+              </div>
+            )}
+            <div className="p-5">
+              <div className="flex items-baseline gap-2">
+                <span className="h-2.5 w-2.5 rounded-full bg-red-400/80" />
+                <h3 className="text-lg font-semibold text-red-200">{s.title}</h3>
+              </div>
+              {s.subtitle && <p className="mt-1 text-sm text-white/70">{s.subtitle}</p>}
+              {s.when && <p className="mt-1 text-[13px] text-white/60 tabular-nums">{s.when}</p>}
+              {s.desc && <p className="mt-3 text-[13px] leading-snug text-white/70">{s.desc}</p>}
+
+              {s.ctaHref && s.ctaLabel && (
+                <div className="mt-4">
+                  <a
+                    href={s.ctaHref}
+                    className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-white/80 backdrop-blur-sm transition-colors hover:bg-white/10"
+                  >
+                    {s.ctaLabel}
+                    <svg width="16" height="16" viewBox="0 0 24 24" className="opacity-80">
+                      <path fill="currentColor" d="M13 5l7 7-7 7v-4H4v-6h9V5z" />
+                    </svg>
+                  </a>
+                </div>
+              )}
+            </div>
+
+            {/* faint edge highlight */}
+            <div className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/5" />
+            <div className="pointer-events-none absolute -inset-px rounded-2xl bg-gradient-to-b from-white/5 via-transparent to-transparent opacity-5" />
+          </article>
+        ))}
+      </div>
+
+      {/* Local keyframes for subtle float */}
+      <style>{`
+        @keyframes float-slow {
+          0%   { transform: translateY(0px); }
+          50%  { transform: translateY(-4px); }
+          100% { transform: translateY(0px); }
+        }
+        .animate-float-slow { animation: float-slow 6s ease-in-out infinite; }
+      `}</style>
+    </section>
+  );
 }

@@ -1,200 +1,160 @@
 // src/pages/Visit.tsx
-import React, { useState } from 'react';
-import { MapPin, Phone, Clock, Car, Mail, Send } from 'lucide-react';
-import { businessConfig } from '../config/business';
-import HoursTable from '../components/HoursTable';
+import React, { useState } from "react";
+import { MapPin, Phone, Clock, Car, Mail, Send, CreditCard } from "lucide-react";
+import { businessConfig } from "../config/business";
+import HoursTable from "../components/HoursTable";
+import MapEmbed from "../components/MapEmbed";
 
 export default function Visit() {
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    alert("Thank you for your message! We'll get back to you soon.");
-    setFormData({ name: '', email: '', message: '' });
+    alert("Thanks. We’ll get back to you soon.");
+    setFormData({ name: "", email: "", message: "" });
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+  const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   return (
-    <div className="pt-24 pb-16 min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-white mb-4">Visit Us</h1>
-          <p className="text-gray-300 text-lg">Come experience TimeOut Tavern for yourself</p>
+    <div className="pt-24 pb-16">
+      <div className="container-pad">
+        {/* Header */}
+        <div className="text-center mb-10">
+          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white">Visit</h1>
+          <div className="accent-line mx-auto mt-4 w-28" />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-          {/* Contact Information */}
-          <div className="space-y-8">
-            <div className="bg-neutral-900/70 backdrop-blur-sm p-6 rounded-lg border border-white/10">
-              <h2 className="text-2xl font-bold text-white mb-6">Get In Touch</h2>
+        {/* Main grid: Map focus */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Map column */}
+          <div className="lg:col-span-2">
+            <div className="card overflow-hidden lg:sticky lg:top-24">
+              <MapEmbed address={businessConfig.address} />
+            </div>
 
+            {/* CTA bar */}
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <a
+                href={businessConfig.phoneLink}
+                className="btn btn-primary h-11 px-5 text-base animate-ember"
+              >
+                <Phone className="mr-2 h-4 w-4" /> {businessConfig.phone}
+              </a>
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(businessConfig.address)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center h-11 px-5 text-base rounded-lg font-medium transition text-white"
+                style={{ backgroundColor: "#22c55e", border: "1px solid #16a34a" }}
+              >
+                <MapPin className="mr-2 h-4 w-4" /> Directions
+              </a>
+              <div className="text-sm text-white/70 ml-auto">
+                {businessConfig.address}
+              </div>
+            </div>
+
+            {/* Quick badges */}
+            <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="icon-chip justify-start gap-2">
+                <Clock className="h-4 w-4" />
+                <span>Open late</span>
+              </div>
+              <div className="icon-chip justify-start gap-2">
+                <Car className="h-4 w-4" />
+                <span>Private parking</span>
+              </div>
+              <div className="icon-chip justify-start gap-2">
+                <Phone className="h-4 w-4" />
+                <span>Take-out</span>
+              </div>
+              <div className="icon-chip justify-start gap-2">
+                <CreditCard className="h-4 w-4" />
+                <span>Cards accepted</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right stack: Hours + Contact */}
+          <div className="space-y-6">
+            {/* Hours */}
+            <div className="card p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Clock className="h-5 w-5 text-brand-primary" />
+                <h2 className="text-xl font-semibold">Hours</h2>
+              </div>
+              <HoursTable />
+            </div>
+
+            {/* Contact info */}
+            <div className="card p-6">
+              <h2 className="text-xl font-semibold mb-4">Get in touch</h2>
               <div className="space-y-4">
-                <div className="flex items-start">
-                  <MapPin className="w-6 h-6 text-amber-500 mr-3 mt-1" />
+                <div className="flex items-start gap-3">
+                  <MapPin className="h-5 w-5 text-brand-primary mt-0.5" />
                   <div>
-                    <h3 className="text-white font-semibold mb-1">Address</h3>
-                    <p className="text-gray-300">{businessConfig.address}</p>
+                    <div className="text-white font-medium">Address</div>
+                    <div className="text-white/70">{businessConfig.address}</div>
                   </div>
                 </div>
-
-                <div className="flex items-start">
-                  <Phone className="w-6 h-6 text-amber-500 mr-3 mt-1" />
+                <div className="flex items-start gap-3">
+                  <Phone className="h-5 w-5 text-brand-primary mt-0.5" />
                   <div>
-                    <h3 className="text-white font-semibold mb-1">Phone</h3>
-                    <a
-                      href={businessConfig.phoneLink}
-                      className="text-gray-300 hover:text-amber-500 transition-colors hover:underline"
-                    >
+                    <div className="text-white font-medium">Phone</div>
+                    <a href={businessConfig.phoneLink} className="text-white/70 link-underline">
                       {businessConfig.phone}
                     </a>
                   </div>
                 </div>
-
-                <div className="flex items-start">
-                  <Car className="w-6 h-6 text-amber-500 mr-3 mt-1" />
-                  <div>
-                    <h3 className="text-white font-semibold mb-1">Parking</h3>
-                    <p className="text-gray-300">Private lot available</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6 pt-6 border-t border-white/10">
-                <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(businessConfig.address)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center bg-amber-500 text-charcoal px-6 py-3 rounded-lg font-semibold hover:shadow-lg hover:shadow-amber-500/30 transition-all"
-                >
-                  <MapPin className="w-5 h-5 mr-2" />
-                  Get Directions
-                </a>
               </div>
             </div>
 
-            <div className="bg-neutral-900/70 backdrop-blur-sm rounded-lg p-6 border border-white/10">
-              <HoursTable />
-            </div>
-          </div>
-
-          {/* Contact Form */}
-          <div className="bg-neutral-900/70 backdrop-blur-sm p-6 rounded-lg border border-white/10">
-            <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
-              <Mail className="w-6 h-6 mr-2 text-amber-500" />
-              Send us a Message
-            </h2>
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
-                  Name
-                </label>
+            {/* Message form */}
+            <div className="card p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Mail className="h-5 w-5 text-brand-primary" />
+                <h2 className="text-xl font-semibold">Message us</h2>
+              </div>
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <input
                   type="text"
-                  id="name"
                   name="name"
                   value={formData.name}
-                  onChange={handleInputChange}
+                  onChange={onChange}
                   required
-                  className="w-full px-4 py-2 bg-black/40 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
                   placeholder="Your name"
+                  className="w-full px-4 py-2 bg-black/40 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-brand-primary/60"
                 />
-              </div>
-
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-                  Email
-                </label>
                 <input
                   type="email"
-                  id="email"
                   name="email"
                   value={formData.email}
-                  onChange={handleInputChange}
+                  onChange={onChange}
                   required
-                  className="w-full px-4 py-2 bg-black/40 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
-                  placeholder="your.email@example.com"
+                  placeholder="your@email.com"
+                  className="w-full px-4 py-2 bg-black/40 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-brand-primary/60"
                 />
-              </div>
-
-              <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
-                  Message
-                </label>
                 <textarea
-                  id="message"
                   name="message"
                   value={formData.message}
-                  onChange={handleInputChange}
+                  onChange={onChange}
                   required
                   rows={4}
-                  className="w-full px-4 py-2 bg-black/40 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 resize-vertical"
-                  placeholder="Tell us about your experience, ask a question, or let us know how we can help..."
+                  placeholder="Tell us how we can help"
+                  className="w-full px-4 py-2 bg-black/40 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-brand-primary/60 resize-vertical"
                 />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full bg-amber-500 text-charcoal px-6 py-3 rounded-lg font-semibold hover:shadow-lg hover:shadow-amber-500/30 transition-all flex items-center justify-center"
-              >
-                <Send className="w-5 h-5 mr-2" />
-                Send Message
-              </button>
-            </form>
-          </div>
-        </div>
-
-        {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <div className="bg-neutral-900/70 backdrop-blur-sm p-6 rounded-lg border border-white/10 text-center">
-            <div className="w-12 h-12 bg-amber-500 rounded-lg mx-auto mb-4 flex items-center justify-center">
-              <Clock className="w-6 h-6 text-charcoal" />
+                <button
+                  type="submit"
+                  className="w-full btn btn-primary h-11 px-5 text-base flex items-center justify-center"
+                >
+                  <Send className="h-4 w-4 mr-2" />
+                  Send
+                </button>
+              </form>
             </div>
-            <h3 className="text-white font-semibold mb-2">Open Late</h3>
-            <p className="text-gray-300 text-sm">Until midnight weekdays, 2AM weekends</p>
           </div>
-
-          <div className="bg-neutral-900/70 backdrop-blur-sm p-6 rounded-lg border border-white/10 text-center">
-            <div className="w-12 h-12 bg-amber-500 rounded-lg mx-auto mb-4 flex items-center justify-center">
-              <Car className="w-6 h-6 text-charcoal" />
-            </div>
-            <h3 className="text-white font-semibold mb-2">Free Parking</h3>
-            <p className="text-gray-300 text-sm">Private lot with plenty of spaces</p>
-          </div>
-
-          <div className="bg-neutral-900/70 backdrop-blur-sm p-6 rounded-lg border border-white/10 text-center">
-            <div className="w-12 h-12 bg-amber-500 rounded-lg mx-auto mb-4 flex items-center justify-center">
-              <Phone className="w-6 h-6 text-charcoal" />
-            </div>
-            <h3 className="text-white font-semibold mb-2">Take-Out Available</h3>
-            <p className="text-gray-300 text-sm">Call ahead for quick pickup</p>
-          </div>
-
-          <div className="bg-neutral-900/70 backdrop-blur-sm p-6 rounded-lg border border-white/10 text-center">
-            <div className="w-12 h-12 bg-amber-500 rounded-lg mx-auto mb-4 flex items-center justify-center">
-              <Mail className="w-6 h-6 text-charcoal" />
-            </div>
-            <h3 className="text-white font-semibold mb-2">Cards Accepted</h3>
-            <p className="text-gray-300 text-sm">All major credit cards welcome</p>
-          </div>
-        </div>
-
-        {/* Map Placeholder */}
-        <div className="bg-neutral-900/70 backdrop-blur-sm rounded-lg p-8 text-center border border-white/10">
-          <MapPin className="w-16 h-16 text-amber-500 mx-auto mb-4" />
-          <h3 className="text-xl font-bold text-white mb-2">Find Us in Newport</h3>
-          <p className="text-gray-300 mb-6">{businessConfig.address}</p>
-          <a
-            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(businessConfig.address)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center text-amber-500 hover:text-amber-400 font-semibold hover:underline transition-colors"
-          >
-            Open in Google Maps
-            <MapPin className="w-4 h-4 ml-2" />
-          </a>
         </div>
       </div>
     </div>
