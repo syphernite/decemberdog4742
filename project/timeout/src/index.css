@@ -1,3 +1,4 @@
+/* index.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -27,6 +28,79 @@ html, body, #root { height: 100%; }
     50% { box-shadow: 0 12px 26px rgba(220,38,38,.25); }
   }
   .animate-ember { animation: ember 2.6s ease-in-out infinite; }
+
+  /* ---------- CRT fuzz for the hero title ---------- */
+  @keyframes tvstatic1 {
+    0%,100% { clip-path: inset(0 0 0 0); transform: translateX(0); }
+    15% { clip-path: inset(8% 0 22% 0); transform: translateX(-1px); }
+    35% { clip-path: inset(18% 0 6% 0); transform: translateX(1px); }
+    55% { clip-path: inset(4% 0 28% 0); transform: translateX(-1px); }
+    75% { clip-path: inset(22% 0 4% 0); transform: translateX(1px); }
+  }
+  @keyframes tvstatic2 {
+    0%,100% { clip-path: inset(0 0 0 0); transform: translateX(0); }
+    20% { clip-path: inset(12% 0 18% 0); transform: translateX(1px); }
+    40% { clip-path: inset(6% 0 24% 0); transform: translateX(-1px); }
+    60% { clip-path: inset(24% 0 8% 0); transform: translateX(1px); }
+    80% { clip-path: inset(10% 0 20% 0); transform: translateX(-1px); }
+  }
+  .animate-tvstatic { animation: tvstatic1 2.6s linear infinite alternate; }
+  .animate-tvstatic2 { animation: tvstatic2 2.6s linear infinite alternate-reverse; }
+
+  /* Gentle scanline shimmer */
+  @keyframes scan {
+    0% { background-position: 0 0; opacity: .12; }
+    100% { background-position: 0 4px; opacity: .12; }
+  }
+
+  /* Title block */
+  .tv-title {
+    position: relative;
+    font-family: Impact, Haettenschweiler, "Anton", system-ui, sans-serif;
+    font-weight: 900;
+    line-height: .9;
+    letter-spacing: .5px;
+    font-size: clamp(3rem, 8vw, 7rem);
+    color: #fff;
+    transform: rotate(-6deg);
+    text-shadow:
+      0 0 12px rgba(255,0,0,.35),
+      0 0 2px rgba(0,0,0,.6);
+  }
+  .tv-title::before,
+  .tv-title::after {
+    content: var(--title, "TIME OUT");
+    position: absolute; inset: 0;
+    color: #fff;
+    pointer-events: none;
+  }
+  .tv-title::before { mix-blend-mode: screen; text-shadow: 2px 0 0 rgba(255,60,60,.5); }
+  .tv-title::after  { mix-blend-mode: screen; text-shadow: -2px 0 0 rgba(80,160,255,.5); }
+  .tv-title::before { animation: tvstatic1 2.4s infinite linear alternate; opacity: .45; }
+  .tv-title::after  { animation: tvstatic2 2.4s infinite linear alternate-reverse; opacity: .3; }
+
+  /* optional scanline overlay */
+  .crt { position: relative; isolation: isolate; }
+  .crt::after {
+    content: "";
+    position: absolute; inset: -2px;
+    pointer-events: none;
+    background-image: linear-gradient(to bottom, rgba(255,255,255,.07) 1px, transparent 1px);
+    background-size: 100% 3px;
+    mix-blend-mode: overlay;
+    animation: scan 0.9s linear infinite;
+    border-radius: .75rem;
+  }
+
+  /* ---------- Aimless floating for emojis ---------- */
+  @keyframes float-random {
+    0%   { transform: translate(0,0) rotate(0deg); }
+    25%  { transform: translate(-12px,8px) rotate(8deg); }
+    50%  { transform: translate(10px,-10px) rotate(-6deg); }
+    75%  { transform: translate(-8px,-4px) rotate(5deg); }
+    100% { transform: translate(0,0) rotate(0deg); }
+  }
+  .animate-float-random { animation: float-random 12s ease-in-out infinite alternate; }
 }
 
 /* ---------- Components with tavern palette ---------- */
@@ -50,14 +124,11 @@ html, body, #root { height: 100%; }
     border: 1px solid theme("colors.base.border");
   }
 
-  /* Vintage accent line */
   .accent-line { height: 2px; background: linear-gradient(90deg, theme("colors.brand.brown"), theme("colors.brand.primary")); border-radius: 999px; }
 
-  /* Chips */
   .icon-chip { @apply inline-flex items-center justify-center rounded-xl border px-3 py-2 text-sm; border-color: theme("colors.base.border"); }
   .icon-chip svg { color: theme("colors.brand.primary"); }
 
-  /* Announcement bar */
   .announce {
     background:
       linear-gradient(0deg, rgba(255,255,255,0.03), rgba(255,255,255,0.03)),
@@ -65,7 +136,6 @@ html, body, #root { height: 100%; }
     border-bottom: 1px solid color-mix(in oklab, theme("colors.brand.brown") 40%, black);
   }
 
-  /* Link underline */
   .link-underline { position: relative; }
   .link-underline::after{
     content:""; position:absolute; left:0; bottom:-2px; height:2px; width:0%;

@@ -5,14 +5,10 @@ import Footer from "./Footer";
 import CallFab from "./CallFab";
 import bgUrl from "../assets/background.jpg";
 
-/**
- * Global layout with background, header, footer, and call FAB.
- * Keeps App.tsx minimal by moving presentational chrome here.
- */
 export default function Layout({ children }: PropsWithChildren) {
   return (
-    <div className="relative min-h-screen text-base-text">
-      {/* Background image with overlay. Blur reduced by ~15%: 12px -> 10.2px */}
+    <div className="relative flex min-h-screen flex-col text-base-text">
+      {/* Background image with overlay */}
       <div
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat"
         style={{
@@ -23,9 +19,9 @@ export default function Layout({ children }: PropsWithChildren) {
         aria-hidden="true"
       />
       {/* Content layer */}
-      <div className="relative z-10 min-h-screen bg-black/40 backdrop-blur-sm">
+      <div className="relative z-10 flex flex-col min-h-screen bg-black/40 backdrop-blur-sm">
         <Header />
-        {children}
+        <main className="flex-1">{children}</main>
         <Footer />
         <CallFab />
       </div>
