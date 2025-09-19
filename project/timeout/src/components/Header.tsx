@@ -1,5 +1,6 @@
 // src/components/Header.tsx
 import React, { useEffect, useState } from "react";
+import logo from "../assets/tavern.png";
 
 const SHEET_CSV_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vRHgAkbYaPZxYRk64At8SGv7bJNHDNqKhrFOiCzEOTtcTSlMlS48ofyVS4ZZiAIlrE2JtKMDAgIVAxH/pub?gid=0&single=true&output=csv";
@@ -111,28 +112,43 @@ export default function Header() {
           backgroundSize: "8px 8px",
         }}
       >
-        <div className="container-pad h-14 flex items-center justify-between uppercase tracking-wide font-['Bebas_Neue',sans-serif]">
-          <a href="/" className="text-xl">TimeOut Tavern</a>
+        <div className="container-pad h-24 flex items-center justify-between font-['Bebas_Neue',sans-serif]">
+          {/* bigger logo */}
+          <a href="/" className="flex items-center">
+            <img
+              src={logo}
+              alt="TimeOut Tavern"
+              className="h-20 w-auto object-contain"
+            />
+          </a>
 
-          {/* Glass nav with emojis */}
-          <div className="hidden md:flex items-center">
-            <nav className="flex items-center gap-3 rounded-full border border-white/15 bg-white/10 backdrop-blur-md px-3 py-1.5">
-              <a className="px-3 py-1 text-sm hover:bg-white/10 rounded-full transition-colors" href="#events">🎵 Events</a>
-              <a className="px-3 py-1 text-sm hover:bg-white/10 rounded-full transition-colors" href="#menu">🍔 Menu</a>
-              <a className="px-3 py-1 text-sm hover:bg-white/10 rounded-full transition-colors" href="#visit">📍 Visit</a>
-            </nav>
+          {/* nav with liquid glass buttons */}
+          <div className="hidden md:flex items-center gap-4">
+            {[
+              { href: "#events", label: "🎵 Events" },
+              { href: "#menu", label: "🍔 Menu" },
+              { href: "#visit", label: "📍 Visit" },
+            ].map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className="px-5 py-2 text-sm rounded-full relative overflow-hidden text-white font-semibold
+                  border border-white/20 backdrop-blur-lg bg-white/10
+                  before:absolute before:inset-0 before:-translate-x-full before:bg-gradient-to-r before:from-white/30 before:via-white/20 before:to-white/30
+                  before:blur before:animate-[liquid_4s_infinite]
+                  hover:before:translate-x-0 hover:scale-105 transition-all"
+              >
+                {item.label}
+              </a>
+            ))}
           </div>
         </div>
 
-        {/* crisp downward-facing triangles, no background fill behind them */}
+        {/* downward triangles */}
         <svg
           viewBox="0 0 100 10"
           preserveAspectRatio="none"
-          style={{
-            display: "block",
-            width: "100%",
-            height: "14px",
-          }}
+          style={{ display: "block", width: "100%", height: "14px" }}
         >
           <polygon
             points="0,0 5,10 10,0 15,10 20,0 25,10 30,0 35,10 40,0 45,10 50,0 55,10 60,0 65,10 70,0 75,10 80,0 85,10 90,0 95,10 100,0"
@@ -140,6 +156,15 @@ export default function Header() {
           />
         </svg>
       </header>
+
+      {/* keyframes for liquid shimmer */}
+      <style>{`
+        @keyframes liquid {
+          0% {transform: translateX(-100%);}
+          50% {transform: translateX(0%);}
+          100% {transform: translateX(100%);}
+        }
+      `}</style>
     </>
   );
 }

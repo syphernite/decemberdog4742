@@ -12,18 +12,21 @@ const HOURS: Array<{ day: string; time: string }> = [
 
 export default function Hours() {
   return (
-    <div className="card overflow-hidden">
+    <div className="card p-6">
+      <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+        Hours
+      </h2>
       <table className="w-full text-sm">
         <tbody>
           {HOURS.map(({ day, time }) => (
-            <tr key={day} className="border-b border-base-border/60 last:border-none">
-              <td className="px-4 py-3 w-24 text-base-muted">{day}</td>
-              <td className="px-4 py-3">{time}</td>
+            <tr key={day} className="border-b border-white/10 last:border-none">
+              <td className="px-3 py-2 text-white/90 font-medium">{day}</td>
+              <td className="px-3 py-2 text-white/70">{time}</td>
             </tr>
           ))}
         </tbody>
       </table>
-      <p className="px-4 pb-4 text-xs text-base-muted">Call to confirm on holidays.</p>
+      <p className="mt-3 text-xs text-white/50">Call to confirm on holidays.</p>
     </div>
   )
 }
