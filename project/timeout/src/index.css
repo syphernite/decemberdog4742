@@ -2,36 +2,74 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  color-scheme: dark;
+:root { color-scheme: dark; }
+html, body, #root { height: 100%; }
+
+.container-pad { @apply max-w-6xl mx-auto px-4; }
+
+/* ---------- Minimal bespoke motion ---------- */
+@layer utilities {
+  @keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(8px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  .animate-in { animation: fadeInUp .35s ease-out both; }
+
+  @keyframes floatSm {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+  }
+  .animate-float { animation: floatSm 4.5s ease-in-out infinite; }
+
+  /* Subtle vintage glow for buttons */
+  @keyframes ember {
+    0%,100% { box-shadow: 0 0 0 rgba(220,38,38,0); }
+    50% { box-shadow: 0 12px 26px rgba(220,38,38,.25); }
+  }
+  .animate-ember { animation: ember 2.6s ease-in-out infinite; }
 }
 
-html, body, #root {
-  height: 100%;
-}
-
-.container-pad {
-  @apply max-w-6xl mx-auto px-4;
-}
-
+/* ---------- Components with tavern palette ---------- */
 @layer components {
   .card {
-    @apply border rounded-2xl shadow-lg;
+    @apply border rounded-2xl shadow-lg transition-transform duration-200;
     background-color: theme("colors.base.card");
     border-color: theme("colors.base.border");
   }
+  .card:hover { transform: translateY(-2px); }
 
-  .btn {
-    @apply inline-flex items-center justify-center rounded-lg px-4 py-2 font-medium transition;
-  }
-
+  .btn { @apply inline-flex items-center justify-center rounded-lg px-4 py-2 font-medium transition; }
   .btn-primary {
-    @apply text-black hover:opacity-90;
-    background-color: theme("colors.brand.primary");
+    @apply text-white;
+    background-image: linear-gradient(180deg, color-mix(in oklab, theme("colors.brand.primary") 86%, black), theme("colors.brand.primary"));
+    border: 1px solid color-mix(in oklab, theme("colors.brand.primary") 70%, black);
   }
-
+  .btn-primary:hover { filter: brightness(1.08); transform: translateY(-1px); }
   .btn-outline {
     @apply text-white;
     border: 1px solid theme("colors.base.border");
   }
+
+  /* Vintage accent line */
+  .accent-line { height: 2px; background: linear-gradient(90deg, theme("colors.brand.brown"), theme("colors.brand.primary")); border-radius: 999px; }
+
+  /* Chips */
+  .icon-chip { @apply inline-flex items-center justify-center rounded-xl border px-3 py-2 text-sm; border-color: theme("colors.base.border"); }
+  .icon-chip svg { color: theme("colors.brand.primary"); }
+
+  /* Announcement bar */
+  .announce {
+    background:
+      linear-gradient(0deg, rgba(255,255,255,0.03), rgba(255,255,255,0.03)),
+      linear-gradient(90deg, rgba(139,94,60,.25), rgba(220,38,38,.25));
+    border-bottom: 1px solid color-mix(in oklab, theme("colors.brand.brown") 40%, black);
+  }
+
+  /* Link underline */
+  .link-underline { position: relative; }
+  .link-underline::after{
+    content:""; position:absolute; left:0; bottom:-2px; height:2px; width:0%;
+    background: theme("colors.brand.primary"); transition: width .2s ease;
+  }
+  .link-underline:hover::after{ width:100%; }
 }

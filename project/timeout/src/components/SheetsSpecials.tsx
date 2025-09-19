@@ -9,7 +9,7 @@ import React, { useEffect, useMemo, useState } from "react"
  * Expected columns (order flexible, header names case-insensitive):
  *   title | date | time | details | price | link
  */
-const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/REPLACE_ME/gviz/tq?tqx=out:csv&sheet=events"
+const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRHgAkbYaPZxYRk64At8SGv7bJNHDNqKhrFOiCzEOTtcTSlMlS48ofyVS4ZZiAIlrE2JtKMDAgIVAxH/pub?output=csv"
 
 type Row = {
   title?: string
