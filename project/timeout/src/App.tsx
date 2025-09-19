@@ -8,7 +8,7 @@ import Hours from "./components/Hours";
 import MapEmbed from "./components/MapEmbed";
 import CallFab from "./components/CallFab";
 import Menu from "./components/Menu";
-import bgUrl from "./assets/background.jpg"; // <— imported asset
+import bgUrl from "./assets/background.jpg"; // imported asset
 
 const PHONE = "(252) 223-3303";
 const ADDRESS = "360 E Chatham St, Newport, NC 28570";
@@ -21,7 +21,8 @@ export default function App() {
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: `linear-gradient(135deg, rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url('${bgUrl}')`,
-          filter: "blur(12px) brightness(0.7)",
+          // decreased blur by 15%: 12px -> 10.2px
+          filter: "blur(10.2px) brightness(0.7)",
           transform: "translateZ(0)",
         }}
       />
@@ -45,7 +46,12 @@ export default function App() {
                 <a href="#visit" className="btn btn-outline">
                   <MapPin className="mr-2 h-4 w-4" /> Get Directions
                 </a>
-                <a href="https://www.facebook.com/TimeOutTavernNC/" target="_blank" rel="noreferrer" className="btn btn-outline">
+                <a
+                  href="https://www.facebook.com/TimeOutTavernNC/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn btn-outline"
+                >
                   <Facebook className="mr-2 h-4 w-4" /> Facebook
                 </a>
               </div>
@@ -66,7 +72,9 @@ export default function App() {
                   <div className="mt-2 text-sm">Full Bar</div>
                 </div>
               </div>
-              <p className="mt-4 text-center text-sm text-base-muted">Cards accepted • Take-out available • Private lot parking</p>
+              <p className="mt-4 text-center text-sm text-base-muted">
+                Cards accepted • Take-out available • Private lot parking
+              </p>
             </div>
           </div>
         </section>
@@ -89,7 +97,9 @@ export default function App() {
           <div className="container-pad py-14">
             <h2 className="text-2xl font-semibold mb-8 animate-in">Menu</h2>
             <Menu />
-            <p className="text-sm text-base-muted mt-6">Menu items and prices are subject to change. Call for current specials.</p>
+            <p className="text-sm text-base-muted mt-6">
+              Menu items and prices are subject to change. Call for current specials.
+            </p>
           </div>
         </section>
 
