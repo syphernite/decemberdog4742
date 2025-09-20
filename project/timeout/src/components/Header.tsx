@@ -3,7 +3,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import logo from "../assets/tavern.png";
 
 /* -------------------------- HOURS (Eastern Time) -------------------------- */
-// day index: 0=Sun .. 6=Sat
 const HOURS: { [k: number]: { open: string | null; close: string | null } } = {
   0: { open: "11:00", close: "00:00" },
   1: { open: "11:00", close: "00:00" },
@@ -15,7 +14,6 @@ const HOURS: { [k: number]: { open: string | null; close: string | null } } = {
 };
 const TZ = "America/New_York";
 
-/* -------------------------- Helpers for ET time --------------------------- */
 function toMin(str: string) {
   const [h, m] = str.split(":").map(Number);
   return h * 60 + m;
@@ -23,8 +21,8 @@ function toMin(str: string) {
 function getDebugOverride(): { mins?: number; dow?: number } {
   try {
     const sp = new URLSearchParams(window.location.search);
-    const dn = sp.get("debug_now"); // e.g. 22:45
-    const dd = sp.get("debug_dow"); // e.g. 5 (Friday)
+    const dn = sp.get("debug_now");
+    const dd = sp.get("debug_dow");
     const out: { mins?: number; dow?: number } = {};
     if (dn && /^\d{1,2}:\d{2}$/.test(dn)) {
       const [h, m] = dn.split(":").map(Number);
@@ -39,7 +37,6 @@ function getDebugOverride(): { mins?: number; dow?: number } {
 function nowInET() {
   const debug = getDebugOverride();
   if (debug.mins != null && debug.dow != null) return { mins: debug.mins, dow: debug.dow };
-
   const parts = new Intl.DateTimeFormat("en-US", {
     timeZone: TZ,
     hour12: false,
@@ -54,7 +51,6 @@ function nowInET() {
   return { mins: h * 60 + m, dow: map[wd] as number };
 }
 
-/* -------------------------- Status computation ---------------------------- */
 type Status =
   | { kind: "open"; minutesToClose: number }
   | { kind: "closingSoon"; minutesToClose: number }
@@ -116,7 +112,6 @@ function computeStatus(): Status {
   return { kind: "closed" };
 }
 
-/* ------------------------------- Badge UI -------------------------------- */
 function StatusBadge() {
   const [status, setStatus] = useState<Status>(computeStatus());
   useEffect(() => {
@@ -124,42 +119,16 @@ function StatusBadge() {
     return () => clearInterval(id);
   }, []);
 
-  const base =
-    "inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-semibold animate-[flash_1.25s_ease-in-out_infinite]";
-
+  const base = "inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-semibold animate-badgeblink";
   if (status.kind === "open")
-    return (
-      <span className={`${base} bg-green-500/20 text-green-300 ring-1 ring-green-400/30`}>
-        <span className="h-2.5 w-2.5 rounded-full bg-green-400 animate-pulse" />
-        OPEN
-      </span>
-    );
-
+    return <span className={`${base} bg-green-500/20 text-green-300 ring-1 ring-green-400/30`}><span className="h-2.5 w-2.5 rounded-full bg-green-400 animate-pulse" />OPEN</span>;
   if (status.kind === "closingSoon")
-    return (
-      <span className={`${base} bg-yellow-500/20 text-yellow-300 ring-1 ring-yellow-400/30`}>
-        <span className="h-2.5 w-2.5 rounded-full bg-yellow-400 animate-pulse" />
-        Closing within an hour
-      </span>
-    );
-
+    return <span className={`${base} bg-yellow-500/20 text-yellow-300 ring-1 ring-yellow-400/30`}><span className="h-2.5 w-2.5 rounded-full bg-yellow-400 animate-pulse" />Closing within an hour</span>;
   if (status.kind === "openingSoon")
-    return (
-      <span className={`${base} bg-yellow-500/20 text-yellow-300 ring-1 ring-yellow-400/30`}>
-        <span className="h-2.5 w-2.5 rounded-full bg-yellow-400 animate-pulse" />
-        Opening within an hour
-      </span>
-    );
-
-  return (
-    <span className={`${base} bg-red-500/20 text-red-300 ring-1 ring-red-400/30`}>
-      <span className="h-2.5 w-2.5 rounded-full bg-red-400" />
-      CLOSED
-    </span>
-  );
+    return <span className={`${base} bg-yellow-500/20 text-yellow-300 ring-1 ring-yellow-400/30`}><span className="h-2.5 w-2.5 rounded-full bg-yellow-400 animate-pulse" />Opening within an hour</span>;
+  return <span className={`${base} bg-red-500/20 text-red-300 ring-1 ring-red-400/30`}><span className="h-2.5 w-2.5 rounded-full bg-red-400" />CLOSED</span>;
 }
 
-/* ---------------------------- Header component ---------------------------- */
 export default function Header() {
   const [elevated, setElevated] = useState(false);
   const [open, setOpen] = useState(false);
@@ -191,18 +160,26 @@ export default function Header() {
           backgroundImage: [
             "radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px)",
             "linear-gradient(0deg, rgba(255,255,255,0.04) 1px, transparent 1px)",
-            "linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)",
+            "linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)"
           ].join(","),
           backgroundSize: "10px 10px, 6px 6px, 6px 6px",
           backgroundBlendMode: "overlay",
         }}
       >
-        <div className="container-pad h-24 flex items-center justify-between font-['Bebas_Neue',sans-serif]">
+        <div className="container-pad h-20 md:h-24 flex items-center justify-between font-['Bebas_Neue',sans-serif]">
+          {/* Left: logo */}
           <a href="/" className="flex items-center">
-            <img src={logo} alt="TimeOut Tavern" className="h-20 w-auto object-contain" />
+            <img src={logo} alt="TimeOut Tavern" className="h-16 w-auto md:h-20 object-contain" />
           </a>
 
-          {/* Desktop: pill + flashing status at right */}
+          {/* Center (mobile only): status badge between logo and burger */}
+          <div className="md:hidden mx-2 flex items-center">
+            <div className="scale-90 origin-center">
+              <StatusBadge />
+            </div>
+          </div>
+
+          {/* Right: desktop nav + status; mobile burger */}
           <div className="hidden md:flex items-center gap-6">
             <div className="relative overflow-hidden rounded-full border border-white/20 bg-white/10 backdrop-blur-xl ring-1 ring-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_8px_30px_rgba(0,0,0,0.35)]">
               <ul className="flex items-center">
@@ -226,23 +203,15 @@ export default function Header() {
             <StatusBadge />
           </div>
 
-          {/* Mobile burger */}
           <button
-            className="md:hidden inline-flex items-center justify-center h-11 w-11 rounded-md border border-white/20 bg-white/10 backdrop-blur active:scale-95 transition"
+            className="md:hidden inline-flex items-center justify-center h-9 w-9 rounded-md border border-white/20 bg-white/10 backdrop-blur active:scale-95 transition"
             aria-label="Open menu"
             onClick={() => setOpen((v) => !v)}
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
               <path d="M4 7h16M4 12h16M4 17h16" stroke="white" strokeWidth="2" strokeLinecap="round" />
             </svg>
           </button>
-        </div>
-
-        {/* Mobile: flashing status centered below header row */}
-        <div className="md:hidden container-pad pt-2 pb-2">
-          <div className="flex justify-center">
-            <StatusBadge />
-          </div>
         </div>
 
         {open && (
@@ -271,15 +240,9 @@ export default function Header() {
       </header>
 
       <style>{`
-        @keyframes sheen {
-          0% { transform: translateX(-120%); }
-          100% { transform: translateX(120%); }
-        }
-        @keyframes flash {
-          0% { opacity: 1; }
-          50% { opacity: 0.45; }
-          100% { opacity: 1; }
-        }
+        @keyframes sheen { 0% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
+        @keyframes badgeblink { 0%, 100% { opacity: .85 } 50% { opacity: 1 } }
+        .animate-badgeblink { animation: badgeblink 1.6s ease-in-out infinite; }
       `}</style>
     </>
   );
