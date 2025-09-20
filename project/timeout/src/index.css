@@ -143,3 +143,13 @@ html, body, #root { height: 100%; }
   }
   .link-underline:hover::after{ width:100%; }
 }
+
+/* ---------- Hide scrollbars site-wide ---------- */
+html, body {
+  overflow-y: scroll;      /* keep scrollable but stable */
+  scrollbar-width: none;   /* Firefox */
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;           /* Chrome, Edge, Safari */
+}

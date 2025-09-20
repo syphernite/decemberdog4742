@@ -1,3 +1,4 @@
+// src/components/Menu.tsx
 import React, { useLayoutEffect, useRef } from "react";
 
 /* --------------------------------- DATA --------------------------------- */
@@ -122,7 +123,8 @@ function Card({ s, idx }: { s: Section; idx: number }) {
         "overflow-hidden",
         "transition-shadow duration-300",
         a.glowShadow,
-        "hover:shadow-[0_0_36px_0_rgba(255,255,255,0.06)]"
+        "hover:shadow-[0_0_36px_0_rgba(255,255,255,0.06)]",
+        "glow-trace"
       ].join(" ")}
     >
       <div className="relative px-5 py-3 border-b border-white/10 bg-black/40 backdrop-blur-sm">
@@ -169,62 +171,64 @@ function Particles({ hostRef }: { hostRef: React.RefObject<HTMLDivElement> }) {
 
   useLayoutEffect(() => {
     const canvas = canvasRef.current;
-    const host = hostRef.current;
-    if (!canvas || !host) return;
+    theHost: {
+      const host = hostRef.current;
+      if (!canvas || !host) break theHost;
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) break theHost;
 
-    const resize = () => {
-      const rect = host.getBoundingClientRect();
-      canvas.width = Math.max(1, Math.floor(rect.width));
-      canvas.height = Math.max(1, Math.floor(rect.height));
-      const count = Math.min(120, Math.floor((canvas.width * canvas.height) / 22000));
-      particlesRef.current = Array.from({ length: count }, () => ({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 6,
-        vy: (Math.random() - 0.5) * 6,
-        r: Math.random() * 0.9 + 0.4,
-        a: Math.random() * 0.08 + 0.04
-      }));
-    };
+      const resize = () => {
+        const rect = host.getBoundingClientRect();
+        canvas.width = Math.max(1, Math.floor(rect.width));
+        canvas.height = Math.max(1, Math.floor(rect.height));
+        const count = Math.min(120, Math.floor((canvas.width * canvas.height) / 22000));
+        particlesRef.current = Array.from({ length: count }, () => ({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 6,
+          vy: (Math.random() - 0.5) * 6,
+          r: Math.random() * 0.9 + 0.4,
+          a: Math.random() * 0.08 + 0.04
+        }));
+      };
 
-    resize();
-    roRef.current = new ResizeObserver(resize);
-    roRef.current.observe(host);
+      resize();
+      roRef.current = new ResizeObserver(resize);
+      roRef.current.observe(host);
 
-    let last: number | null = null;
-    const step = (ts: number) => {
-      if (last == null) last = ts;
-      const dt = Math.min(0.05, (ts - last) / 1000);
-      last = ts;
+      let last: number | null = null;
+      const step = (ts: number) => {
+        if (last == null) last = ts;
+        const dt = Math.min(0.05, (ts - last) / 1000);
+        last = ts;
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      for (const p of particlesRef.current) {
-        p.x += p.vx * dt;
-        p.y += p.vy * dt;
+        for (const p of particlesRef.current) {
+          p.x += p.vx * dt;
+          p.y += p.vy * dt;
 
-        if (p.x < -5) p.x = canvas.width + 5;
-        if (p.x > canvas.width + 5) p.x = -5;
-        if (p.y < -5) p.y = canvas.height + 5;
-        if (p.y > canvas.height + 5) p.y = -5;
+          if (p.x < -5) p.x = canvas.width + 5;
+          if (p.x > canvas.width + 5) p.x = -5;
+          if (p.y < -5) p.y = canvas.height + 5;
+          if (p.y > canvas.height + 5) p.y = -5;
 
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255,255,255,${p.a})`;
-        ctx.fill();
-      }
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255,255,255,${p.a})`;
+          ctx.fill();
+        }
+
+        reqRef.current = requestAnimationFrame(step);
+      };
 
       reqRef.current = requestAnimationFrame(step);
-    };
-
-    reqRef.current = requestAnimationFrame(step);
-    return () => {
-      if (reqRef.current != null) cancelAnimationFrame(reqRef.current);
-      if (roRef.current) roRef.current.disconnect();
-    };
+      return () => {
+        if (reqRef.current != null) cancelAnimationFrame(reqRef.current);
+        if (roRef.current) roRef.current.disconnect();
+      };
+    }
   }, [hostRef]);
 
   return (
@@ -280,6 +284,40 @@ export default function Menu() {
           </div>
         </div>
       )}
+
+      <style>{`
+        .glow-trace::before{
+          content:"";
+          position:absolute; inset:-1px;
+          border-radius:1rem;
+          padding:1px;
+          background:
+            conic-gradient(from var(--ang,0deg),
+              rgba(255,255,255,0) 0deg,
+              rgba(255,255,255,0) 60deg,
+              rgba(255,255,255,0.35) 120deg,
+              rgba(255,255,255,0.7) 160deg,
+              rgba(255,255,255,0.35) 200deg,
+              rgba(255,255,255,0) 260deg,
+              rgba(255,255,255,0) 360deg);
+          -webkit-mask:
+            linear-gradient(#000 0 0) content-box,
+            linear-gradient(#000 0 0);
+          -webkit-mask-composite: xor;
+                  mask-composite: exclude;
+          pointer-events:none;
+          animation: trace-rotate 3.6s linear infinite;
+          opacity:.9;
+        }
+        @keyframes trace-rotate { to { --ang: 360deg; } }
+        .glow-trace::after{
+          content:"";
+          position:absolute; inset:0;
+          border-radius:1rem;
+          pointer-events:none;
+          box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+        }
+      `}</style>
     </div>
   );
 }
