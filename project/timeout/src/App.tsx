@@ -95,7 +95,7 @@ export default function App() {
         {/* Menu */}
         <section id="menu" className="border-b border-base-border">
           <div className="container-pad py-14">
-
+            <h2 className="text-2xl font-semibold mb-8 animate-in">Menu</h2>
             <Menu />
             <p className="text-sm text-base-muted mt-6">
               Menu items and prices are subject to change. Call for current specials.
