@@ -2,47 +2,11 @@
 import React, { useEffect, useState } from "react";
 import logo from "../assets/tavern.png";
 
-const SHEET_CSV_URL =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vRHgAkbYaPZxYRk64At8SGv7bJNHDNqKhrFOiCzEOTtcTSlMlS48ofyVS4ZZiAIlrE2JtKMDAgIVAxH/pub?gid=0&single=true&output=csv";
-
-type Row = { message?: string; start?: string; end?: string };
-
-function parseCSV(text: string): Row[] {
-  const lines = text.split(/\r?\n/).filter(Boolean);
-  if (!lines.length) return [];
-  const headers = lines[0]
-    .split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/)
-    .map((h) => h.replace(/^"|"$/g, "").trim().toLowerCase());
-  return lines.slice(1).map((line) => {
-    const cols = line
-      .split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/)
-      .map((c) => c.replace(/^"|"$/g, "").trim());
-    const r: Row = {};
-    headers.forEach((h, i) => {
-      const v = cols[i] ?? "";
-      if (["message", "msg", "text"].includes(h)) r.message = v;
-      else if (["start", "from", "begin"].includes(h)) r.start = v;
-      else if (["end", "until", "thru", "through"].includes(h)) r.end = v;
-    });
-    return r;
-  });
-}
-
-function inWindow(now: Date, start?: string, end?: string): boolean {
-  const s = start ? new Date(start) : null;
-  const e = end ? new Date(end) : null;
-  if (s && isNaN(+s)) return false;
-  if (e && isNaN(+e)) return false;
-  if (s && now < s) return false;
-  if (e && now > e) return false;
-  return true;
-}
-
 export default function Header() {
   const [elevated, setElevated] = useState(false);
-  const [announcement, setAnnouncement] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
 
-  const HEADER_BG = "#2a2a2a";
+  const HEADER_BG = "#151312"; // darker
 
   useEffect(() => {
     const onScroll = () => setElevated(window.scrollY > 4);
@@ -51,69 +15,26 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    let cancelled = false;
-    async function load() {
-      try {
-        const res = await fetch(SHEET_CSV_URL, { cache: "no-store" });
-        if (!res.ok) throw new Error();
-        const rows = parseCSV(await res.text()).filter((r) => r.message && r.message.trim());
-        const now = new Date();
-        const active = rows.find((r) => inWindow(now, r.start, r.end));
-        if (!cancelled) setAnnouncement(active?.message ?? rows[0]?.message ?? null);
-      } catch {
-        /* no-op */
-      }
-    }
-    load();
-    const id = setInterval(load, 600_000);
-    return () => {
-      cancelled = true;
-      clearInterval(id);
-    };
-  }, []);
-
-  const barText = announcement || "Tonight: Live music at 8 PM • Kitchen open late";
-
   return (
     <>
-      {/* Announcement */}
-      <div
-        className="text-sm"
-        style={{
-          backgroundColor: HEADER_BG,
-          color: "#c9c9c9",
-          backgroundImage:
-            "radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px)",
-          backgroundSize: "6px 6px",
-        }}
-      >
-        <div className="container-pad h-9 flex items-center justify-between">
-          <div className="truncate pr-4">{barText}</div>
-          <a
-            href="https://www.facebook.com/TimeOutTavernNC/"
-            target="_blank"
-            rel="noreferrer"
-            className="link-underline text-[13px] shrink-0"
-          >
-            Follow on Facebook
-          </a>
-        </div>
-      </div>
-
-      {/* Header */}
+      {/* Main header */}
       <header
         className={`sticky top-0 z-50 ${elevated ? "shadow-lg" : ""}`}
         style={{
           backgroundColor: HEADER_BG,
           color: "#fff",
-          backgroundImage:
-            "radial-gradient(rgba(255,255,255,0.025) 1px, transparent 1px)",
-          backgroundSize: "8px 8px",
+          // layered subtle texture
+          backgroundImage: [
+            "radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px)",
+            "linear-gradient(0deg, rgba(255,255,255,0.04) 1px, transparent 1px)",
+            "linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)"
+          ].join(","),
+          backgroundSize: "10px 10px, 6px 6px, 6px 6px",
+          backgroundBlendMode: "overlay",
         }}
       >
         <div className="container-pad h-24 flex items-center justify-between font-['Bebas_Neue',sans-serif]">
-          {/* bigger logo */}
+          {/* Logo */}
           <a href="/" className="flex items-center">
             <img
               src={logo}
@@ -122,8 +43,8 @@ export default function Header() {
             />
           </a>
 
-          {/* nav with liquid glass buttons */}
-          <div className="hidden md:flex items-center gap-4">
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-4">
             {[
               { href: "#events", label: "🎵 Events" },
               { href: "#menu", label: "🍔 Menu" },
@@ -141,10 +62,45 @@ export default function Header() {
                 {item.label}
               </a>
             ))}
-          </div>
+          </nav>
+
+          {/* Mobile burger */}
+          <button
+            className="md:hidden inline-flex items-center justify-center h-11 w-11 rounded-md border border-white/20 bg-white/10 backdrop-blur
+                       active:scale-95 transition"
+            aria-label="Open menu"
+            onClick={() => setOpen((v) => !v)}
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 7h16M4 12h16M4 17h16" stroke="white" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          </button>
         </div>
 
-        {/* downward triangles */}
+        {/* Mobile dropdown */}
+        {open && (
+          <div className="md:hidden border-t border-white/10">
+            <nav className="container-pad py-3 flex flex-col gap-2">
+              {[
+                { href: "#events", label: "🎵 Events" },
+                { href: "#menu", label: "🍔 Menu" },
+                { href: "#visit", label: "📍 Visit" },
+              ].map((item) => (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  className="w-full px-4 py-3 rounded-lg border border-white/15 bg-white/5 text-white
+                             font-semibold text-base active:scale-[0.99] transition"
+                >
+                  {item.label}
+                </a>
+              ))}
+            </nav>
+          </div>
+        )}
+
+        {/* decorative triangles */}
         <svg
           viewBox="0 0 100 10"
           preserveAspectRatio="none"
@@ -160,9 +116,9 @@ export default function Header() {
       {/* keyframes for liquid shimmer */}
       <style>{`
         @keyframes liquid {
-          0% {transform: translateX(-100%);}
-          50% {transform: translateX(0%);}
-          100% {transform: translateX(100%);}
+          0% { transform: translateX(-100%); }
+          50% { transform: translateX(0%); }
+          100% { transform: translateX(100%); }
         }
       `}</style>
     </>
