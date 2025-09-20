@@ -2,13 +2,17 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
     <title>Built4You • Ad Page</title>
     <meta name="theme-color" content="#111827" />
-    <link rel="icon" type="image/svg+xml" href="/adpage/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
   <body class="bg-surface text-neutral-900">
     <div id="root"></div>
-    <script type="module" src="/adpage/src/main.tsx"></script>
+    <!-- Fixed path: use /src/main.tsx for dev; base="/adpage/" handles prod -->
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
