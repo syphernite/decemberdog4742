@@ -35,13 +35,6 @@ export default function Visit() {
             </div>
 
             {/* CTA bar */}
-            <div className="mt-4 flex flex-wrap items-center gap-3">
-              <a
-                href={businessConfig.phoneLink}
-                className="btn btn-primary h-11 px-5 text-base animate-ember"
-              >
-                <Phone className="mr-2 h-4 w-4" /> {businessConfig.phone}
-              </a>
               <a
                 href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(businessConfig.address)}`}
                 target="_blank"

@@ -6,14 +6,12 @@ import Footer from "./components/Footer";
 import SheetsSpecials from "./components/SheetsSpecials";
 import Hours from "./components/Hours";
 import MapEmbed from "./components/MapEmbed";
-import CallFab from "./components/CallFab";
 import Menu from "./components/Menu";
 import bgUrl from "./assets/background.jpg";
 
 const PHONE = "(252) 223-3303";
 const ADDRESS = "360 E Chatham St, Newport, NC 28570";
 
-/** floating sports emoji */
 const FloatingEmoji: React.FC<{ symbol: string; left: string; delay: string }> = ({ symbol, left, delay }) => (
   <div
     className="absolute text-xl md:text-2xl opacity-70 animate-float-random pointer-events-none select-none"
@@ -23,7 +21,6 @@ const FloatingEmoji: React.FC<{ symbol: string; left: string; delay: string }> =
   </div>
 );
 
-/** center carousel with floating emojis */
 function FeatureCarousel() {
   const items = useMemo(
     () => [
@@ -44,7 +41,6 @@ function FeatureCarousel() {
 
   return (
     <div className="relative mx-auto w-full max-w-2xl md:max-w-3xl">
-      {/* floating emojis inside/outside carousel */}
       <FloatingEmoji symbol="🏈" left="10%" delay="0s" />
       <FloatingEmoji symbol="🏀" left="45%" delay="1.2s" />
       <FloatingEmoji symbol="⚾" left="80%" delay="2.4s" />
@@ -107,7 +103,6 @@ function FeatureCarousel() {
 export default function App() {
   return (
     <div className="relative flex min-h-screen flex-col text-base-text">
-      {/* Background */}
       <div
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat"
         style={{
@@ -116,11 +111,8 @@ export default function App() {
           transform: "translateZ(0)"
         }}
       />
-
-      {/* Foreground */}
       <div className="relative z-10 flex min-h-screen flex-col bg-black/40 backdrop-blur-sm">
         <Header />
-
         <main className="flex-1">
           {/* Hero */}
           <section>
@@ -138,12 +130,15 @@ export default function App() {
                 <p className="mt-5 text-base-muted text-lg md:text-xl">Veteran owned. Family friendly. Great food. Every game on.</p>
 
                 <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-                  <a href={`tel:${PHONE.replace(/\D/g, "")}`} className="btn btn-primary h-11 px-5 text-base">
+                  <a
+                    href={`tel:${PHONE.replace(/\D/g, "")}`}
+                    className="btn btn-primary h-11 px-5 text-base relative overflow-hidden shine-btn always-shine"
+                  >
                     <Phone className="mr-2 h-4 w-4" /> Call Now
                   </a>
                   <a
                     href="#visit"
-                    className="inline-flex items-center justify-center h-11 px-5 text-base rounded-lg font-medium transition text-white"
+                    className="inline-flex items-center justify-center h-11 px-5 text-base rounded-lg font-medium transition text-white relative overflow-hidden shine-btn always-shine"
                     style={{ backgroundColor: "#22c55e", border: "1px solid #16a34a" }}
                   >
                     <MapPin className="mr-2 h-4 w-4" /> Maps
@@ -152,7 +147,7 @@ export default function App() {
                     href="https://www.facebook.com/TimeOutTavernNC/"
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex h-11 w-11 items-center justify-center rounded-lg"
+                    className="inline-flex h-11 w-11 items-center justify-center rounded-lg relative overflow-hidden shine-btn always-shine"
                     style={{ backgroundColor: "#1877F2" }}
                     aria-label="Facebook"
                   >
@@ -175,10 +170,6 @@ export default function App() {
           <section id="events">
             <div className="container-pad py-12 md:py-14">
               <div className="flex items-center gap-3 mb-4 md:mb-6 animate-in">
-                <Calendar className="h-6 w-6 text-brand-primary" />
-                <h2 className="text-2xl md:text-3xl font-semibold">
-                  <span className="text-brand-primary">Live Events</span> & Specials
-                </h2>
               </div>
               <SheetsSpecials />
             </div>
@@ -187,39 +178,52 @@ export default function App() {
           {/* Menu */}
           <section id="menu">
             <div className="container-pad py-12 md:py-14">
-              <h2 className="text-2xl md:text-3xl font-semibold mb-6 md:mb-8 animate-in">Menu</h2>
               <Menu />
-              <p className="text-sm text-base-muted mt-6">Menu items and prices are subject to change. Call for current specials.</p>
+              <p className="text-sm text-base-muted mt-6">Menu items and prices are subject to change.</p>
             </div>
           </section>
 
           {/* Visit */}
           <section id="visit">
-            <div className="container-pad py-12 md:py-14 grid lg:grid-cols-2 gap-8">
-              <div className="animate-in">
-                <h2 className="text-2xl md:text-3xl font-semibold mb-6">Hours</h2>
-                <Hours />
-                <div className="mt-6">
-                  <a href={`tel:${PHONE.replace(/\D/g, "")}`} className="btn btn-primary">
-                    <Phone className="mr-2 h-4 w-4" /> {PHONE}
-                  </a>
+            <div className="container-pad py-12 md:py-14">
+              <div className="grid lg:grid-cols-2 gap-8 items-stretch">
+                <div className="animate-in flex flex-col">
+                  <h2 className="text-2xl md:text-3xl font-semibold mb-6">Hours</h2>
+                  <div className="card flex-1 flex flex-col">
+                    <Hours />
+                  </div>
                 </div>
-              </div>
-              <div className="animate-in" style={{ animationDelay: "80ms" }}>
-                <h2 className="text-2xl md:text-3xl font-semibold mb-6">Find Us</h2>
-                <div className="card overflow-hidden">
-                  <MapEmbed address={ADDRESS} />
+                <div className="animate-in flex flex-col" style={{ animationDelay: "80ms" }}>
+                  <h2 className="text-2xl md:text-3xl font-semibold mb-6">Find Us</h2>
+                  <div className="card overflow-hidden flex-1 flex flex-col">
+                    <MapEmbed address={ADDRESS} />
+                  </div>
                 </div>
-                <p className="text-sm text-base-muted mt-3">{ADDRESS}</p>
               </div>
             </div>
           </section>
         </main>
-
         <Footer />
-        <CallFab />
       </div>
     </div>
   );
 }
 
+// Add this to your global CSS (e.g., index.css or App.css)
+// .shine-btn::after {
+//   content: "";
+//   position: absolute;
+//   top: 0;
+//   left: -100%;
+//   width: 200%;
+//   height: 100%;
+//   background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,.4) 50%, transparent 70%);
+//   animation: sheen 2.5s infinite linear;
+// }
+// @keyframes sheen {
+//   0% { transform: translateX(-100%); }
+//   100% { transform: translateX(100%); }
+// }
+// .always-shine::after {
+//   animation: sheen 2.5s infinite linear !important;
+// }
