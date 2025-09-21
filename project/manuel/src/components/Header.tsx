@@ -1,107 +1,103 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Menu, X, Phone } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Facebook, Instagram, Twitter } from 'lucide-react';
 
-const Footer = () => {
+const Header = () => {
+  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const go = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    setOpen(false);
+  };
+
   const BASE = import.meta.env.BASE_URL;
   const LOGO = `${BASE}images/logo.jpg`;
 
+  // Glass header with black text
+  const headerBg = scrolled
+    ? 'bg-white/80 shadow-lg backdrop-saturate-150'
+    : 'bg-white/20 shadow-sm backdrop-saturate-150';
+
+  const textColor = 'text-black';
+  const hoverColor = 'hover:text-red-primary';
+
   return (
-    <footer className="bg-black-deep text-white py-16">
-      <div className="container mx-auto px-4">
-        <div className="text-center space-y-8">
-          {/* Main CTA */}
-          <motion.div
-            initial={{ y: 30, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            className="space-y-4"
-          >
-            <h3 className="font-display text-3xl md:text-4xl font-normal tracking-wide">
-              READY TO ORDER?
-            </h3>
-            <motion.a
-              href="tel:580-771-6373"
-              className="inline-block bg-red-primary hover:bg-red-dark text-white px-12 py-6 rounded-xl font-body font-bold text-2xl md:text-3xl shadow-2xl border-2 border-red-primary hover:shadow-2xl transition-all animate-pulse-slow"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              style={{
-                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.2), 0 8px 24px rgba(199,20,24,0.4)'
-              }}
-            >
-              580-771-6373
-            </motion.a>
-          </motion.div>
-
-          {/* Social Links */}
-          <motion.div
-            initial={{ y: 30, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="flex justify-center space-x-6"
-          >
-            <motion.a
-              href="#"
-              className="w-12 h-12 bg-gray-800 hover:bg-blue-600 rounded-full flex items-center justify-center transition-colors"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <Facebook size={24} />
-            </motion.a>
-            <motion.a
-              href="#"
-              className="w-12 h-12 bg-gray-800 hover:bg-pink-600 rounded-full flex items-center justify-center transition-colors"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <Instagram size={24} />
-            </motion.a>
-            <motion.a
-              href="#"
-              className="w-12 h-12 bg-gray-800 hover:bg-blue-400 rounded-full flex items-center justify-center transition-colors"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <Twitter size={24} />
-            </motion.a>
-          </motion.div>
-
-          {/* Logo and Name */}
-          <motion.div
-            initial={{ y: 30, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-            className="flex items-center justify-center space-x-4"
-          >
-            <div className="w-16 h-16 bg-red-primary rounded-full flex items-center justify-center border-2 border-silver-accent overflow-hidden">
-              <img src={LOGO} alt="Manuel Food Truck Logo" className="w-full h-full object-cover" />
-            </div>
-            <div className="text-left">
-              <h2 className="font-display text-2xl md:text-3xl font-normal tracking-wider">
-                MANUEL FOOD TRUCK
-              </h2>
-              <p className="font-body text-gray-400">Fresh • Fast • Local</p>
-            </div>
-          </motion.div>
-
-          {/* Copyright */}
-          <motion.div
-            initial={{ y: 30, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.4 }}
-            className="pt-8 border-t border-gray-800 space-y-2"
-          >
-            <p className="font-body text-gray-500 text-sm">
-              © 2025 Manuel Food Truck. All rights reserved.
-            </p>
-          </motion.div>
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all ${headerBg}`}>
+      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+        {/* Brand with logo */}
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-red-primary flex items-center justify-center ring-1 ring-white/30 shadow-lg overflow-hidden">
+            <img src={LOGO} alt="Manuel Food Truck Logo" className="w-full h-full object-cover" />
+          </div>
+          <span className={`font-display tracking-wider ${textColor} text-xl hidden sm:block`}>
+            MANUEL FOOD TRUCK
+          </span>
         </div>
+
+        {/* Nav desktop */}
+        <nav className="hidden md:flex items-center gap-8">
+          <button onClick={() => go('menu')} className={`font-semibold ${textColor} ${hoverColor}`}>
+            Menu
+          </button>
+          <button onClick={() => go('about')} className={`font-semibold ${textColor} ${hoverColor}`}>
+            About
+          </button>
+          <button onClick={() => go('findus')} className={`font-semibold ${textColor} ${hoverColor}`}>
+            Find Us
+          </button>
+          <a
+            href="tel:580-771-6373"
+            className="inline-flex items-center gap-2 bg-red-primary/90 hover:bg-red-dark text-white px-4 py-2 rounded-lg border-2 border-red-primary/60 ring-1 ring-white/20"
+          >
+            <Phone size={18} /> Call to Order
+          </a>
+        </nav>
+
+        {/* Mobile toggle */}
+        <button
+          className="md:hidden p-2 rounded-lg hover:bg-black/10"
+          onClick={() => setOpen(!open)}
+          aria-label="Menu"
+        >
+          {open ? <X className={textColor} /> : <Menu className={textColor} />}
+        </button>
       </div>
-    </footer>
+
+      {/* Mobile drawer */}
+      {open && (
+        <motion.nav
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: 'auto', opacity: 1 }}
+          className={`md:hidden px-4 pb-4 ${scrolled ? 'bg-white/80' : 'bg-white/20'} backdrop-saturate-150`}
+        >
+          <div className="grid gap-2">
+            <button onClick={() => go('menu')} className={`text-left font-semibold ${textColor} ${hoverColor}`}>
+              Menu
+            </button>
+            <button onClick={() => go('about')} className={`text-left font-semibold ${textColor} ${hoverColor}`}>
+              About
+            </button>
+            <button onClick={() => go('findus')} className={`text-left font-semibold ${textColor} ${hoverColor}`}>
+              Find Us
+            </button>
+            <a
+              href="tel:580-771-6373"
+              className="mt-2 inline-flex items-center gap-2 bg-red-primary/90 text-white px-4 py-2 rounded-lg"
+            >
+              <Phone size={18} /> Call to Order
+            </a>
+          </div>
+        </motion.nav>
+      )}
+    </header>
   );
 };
 
-export default Footer;
+export default Header;
