@@ -6,6 +6,7 @@ import HomePage from "./pages/HomePage";
 import MenuPage from "./pages/MenuPage";
 import ContactPage from "./pages/ContactPage";
 import OurStoryPage from "./pages/OurStoryPage";
+import UniversalDemoCTA from "./components/UniversalDemoCTA";
 
 function App() {
   return (
@@ -20,6 +21,8 @@ function App() {
         </Routes>
       </main>
       <Footer />
+      {/* Floating CTA visible everywhere */}
+      <UniversalDemoCTA />
     </div>
   );
 }
