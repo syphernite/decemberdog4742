@@ -15,27 +15,32 @@ function App() {
     restDelta: 0.001
   });
 
+  // Scroll to top on reload without a hash
   useEffect(() => {
-    // Smooth scrolling for hash links
+    if (!window.location.hash) {
+      window.scrollTo(0, 0);
+    }
+  }, []);
+
+  // Smooth scrolling for hash links and on initial hash
+  useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash;
       if (hash) {
-        const element = document.querySelector(hash);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
+        const el = document.querySelector(hash);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
       }
     };
-
     window.addEventListener('hashchange', handleHashChange);
+    if (window.location.hash) setTimeout(handleHashChange, 0);
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
   return (
-    <div className="min-h-screen">
-      {/* Progress Bar */}
+    <div className="min-h-screen overflow-x-hidden">
+      {/* Progress Bar above header touch area */}
       <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-red-primary z-50 origin-left"
+        className="fixed top-0 left-0 right-0 h-1 bg-red-primary z-[70] origin-left"
         style={{ scaleX }}
       />
 
