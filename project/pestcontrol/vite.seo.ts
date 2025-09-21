@@ -4,7 +4,7 @@ import path from "path";
 type SEO = {
   slug: string;
   siteUrl: string;
-  status: "client" | "demo";
+  status: "demo";
   title: string;
   description: string;
   keywords?: string[];
