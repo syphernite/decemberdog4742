@@ -15,6 +15,9 @@ jobs:
         with:
           node-version: 18
 
+      - name: Seed SEO into all subsites
+        run: node .scripts/seed-seo.mjs
+
       # Build each client demo (skip landingpage)
       - name: Build demos
         env:
@@ -39,6 +42,9 @@ jobs:
             mkdir -p "$slug"
             cp -r "project/$slug/dist/." "$slug/"
           done
+
+      - name: Generate root sitemap and robots
+        run: node .scripts/generate-sitemap.mjs
 
       # Build & copy landing page into root
       - name: Build landing page

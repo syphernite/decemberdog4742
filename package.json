@@ -1,7 +1,28 @@
 {
+  "name": "built4you-monorepo",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "dependencies": {
     "gsap": "^3.13.0",
     "motion": "^12.23.12",
     "ogl": "^1.0.11"
+  },
+  "devDependencies": {
+    "copyfiles": "^2.4.1"
+  },
+  "scripts": {
+    "seed:seo": "node .scripts/seed-seo.mjs",
+    "sitemap": "node .scripts/generate-sitemap.mjs",
+
+    "dev": "npm run dev:landingpage",
+    "dev:landingpage": "cd project/landingpage && npm run dev",
+
+    "build": "npm run build:all",
+    "build:all": "npm run seed:seo && npm run build:subs && npm run sitemap && npm run build:landingpage",
+
+    "build:subs": "node -e \"const {execSync}=require('child_process');const fs=require('fs');fs.readdirSync('project',{withFileTypes:true}).filter(d=>d.isDirectory()).map(d=>d.name).filter(n=>n!=='landingpage').forEach(slug=>{console.log('🔨 Building', slug);execSync(`cd project/${slug} && npm ci && npm run build`,{stdio:'inherit'})});\"",
+
+    "build:landingpage": "cd project/landingpage && npm ci && npm run build && cd ../../ && copyfiles -u 2 project/landingpage/dist/** ."
   }
 }
