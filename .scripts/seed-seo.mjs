@@ -83,7 +83,7 @@ export default function seoPlugin() {
 }, null, 2)}
 </script>\` : "";
 
-      return html.replace(/<\/head>/i, \`\${tags}\\n\${localBusiness}\\n</head>\`);
+      return html.replace(/<\\/head>/i, \`\${tags}\\n\${localBusiness}\\n</head>\`);
     }
   };
 }
@@ -109,9 +109,9 @@ function write(file, content) {
   fs.writeFileSync(file, content, "utf8");
 }
 
-function ensureViteSeo(dir) {
+function overwriteViteSeo(dir) {
   const f = path.join(dir, VITE_SEO_FILENAME);
-  if (!fs.existsSync(f)) write(f, viteSeoSource);
+  write(f, viteSeoSource); // overwrite to fix regex bug everywhere
 }
 
 function ensureSeoConfig(dir, slug) {
@@ -123,14 +123,11 @@ function patchViteConfig(dir, slug) {
   const file = path.join(dir, "vite.config.ts");
   const src = read(file);
   if (!src) return;
-
   let out = src;
 
   if (!/from\s+["']\.\/vite\.seo["']/.test(out)) {
     out = out.replace(/(^\s*import .*?;[\r\n]+)/s, (m) => m + `import seoPlugin from "./vite.seo";\n`);
-    if (!/import seoPlugin from/.test(out)) {
-      out = `import seoPlugin from "./vite.seo";\n` + out;
-    }
+    if (!/import seoPlugin from/.test(out)) out = `import seoPlugin from "./vite.seo";\n` + out;
   }
 
   if (!/plugins\s*:\s*\[.*seoPlugin\(\)\s*]/s.test(out)) {
@@ -152,23 +149,16 @@ function patchViteConfig(dir, slug) {
 }
 
 function main() {
-  if (!fs.existsSync(PROJECT_ROOT)) {
-    console.error("project/ not found");
-    process.exit(1);
-  }
-
   const folders = fs.readdirSync(PROJECT_ROOT, { withFileTypes: true })
     .filter(d => d.isDirectory())
     .map(d => d.name)
-    .filter(name => !name.startsWith("."));
+    .filter(name => !name.startsWith(".") && name !== "landingpage");
 
   for (const slug of folders) {
     const dir = path.join(PROJECT_ROOT, slug);
     if (!fs.existsSync(path.join(dir, "vite.config.ts"))) continue;
-    if (slug === "landingpage") continue;
-
     ensureSeoConfig(dir, slug);
-    ensureViteSeo(dir);
+    overwriteViteSeo(dir);     // force-fix
     patchViteConfig(dir, slug);
     console.log(`seeded: ${slug}`);
   }
