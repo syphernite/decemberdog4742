@@ -61,6 +61,10 @@ jobs:
           cd ../../
           cp -r project/landingpage/dist/* .
 
+      # NEW: inject SEO tags into built HTML and regenerate sitemap/robots at publish root
+      - name: Finalize SEO (inject tags + sitemap)
+        run: node .scripts/finalize-seo.mjs
+
       # Dynamic SPA fallback: send to demo folder only if that folder exists.
       # Otherwise treat as a root SPA route (e.g., /careers).
       - name: Create smart 404.html
