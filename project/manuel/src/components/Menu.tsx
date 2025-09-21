@@ -1,3 +1,4 @@
+// src/components/Menu.tsx
 import React, { useMemo, useRef, useState, useEffect, UIEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -58,19 +59,17 @@ export default function Menu() {
   const [expanded, setExpanded] = useState<Record<Category, boolean>>({});
   const itemsAll = useMemo(() => getByCategory(active), [active]);
 
-  // Desktop grid shows up to VISIBLE, then "Show more"
   const VISIBLE = 6;
   const isExpanded = !!expanded[active];
   const gridItems = isExpanded || itemsAll.length <= VISIBLE ? itemsAll : itemsAll.slice(0, VISIBLE);
 
-  // Mobile slider refs/state
   const trackRef = useRef<HTMLDivElement | null>(null);
   const [slideIdx, setSlideIdx] = useState(0);
 
   const scrollTo = (dir: -1 | 1) => {
     const el = trackRef.current;
     if (!el) return;
-    const step = Math.round(el.clientWidth * 0.88); // ~one card
+    const step = Math.round(el.clientWidth * 0.88);
     el.scrollBy({ left: dir * step, behavior: 'smooth' });
   };
 
@@ -82,7 +81,6 @@ export default function Menu() {
   };
 
   useEffect(() => {
-    // reset slider index when category changes
     setSlideIdx(0);
     const el = trackRef.current;
     if (el) el.scrollTo({ left: 0, behavior: 'instant' as ScrollBehavior });
@@ -97,22 +95,47 @@ export default function Menu() {
     visible: { y: 0, opacity: 1, transition: { duration: 0.4 } },
   };
 
+  // Red to white shimmer for heading
+  const shimmerStyle: React.CSSProperties = {
+    backgroundImage: 'linear-gradient(90deg,#ffffff 0%,#ef4444 50%,#ffffff 100%)',
+    backgroundSize: '200% 100%',
+    WebkitBackgroundClip: 'text',
+    backgroundClip: 'text',
+  };
+
+  const BASE = import.meta.env.BASE_URL;
+  const BG = `${BASE}images/menu-bg2.jpg`;
+
   return (
-    <section id="menu-page" className="relative bg-neutral-50 scroll-mt-24 sm:scroll-mt-28">
+    <section id="menu-page" className="relative scroll-mt-24 sm:scroll-mt-28">
+      {/* Background layer */}
+      <div className="absolute inset-0 -z-10">
+        <div
+          className="absolute inset-0 bg-cover bg-center transform-gpu scale-[1.06]"
+          style={{ backgroundImage: `url(${BG})`, filter: 'blur(8px)', backgroundPosition: 'center 35%' }}
+          aria-hidden
+        />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.25)_0%,rgba(0,0,0,0.55)_100%)]" />
+      </div>
+
       <div className="container mx-auto px-4 pt-24 md:pt-28 pb-16">
-        {/* Card wrapper */}
-        <div className="mx-auto w-full max-w-5xl rounded-2xl bg-white shadow-xl sm:shadow-2xl border border-black/5 ring-1 ring-black/5 p-5 sm:p-10">
-          {/* Title */}
+        {/* Menu surface */}
+        <div className="mx-auto w-full max-w-5xl rounded-2xl bg-[#f9f5f5] shadow-2xl border border-black/5 p-5 sm:p-10">
           <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="mb-5 sm:mb-8">
-            <h2 className="font-display text-4xl sm:text-7xl font-normal text-black-deep tracking-tight">
+            <motion.h2
+              className="font-display text-4xl sm:text-7xl font-extrabold tracking-tight text-transparent"
+              style={shimmerStyle}
+              animate={{ backgroundPosition: ['0% 0%', '100% 0%', '0% 0%'] }}
+              transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
+            >
               OUR MENU
-            </h2>
-            <p className="font-body text-base sm:text-xl text-gray-800 mt-3">
+            </motion.h2>
+            <p className="font-body text-base sm:text-xl text-gray-700 mt-3">
               Fresh ingredients, bold flavors, generous portions
             </p>
           </motion.div>
 
-          {/* Category Tabs */}
+          {/* Category pills */}
           <div className="mb-6 sm:mb-8 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <div className="inline-flex bg-white rounded-xl p-1 shadow border border-black/10">
               {(Object.keys(LABELS) as Category[]).map((c) => (
@@ -121,8 +144,8 @@ export default function Menu() {
                   onClick={() => setActive(c)}
                   className={`px-4 sm:px-7 py-2.5 sm:py-3 rounded-lg font-body font-bold text-sm sm:text-base transition-all ${
                     active === c
-                      ? 'bg-red-primary text-white shadow-lg border-2 border-red-primary/70'
-                      : 'text-gray-700 hover:text-red-primary hover:bg-white'
+                      ? 'bg-red-primary text-white shadow-lg border border-red-primary/70'
+                      : 'text-gray-800 hover:text-red-primary hover:bg-white'
                   }`}
                   aria-pressed={active === c}
                 >
@@ -132,52 +155,48 @@ export default function Menu() {
             </div>
           </div>
 
-          {/* ===== Mobile SLIDER (sm:hidden) ===== */}
+          {/* Mobile Slider */}
           <div className="sm:hidden relative">
-            {/* Track */}
             <div
               ref={trackRef}
               onScroll={onScroll}
-              className="
-                flex gap-3 overflow-x-auto snap-x snap-mandatory px-1
-                [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden
-              "
+              className="flex gap-3 overflow-x-auto snap-x snap-mandatory px-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
               {itemsAll.map((item) => (
-                <div
-                  key={item.id}
-                  className="snap-start shrink-0 w-[88vw] max-w-[520px]"
-                  data-card
-                >
+                <div key={item.id} className="snap-start shrink-0 w-[88vw] max-w-[520px]" data-card>
+                  {/* Glass outer */}
                   <motion.div
-                    whileHover={{ y: -2 }}
-                    className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden"
+                    whileHover={{ y: -4, scale: 1.03 }}
+                    className="rounded-2xl border border-white/30 bg-white/10 backdrop-blur-xl overflow-hidden transition-all duration-300 shadow-[0_8px_28px_rgba(0,0,0,0.18)] ring-1 ring-white/20"
                   >
-                    {/* Visual header */}
-                    <div className="h-40 bg-gradient-to-br from-red-primary/5 to-red-primary/10 relative overflow-hidden">
+                    {/* Top soft pink panel like the reference */}
+                    <div className="h-40 bg-gradient-to-br from-rose-50/80 via-rose-100/70 to-rose-50/40 relative overflow-hidden">
                       {item.featured && (
-                        <div className="absolute top-3 right-3 bg-red-primary text-white px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+                        <div className="absolute top-3 right-3 bg-red-primary text-white px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow">
                           <Star size={14} fill="currentColor" />
                           <span>POPULAR</span>
                         </div>
                       )}
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-20 h-20 bg-red-primary/10 rounded-full flex items-center justify-center">
+                        <div className="w-20 h-20 rounded-full bg-white/70 flex items-center justify-center ring-1 ring-black/5">
                           <span className="text-3xl">{ICON[item.category]}</span>
                         </div>
                       </div>
+                      {/* Soft divider hint */}
+                      <div className="absolute bottom-0 left-0 right-0 h-px bg-black/5" />
                     </div>
-                    {/* Copy */}
-                    <div className="p-5">
+
+                    {/* Bottom content on semi-opaque white to mimic solid card base */}
+                    <div className="p-5 bg-white/90">
                       <div className="flex justify-between items-start mb-2.5">
-                        <h3 className="font-body font-bold text-lg text-black-deep">{item.name}</h3>
+                        <h3 className="font-body font-bold text-lg text-gray-900">{item.name}</h3>
                         {item.price ? (
-                          <span className="font-display text-xl font-normal text-red-primary ml-3 flex-shrink-0">
+                          <span className="font-display text-xl font-normal text-red-600 ml-3 flex-shrink-0">
                             {item.price}
                           </span>
                         ) : null}
                       </div>
-                      <p className="text-gray-600 font-body text-sm leading-relaxed">
+                      <p className="text-gray-700 font-body text-sm leading-relaxed">
                         {item.description}
                       </p>
                     </div>
@@ -186,40 +205,38 @@ export default function Menu() {
               ))}
             </div>
 
-            {/* Arrows */}
             {itemsAll.length > 1 && (
               <>
                 <button
                   onClick={() => scrollTo(-1)}
                   aria-label="Previous item"
-                  className="absolute left-1 top-1/2 -translate-y-1/2 inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white/95 shadow"
+                  className="absolute left-1 top-1/2 -translate-y-1/2 inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-white/80 text-black shadow backdrop-blur"
                 >
                   <ChevronLeft size={18} />
                 </button>
                 <button
                   onClick={() => scrollTo(1)}
                   aria-label="Next item"
-                  className="absolute right-1 top-1/2 -translate-y-1/2 inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white/95 shadow"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-white/80 text-black shadow backdrop-blur"
                 >
                   <ChevronRight size={18} />
                 </button>
               </>
             )}
 
-            {/* Dots */}
             {itemsAll.length > 1 && (
               <div className="mt-3 flex items-center justify-center gap-1.5">
                 {itemsAll.map((_, i) => (
                   <span
                     key={i}
-                    className={`h-1.5 rounded-full transition-all ${i === slideIdx ? 'w-5 bg-red-primary' : 'w-2 bg-black/20'}`}
+                    className={`h-1.5 rounded-full transition-all ${i === slideIdx ? 'w-5 bg-red-primary' : 'w-2 bg-black/30'}`}
                   />
                 ))}
               </div>
             )}
           </div>
 
-          {/* ===== Desktop GRID (hidden on mobile) ===== */}
+          {/* Desktop Grid */}
           <div className="hidden sm:block">
             <AnimatePresence mode="wait">
               <motion.div
@@ -233,34 +250,43 @@ export default function Menu() {
                   <motion.div
                     key={item.id}
                     variants={itemVariants}
-                    whileHover={{ y: -4, rotateY: 2, scale: 1.02, transition: { duration: 0.2 } }}
-                    className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-2xl hover:border-red-primary/30 transition-all duration-300 group"
+                    whileHover={{
+                      y: -6,
+                      scale: 1.04,
+                      boxShadow: '0 14px 40px rgba(0,0,0,0.16)',
+                      transition: { duration: 0.25 },
+                    }}
+                    className="rounded-2xl overflow-hidden border border-white/30 bg-white/10 backdrop-blur-xl transition-all duration-300 group ring-1 ring-white/20"
                   >
-                    <div className="h-44 bg-gradient-to-br from-red-primary/5 to-red-primary/10 relative overflow-hidden">
+                    {/* Top soft pink panel */}
+                    <div className="h-44 bg-gradient-to-br from-rose-50/80 via-rose-100/70 to-rose-50/40 relative overflow-hidden">
                       {item.featured && (
-                        <div className="absolute top-4 right-4 bg-red-primary text-white px-2.5 py-1 rounded-full text-sm font-bold flex items-center gap-1">
+                        <div className="absolute top-4 right-4 bg-red-primary text-white px-2.5 py-1 rounded-full text-sm font-bold flex items-center gap-1 shadow">
                           <Star size={14} fill="currentColor" />
                           <span>POPULAR</span>
                         </div>
                       )}
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-20 h-20 bg-red-primary/10 rounded-full flex items-center justify-center">
+                        <div className="w-20 h-20 rounded-full bg-white/70 flex items-center justify-center ring-1 ring-black/5">
                           <span className="text-3xl">{ICON[item.category]}</span>
                         </div>
                       </div>
+                      <div className="absolute bottom-0 left-0 right-0 h-px bg-black/5" />
                     </div>
-                    <div className="p-6">
+
+                    {/* Bottom content */}
+                    <div className="p-6 bg-white/90">
                       <div className="flex justify-between items-start mb-3">
-                        <h3 className="font-body font-bold text-lg text-black-deep group-hover:text-red-primary transition-colors leading-tight">
+                        <h3 className="font-body font-bold text-lg text-gray-900 group-hover:text-red-700 transition-colors leading-tight">
                           {item.name}
                         </h3>
                         {item.price ? (
-                          <span className="font-display text-xl font-normal text-red-primary ml-4 flex-shrink-0">
+                          <span className="font-display text-xl font-normal text-red-600 ml-4 flex-shrink-0">
                             {item.price}
                           </span>
                         ) : null}
                       </div>
-                      <p className="text-gray-600 font-body text-sm leading-relaxed">
+                      <p className="text-gray-700 font-body text-sm leading-relaxed">
                         {item.description}
                       </p>
                     </div>
@@ -269,12 +295,11 @@ export default function Menu() {
               </motion.div>
             </AnimatePresence>
 
-            {/* Show more / fewer (desktop only) */}
             {itemsAll.length > VISIBLE && (
               <div className="mt-8 text-center">
                 <button
                   onClick={() => setExpanded((s) => ({ ...s, [active]: !s[active] }))}
-                  className="mx-auto inline-flex items-center justify-center rounded-lg border border-black/10 bg-white px-4 py-2 text-sm font-semibold shadow hover:bg-neutral-50"
+                  className="mx-auto inline-flex items-center justify-center rounded-lg border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50"
                   aria-expanded={isExpanded}
                 >
                   {isExpanded ? 'Show fewer items' : 'Show more items'}
@@ -293,14 +318,13 @@ export default function Menu() {
           >
             <motion.a
               href="tel:580-771-6373"
-              className="bg-red-primary hover:bg-red-dark text-white px-6 sm:px-8 py-4 rounded-xl font-body font-bold text-lg md:text-xl border-2 border-red-primary/70 inline-flex items-center justify-center gap-3 w-full sm:w-auto"
-              whileHover={{ scale: 1.03 }}
+              className="bg-red-primary hover:bg-red-dark text-white px-6 sm:px-8 py-4 rounded-xl font-body font-bold text-lg md:text-xl border-2 border-red-600 inline-flex items-center justify-center gap-3 w-full sm:w-auto shadow-[0_0_30px_rgba(220,38,38,0.45)]"
+              whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(220,38,38,0.55)' }}
               whileTap={{ scale: 0.97 }}
-              style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.2), 0 8px 24px rgba(199,20,24,0.4)' }}
             >
               CALL TO ORDER: 580-771-6373
             </motion.a>
-            <p className="text-xs text-gray-500 mt-3">
+            <p className="text-xs text-gray-600 mt-3">
               Menu items may change. Call for today’s prices and specials.
             </p>
           </motion.div>

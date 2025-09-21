@@ -1,3 +1,4 @@
+// src/App.tsx
 import React, { useEffect } from 'react';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import Header from './components/Header';
@@ -37,7 +38,7 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen overflow-x-hidden">
+    <div className="min-h-screen overflow-x-hidden overflow-y-hidden scrollbar-hide">
       {/* Progress Bar above header touch area */}
       <motion.div
         className="fixed top-0 left-0 right-0 h-1 bg-red-primary z-[70] origin-left"
