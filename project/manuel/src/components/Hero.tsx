@@ -16,18 +16,17 @@ export default function Hero() {
         rotate: ['-0.8deg', '0deg', '0.8deg', '0deg'],
       };
 
+  const lane = 'repeating-linear-gradient(90deg, rgba(234,179,8,1) 0 48px, transparent 48px 88px)';
+
   return (
     <section className="relative overflow-hidden">
-      {/* Bigger blurred background */}
       <div
         className="relative h-[60vh] bg-cover bg-center"
         style={{ backgroundImage: `url(${BG})`, filter: 'blur(10px)', transform: 'scale(1.08)' }}
         aria-hidden
       />
 
-      {/* Dark road stage */}
       <div className="relative bg-neutral-900 h-[24vh] md:h-[28vh]">
-        {/* Glass card floated well above the truck */}
         <div className="absolute left-1/2 -translate-x-1/2 -translate-y-[22rem] md:-translate-y-[28rem] z-30 w-full px-4">
           <div className="mx-auto w-full max-w-4xl rounded-2xl bg-white/85 backdrop-blur-md shadow-2xl border border-white/60 ring-1 ring-black/5 p-6 md:p-8">
             <h1 className="font-display text-5xl md:text-7xl leading-none tracking-tight text-black">
@@ -53,14 +52,17 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Full-width dashed yellow centerline */}
-        <div
+        {/* Conveyor-belt yellow centerline */}
+        <motion.div
           className="pointer-events-none absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1 md:h-1.5 w-full"
           style={{
-            background:
-              'repeating-linear-gradient(90deg, rgba(234,179,8,1) 0 48px, transparent 48px 88px)',
+            backgroundImage: lane,
             boxShadow: '0 0 12px rgba(234,179,8,0.35)',
+            backgroundRepeat: 'repeat',
+            backgroundSize: '136px 100%',
           }}
+          animate={reduce ? {} : { backgroundPositionX: ['0px', '-136px'] }}
+          transition={reduce ? {} : { duration: 0.8, ease: 'linear', repeat: Infinity }}
         />
 
         {/* Animated truck for desktop/tablet */}
