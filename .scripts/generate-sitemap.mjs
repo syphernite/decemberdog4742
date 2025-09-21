@@ -6,7 +6,9 @@ const landingPublic = path.resolve(process.cwd(), "project/landingpage/public");
 fs.mkdirSync(landingPublic, { recursive: true });
 
 const entries = [];
-const folders = fs.readdirSync(root).filter(f => fs.existsSync(path.join(root, f, "seo.config.json")));
+const folders = fs.readdirSync(root).filter(f =>
+  fs.existsSync(path.join(root, f, "seo.config.json"))
+);
 
 for (const f of folders) {
   try {
@@ -24,22 +26,20 @@ const roots = [
   { loc: "https://built4you.org/why-we-exist", priority: "0.7", changefreq: "monthly" }
 ];
 
-const urls = roots.concat(entries).map(
-  e => `  <url><loc>${e.loc}</loc><changefreq>${e.changefreq}</changefreq><priority>${e.priority}</priority></url>`
+const urls = roots.concat(entries).map(e =>
+  "  <url><loc>" + e.loc + "</loc><changefreq>" + e.changefreq + "</changefreq><priority>" + e.priority + "</priority></url>"
 ).join("\n");
 
-const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls}
-</urlset>
-`;
+const xml =
+  '<?xml version="1.0" encoding="UTF-8"?>\n' +
+  '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+  urls + "\n</urlset>\n";
 
 fs.writeFileSync(path.join(landingPublic, "sitemap.xml"), xml, "utf8");
-fs.writeFileSync(path.join(landingPublic, "robots.txt"),
-`User-agent: *
-Allow: /
+fs.writeFileSync(
+  path.join(landingPublic, "robots.txt"),
+  "User-agent: *\nAllow: /\n\nSitemap: https://built4you.org/sitemap.xml\n",
+  "utf8"
+);
 
-Sitemap: https://built4you.org/sitemap.xml
-`, "utf8");
-
-console.log(\`Wrote \${entries.length} subpaths to sitemap.xml\`);
+console.log("Wrote " + entries.length + " subpaths to sitemap.xml");
