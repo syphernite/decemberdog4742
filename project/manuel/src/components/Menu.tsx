@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star } from 'lucide-react';
 
@@ -19,14 +19,18 @@ const MENU: MenuItem[] = [
   { id: 'fr-pork', category: 'fried-rice', name: 'Pork Fried Rice', description: 'Tender pork, scallions, and egg.' },
   { id: 'fr-shrimp', category: 'fried-rice', name: 'Shrimp Fried Rice', description: 'Plump shrimp, garlic, and wok heat.' },
   { id: 'fr-two', category: 'fried-rice', name: 'Any Two Meats Fried Rice', description: 'Pick two: chicken, beef, pork, or shrimp.' },
+
   { id: 'bg-hamburger', category: 'burgers', name: 'Hamburger', description: 'Griddled patty on a toasted bun.' },
   { id: 'bg-cheeseburger', category: 'burgers', name: 'Cheeseburger', description: 'Melted cheese, lettuce, tomato, and sauce.', featured: true },
   { id: 'bg-bacon-cheese', category: 'burgers', name: 'Bacon Cheeseburger', description: 'Crispy bacon with melty cheese.' },
+
   { id: 'ck-crispy-sandwich', category: 'chicken', name: 'Crispy Chicken Sandwich', description: 'Crispy filet, pickles, and mayo.' },
   { id: 'ck-tenders', category: 'chicken', name: 'Chicken Tenders Basket', description: 'Crunchy tenders with dipping sauce.' },
   { id: 'ck-wings-6', category: 'chicken', name: 'Wings (6 pc)', description: 'Tossed in house sauce.' },
+
   { id: 'sd-fries', category: 'sides', name: 'French Fries', description: 'Golden and salted.' },
   { id: 'sd-loaded-fries', category: 'sides', name: 'Loaded Fries', description: 'Cheese and toppings. Ask for today’s load.' },
+
   { id: 'dr-soda', category: 'drinks', name: 'Soda', description: 'Assorted cans or bottles.' },
   { id: 'dr-water', category: 'drinks', name: 'Water', description: 'Cold and refreshing.' },
 ];
@@ -51,18 +55,21 @@ const getByCategory = (c: Category) => MENU.filter((m) => m.category === c);
 
 const Menu = () => {
   const [active, setActive] = useState<Category>('fried-rice');
+  const [expanded, setExpanded] = useState<Record<Category, boolean>>({});
+
+  const itemsAll = useMemo(() => getByCategory(active), [active]);
+  const isExpanded = !!expanded[active];
+  const VISIBLE = 6;
+  const items = isExpanded || itemsAll.length <= VISIBLE ? itemsAll : itemsAll.slice(0, VISIBLE);
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: 0.08 } },
   };
-
   const itemVariants = {
     hidden: { y: 18, opacity: 0 },
     visible: { y: 0, opacity: 1, transition: { duration: 0.4 } },
   };
-
-  const items = getByCategory(active);
 
   return (
     <section id="menu-page" className="relative bg-neutral-50 scroll-mt-24 sm:scroll-mt-28">
@@ -102,7 +109,7 @@ const Menu = () => {
           {/* Items */}
           <AnimatePresence mode="wait">
             <motion.div
-              key={active}
+              key={active + String(isExpanded)}
               variants={containerVariants}
               initial="hidden"
               animate="visible"
@@ -150,6 +157,19 @@ const Menu = () => {
               ))}
             </motion.div>
           </AnimatePresence>
+
+          {/* Show more / fewer only when needed */}
+          {itemsAll.length > VISIBLE && (
+            <div className="mt-6 text-center">
+              <button
+                onClick={() => setExpanded((s) => ({ ...s, [active]: !s[active] }))}
+                className="mx-auto inline-flex items-center justify-center rounded-lg border border-black/10 bg-white px-4 py-2 text-sm font-semibold shadow hover:bg-neutral-50"
+                aria-expanded={isExpanded}
+              >
+                {isExpanded ? 'Show fewer items' : 'Show more items'}
+              </button>
+            </div>
+          )}
 
           {/* CTA */}
           <motion.div

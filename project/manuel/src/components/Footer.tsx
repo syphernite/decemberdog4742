@@ -1,3 +1,4 @@
+// src/components/Footer.tsx
 import React from 'react';
 import { motion } from 'framer-motion';
 
@@ -5,31 +6,39 @@ const Footer = () => {
   const BASE = import.meta.env.BASE_URL;
   const LOGO = `${BASE}images/logo.jpg`;
 
+  // Weekly hours moved here
+  const HOURS: { day: string; time: string }[] = [
+    { day: 'Mon', time: 'Closed' },
+    { day: 'Tue', time: '11:30 AM – 2:30 PM' },
+    { day: 'Wed', time: '11:00 AM – 3:00 PM' },
+    { day: 'Thu', time: '11:30 AM – 2:30 PM' },
+    { day: 'Fri', time: '11:00 AM – 4:00 PM' },
+    { day: 'Sat', time: '10:00 AM – 3:00 PM' },
+    { day: 'Sun', time: 'Closed' },
+  ];
+
   return (
     <footer className="bg-black-deep text-white py-14 sm:py-16">
       <div className="container mx-auto px-4">
         <div className="text-center space-y-8">
-          {/* CTA */}
+          {/* HOURS (added) */}
           <motion.div
-            initial={{ y: 30, opacity: 0 }}
+            initial={{ y: 24, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             viewport={{ once: true }}
-            className="space-y-4"
+            className="max-w-xl mx-auto"
           >
-            <h3 className="font-display text-2xl sm:text-4xl font-normal tracking-wide">
-              READY TO ORDER?
+            <h3 className="font-display text-2xl sm:text-3xl tracking-wide mb-4">
+              HOURS
             </h3>
-            <motion.a
-              href="tel:580-771-6373"
-              className="inline-block w-full sm:w-auto bg-red-primary hover:bg-red-dark text-white px-10 py-5 rounded-xl font-body font-bold text-2xl sm:text-3xl border-2 border-red-primary"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              style={{
-                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.2), 0 8px 24px rgba(199,20,24,0.4)',
-              }}
-            >
-              580-771-6373
-            </motion.a>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm sm:text-base text-gray-200">
+              {HOURS.map(({ day, time }) => (
+                <div key={day} className="flex justify-between border-b border-white/10 py-2 col-span-2">
+                  <span className="font-body text-gray-300">{day}</span>
+                  <span className="font-body">{time}</span>
+                </div>
+              ))}
+            </div>
           </motion.div>
 
           {/* Facebook only */}
@@ -37,7 +46,7 @@ const Footer = () => {
             initial={{ y: 30, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
+            transition={{ delay: 0.1 }}
             className="flex justify-center"
           >
             <motion.a
@@ -59,7 +68,7 @@ const Footer = () => {
             initial={{ y: 30, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
+            transition={{ delay: 0.2 }}
             className="flex items-center justify-center space-x-3 sm:space-x-4"
           >
             <div className="w-14 h-14 sm:w-16 sm:h-16 bg-red-primary rounded-full flex items-center justify-center border-2 border-silver-accent overflow-hidden">

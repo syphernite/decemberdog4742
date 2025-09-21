@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 
 export default function Hero() {
   const reduce = useReducedMotion();
+  const [paused, setPaused] = useState(false);
+
   const BASE = import.meta.env.BASE_URL;
   const BG = `${BASE}images/truck-bg.jpg`;
   const TRUCK = `${BASE}images/truck.png`;
   const LOGO = `${BASE}images/logo.jpg`;
 
-  const lane = 'repeating-linear-gradient(90deg, rgba(234,179,8,1) 0 48px, transparent 48px 88px)';
+  const lane =
+    'repeating-linear-gradient(90deg, rgba(234,179,8,1) 0 48px, transparent 48px 88px)';
 
   return (
     <section className="relative overflow-hidden">
@@ -21,7 +24,15 @@ export default function Hero() {
 
       {/* Road: mobile tuned, desktop unchanged with sm: */}
       <div className="relative bg-neutral-900 h-[16vh] sm:h-[16.8vh]">
-        {/* White card: lower on mobile, original on desktop via sm: */}
+        {/* Pause button */}
+        <button
+          onClick={() => setPaused((p) => !p)}
+          className="absolute top-3 right-3 z-40 bg-white/80 hover:bg-white text-black font-medium px-3 py-1 rounded-md border border-black/20 shadow"
+        >
+          {paused ? 'Resume' : 'Pause'}
+        </button>
+
+        {/* White card */}
         <div className="absolute left-1/2 -translate-x-1/2 -translate-y-[14rem] sm:-translate-y-[21rem] z-30 w-full px-4">
           <div className="mx-auto w-full max-w-4xl rounded-2xl bg-white/85 backdrop-blur-md shadow-2xl border border-white/60 ring-1 ring-black/5 p-5 sm:p-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 sm:gap-8">
             {/* Text */}
@@ -63,17 +74,29 @@ export default function Hero() {
             backgroundRepeat: 'repeat',
             backgroundSize: '136px 100%',
           }}
-          animate={reduce ? {} : { backgroundPositionX: ['0px', '-136px'] }}
-          transition={reduce ? {} : { duration: 0.8, ease: 'linear', repeat: Infinity }}
+          animate={
+            reduce || paused
+              ? {}
+              : { backgroundPositionX: ['0px', '-136px'] }
+          }
+          transition={
+            reduce || paused
+              ? {}
+              : { duration: 0.8, ease: 'linear', repeat: Infinity }
+          }
         />
 
-        {/* Desktop/tablet looping truck (unchanged logic) */}
+        {/* Desktop/tablet looping truck */}
         <motion.div
           className="absolute bottom-1.5 left-0 right-0 z-20 pointer-events-none hidden sm:block"
           initial={reduce ? { x: 0 } : { x: '-40%' }}
-          animate={reduce ? { x: 0 } : { x: '110%' }}
+          animate={
+            reduce || paused
+              ? { x: 0 }
+              : { x: '110%' }
+          }
           transition={
-            reduce
+            reduce || paused
               ? {}
               : { duration: 7.5, ease: 'linear', repeat: Infinity, repeatType: 'loop' }
           }
@@ -90,7 +113,7 @@ export default function Hero() {
           </div>
         </motion.div>
 
-        {/* Mobile static truck sized to road */}
+        {/* Mobile static truck */}
         <div className="absolute left-0 right-0 bottom-[56px] z-20 pointer-events-none block sm:hidden">
           <div className="relative w-[38vw] max-w-[220px] mx-auto">
             <img

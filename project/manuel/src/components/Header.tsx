@@ -47,9 +47,6 @@ const Header = () => {
           <button onClick={() => go('menu-page')} className={`font-semibold ${textColor} ${hoverColor}`}>
             Menu
           </button>
-          <button onClick={() => go('about')} className={`font-semibold ${textColor} ${hoverColor}`}>
-            About
-          </button>
           <button onClick={() => go('findus')} className={`font-semibold ${textColor} ${hoverColor}`}>
             Find Us
           </button>
@@ -81,9 +78,6 @@ const Header = () => {
           <div className="grid gap-3">
             <button onClick={() => go('menu-page')} className="text-left font-semibold text-black py-3">
               Menu
-            </button>
-            <button onClick={() => go('about')} className="text-left font-semibold text-black py-3">
-              About
             </button>
             <button onClick={() => go('findus')} className="text-left font-semibold text-black py-3">
               Find Us
