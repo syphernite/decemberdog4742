@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useRef, useState, useEffect, UIEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star } from 'lucide-react';
+import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
 
 type Category = 'fried-rice' | 'burgers' | 'chicken' | 'sides' | 'drinks';
 
@@ -53,14 +53,40 @@ const ICON: Record<Category, string> = {
 
 const getByCategory = (c: Category) => MENU.filter((m) => m.category === c);
 
-const Menu = () => {
+export default function Menu() {
   const [active, setActive] = useState<Category>('fried-rice');
   const [expanded, setExpanded] = useState<Record<Category, boolean>>({});
-
   const itemsAll = useMemo(() => getByCategory(active), [active]);
-  const isExpanded = !!expanded[active];
+
+  // Desktop grid shows up to VISIBLE, then "Show more"
   const VISIBLE = 6;
-  const items = isExpanded || itemsAll.length <= VISIBLE ? itemsAll : itemsAll.slice(0, VISIBLE);
+  const isExpanded = !!expanded[active];
+  const gridItems = isExpanded || itemsAll.length <= VISIBLE ? itemsAll : itemsAll.slice(0, VISIBLE);
+
+  // Mobile slider refs/state
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const [slideIdx, setSlideIdx] = useState(0);
+
+  const scrollTo = (dir: -1 | 1) => {
+    const el = trackRef.current;
+    if (!el) return;
+    const step = Math.round(el.clientWidth * 0.88); // ~one card
+    el.scrollBy({ left: dir * step, behavior: 'smooth' });
+  };
+
+  const onScroll = (e: UIEvent<HTMLDivElement>) => {
+    const el = e.currentTarget;
+    const step = Math.max(1, Math.round(el.clientWidth * 0.88));
+    const idx = Math.round(el.scrollLeft / step);
+    setSlideIdx(Math.min(Math.max(idx, 0), itemsAll.length - 1));
+  };
+
+  useEffect(() => {
+    // reset slider index when category changes
+    setSlideIdx(0);
+    const el = trackRef.current;
+    if (el) el.scrollTo({ left: 0, behavior: 'instant' as ScrollBehavior });
+  }, [active]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -106,70 +132,156 @@ const Menu = () => {
             </div>
           </div>
 
-          {/* Items */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={active + String(isExpanded)}
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+          {/* ===== Mobile SLIDER (sm:hidden) ===== */}
+          <div className="sm:hidden relative">
+            {/* Track */}
+            <div
+              ref={trackRef}
+              onScroll={onScroll}
+              className="
+                flex gap-3 overflow-x-auto snap-x snap-mandatory px-1
+                [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden
+              "
             >
-              {items.map((item) => (
-                <motion.div
+              {itemsAll.map((item) => (
+                <div
                   key={item.id}
-                  variants={itemVariants}
-                  whileHover={{ y: -4, rotateY: 2, scale: 1.02, transition: { duration: 0.2 } }}
-                  className="bg-white rounded-xl shadow-md sm:shadow-lg border border-gray-200 overflow-hidden hover:shadow-2xl hover:border-red-primary/30 transition-all duration-300 group"
+                  className="snap-start shrink-0 w-[88vw] max-w-[520px]"
+                  data-card
                 >
-                  {/* Visual header */}
-                  <div className="h-36 sm:h-44 bg-gradient-to-br from-red-primary/5 to-red-primary/10 relative overflow-hidden">
-                    {item.featured && (
-                      <div className="absolute top-3 right-3 sm:top-4 sm:right-4 bg-red-primary text-white px-2.5 py-1 rounded-full text-xs sm:text-sm font-bold flex items-center gap-1">
-                        <Star size={14} fill="currentColor" />
-                        <span>POPULAR</span>
-                      </div>
-                    )}
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-red-primary/10 rounded-full flex items-center justify-center">
-                        <span className="text-2xl sm:text-3xl">{ICON[item.category]}</span>
+                  <motion.div
+                    whileHover={{ y: -2 }}
+                    className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden"
+                  >
+                    {/* Visual header */}
+                    <div className="h-40 bg-gradient-to-br from-red-primary/5 to-red-primary/10 relative overflow-hidden">
+                      {item.featured && (
+                        <div className="absolute top-3 right-3 bg-red-primary text-white px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+                          <Star size={14} fill="currentColor" />
+                          <span>POPULAR</span>
+                        </div>
+                      )}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-20 h-20 bg-red-primary/10 rounded-full flex items-center justify-center">
+                          <span className="text-3xl">{ICON[item.category]}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-
-                  {/* Copy */}
-                  <div className="p-5 sm:p-6">
-                    <div className="flex justify-between items-start mb-2.5 sm:mb-3">
-                      <h3 className="font-body font-bold text-base sm:text-lg text-black-deep group-hover:text-red-primary transition-colors leading-tight">
-                        {item.name}
-                      </h3>
-                      {item.price ? (
-                        <span className="font-display text-lg sm:text-xl font-normal text-red-primary ml-3 sm:ml-4 flex-shrink-0">
-                          {item.price}
-                        </span>
-                      ) : null}
+                    {/* Copy */}
+                    <div className="p-5">
+                      <div className="flex justify-between items-start mb-2.5">
+                        <h3 className="font-body font-bold text-lg text-black-deep">{item.name}</h3>
+                        {item.price ? (
+                          <span className="font-display text-xl font-normal text-red-primary ml-3 flex-shrink-0">
+                            {item.price}
+                          </span>
+                        ) : null}
+                      </div>
+                      <p className="text-gray-600 font-body text-sm leading-relaxed">
+                        {item.description}
+                      </p>
                     </div>
-                    <p className="text-gray-600 font-body text-sm leading-relaxed">
-                      {item.description}
-                    </p>
-                  </div>
-                </motion.div>
+                  </motion.div>
+                </div>
               ))}
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Show more / fewer only when needed */}
-          {itemsAll.length > VISIBLE && (
-            <div className="mt-6 text-center">
-              <button
-                onClick={() => setExpanded((s) => ({ ...s, [active]: !s[active] }))}
-                className="mx-auto inline-flex items-center justify-center rounded-lg border border-black/10 bg-white px-4 py-2 text-sm font-semibold shadow hover:bg-neutral-50"
-                aria-expanded={isExpanded}
-              >
-                {isExpanded ? 'Show fewer items' : 'Show more items'}
-              </button>
             </div>
-          )}
+
+            {/* Arrows */}
+            {itemsAll.length > 1 && (
+              <>
+                <button
+                  onClick={() => scrollTo(-1)}
+                  aria-label="Previous item"
+                  className="absolute left-1 top-1/2 -translate-y-1/2 inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white/95 shadow"
+                >
+                  <ChevronLeft size={18} />
+                </button>
+                <button
+                  onClick={() => scrollTo(1)}
+                  aria-label="Next item"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white/95 shadow"
+                >
+                  <ChevronRight size={18} />
+                </button>
+              </>
+            )}
+
+            {/* Dots */}
+            {itemsAll.length > 1 && (
+              <div className="mt-3 flex items-center justify-center gap-1.5">
+                {itemsAll.map((_, i) => (
+                  <span
+                    key={i}
+                    className={`h-1.5 rounded-full transition-all ${i === slideIdx ? 'w-5 bg-red-primary' : 'w-2 bg-black/20'}`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* ===== Desktop GRID (hidden on mobile) ===== */}
+          <div className="hidden sm:block">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={active + String(isExpanded)}
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+              >
+                {gridItems.map((item) => (
+                  <motion.div
+                    key={item.id}
+                    variants={itemVariants}
+                    whileHover={{ y: -4, rotateY: 2, scale: 1.02, transition: { duration: 0.2 } }}
+                    className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-2xl hover:border-red-primary/30 transition-all duration-300 group"
+                  >
+                    <div className="h-44 bg-gradient-to-br from-red-primary/5 to-red-primary/10 relative overflow-hidden">
+                      {item.featured && (
+                        <div className="absolute top-4 right-4 bg-red-primary text-white px-2.5 py-1 rounded-full text-sm font-bold flex items-center gap-1">
+                          <Star size={14} fill="currentColor" />
+                          <span>POPULAR</span>
+                        </div>
+                      )}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-20 h-20 bg-red-primary/10 rounded-full flex items-center justify-center">
+                          <span className="text-3xl">{ICON[item.category]}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-6">
+                      <div className="flex justify-between items-start mb-3">
+                        <h3 className="font-body font-bold text-lg text-black-deep group-hover:text-red-primary transition-colors leading-tight">
+                          {item.name}
+                        </h3>
+                        {item.price ? (
+                          <span className="font-display text-xl font-normal text-red-primary ml-4 flex-shrink-0">
+                            {item.price}
+                          </span>
+                        ) : null}
+                      </div>
+                      <p className="text-gray-600 font-body text-sm leading-relaxed">
+                        {item.description}
+                      </p>
+                    </div>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Show more / fewer (desktop only) */}
+            {itemsAll.length > VISIBLE && (
+              <div className="mt-8 text-center">
+                <button
+                  onClick={() => setExpanded((s) => ({ ...s, [active]: !s[active] }))}
+                  className="mx-auto inline-flex items-center justify-center rounded-lg border border-black/10 bg-white px-4 py-2 text-sm font-semibold shadow hover:bg-neutral-50"
+                  aria-expanded={isExpanded}
+                >
+                  {isExpanded ? 'Show fewer items' : 'Show more items'}
+                </button>
+              </div>
+            )}
+          </div>
 
           {/* CTA */}
           <motion.div
@@ -196,6 +308,4 @@ const Menu = () => {
       </div>
     </section>
   );
-};
-
-export default Menu;
+}

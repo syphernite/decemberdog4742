@@ -9,11 +9,11 @@ const Footer = () => {
   // Weekly hours moved here
   const HOURS: { day: string; time: string }[] = [
     { day: 'Mon', time: 'Closed' },
-    { day: 'Tue', time: '11:30 AM – 2:30 PM' },
-    { day: 'Wed', time: '11:00 AM – 3:00 PM' },
-    { day: 'Thu', time: '11:30 AM – 2:30 PM' },
-    { day: 'Fri', time: '11:00 AM – 4:00 PM' },
-    { day: 'Sat', time: '10:00 AM – 3:00 PM' },
+    { day: 'Tue', time: '11:30 AM – 8:00 PM' },
+    { day: 'Wed', time: '11:30 AM – 8:00 PM' },
+    { day: 'Thu', time: '11:30 AM – 8:00 PM' },
+    { day: 'Fri', time: '11:30 AM – 8:00 PM' },
+    { day: 'Sat', time: '11:30 AM – 8:00 PM' },
     { day: 'Sun', time: 'Closed' },
   ];
 

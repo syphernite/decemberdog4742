@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://built4you.org/manuel/sitemap.xml
