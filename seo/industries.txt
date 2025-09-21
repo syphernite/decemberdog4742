@@ -1,6 +1,6 @@
 wakefield | gym
 thairiverside | restaraunt
-testsite | test
+testsite | restaraunt
 tattooshop | art
 studio | test
 seo | test
