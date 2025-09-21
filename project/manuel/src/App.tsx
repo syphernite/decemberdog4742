@@ -1,4 +1,3 @@
-// src/App.tsx
 import React, { useEffect } from 'react';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import Header from './components/Header';
@@ -7,6 +6,7 @@ import Menu from './components/Menu';
 import About from './components/About';
 import FindUs from './components/FindUs';
 import Footer from './components/Footer';
+import UniversalDemoCTA from './components/UniversalDemoCTA';
 
 function App() {
   const { scrollYProgress } = useScroll();
@@ -53,6 +53,9 @@ function App() {
         <FindUs />
       </main>
       <Footer />
+
+      {/* Floating universal CTA modal, visible on all sections */}
+      <UniversalDemoCTA />
     </div>
   );
 }
