@@ -5,29 +5,23 @@
  *      /apple-touch-icon.png (180x180)
  *      /favicon-32x32.png, /favicon-16x16.png
  *      /android-chrome-192x192.png, /android-chrome-512x512.png
- *      /favicon.ico  (ICO built from 16+32 PNGs)
- *      /safari-pinned-tab.svg  (uses your SVG logo if available, else a fallback)
+ *      /favicon.ico  (optional; built if ico library available)
+ *      /safari-pinned-tab.svg
  *
- * Uses Puppeteer; embeds your logo if found at:
- *   /seo/logo.svg  | /seo/logo.png  | /logo.svg  | /logo.png
- * Gradient is Tailwind emerald-600 (#059669) → blue-600 (#2563eb).
+ * Gradient: Tailwind emerald-600 (#059669) → blue-600 (#2563eb)
+ * Logo: auto-detected at seo/logo.svg|png or root logo.svg|png
  */
 
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import toIco from "to-ico";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const PUBLISH = path.resolve(__dirname, ".."); // repo root during workflow
+const PUBLISH = path.resolve(__dirname, "..");
 const OG_DIR = path.join(PUBLISH, "og");
-
-// ignore these when discovering subsites
 const IGNORE = new Set(["project", ".git", ".github", "node_modules", "seo", "og", "icons"]);
-
-// ---- helpers ---------------------------------------------------------------
 
 function readLines(p) {
   if (!fs.existsSync(p)) return [];
@@ -60,8 +54,7 @@ function findLogo() {
 function fileToDataURL(p) {
   const buf = fs.readFileSync(p);
   const ext = p.toLowerCase().endsWith(".svg") ? "image/svg+xml" : "image/png";
-  const b64 = buf.toString("base64");
-  return `data:${ext};base64,${b64}`;
+  return `data:${ext};base64,${buf.toString("base64")}`;
 }
 
 function discoverSlugs() {
@@ -72,7 +65,6 @@ function discoverSlugs() {
 }
 
 function ogHTML({ title, subtitle, logoDataUrl }) {
-  // emerald-600 → blue-600 gradient; clean card; logo badge
   const logo = logoDataUrl
     ? `<div class="logo"><img src="${logoDataUrl}" alt="logo" /></div>`
     : `<div class="logo-fallback">B4Y</div>`;
@@ -88,24 +80,18 @@ function ogHTML({ title, subtitle, logoDataUrl }) {
       color: #ffffff;
       font-family: ui-sans-serif, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial;
     }
-    .wrap {
-      position: relative; width: 100%; height: 100%;
-      display: flex; justify-content: center; align-items: center;
-    }
+    .wrap { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
     .card {
       width: 1000px; border-radius: 28px; padding: 56px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.25);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.25), inset 0 0 40px rgba(255,255,255,0.08);
-      backdrop-filter: blur(8px);
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.25);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25), inset 0 0 40px rgba(255,255,255,0.08); backdrop-filter: blur(8px);
     }
     h1 { margin: 0 0 12px 0; font-size: 72px; line-height: 1.05; }
     p  { margin: 0; font-size: 36px; opacity: .92; }
     .logo, .logo-fallback {
       position: absolute; top: 28px; left: 32px;
       width: 120px; height: 120px; border-radius: 24px;
-      background: rgba(255,255,255,0.12);
-      border: 1px solid rgba(255,255,255,0.35);
+      background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.35);
       display: flex; align-items: center; justify-content: center;
       box-shadow: 0 12px 28px rgba(0,0,0,0.25), inset 0 0 24px rgba(255,255,255,0.12);
       overflow: hidden;
@@ -127,10 +113,7 @@ function ogHTML({ title, subtitle, logoDataUrl }) {
 }
 
 function iconHTML({ logoDataUrl, size }) {
-  // centered logo on same gradient
-  const content = logoDataUrl
-    ? `<img src="${logoDataUrl}" alt="logo" />`
-    : `<div class="txt">B4Y</div>`;
+  const content = logoDataUrl ? `<img src="${logoDataUrl}" alt="logo" />` : `<div class="txt">B4Y</div>`;
   return `<!doctype html>
 <html>
 <head>
@@ -143,8 +126,7 @@ function iconHTML({ logoDataUrl, size }) {
     .badge {
       width:${Math.floor(size*0.72)}px; height:${Math.floor(size*0.72)}px;
       border-radius:${Math.floor(size*0.14)}px;
-      background: rgba(255,255,255,.10);
-      border: 1px solid rgba(255,255,255,.35);
+      background: rgba(255,255,255,.10); border: 1px solid rgba(255,255,255,.35);
       display:flex; align-items:center; justify-content:center;
       box-shadow: 0 18px 40px rgba(0,0,0,.25), inset 0 0 30px rgba(255,255,255,.12);
       overflow:hidden;
@@ -161,24 +143,39 @@ function iconHTML({ logoDataUrl, size }) {
 
 async function shot({ html, outPath, width, height }) {
   const puppeteer = await import("puppeteer");
-  const browser = await puppeteer.launch({
-    headless: "new",
-    args: ["--no-sandbox", "--disable-setuid-sandbox"]
-  });
+  const browser = await puppeteer.launch({ headless: "new", args: ["--no-sandbox","--disable-setuid-sandbox"] });
   const page = await browser.newPage();
   await page.setViewport({ width, height, deviceScaleFactor: 1 });
   await page.setContent(html, { waitUntil: "networkidle0" });
   const buf = await page.screenshot({ path: outPath, type: "png" });
   await browser.close();
-  return buf; // return buffer for ICO generation when needed
+  return buf;
 }
 
-// ---- main -----------------------------------------------------------------
+async function makeIcoFromPngBuffers(buffers, outFile) {
+  // Try to-ico first (v2), then png-to-ico v2; skip if neither is available
+  try {
+    const mod = await import("to-ico");
+    const toIco = mod.default || mod;
+    const ico = await toIco(buffers);
+    fs.writeFileSync(outFile, ico);
+    return true;
+  } catch {}
+  try {
+    const mod = await import("png-to-ico");
+    const pngToIco = mod.default || mod;
+    const ico = await pngToIco(buffers);
+    fs.writeFileSync(outFile, ico);
+    return true;
+  } catch {}
+  console.warn("Skipping favicon.ico (ico library not available)");
+  return false;
+}
 
 async function main() {
   fs.mkdirSync(OG_DIR, { recursive: true });
 
-  // optional SEO params
+  // Optional SEO params
   const SEO_DIR = path.join(PUBLISH, "seo");
   const INDUSTRY = readMap(path.join(SEO_DIR, "industries.txt"));
   const CITY = readMap(path.join(SEO_DIR, "locations.txt"));
@@ -188,11 +185,7 @@ async function main() {
 
   // Root OG
   await shot({
-    html: ogHTML({
-      title: "Built4You",
-      subtitle: "Custom websites for small businesses",
-      logoDataUrl
-    }),
+    html: ogHTML({ title: "Built4You", subtitle: "Custom websites for small businesses", logoDataUrl }),
     outPath: path.join(OG_DIR, "root.png"),
     width: 1200, height: 630
   });
@@ -212,20 +205,17 @@ async function main() {
   }
 
   // Icons at site root
-  // Android/Apple sizes
   await shot({ html: iconHTML({ logoDataUrl, size: 512 }), outPath: path.join(PUBLISH, "android-chrome-512x512.png"), width: 512, height: 512 });
   await shot({ html: iconHTML({ logoDataUrl, size: 192 }), outPath: path.join(PUBLISH, "android-chrome-192x192.png"), width: 192, height: 192 });
   await shot({ html: iconHTML({ logoDataUrl, size: 180 }), outPath: path.join(PUBLISH, "apple-touch-icon.png"), width: 180, height: 180 });
   const fav32 = await shot({ html: iconHTML({ logoDataUrl, size: 32 }), outPath: path.join(PUBLISH, "favicon-32x32.png"), width: 32, height: 32 });
   const fav16 = await shot({ html: iconHTML({ logoDataUrl, size: 16 }), outPath: path.join(PUBLISH, "favicon-16x16.png"), width: 16, height: 16 });
 
-  // favicon.ico from 16 & 32 buffers
-  const ico = await toIco([fav16, fav32]);
-  fs.writeFileSync(path.join(PUBLISH, "favicon.ico"), ico);
+  // Optional favicon.ico
+  await makeIcoFromPngBuffers([fav16, fav32], path.join(PUBLISH, "favicon.ico"));
 
-  // Pinned tab SVG: prefer your SVG logo; else a simple mono mark
+  // Pinned tab SVG: prefer your SVG logo; else a mono fallback
   if (logoPath && logoPath.toLowerCase().endsWith(".svg")) {
-    // Copy your SVG as the pinned tab (Safari uses currentColor)
     fs.copyFileSync(logoPath, path.join(PUBLISH, "safari-pinned-tab.svg"));
   } else {
     const pinned = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="currentColor"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#fff" font-weight="700">B4Y</text></svg>`;

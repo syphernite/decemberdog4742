@@ -61,9 +61,9 @@ jobs:
           cd ../../
           cp -r project/landingpage/dist/* .
 
-      # Install lightweight dep for rendering OG images and icons
+      # Install deps to render OG images and build .ico (use widely-available majors)
       - name: Install OG generator deps
-        run: npm i puppeteer@22 to-ico@3 --no-save
+        run: npm i puppeteer@22 to-ico@2 png-to-ico@2 --no-save
 
       # Generate 1200x630 OG images + icon pack (apple-touch-icon, favicons, android, pinned-tab)
       - name: Generate OG images and icons
