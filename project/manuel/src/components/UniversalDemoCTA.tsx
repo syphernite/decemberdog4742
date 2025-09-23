@@ -124,7 +124,7 @@ export default function UniversalDemoCTA() {
                       value={businessName}
                       onChange={(e) => setBusinessName(e.target.value)}
                       className="w-full rounded-lg px-4 py-3 bg-white text-black placeholder-black/40 border-0 focus:outline-none focus:ring-2 focus:ring-white/30"
-                      placeholder="e.g., Timeout Tavern"
+                      placeholder=""
                     />
                   </div>
 
