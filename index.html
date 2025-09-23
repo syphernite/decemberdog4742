@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Built4You — Custom websites for small businesses</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- IMPORTANT: make sure this is NOT noindex -->
+    <meta name="robots" content="index,follow" />
+
+    <!-- Canonical points to your real homepage path -->
+    <link rel="canonical" href="https://built4you.org/home" />
+
+    <!-- Immediate redirect for users and bots -->
+    <meta http-equiv="refresh" content="0; url=/home" />
+
+    <!-- Basic description to avoid a thin root -->
+    <meta name="description" content="Built4You builds fast, mobile-first custom websites for small businesses. $0 demos. Subscription or one-time pricing." />
+  </head>
+  <body>
+    <p>If you are not redirected, <a href="/home">click here</a>.</p>
+    <script>
+      // JS fallback (some bots and browsers ignore meta refresh timing)
+      (function () {
+        try { window.location.replace("/home"); } catch (e) { window.location.href = "/home"; }
+      }());
+    </script>
+  </body>
+</html>

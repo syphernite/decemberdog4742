@@ -1,4 +1,4 @@
-name: 🚀 Build & Deploy All Clients
+name: "🚀 Build & Deploy All Clients"
 
 on:
   push:
@@ -61,9 +61,32 @@ jobs:
           cd ../../
           cp -r project/landingpage/dist/* .
 
-      # NEW: inject SEO tags into built HTML and regenerate sitemap/robots at publish root
-      - name: Finalize SEO (inject tags + sitemap)
+      # Install a single lightweight dep to render OG images
+      - name: Install OG generator deps
+        run: npm i puppeteer@22 --no-save
+
+      # Generate 1200x630 PNG OG images for root + every subsite
+      - name: Generate OG images
+        run: node .scripts/gen-og-images.mjs
+
+      # Finalize SEO across root and all subsites (uses seo/*.txt and *.json)
+      - name: Finalize SEO (inject tags + sitemaps)
         run: node .scripts/finalize-seo.mjs
+
+      # Guard against accidental noindex anywhere in published HTML
+      - name: Noindex guard
+        shell: bash
+        run: |
+          set -e
+          echo "Scanning for noindex in built HTML..."
+          if grep -RIl --include="*.html" "name=[\"']robots[\"'][^>]*noindex" . >/dev/null 2>&1; then
+            echo "Found noindex. Replacing with index,follow."
+            grep -RIl --include="*.html" "name=[\"']robots[\"'][^>]*noindex" . | while read -r f; do
+              sed -i 's/\(<meta[^>]*name=["'\'']robots["'\''][^>]*content=["'\'']\)[^"'\'']*noindex[^"'\'']*\(["'\''][^>]*>\)/\1index,follow\2/g' "$f"
+            done
+          else
+            echo "No noindex found in built HTML."
+          fi
 
       # Dynamic SPA fallback: send to demo folder only if that folder exists.
       # Otherwise treat as a root SPA route (e.g., /careers).
@@ -73,7 +96,7 @@ jobs:
           for d in */ ; do
             d="${d%/}"
             case "$d" in
-              project|.git|.github|node_modules) continue ;;
+              project|.git|.github|node_modules|seo|og) continue ;;
             esac
             if [ -f "$d/index.html" ]; then
               SLUGS+=("$d")
@@ -82,14 +105,14 @@ jobs:
           printf -v SLUGS_JS "'%s'," "${SLUGS[@]}"
           SLUGS_JS="[${SLUGS_JS%,}]"
 
-          cat > 404.html << EOF
+          cat > 404.html << 'EOF'
           <!DOCTYPE html>
           <html>
           <head><meta charset="utf-8"><title>Redirecting…</title></head>
           <body>
             <script>
               (function () {
-                const DEMO_SLUGS = ${SLUGS_JS};
+                const DEMO_SLUGS = SLUGS_PLACEHOLDER;
 
                 const raw = location.pathname.replace(/^\/+/, '');
                 const parts = raw.split('/').filter(Boolean);
@@ -123,6 +146,8 @@ jobs:
           </body>
           </html>
           EOF
+
+          sed -i "s|SLUGS_PLACEHOLDER|${SLUGS_JS//\\/\\\\}|g" 404.html
 
       - name: Show publish directory
         run: |
