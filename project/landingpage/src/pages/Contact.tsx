@@ -11,6 +11,11 @@
  * - Persists user-chosen plan to localStorage after they change it; does NOT preload from localStorage on normal visits.
  * - # of Pages is required (min 1). Step order: Business/Pages first, Identity second, Message third.
  *
+ * New:
+ * - When the user clicks "Lost? View Pricing Details", we save a short-lived cookie "b4y_contact_draft"
+ *   containing { formData, plan, ts }. On return within 30 minutes, we restore those values and then clear the cookie.
+ *   This avoids interfering with normal fresh visits.
+ *
  * Updated exact slug-to-label resolution to match new pricing:
  *  monthly:
  *    low-orbit      -> "Low Orbit"
@@ -27,7 +32,7 @@
  */
 
 import React, { useEffect, useMemo, useState, ReactNode } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 
 /* ================= Plans ================= */
 
@@ -79,12 +84,12 @@ const SLUG_TO_LABEL: Record<string, Exclude<Plan, "">> = {
   custom: "Custom",
 };
 
-// Label -> slug (for outbound payloads)
+// Label -> slug
 const LABEL_TO_SLUG = Object.fromEntries(
   Object.entries(SLUG_TO_LABEL).map(([slug, label]) => [label, slug])
 ) as Record<Exclude<Plan, "">, string>;
 
-// Lock behavior: can be forced here, or enabled per-visit with ?lock=1
+// Lock behavior
 const LOCK_PLAN_FROM_QUERY = false;
 
 /* ================= UI tokens ================= */
@@ -98,7 +103,40 @@ const INPUT =
    focus:shadow-[0_0_0_3px_rgba(34,211,238,.15),0_8px_30px_rgba(16,185,129,.18)] \
    outline-none transition";
 
-/* ================= Embedded Stepper (accepts initialIndex) ================= */
+/* ================= Cookie helpers ================= */
+
+const DRAFT_COOKIE = "b4y_contact_draft";
+const DRAFT_TTL_MS = 30 * 60 * 1000; // 30 minutes
+
+function setDraftCookie(payload: any) {
+  try {
+    const encoded = encodeURIComponent(btoa(JSON.stringify(payload)));
+    document.cookie = `${DRAFT_COOKIE}=${encoded}; Max-Age=${Math.floor(
+      DRAFT_TTL_MS / 1000
+    )}; Path=/; SameSite=Lax`;
+  } catch {}
+}
+
+function getDraftCookie(): any | null {
+  try {
+    const m = document.cookie.match(
+      new RegExp("(^| )" + DRAFT_COOKIE + "=([^;]+)")
+    );
+    if (!m) return null;
+    const decoded = JSON.parse(atob(decodeURIComponent(m[2])));
+    return decoded;
+  } catch {
+    return null;
+  }
+}
+
+function clearDraftCookie() {
+  try {
+    document.cookie = `${DRAFT_COOKIE}=; Max-Age=0; Path=/; SameSite=Lax`;
+  } catch {}
+}
+
+/* ================= Embedded Stepper ================= */
 type StepperProps = {
   children: ReactNode[];
   onFinish: () => void;
@@ -193,7 +231,7 @@ const initialForm = {
 const Contact: React.FC = () => {
   const [search] = useSearchParams();
 
-  // Determine if URL carries an EXACT known slug (chip shows only in this case)
+  // Determine if URL carries an exact known slug
   const { exactLabelFromQuery, hasExactPlanInQuery } = useMemo(() => {
     const rawPlan = (
       search.get("plan") ||
@@ -217,26 +255,42 @@ const Contact: React.FC = () => {
   const initialIndex = stepFromQuery - 1;
 
   const [formData, setFormData] = useState(initialForm);
-  const [plan, setPlan] = useState<Plan>(""); // default to placeholder unless exact slug present
-  const [showChosenChip, setShowChosenChip] = useState(false); // controls the "Chosen plan" chip
+  const [plan, setPlan] = useState<Plan>("");
+  const [showChosenChip, setShowChosenChip] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
-  // On mount: preselect ONLY if URL has an exact slug; else keep placeholder.
+  // On mount: try restoring from cookie first; otherwise use the usual URL logic.
   useEffect(() => {
-    if (hasExactPlanInQuery && exactLabelFromQuery && ALL_PLANS.includes(exactLabelFromQuery as Exclude<Plan, "">)) {
-      setPlan(exactLabelFromQuery);
-      setShowChosenChip(true);
-      try {
-        localStorage.setItem("contact.plan", exactLabelFromQuery);
-      } catch {}
+    const draft = getDraftCookie();
+    const now = Date.now();
+    const fresh = draft && typeof draft?.ts === "number" && now - draft.ts < DRAFT_TTL_MS;
+
+    if (fresh) {
+      // Restore from draft cookie
+      if (draft.formData) setFormData((prev) => ({ ...prev, ...draft.formData }));
+      if (draft.plan && ALL_PLANS.includes(draft.plan)) {
+        setPlan(draft.plan as Plan);
+        setShowChosenChip(false);
+      }
+      // Clear cookie after restoring so normal visits remain unaffected
+      clearDraftCookie();
     } else {
-      setPlan("");
-      setShowChosenChip(false);
+      // Fall back to URL based preselect behavior
+      if (hasExactPlanInQuery && exactLabelFromQuery && ALL_PLANS.includes(exactLabelFromQuery as Exclude<Plan, "">)) {
+        setPlan(exactLabelFromQuery);
+        setShowChosenChip(true);
+        try {
+          localStorage.setItem("contact.plan", exactLabelFromQuery);
+        } catch {}
+      } else {
+        setPlan("");
+        setShowChosenChip(false);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // once
+  }, []);
 
   // Persist whenever user selects a valid plan
   useEffect(() => {
@@ -293,6 +347,15 @@ const Contact: React.FC = () => {
     }
   };
 
+  // Save draft before navigating away to pricing
+  const handleSaveDraftAndNavigate = () => {
+    setDraftCookie({
+      formData,
+      plan,
+      ts: Date.now(),
+    });
+  };
+
   if (submitted) {
     return (
       <section className="relative z-10 py-16 bg-transparent">
@@ -326,7 +389,7 @@ const Contact: React.FC = () => {
           nextLabel="Next"
           backLabel="Previous"
         >
-          {/* Step 1 — Business, Industry, Pages (required), Plan */}
+          {/* Step 1 — Business, Industry, Pages, Plan */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <Field label="Business Name">
               <input
@@ -379,7 +442,6 @@ const Contact: React.FC = () => {
                   value={plan}
                   onChange={(e) => {
                     setPlan(e.target.value as Plan);
-                    // Manual change hides the chip regardless of how we arrived
                     setShowChosenChip(false);
                   }}
                   className={INPUT}
@@ -402,6 +464,18 @@ const Contact: React.FC = () => {
                   </optgroup>
                   <option value="Custom">Custom</option>
                 </select>
+
+                {/* Button to view SolarPricing details, saving a draft first */}
+                <div className="mt-4">
+                  <Link
+                    to="/pricing"
+                    onClick={handleSaveDraftAndNavigate}
+                    className="inline-block px-4 py-2 text-sm font-semibold rounded-lg bg-gradient-to-r from-emerald-500 to-blue-500 text-white hover:opacity-90 transition"
+                  >
+                    Lost? View Pricing Details
+                  </Link>
+                </div>
+
                 {disabledSelect && !!plan && (
                   <p className="mt-2 text-[11px] text-white/60">
                     This selection is locked for this visit. Remove <span className="font-semibold">lock=1</span> from the URL to change it.
@@ -466,7 +540,7 @@ const Contact: React.FC = () => {
         </EmbeddedStepper>
 
         {busy && (
-          <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-zinc-800">
+          <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-zinc-8 00">
             <div className="h-full w-1/2 animate-pulse bg-emerald-500" />
           </div>
         )}
