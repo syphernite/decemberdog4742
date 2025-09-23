@@ -16,6 +16,16 @@ function App() {
     restDelta: 0.001
   });
 
+  // Always start at top on first mount / refresh
+  useEffect(() => {
+    try {
+      if ('scrollRestoration' in window.history) {
+        window.history.scrollRestoration = 'manual';
+      }
+    } catch {}
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, []);
+
   // Scroll to top on reload without a hash
   useEffect(() => {
     if (!window.location.hash) {

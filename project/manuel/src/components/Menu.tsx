@@ -66,27 +66,24 @@ export default function Menu() {
   /** ----------------------- Mobile slider measurements ---------------------- */
   const trackRef = useRef<HTMLDivElement | null>(null);
   const [slideIdx, setSlideIdx] = useState(0);
-  const stepRef = useRef<number>(0); // cardWidth + gap
+  const stepRef = useRef<number>(0);
   const cardWidthRef = useRef<number>(0);
-  const gapRef = useRef<number>(0);
 
   const computeMetrics = useCallback(() => {
     const el = trackRef.current;
     if (!el) return;
     const styles = getComputedStyle(el);
     const gapPx = parseFloat(styles.columnGap || '0') || 0;
-    gapRef.current = gapPx;
 
     const firstCard = el.querySelector<HTMLElement>('[data-card]');
     let cardW = 0;
     if (firstCard) cardW = firstCard.getBoundingClientRect().width;
-    if (!cardW) cardW = el.clientWidth * 0.82; // fallback aligned with our w-[82vw]
-    cardWidthRef.current = cardW;
+    if (!cardW) cardW = el.clientWidth * 0.82;
 
+    cardWidthRef.current = cardW;
     stepRef.current = cardW + gapPx;
   }, []);
 
-  // Scroll to center a given index
   const snapToIndex = useCallback(
     (idx: number, behavior: ScrollBehavior = 'smooth') => {
       const el = trackRef.current;
@@ -99,7 +96,6 @@ export default function Menu() {
       const cardW = cardWidthRef.current || 0;
       const containerW = el.clientWidth;
 
-      // left position to center the card in view
       let target = clamped * step - (containerW - cardW) / 2;
       const maxLeft = el.scrollWidth - containerW;
       if (target < 0) target = 0;
@@ -111,21 +107,17 @@ export default function Menu() {
     [itemsAll.length]
   );
 
-  const scrollToDir = (dir: -1 | 1) => {
-    snapToIndex(slideIdx + dir);
-  };
+  const scrollToDir = (dir: -1 | 1) => snapToIndex(slideIdx + dir);
 
   const onScroll = (e: UIEvent<HTMLDivElement>) => {
     const el = e.currentTarget;
     const step = stepRef.current || Math.max(1, Math.round(el.clientWidth * 0.82));
-    // Reconstruct index from scrollLeft re-centered
     const cardW = cardWidthRef.current || 0;
     const approxIdx = Math.round((el.scrollLeft + (el.clientWidth - cardW) / 2) / step);
     const clamped = Math.max(0, Math.min(approxIdx, itemsAll.length - 1));
     if (clamped !== slideIdx) setSlideIdx(clamped);
   };
 
-  // recompute on mount / resize / category change
   useEffect(() => {
     const handle = () => {
       computeMetrics();
@@ -151,7 +143,6 @@ export default function Menu() {
     snapToIndex(0, 'auto');
   }, [active, computeMetrics, snapToIndex]);
 
-  /** ------------------------------- Animations ------------------------------ */
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: 0.08 } },
@@ -161,7 +152,6 @@ export default function Menu() {
     visible: { y: 0, opacity: 1, transition: { duration: 0.4 } },
   };
 
-  // Red to white shimmer for heading
   const shimmerStyle: React.CSSProperties = {
     backgroundImage: 'linear-gradient(90deg,#ffffff 0%,#ef4444 50%,#ffffff 100%)',
     backgroundSize: '200% 100%',
@@ -185,8 +175,11 @@ export default function Menu() {
       </div>
 
       <div className="container mx-auto px-4 pt-24 md:pt-28 pb-16">
-        {/* Menu surface */}
-        <div className="mx-auto w-full max-w-5xl rounded-2xl bg-[#f9f5f5] shadow-2xl border border-black/5 p-5 sm:p-10">
+        {/* Menu surface (the white card). We give it an ID so the header scroll hits it exactly. */}
+        <div
+          id="menu-card"
+          className="mx-auto w-full max-w-5xl rounded-2xl bg-[#f9f5f5] shadow-2xl border border-black/5 p-5 sm:p-10"
+        >
           <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="mb-5 sm:mb-8">
             <motion.h2
               className="font-display text-4xl sm:text-7xl font-extrabold tracking-tight text-transparent"
@@ -221,7 +214,7 @@ export default function Menu() {
             </div>
           </div>
 
-          {/* ----------------------------- Mobile Slider ----------------------------- */}
+          {/* Mobile Slider */}
           <div className="sm:hidden relative">
             <div
               ref={trackRef}
@@ -229,17 +222,12 @@ export default function Menu() {
               className="flex gap-3 overflow-x-auto snap-x snap-mandatory snap-center px-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
               {itemsAll.map((item) => (
-                <div
-                  key={item.id}
-                  className="snap-center shrink-0 w-[82vw] max-w-[520px] mx-auto"
-                  data-card
-                >
-                  {/* Glass outer */}
+                <div key={item.id} className="snap-center shrink-0 w-[82vw] max-w-[520px] mx-auto" data-card>
+                  {/* Card */}
                   <motion.div
                     whileHover={{ y: -2, scale: 1.01 }}
                     className="rounded-2xl border border-white/30 bg-white/10 backdrop-blur-xl overflow-hidden transition-all duration-300 shadow-[0_8px_28px_rgba(0,0,0,0.18)] ring-1 ring-white/20"
                   >
-                    {/* Top soft pink panel */}
                     <div className="h-40 bg-gradient-to-br from-rose-50/80 via-rose-100/70 to-rose-50/40 relative overflow-hidden">
                       {item.featured && (
                         <div className="absolute top-3 right-3 bg-red-primary text-white px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow">
@@ -254,8 +242,6 @@ export default function Menu() {
                       </div>
                       <div className="absolute bottom-0 left-0 right-0 h-px bg-black/5" />
                     </div>
-
-                    {/* Bottom content */}
                     <div className="p-5 bg-white/90">
                       <div className="flex justify-between items-start mb-2.5">
                         <h3 className="font-body font-bold text-lg text-gray-900">{item.name}</h3>
@@ -303,7 +289,7 @@ export default function Menu() {
             )}
           </div>
 
-          {/* ----------------------------- Desktop Grid ----------------------------- */}
+          {/* Desktop Grid */}
           <div className="hidden sm:block">
             <AnimatePresence mode="wait">
               <motion.div
@@ -339,7 +325,6 @@ export default function Menu() {
                       </div>
                       <div className="absolute bottom-0 left-0 right-0 h-px bg-black/5" />
                     </div>
-
                     <div className="p-6 bg-white/90">
                       <div className="flex justify-between items-start mb-3">
                         <h3 className="font-body font-bold text-lg text-gray-900 group-hover:text-red-700 transition-colors leading-tight">

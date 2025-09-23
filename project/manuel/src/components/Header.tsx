@@ -12,8 +12,29 @@ const Header = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  /**
+   * Scroll so the viewport top touches the white menu card top.
+   * For Menu, we target #menu-card (the white card container), not the outer section.
+   */
   const go = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    let target: HTMLElement | null = document.getElementById(id);
+    if (id === 'menu-page') {
+      target = document.getElementById('menu-card') || target;
+    }
+    if (!target) return;
+
+    const header = document.querySelector('header') as HTMLElement | null;
+    const headerH = header ? header.getBoundingClientRect().height : 0;
+
+    // Offset equals header height only, so the card sits flush under the header.
+    const offset = headerH;
+    const y = target.getBoundingClientRect().top + window.scrollY - offset;
+
+    // Use rAF to avoid layout timing conflicts
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    });
+
     setOpen(false);
   };
 
@@ -25,6 +46,7 @@ const Header = () => {
     : 'bg-white/20 shadow-sm backdrop-saturate-150';
 
   const textColor = 'text-black';
+
   const glassBtn =
     'font-semibold px-4 py-2 rounded-lg bg-white/20 backdrop-blur-md border border-white/40 hover:bg-white/30 transition-colors';
 
@@ -48,10 +70,10 @@ const Header = () => {
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-6">
-          <button onClick={() => go('menu-page')} className={`${glassBtn}`}>
+          <button onClick={() => go('menu-page')} className={glassBtn}>
             Menu
           </button>
-          <button onClick={() => go('findus')} className={`${glassBtn}`}>
+          <button onClick={() => go('findus')} className={glassBtn}>
             Find Us
           </button>
           <a href="tel:580-771-6373" className={callBtn}>
