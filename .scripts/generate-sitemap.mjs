@@ -14,8 +14,8 @@ for (const f of folders) {
   try {
     const cfg = JSON.parse(fs.readFileSync(path.join(root, f, "seo.config.json"), "utf8"));
     const loc = cfg.siteUrl.endsWith("/") ? cfg.siteUrl : cfg.siteUrl + "/";
-    const priority = cfg.status === "client" ? "0.9" : "0.5";
-    const changefreq = cfg.status === "client" ? "weekly" : "monthly";
+    const priority = cfg.noindex ? "0.3" : (cfg.status === "client" ? "0.9" : "0.7");
+    const changefreq = cfg.noindex ? "yearly" : (cfg.status === "client" ? "weekly" : "monthly");
     entries.push({ loc, priority, changefreq });
   } catch {}
 }

@@ -17,6 +17,7 @@ type SEO = {
     postalCode?: string;
     country?: string;
   };
+  noindex?: boolean; // <-- opt-in noindex (defaults to false)
 };
 
 function esc(s: string) {
@@ -35,8 +36,8 @@ export default function seoPlugin() {
       const raw = fs.readFileSync(cfgPath, "utf8");
       const seo: SEO = JSON.parse(raw);
 
-      const noindex = seo.status === "demo";
-      const robots = noindex ? "noindex, nofollow" : "index, follow";
+      // IMPORTANT: default to index unless explicitly opted out
+      const robots = seo.noindex ? "noindex, nofollow" : "index, follow";
       const canonical = seo.siteUrl.replace(/index\.html?$/i, "");
 
       const tags = [
@@ -56,7 +57,7 @@ export default function seoPlugin() {
         seo.ogImage ? `<meta name="twitter:image" content="${esc(new URL(seo.ogImage, canonical).toString())}" />` : ""
       ].filter(Boolean).join("");
 
-      const localBusiness = !noindex && seo.address ? `
+      const localBusiness = !seo.noindex && seo.address ? `
 <script type="application/ld+json">
 ${JSON.stringify({
   "@context": "https://schema.org",

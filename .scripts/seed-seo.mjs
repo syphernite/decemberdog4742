@@ -25,6 +25,7 @@ type SEO = {
     postalCode?: string;
     country?: string;
   };
+  noindex?: boolean; // <-- opt-in noindex (defaults to false)
 };
 
 function esc(s: string) {
@@ -43,8 +44,8 @@ export default function seoPlugin() {
       const raw = fs.readFileSync(cfgPath, "utf8");
       const seo: SEO = JSON.parse(raw);
 
-      const noindex = seo.status === "demo";
-      const robots = noindex ? "noindex, nofollow" : "index, follow";
+      // IMPORTANT: default to index unless explicitly opted out
+      const robots = seo.noindex ? "noindex, nofollow" : "index, follow";
       const canonical = seo.siteUrl.replace(/index\\.html?$/i, "");
 
       const tags = [
@@ -64,7 +65,7 @@ export default function seoPlugin() {
         seo.ogImage ? \`<meta name="twitter:image" content="\${esc(new URL(seo.ogImage, canonical).toString())}" />\` : ""
       ].filter(Boolean).join("");
 
-      const localBusiness = !noindex && seo.address ? \`
+      const localBusiness = !seo.noindex && seo.address ? \`
 <script type="application/ld+json">
 \${JSON.stringify({
   "@context": "https://schema.org",
@@ -96,7 +97,8 @@ function defaultSeoConfig(slug) {
     status: "demo",
     title: `${slug} — Built4You`,
     description: `Modern, mobile-first site by Built4You.`,
-    keywords: [slug, "website", "Built4You"]
+    keywords: [slug, "website", "Built4You"],
+    noindex: false // default ON for indexing
   };
 }
 
@@ -111,7 +113,7 @@ function write(file, content) {
 
 function overwriteViteSeo(dir) {
   const f = path.join(dir, VITE_SEO_FILENAME);
-  write(f, viteSeoSource); // overwrite to fix regex bug everywhere
+  write(f, viteSeoSource); // overwrite to unify logic everywhere
 }
 
 function ensureSeoConfig(dir, slug) {
@@ -158,7 +160,7 @@ function main() {
     const dir = path.join(PROJECT_ROOT, slug);
     if (!fs.existsSync(path.join(dir, "vite.config.ts"))) continue;
     ensureSeoConfig(dir, slug);
-    overwriteViteSeo(dir);     // force-fix
+    overwriteViteSeo(dir);
     patchViteConfig(dir, slug);
     console.log(`seeded: ${slug}`);
   }
