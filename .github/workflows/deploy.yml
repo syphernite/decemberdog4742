@@ -61,15 +61,15 @@ jobs:
           cd ../../
           cp -r project/landingpage/dist/* .
 
-      # Install a single lightweight dep to render OG images
+      # Install lightweight dep for rendering OG images and icons
       - name: Install OG generator deps
         run: npm i puppeteer@22 --no-save
 
-      # Generate 1200x630 PNG OG images for root + every subsite
-      - name: Generate OG images
+      # Generate 1200x630 OG images + icon pack (apple-touch-icon, favicons, android, pinned-tab)
+      - name: Generate OG images and icons
         run: node .scripts/gen-og-images.mjs
 
-      # Finalize SEO across root and all subsites (uses seo/*.txt and *.json)
+      # Finalize SEO across root and all subsites (adds meta + links to og images/icons)
       - name: Finalize SEO (inject tags + sitemaps)
         run: node .scripts/finalize-seo.mjs
 
@@ -88,15 +88,14 @@ jobs:
             echo "No noindex found in built HTML."
           fi
 
-      # Dynamic SPA fallback: send to demo folder only if that folder exists.
-      # Otherwise treat as a root SPA route (e.g., /careers).
+      # Smart SPA 404 keeps all subpaths working
       - name: Create smart 404.html
         run: |
           SLUGS=()
           for d in */ ; do
             d="${d%/}"
             case "$d" in
-              project|.git|.github|node_modules|seo|og) continue ;;
+              project|.git|.github|node_modules|seo|og|icons) continue ;;
             esac
             if [ -f "$d/index.html" ]; then
               SLUGS+=("$d")
@@ -136,7 +135,6 @@ jobs:
                   return;
                 }
 
-                // Not a demo slug → root SPA route. Encode original path.
                 const query = q ? '&q=' + q.slice(1).replace(/&/g, '~and~') : '';
                 const p = '?p=/' + raw + query + h;
                 location.replace('/' + p);
