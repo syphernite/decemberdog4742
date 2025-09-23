@@ -3,9 +3,8 @@ import path from "path";
 
 const PUBLISH = process.cwd();
 const SITE_BASE = "https://built4you.org";
-const IGNORE = new Set(["project", ".git", ".github", "node_modules", "seo", "og"]);
+const IGNORE = new Set(["project", ".git", ".github", "node_modules", "seo", "og", "icons"]);
 
-// ---- load SEO data (optional but used if present)
 function readLines(p) {
   if (!fs.existsSync(p)) return [];
   return fs.readFileSync(p, "utf8").split(/\r?\n/).map(s => s.trim()).filter(Boolean);
@@ -29,27 +28,20 @@ const titleCase = (s) => s.replace(/[-_]/g," ").replace(/\b\w/g, c => c.toUpperC
 const SEO_DIR = path.join(PUBLISH, "seo");
 const CLIENTS   = new Set(readLines(path.join(SEO_DIR, "clients.txt")));
 const DEMOS     = new Set(readLines(path.join(SEO_DIR, "demos.txt")));
-const INDUSTRY  = readMap(path.join(SEO_DIR, "industries.txt"));  // slug|Industry
-const CITY      = readMap(path.join(SEO_DIR, "locations.txt"));   // slug|City, ST
+const INDUSTRY  = readMap(path.join(SEO_DIR, "industries.txt"));
+const CITY      = readMap(path.join(SEO_DIR, "locations.txt"));
 const IK_PATH   = path.join(SEO_DIR, "industry-keywords.json");
 const KEYWORDS  = fs.existsSync(IK_PATH) ? JSON.parse(fs.readFileSync(IK_PATH,"utf8")) : {};
 const overridesPath = path.join(SEO_DIR, "overrides.json");
 const OVERRIDES = fs.existsSync(overridesPath) ? JSON.parse(fs.readFileSync(overridesPath, "utf8")) : {};
 
-const OG_DIR = path.join(PUBLISH, "og");
-
-// canonicalize common typos
-const CANON = new Map([
-  ["restaraunt", "Restaurant"]
-]);
+const CANON = new Map([ ["restaraunt","Restaurant"] ]);
 const canonIndustry = (x) => {
   if (!x) return undefined;
-  const s = String(x).trim();
-  const lower = s.toLowerCase();
+  const s = String(x).trim(); const lower = s.toLowerCase();
   return CANON.get(lower) || s.charAt(0).toUpperCase() + s.slice(1);
 };
 
-// ---- discover subfolders that have an index.html
 const slugs = fs.readdirSync(PUBLISH, { withFileTypes: true })
   .filter(d => d.isDirectory() && !IGNORE.has(d.name))
   .map(d => d.name)
@@ -57,26 +49,17 @@ const slugs = fs.readdirSync(PUBLISH, { withFileTypes: true })
 
 const entries = [];
 
-// ---- helpers
-function statusFor(slug) {
-  if (CLIENTS.has(slug)) return "client";
-  if (DEMOS.has(slug)) return "demo";
-  return "demo";
-}
-
+function statusFor(slug) { if (CLIENTS.has(slug)) return "client"; if (DEMOS.has(slug)) return "demo"; return "demo"; }
 function buildDesc(name, ind, loc) {
   const keySet = KEYWORDS[canonIndustry(ind)] || KEYWORDS[ind] || [];
   const kws = keySet.slice(0, 6).join(", ");
-  const parts = [];
-  if (name) parts.push(name);
-  if (ind) parts.push(canonIndustry(ind));
-  if (loc) parts.push(loc);
+  const parts = []; if (name) parts.push(name); if (ind) parts.push(canonIndustry(ind)); if (loc) parts.push(loc);
   const who = parts.filter(Boolean).join(" • ") || "Custom websites";
   const baseline = `${who} by Built4You. ${kws}`.trim();
   return baseline.slice(0, 155);
 }
 
-function injectHead(file, slug, data) {
+function injectHead(file, slug, data, isRoot = false) {
   if (!fs.existsSync(file)) return false;
   let html = fs.readFileSync(file, "utf8");
 
@@ -84,55 +67,49 @@ function injectHead(file, slug, data) {
   const shouldNoindex = data.noindex === true;
   const robots = shouldNoindex ? "noindex, nofollow" : "index, follow";
 
-  // Resolve OG image
+  // og image url (prefer generated)
   let ogImageUrl = data.ogImage;
-  if (!ogImageUrl) {
-    const ogFile = slug ? path.join(OG_DIR, `${slug}.png`) : path.join(OG_DIR, "root.png");
-    if (fs.existsSync(ogFile)) {
-      ogImageUrl = `${SITE_BASE}/og/${slug ? slug : "root"}.png`;
-    }
-  }
+  if (!ogImageUrl) ogImageUrl = `${SITE_BASE}/og/${slug ? slug : "root"}.png`;
 
-  const tags = [
+  const ogW = "1200", ogH = "630";
+
+  const baseTags = [
     `<meta name="robots" content="${robots}">`,
     `<link rel="canonical" href="${esc(canonical)}">`,
     `<title>${esc(data.title)}</title>`,
     `<meta name="description" content="${esc(data.description)}">`,
-    data.keywords?.length ? `<meta name="keywords" content="${esc(data.keywords.join(", "))}">` : "",
+    `<meta property="og:site_name" content="Built4You">`,
     `<meta property="og:type" content="website">`,
     `<meta property="og:title" content="${esc(data.title)}">`,
     `<meta property="og:description" content="${esc(data.description)}">`,
     `<meta property="og:url" content="${esc(canonical)}">`,
-    ogImageUrl ? `<meta property="og:image" content="${esc(ogImageUrl)}">` : "",
+    `<meta property="og:image" content="${esc(ogImageUrl)}">`,
+    `<meta property="og:image:width" content="${ogW}">`,
+    `<meta property="og:image:height" content="${ogH}">`,
     `<meta name="twitter:card" content="summary_large_image">`,
     `<meta name="twitter:title" content="${esc(data.title)}">`,
     `<meta name="twitter:description" content="${esc(data.description)}">`,
-    ogImageUrl ? `<meta name="twitter:image" content="${esc(ogImageUrl)}">` : ""
-  ].filter(Boolean).join("");
+    `<meta name="twitter:image" content="${esc(ogImageUrl)}">`
+  ];
 
-  const address = data.address || null;
-  const ld = (!shouldNoindex && (address || data.phone)) ? `
-<script type="application/ld+json">
-${JSON.stringify({
-  "@context":"https://schema.org",
-  "@type":"LocalBusiness",
-  name: data.schemaName || data.title,
-  url: canonical,
-  telephone: data.phone || undefined,
-  address: address ? {
-    "@type":"PostalAddress",
-    streetAddress: address.street,
-    addressLocality: address.locality,
-    addressRegion: address.region,
-    postalCode: address.postalCode,
-    addressCountry: address.country
-  } : undefined
-}, null, 2)}
-</script>` : "";
+  // Root-only icons and app meta so iMessage and iOS tiles look clean
+  const iconTags = isRoot ? [
+    `<link rel="apple-touch-icon" href="/apple-touch-icon.png">`,
+    `<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">`,
+    `<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">`,
+    `<link rel="manifest" href="/site.webmanifest" crossorigin="use-credentials">`,
+    `<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#10b981">`,
+    `<meta name="theme-color" content="#0ea5e9">`,
+    `<meta name="application-name" content="Built4You">`,
+    `<meta name="apple-mobile-web-app-capable" content="yes">`,
+    `<meta name="apple-mobile-web-app-title" content="Built4You">`
+  ] : [];
+
+  const tags = baseTags.concat(iconTags).join("");
 
   html = (/<\/head>/i.test(html))
-    ? html.replace(/<\/head>/i, `${tags}\n${ld}\n</head>`)
-    : `<!-- SEO INJECT START -->${tags}${ld}<!-- SEO INJECT END -->\n` + html;
+    ? html.replace(/<\/head>/i, `${tags}\n</head>`)
+    : `<!-- SEO INJECT START -->${tags}<!-- SEO INJECT END -->\n` + html;
 
   if (!shouldNoindex) {
     html = html.replace(
@@ -145,7 +122,7 @@ ${JSON.stringify({
   return true;
 }
 
-// ---- ROOT
+// Root
 const rootIndex = path.join(PUBLISH, "index.html");
 if (fs.existsSync(rootIndex)) {
   const title = "Built4You — Custom websites for small businesses";
@@ -154,13 +131,13 @@ if (fs.existsSync(rootIndex)) {
     title,
     description,
     keywords: ["Built4You","web design","mobile first","small business"]
-  });
+  }, true);
   entries.push({ loc: `${SITE_BASE}/`, priority: "1.0", changefreq: "weekly" });
   entries.push({ loc: `${SITE_BASE}/pricing`, priority: "0.9", changefreq: "weekly" });
   entries.push({ loc: `${SITE_BASE}/why-we-exist`, priority: "0.7", changefreq: "monthly" });
 }
 
-// ---- SUBSITES
+// Subsites
 for (const slug of slugs) {
   const status = statusFor(slug);
   const name = titleCase(slug);
@@ -186,10 +163,10 @@ for (const slug of slugs) {
     phone: o.phone,
     address: o.address,
     schemaName: o.schemaName,
-    ogImage: o.ogImage // optional manual override
+    ogImage: o.ogImage
   };
 
-  injectHead(path.join(PUBLISH, slug, "index.html"), slug, data);
+  injectHead(path.join(PUBLISH, slug, "index.html"), slug, data, false);
 
   entries.push({
     loc: `${SITE_BASE}/${slug}/`,
@@ -198,7 +175,7 @@ for (const slug of slugs) {
   });
 }
 
-// ---- root sitemap + robots at publish root
+// Root sitemap + robots
 const urls = entries.map(e =>
   `  <url><loc>${e.loc}</loc><changefreq>${e.changefreq}</changefreq><priority>${e.priority}</priority></url>`
 ).join("\n");
@@ -220,4 +197,4 @@ Sitemap: ${SITE_BASE}/sitemap.xml
   "utf8"
 );
 
-console.log("Finalize SEO complete. OG tags linked. Canonicals, metas, JSON-LD, and sitemaps generated.");
+console.log("Finalize SEO complete. OG + icons linked. Canonicals, metas, JSON-LD, and sitemaps generated.");

@@ -28,7 +28,6 @@
         return;
       }
 
-      // Not a demo slug → root SPA route. Encode original path.
       const query = q ? '&q=' + q.slice(1).replace(/&/g, '~and~') : '';
       const p = '?p=/' + raw + query + h;
       location.replace('/' + p);

@@ -1,10 +1,13 @@
 /**
- * Generate OG images (1200x630 PNG) for:
- *  - Root: og/root.png
- *  - Each subsite folder with index.html: og/<slug>.png
+ * Generates:
+ *  - OG images (1200x630 PNG) for root and each subsite (og/root.png, og/<slug>.png)
+ *  - Icon pack for root:
+ *      /apple-touch-icon.png (180x180)
+ *      /favicon-32x32.png, /favicon-16x16.png
+ *      /android-chrome-192x192.png, /android-chrome-512x512.png
+ *      /safari-pinned-tab.svg (simple B4Y mark)
  *
- * Uses Puppeteer to render a simple HTML card with your emerald→blue gradient.
- * No repo dependencies needed besides puppeteer (installed in workflow).
+ * No external fonts; uses system fonts. Styled with emerald→blue gradient.
  */
 
 import fs from "fs";
@@ -13,13 +16,12 @@ import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const PUBLISH = path.resolve(__dirname, ".."); // repo root during workflow
-const OUT_DIR = path.join(PUBLISH, "og");
-const IGNORE = new Set(["project", ".git", ".github", "node_modules", "seo", "og"]);
+const PUBLISH = path.resolve(__dirname, "..");
+const OG_DIR = path.join(PUBLISH, "og");
+const ICON_DIR = path.join(PUBLISH, "icons");
 
-const SITE_BASE = "https://built4you.org";
+const IGNORE = new Set(["project", ".git", ".github", "node_modules", "seo", "og", "icons"]);
 
-// Optional SEO data
 function readLines(p) {
   if (!fs.existsSync(p)) return [];
   return fs.readFileSync(p, "utf8").split(/\r?\n/).map(s => s.trim()).filter(Boolean);
@@ -40,12 +42,7 @@ function readMap(p) {
 const SEO_DIR = path.join(PUBLISH, "seo");
 const INDUSTRY = readMap(path.join(SEO_DIR, "industries.txt"));
 const CITY = readMap(path.join(SEO_DIR, "locations.txt"));
-
 const titleCase = (s) => String(s).replace(/[-_]/g, " ").replace(/\b\w/g, c => c.toUpperCase());
-
-async function ensureDir(d) {
-  await fs.promises.mkdir(d, { recursive: true });
-}
 
 function discoverSlugs() {
   return fs.readdirSync(PUBLISH, { withFileTypes: true })
@@ -54,117 +51,108 @@ function discoverSlugs() {
     .filter(slug => fs.existsSync(path.join(PUBLISH, slug, "index.html")));
 }
 
-function htmlFor(title, subtitle) {
-  // System fonts + gradient background
+function cardHTML({ title, subtitle }) {
   return `<!doctype html>
 <html>
 <head>
   <meta charset="utf-8" />
   <style>
-    html, body {
-      margin: 0; padding: 0; width: 1200px; height: 630px;
-      font-family: ui-sans-serif, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-      background: linear-gradient(135deg, #059669, #2563eb);
-      color: #ffffff;
-    }
-    .wrap {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      box-sizing: border-box;
-      padding: 80px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    .brand {
-      position: absolute;
-      top: 30px;
-      left: 40px;
-      font-weight: 700;
-      letter-spacing: .5px;
-      opacity: .95;
-    }
-    .card {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.25);
-      border-radius: 28px;
-      padding: 48px 56px;
-      max-width: 980px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.25), inset 0 0 40px rgba(255,255,255,0.08);
-      backdrop-filter: blur(8px);
-    }
-    h1 {
-      margin: 0 0 16px 0;
-      font-size: 72px;
-      line-height: 1.05;
-      letter-spacing: .4px;
-    }
-    p {
-      margin: 0;
-      font-size: 36px;
-      opacity: .92;
-    }
-    .tag {
-      position: absolute;
-      right: 40px;
-      bottom: 28px;
-      font-size: 22px;
-      opacity: .9;
-    }
+    html, body { margin:0; padding:0; width:1200px; height:630px; background:linear-gradient(135deg,#059669,#2563eb); color:#fff; font-family: ui-sans-serif, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial; }
+    .wrap { width:100%; height:100%; display:flex; justify-content:center; align-items:center; }
+    .card { width:1000px; border-radius:28px; padding:56px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.25); box-shadow:0 20px 60px rgba(0,0,0,.25), inset 0 0 40px rgba(255,255,255,.08); backdrop-filter: blur(8px); }
+    h1 { margin:0 0 12px 0; font-size:72px; line-height:1.05; }
+    p { margin:0; font-size:36px; opacity:.92; }
+    .brand { position:absolute; top:30px; left:40px; font-weight:700; letter-spacing:.5px; opacity:.95; }
   </style>
 </head>
 <body>
+  <div class="brand">Built4You</div>
   <div class="wrap">
-    <div class="brand">Built4You</div>
     <div class="card">
       <h1>${title}</h1>
       <p>${subtitle}</p>
     </div>
-    <div class="tag">1200 × 630</div>
   </div>
 </body>
 </html>`;
 }
 
-async function renderPNG(html, outPath) {
+function squareHTML({ label }) {
+  return `<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <style>
+    html, body { margin:0; padding:0; width:512px; height:512px; background:linear-gradient(135deg,#059669,#2563eb); color:#fff; font-family: ui-sans-serif, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial; }
+    .wrap { width:100%; height:100%; display:flex; justify-content:center; align-items:center; }
+    .mark { width:360px; height:360px; border-radius:72px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.35); display:flex; align-items:center; justify-content:center; box-shadow:0 18px 40px rgba(0,0,0,.25), inset 0 0 30px rgba(255,255,255,.12); }
+    .text { font-size:160px; font-weight:800; letter-spacing:2px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="mark"><div class="text">${label}</div></div>
+  </div>
+</body>
+</html>`;
+}
+
+async function shot({ html, outPath, width, height }) {
   const puppeteer = await import("puppeteer");
-  const browser = await puppeteer.launch({
-    headless: "new",
-    args: ["--no-sandbox", "--disable-setuid-sandbox"]
-  });
+  const browser = await puppeteer.launch({ headless: "new", args: ["--no-sandbox","--disable-setuid-sandbox"] });
   const page = await browser.newPage();
-  await page.setViewport({ width: 1200, height: 630, deviceScaleFactor: 1 });
+  await page.setViewport({ width, height, deviceScaleFactor: 1 });
   await page.setContent(html, { waitUntil: "networkidle0" });
   await page.screenshot({ path: outPath, type: "png" });
   await browser.close();
 }
 
 async function main() {
-  await ensureDir(OUT_DIR);
+  fs.mkdirSync(OG_DIR, { recursive: true });
+  fs.mkdirSync(ICON_DIR, { recursive: true });
 
-  // Root image
-  {
-    const title = "Built4You";
-    const subtitle = "Custom websites for small businesses";
-    const html = htmlFor(title, subtitle);
-    await renderPNG(html, path.join(OUT_DIR, "root.png"));
-  }
+  // Root OG
+  await shot({
+    html: cardHTML({ title: "Built4You", subtitle: "Custom websites for small businesses" }),
+    outPath: path.join(OG_DIR, "root.png"),
+    width: 1200, height: 630
+  });
 
-  // Each subsite
+  // Subsite OGs
   const slugs = discoverSlugs();
   for (const slug of slugs) {
     const name = titleCase(slug);
     const ind = INDUSTRY.get(slug) || "";
     const loc = CITY.get(slug) || "";
-    const title = name;
     const subtitle = [ind, loc].filter(Boolean).join(" • ") || "Modern, mobile-first site";
-    const html = htmlFor(title, subtitle);
-    const out = path.join(OUT_DIR, `${slug}.png`);
-    await renderPNG(html, out);
+    await shot({
+      html: cardHTML({ title: name, subtitle }),
+      outPath: path.join(OG_DIR, `${slug}.png`),
+      width: 1200, height: 630
+    });
   }
 
-  console.log(`OG images generated: root + ${slugs.length}`);
+  // Icon pack for root
+  // 512 base
+  const base512 = path.join(ICON_DIR, "base-512.png");
+  await shot({
+    html: squareHTML({ label: "B4Y" }),
+    outPath: base512,
+    width: 512, height: 512
+  });
+
+  // Render other sizes directly for crispness
+  await shot({ html: squareHTML({ label: "B4Y" }), outPath: path.join(PUBLISH, "android-chrome-512x512.png"), width: 512, height: 512 });
+  await shot({ html: squareHTML({ label: "B4Y" }), outPath: path.join(PUBLISH, "android-chrome-192x192.png"), width: 192, height: 192 });
+  await shot({ html: squareHTML({ label: "B4Y" }), outPath: path.join(PUBLISH, "apple-touch-icon.png"), width: 180, height: 180 });
+  await shot({ html: squareHTML({ label: "B4Y" }), outPath: path.join(PUBLISH, "favicon-32x32.png"), width: 32, height: 32 });
+  await shot({ html: squareHTML({ label: "B4Y" }), outPath: path.join(PUBLISH, "favicon-16x16.png"), width: 16, height: 16 });
+
+  // Simple pinned tab SVG (monochrome)
+  const pinned = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path fill="currentColor" d="M12 12h40v40H12z"/><text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#fff" font-weight="700">B4Y</text></svg>`;
+  fs.writeFileSync(path.join(PUBLISH, "safari-pinned-tab.svg"), pinned, "utf8");
+
+  console.log(`OG images generated: root + ${slugs.length}; icon pack written to site root.`);
 }
 
 main().catch(err => {
