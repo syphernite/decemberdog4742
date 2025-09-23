@@ -1,5 +1,5 @@
 // src/components/Menu.tsx
-import React, { useMemo, useRef, useState, useEffect, UIEvent } from 'react';
+import React, { useMemo, useRef, useState, useEffect, UIEvent, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -63,28 +63,85 @@ export default function Menu() {
   const isExpanded = !!expanded[active];
   const gridItems = isExpanded || itemsAll.length <= VISIBLE ? itemsAll : itemsAll.slice(0, VISIBLE);
 
+  /** ----------------------- Mobile slider measurements ---------------------- */
   const trackRef = useRef<HTMLDivElement | null>(null);
   const [slideIdx, setSlideIdx] = useState(0);
+  const stepRef = useRef<number>(0);
+  const cardWidthRef = useRef<number>(0);
 
-  const scrollTo = (dir: -1 | 1) => {
+  const computeMetrics = useCallback(() => {
     const el = trackRef.current;
     if (!el) return;
-    const step = Math.round(el.clientWidth * 0.88);
-    el.scrollBy({ left: dir * step, behavior: 'smooth' });
-  };
+    const styles = getComputedStyle(el);
+    const gapPx = parseFloat(styles.columnGap || '0') || 0;
+
+    const firstCard = el.querySelector<HTMLElement>('[data-card]');
+    let cardW = 0;
+    if (firstCard) cardW = firstCard.getBoundingClientRect().width;
+    if (!cardW) cardW = el.clientWidth * 0.82;
+
+    cardWidthRef.current = cardW;
+    stepRef.current = cardW + gapPx;
+  }, []);
+
+  const snapToIndex = useCallback(
+    (idx: number, behavior: ScrollBehavior = 'smooth') => {
+      const el = trackRef.current;
+      if (!el) return;
+
+      const count = itemsAll.length;
+      const clamped = Math.max(0, Math.min(idx, count - 1));
+
+      const step = stepRef.current || 0;
+      const cardW = cardWidthRef.current || 0;
+      const containerW = el.clientWidth;
+
+      let target = clamped * step - (containerW - cardW) / 2;
+      const maxLeft = el.scrollWidth - containerW;
+      if (target < 0) target = 0;
+      if (target > maxLeft) target = maxLeft;
+
+      el.scrollTo({ left: target, behavior });
+      setSlideIdx(clamped);
+    },
+    [itemsAll.length]
+  );
+
+  const scrollToDir = (dir: -1 | 1) => snapToIndex(slideIdx + dir);
 
   const onScroll = (e: UIEvent<HTMLDivElement>) => {
     const el = e.currentTarget;
-    const step = Math.max(1, Math.round(el.clientWidth * 0.88));
-    const idx = Math.round(el.scrollLeft / step);
-    setSlideIdx(Math.min(Math.max(idx, 0), itemsAll.length - 1));
+    const step = stepRef.current || Math.max(1, Math.round(el.clientWidth * 0.82));
+    const cardW = cardWidthRef.current || 0;
+    const approxIdx = Math.round((el.scrollLeft + (el.clientWidth - cardW) / 2) / step);
+    const clamped = Math.max(0, Math.min(approxIdx, itemsAll.length - 1));
+    if (clamped !== slideIdx) setSlideIdx(clamped);
   };
 
   useEffect(() => {
+    const handle = () => {
+      computeMetrics();
+      snapToIndex(0, 'auto');
+    };
+    handle();
+
+    const ro = new ResizeObserver(() => handle());
+    if (trackRef.current) ro.observe(trackRef.current);
+    window.addEventListener('orientationchange', handle);
+    window.addEventListener('resize', handle);
+
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('orientationchange', handle);
+      window.removeEventListener('resize', handle);
+    };
+  }, [active, itemsAll.length, computeMetrics, snapToIndex]);
+
+  useEffect(() => {
     setSlideIdx(0);
-    const el = trackRef.current;
-    if (el) el.scrollTo({ left: 0, behavior: 'instant' as ScrollBehavior });
-  }, [active]);
+    computeMetrics();
+    snapToIndex(0, 'auto');
+  }, [active, computeMetrics, snapToIndex]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -95,7 +152,6 @@ export default function Menu() {
     visible: { y: 0, opacity: 1, transition: { duration: 0.4 } },
   };
 
-  // Red to white shimmer for heading
   const shimmerStyle: React.CSSProperties = {
     backgroundImage: 'linear-gradient(90deg,#ffffff 0%,#ef4444 50%,#ffffff 100%)',
     backgroundSize: '200% 100%',
@@ -119,8 +175,11 @@ export default function Menu() {
       </div>
 
       <div className="container mx-auto px-4 pt-24 md:pt-28 pb-16">
-        {/* Menu surface */}
-        <div className="mx-auto w-full max-w-5xl rounded-2xl bg-[#f9f5f5] shadow-2xl border border-black/5 p-5 sm:p-10">
+        {/* Menu surface (the white card). We give it an ID so the header scroll hits it exactly. */}
+        <div
+          id="menu-card"
+          className="mx-auto w-full max-w-5xl rounded-2xl bg-[#f9f5f5] shadow-2xl border border-black/5 p-5 sm:p-10"
+        >
           <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="mb-5 sm:mb-8">
             <motion.h2
               className="font-display text-4xl sm:text-7xl font-extrabold tracking-tight text-transparent"
@@ -160,16 +219,15 @@ export default function Menu() {
             <div
               ref={trackRef}
               onScroll={onScroll}
-              className="flex gap-3 overflow-x-auto snap-x snap-mandatory px-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              className="flex gap-3 overflow-x-auto snap-x snap-mandatory snap-center px-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
               {itemsAll.map((item) => (
-                <div key={item.id} className="snap-start shrink-0 w-[88vw] max-w-[520px]" data-card>
-                  {/* Glass outer */}
+                <div key={item.id} className="snap-center shrink-0 w-[82vw] max-w-[520px] mx-auto" data-card>
+                  {/* Card */}
                   <motion.div
-                    whileHover={{ y: -4, scale: 1.03 }}
+                    whileHover={{ y: -2, scale: 1.01 }}
                     className="rounded-2xl border border-white/30 bg-white/10 backdrop-blur-xl overflow-hidden transition-all duration-300 shadow-[0_8px_28px_rgba(0,0,0,0.18)] ring-1 ring-white/20"
                   >
-                    {/* Top soft pink panel like the reference */}
                     <div className="h-40 bg-gradient-to-br from-rose-50/80 via-rose-100/70 to-rose-50/40 relative overflow-hidden">
                       {item.featured && (
                         <div className="absolute top-3 right-3 bg-red-primary text-white px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow">
@@ -182,11 +240,8 @@ export default function Menu() {
                           <span className="text-3xl">{ICON[item.category]}</span>
                         </div>
                       </div>
-                      {/* Soft divider hint */}
                       <div className="absolute bottom-0 left-0 right-0 h-px bg-black/5" />
                     </div>
-
-                    {/* Bottom content on semi-opaque white to mimic solid card base */}
                     <div className="p-5 bg-white/90">
                       <div className="flex justify-between items-start mb-2.5">
                         <h3 className="font-body font-bold text-lg text-gray-900">{item.name}</h3>
@@ -196,9 +251,7 @@ export default function Menu() {
                           </span>
                         ) : null}
                       </div>
-                      <p className="text-gray-700 font-body text-sm leading-relaxed">
-                        {item.description}
-                      </p>
+                      <p className="text-gray-700 font-body text-sm leading-relaxed">{item.description}</p>
                     </div>
                   </motion.div>
                 </div>
@@ -208,16 +261,16 @@ export default function Menu() {
             {itemsAll.length > 1 && (
               <>
                 <button
-                  onClick={() => scrollTo(-1)}
+                  onClick={() => scrollToDir(-1)}
                   aria-label="Previous item"
-                  className="absolute left-1 top-1/2 -translate-y-1/2 inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-white/80 text-black shadow backdrop-blur"
+                  className="absolute left-1 top-1/2 -translate-y-1/2 inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-white/85 text-black shadow backdrop-blur"
                 >
                   <ChevronLeft size={18} />
                 </button>
                 <button
-                  onClick={() => scrollTo(1)}
+                  onClick={() => scrollToDir(1)}
                   aria-label="Next item"
-                  className="absolute right-1 top-1/2 -translate-y-1/2 inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-white/80 text-black shadow backdrop-blur"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-white/85 text-black shadow backdrop-blur"
                 >
                   <ChevronRight size={18} />
                 </button>
@@ -258,7 +311,6 @@ export default function Menu() {
                     }}
                     className="rounded-2xl overflow-hidden border border-white/30 bg-white/10 backdrop-blur-xl transition-all duration-300 group ring-1 ring-white/20"
                   >
-                    {/* Top soft pink panel */}
                     <div className="h-44 bg-gradient-to-br from-rose-50/80 via-rose-100/70 to-rose-50/40 relative overflow-hidden">
                       {item.featured && (
                         <div className="absolute top-4 right-4 bg-red-primary text-white px-2.5 py-1 rounded-full text-sm font-bold flex items-center gap-1 shadow">
@@ -273,8 +325,6 @@ export default function Menu() {
                       </div>
                       <div className="absolute bottom-0 left-0 right-0 h-px bg-black/5" />
                     </div>
-
-                    {/* Bottom content */}
                     <div className="p-6 bg-white/90">
                       <div className="flex justify-between items-start mb-3">
                         <h3 className="font-body font-bold text-lg text-gray-900 group-hover:text-red-700 transition-colors leading-tight">
@@ -286,9 +336,7 @@ export default function Menu() {
                           </span>
                         ) : null}
                       </div>
-                      <p className="text-gray-700 font-body text-sm leading-relaxed">
-                        {item.description}
-                      </p>
+                      <p className="text-gray-700 font-body text-sm leading-relaxed">{item.description}</p>
                     </div>
                   </motion.div>
                 ))}
