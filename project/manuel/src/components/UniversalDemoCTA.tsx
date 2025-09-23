@@ -1,58 +1,42 @@
 import React, { useState } from "react";
 
 /**
- * UniversalDemoCTA (black & white)
- * - Floating "Like this demo?" button
- * - Modal with:
- *    - businessName (required)
- *    - phone (required)
- *    - changes (optional)
- * - Posts to Formspree
+ * UniversalDemoCTA — SOLID color version (better floating contrast)
  *
- * Usage:
- *   <UniversalDemoCTA />
- * Place once in a global layout so it appears on all routes.
+ * What it does:
+ *  - Floating “Like this demo?” button (bottom-right)
+ *  - Modal collects:
+ *      * businessName (required)
+ *      * phone (required)
+ *      * changes (optional)
+ *  - Posts to Formspree
  *
- * Default endpoint: https://formspree.io/f/myzngevq
- * Override via prop: <UniversalDemoCTA endpoint="https://formspree.io/f/XXXXXXX" />
+ * How to use:
+ *   Place <UniversalDemoCTA /> once near the root (e.g., in App)
+ *
+ * Notes:
+ *  - Change FORM_ENDPOINT to your Formspree endpoint if needed.
  */
-type Props = { endpoint?: string };
+const FORM_ENDPOINT = "https://formspree.io/f/myzngevq"; // replace if you have a different endpoint
 
-export default function UniversalDemoCTA({
-  endpoint = "https://formspree.io/f/myzngevq",
-}: Props) {
+export default function UniversalDemoCTA() {
   const [open, setOpen] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [ok, setOk] = useState<null | boolean>(null);
-  const [err, setErr] = useState<string | null>(null);
-
   const [businessName, setBusinessName] = useState("");
   const [phone, setPhone] = useState("");
   const [changes, setChanges] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [ok, setOk] = useState<boolean | null>(null);
+  const [err, setErr] = useState<string | null>(null);
 
-  function validatePhone(v: string) {
-    const digits = v.replace(/\D/g, "");
-    return digits.length >= 10 && digits.length <= 15;
-  }
-
-  async function onSubmit(e: React.FormEvent) {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitting(true);
     setErr(null);
 
-    if (!businessName.trim()) {
-      setErr("Business name is required.");
-      return;
-    }
-    if (!validatePhone(phone)) {
-      setErr("Enter a valid phone number.");
-      return;
-    }
-
-    setSubmitting(true);
     try {
-      const res = await fetch(endpoint, {
+      const res = await fetch(FORM_ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           businessName,
           phone,
@@ -68,25 +52,22 @@ export default function UniversalDemoCTA({
       } else {
         const txt = await res.text();
         setOk(false);
-        setErr(`Submit failed. ${txt || ""}`.trim());
+        setErr(`Submit failed: ${txt?.slice(0, 180) || "Unknown error"}`);
       }
     } catch (e: any) {
       setOk(false);
-      setErr(e?.message || "Network error.");
+      setErr(e?.message || "Network error");
     } finally {
       setSubmitting(false);
     }
-  }
+  };
 
   return (
     <>
-      {/* Floating CTA button (black/white only) */}
+      {/* Floating Button — SOLID pill */}
       <button
-        type="button"
         onClick={() => setOpen(true)}
-        className="fixed bottom-5 right-5 z-[90] rounded-xl px-4 py-3 text-sm font-semibold shadow border border-black bg-black text-white hover:opacity-90 transition"
-        aria-haspopup="dialog"
-        aria-expanded={open}
+        className="fixed right-4 bottom-4 z-[95] rounded-full bg-neutral-900 text-white px-4 py-3 text-sm font-semibold shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-white/40"
       >
         Like this demo?
       </button>
@@ -94,112 +75,107 @@ export default function UniversalDemoCTA({
       {/* Modal */}
       {open && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70"
           role="dialog"
           aria-modal="true"
-          onClick={() => setOpen(false)}
+          className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center"
         >
+          {/* Dimmer (no blur; keep it crisp behind solid modal) */}
           <div
-            className="mx-4 w-full max-w-md rounded-2xl bg-white text-black border border-black shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="p-5 border-b border-black flex items-center justify-between">
-              <h2 className="text-lg font-semibold">Do you like this demo?</h2>
+            className="absolute inset-0 bg-black/70"
+            onClick={() => setOpen(false)}
+          />
+
+          {/* Panel — SOLID background for strong contrast */}
+          <div className="relative mx-3 my-4 sm:my-0 w-full max-w-lg rounded-2xl bg-neutral-900 text-white border border-black/20 shadow-2xl">
+            {/* Header */}
+            <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
+              <h3 className="text-lg font-bold">Tell us about your business</h3>
               <button
                 onClick={() => setOpen(false)}
-                className="p-2 rounded hover:bg-black/5"
+                className="rounded-md px-2 py-1 text-white/70 hover:text-white hover:bg-white/10"
                 aria-label="Close"
               >
                 ✕
               </button>
             </div>
 
-            {/* Success */}
-            {ok === true ? (
-              <div className="p-5 space-y-4">
-                <p className="text-sm">Thanks. We will contact you shortly.</p>
-                <button
-                  onClick={() => {
-                    setOk(null);
-                    setOpen(false);
-                  }}
-                  className="w-full rounded-lg px-4 py-3 font-semibold bg-black text-white hover:opacity-90"
-                >
-                  Close
-                </button>
-              </div>
-            ) : (
-              <form className="p-5 space-y-4" onSubmit={onSubmit}>
-                <div className="space-y-2">
-                  <label htmlFor="businessName" className="text-sm">
-                    Business name<span className="text-red-600">*</span>
-                  </label>
-                  <input
-                    id="businessName"
-                    name="businessName"
-                    className="w-full rounded-lg border border-black px-4 py-3 outline-none focus:ring-2 focus:ring-black"
-                    value={businessName}
-                    onChange={(e) => setBusinessName(e.target.value)}
-                    required
-                  />
+            <div className="p-5">
+              {ok ? (
+                <div className="text-center">
+                  <p className="text-base">Thanks! We’ll text you shortly.</p>
+                  <button
+                    onClick={() => setOpen(false)}
+                    className="mt-4 inline-flex px-4 py-2 rounded-lg bg-white text-black font-semibold hover:bg-white/90"
+                  >
+                    Close
+                  </button>
                 </div>
+              ) : (
+                <form onSubmit={onSubmit} className="grid gap-4">
+                  {/* Business Name */}
+                  <div>
+                    <label htmlFor="businessName" className="block text-sm mb-1 text-white/80">
+                      Business name
+                    </label>
+                    <input
+                      id="businessName"
+                      name="businessName"
+                      required
+                      value={businessName}
+                      onChange={(e) => setBusinessName(e.target.value)}
+                      className="w-full rounded-lg px-4 py-3 bg-white text-black placeholder-black/40 border-0 focus:outline-none focus:ring-2 focus:ring-white/30"
+                      placeholder="e.g., Timeout Tavern"
+                    />
+                  </div>
 
-                <div className="space-y-2">
-                  <label htmlFor="phone" className="text-sm">
-                    Phone number<span className="text-red-600">*</span>
-                  </label>
-                  <input
-                    id="phone"
-                    name="phone"
-                    inputMode="tel"
-                    autoComplete="tel"
-                    placeholder="(555) 123-4567"
-                    className="w-full rounded-lg border border-black px-4 py-3 outline-none focus:ring-2 focus:ring-black"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    required
-                  />
-                </div>
+                  {/* Phone */}
+                  <div>
+                    <label htmlFor="phone" className="block text-sm mb-1 text-white/80">
+                      Phone number
+                    </label>
+                    <input
+                      id="phone"
+                      name="phone"
+                      required
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className="w-full rounded-lg px-4 py-3 bg-white text-black placeholder-black/40 border-0 focus:outline-none focus:ring-2 focus:ring-white/30"
+                      placeholder="(555) 555-5555"
+                    />
+                  </div>
 
-                <div className="space-y-2">
-                  <label htmlFor="changes" className="text-sm">
-                    Any changes you want? <span className="opacity-60">(optional)</span>
-                  </label>
-                  <textarea
-                    id="changes"
-                    name="changes"
-                    rows={4}
-                    placeholder="Colors, photos, layout, sections, features"
-                    className="w-full rounded-lg border border-black px-4 py-3 outline-none focus:ring-2 focus:ring-black"
-                    value={changes}
-                    onChange={(e) => setChanges(e.target.value)}
-                  />
-                </div>
+                  {/* Changes */}
+                  <div>
+                    <label htmlFor="changes" className="block text-sm mb-1 text-white/80">
+                      Requested tweaks (optional)
+                    </label>
+                    <textarea
+                      id="changes"
+                      name="changes"
+                      rows={4}
+                      value={changes}
+                      onChange={(e) => setChanges(e.target.value)}
+                      className="w-full rounded-lg px-4 py-3 bg-white text-black placeholder-black/40 border-0 focus:outline-none focus:ring-2 focus:ring-white/30"
+                      placeholder="Anything you’d like different on this demo?"
+                    />
+                  </div>
 
-                {/* Honeypot */}
-                <input
-                  type="text"
-                  name="_gotcha"
-                  className="hidden"
-                  tabIndex={-1}
-                  autoComplete="off"
-                />
+                  {err ? (
+                    <div className="text-sm text-red-300 bg-red-900/30 border border-red-400/30 rounded-lg px-3 py-2">
+                      {err}
+                    </div>
+                  ) : null}
 
-                {err && (
-                  <p className="text-sm text-red-600 border border-red-600 rounded-lg px-3 py-2">
-                    {err}
-                  </p>
-                )}
-
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="w-full rounded-lg px-4 py-3 font-semibold bg-black text-white hover:opacity-90 disabled:opacity-60"
-                >
-                  {submitting ? "Sending" : "Send"}
-                </button>
-              </form>
-            )}
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="w-full rounded-lg px-4 py-3 font-semibold bg-black text-white hover:bg-white/90 disabled:opacity-60"
+                  >
+                    {submitting ? "Sending" : "Send"}
+                  </button>
+                </form>
+              )}
+            </div>
           </div>
         </div>
       )}
