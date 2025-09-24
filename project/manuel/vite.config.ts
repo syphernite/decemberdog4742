@@ -1,12 +1,8 @@
-import { defineConfig } from 'vite';
-import seoPlugin from "./vite.seo";
-import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
-// https://vitejs.dev/config/
+// Deploying under https://built4you.org/manuel/
 export default defineConfig({
-  base: "/manuel/",
-  plugins: [react(), seoPlugin()],
-  optimizeDeps: {
-    exclude: ['lucide-react'],
-  },
-});
+  plugins: [react()],
+  base: '/manuel/',
+})
