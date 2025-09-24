@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 
-// Static Bolt export adapted for subpath /johnny (no React plugin needed)
+// Static Bolt export for subpath /johnny (NO React plugin)
 export default defineConfig({
   base: '/johnny/',
   build: {
