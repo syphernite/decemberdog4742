@@ -2,26 +2,29 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="https://built4you.org/manuel/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Robots -->
+    <meta name="robots" content="index,follow" />
 
     <!-- Primary SEO -->
     <title>Manuel Food Truck | Fried Rice, Burgers, Chicken | Lawton OK</title>
     <meta name="description" content="Manuel Food Truck in Lawton, OK. Fresh combo fried rice, burgers, chicken, and sides. Call 580-771-6373 to order or find today’s location." />
-    <link rel="canonical" href="/" />
+    <link rel="canonical" href="https://built4you.org/manuel/" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Manuel Food Truck | Lawton OK" />
     <meta property="og:description" content="Fresh, cooked hot and fast. Fried rice, burgers, chicken, and sides." />
-    <meta property="og:image" content="/images/og-hero.jpg" />
-    <meta property="og:url" content="/" />
+    <meta property="og:image" content="https://built4you.org/manuel/images/og-hero.jpg" />
+    <meta property="og:url" content="https://built4you.org/manuel/" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Manuel Food Truck | Lawton OK" />
     <meta name="twitter:description" content="Fresh, cooked hot and fast. Fried rice, burgers, chicken, and sides." />
-    <meta name="twitter:image" content="/images/og-hero.jpg" />
+    <meta name="twitter:image" content="https://built4you.org/manuel/images/og-hero.jpg" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,8 +37,8 @@
       "@context":"https://schema.org",
       "@type":"FoodTruck",
       "name":"Manuel Food Truck",
-      "image":"/images/logo.jpg",
-      "url":"/",
+      "image":"https://built4you.org/manuel/images/logo.jpg",
+      "url":"https://built4you.org/manuel/",
       "telephone":"+1-580-771-6373",
       "servesCuisine":["Chinese","American","Burgers"],
       "address":{
@@ -48,12 +51,13 @@
       },
       "areaServed":"Lawton OK",
       "sameAs":["https://www.facebook.com/manuelfoodtruck"],
-      "menu":"#menu"
+      "menu":"https://built4you.org/manuel/#menu"
     }
     </script>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <!-- In Vite production this will point to the built script in /manuel/ -->
+    <script type="module" src="/manuel/src/main.tsx"></script>
   </body>
 </html>
