@@ -61,13 +61,17 @@ jobs:
           cd ../../
           cp -r project/landingpage/dist/* .
 
-      # NEW: real files for SPA marketing routes so Google gets 200 (not 404)
+      # Real files for SPA marketing routes that should exist server-side
       - name: Create static shells for marketing routes
         run: |
-          for route in pricing why-we-exist demos; do
+          for route in home pricing careers; do
             mkdir -p "$route"
             cp -f index.html "$route/index.html"
           done
+
+      # Generate indexable /clients/ hub and noindex /demos/ gallery
+      - name: Generate hubs (clients + demos)
+        run: node .scripts/generate-hubs.mjs
 
       # Install only what we need (avoids ETARGET errors)
       - name: Install OG generator deps
@@ -105,7 +109,7 @@ jobs:
             case "$d" in
               project|.git|.github|node_modules|seo|og|icons) continue ;;
             esac
-            if [ -f "$d/index.html" ]; then
+            if ( [ -f "$d/index.html" ] ); then
               SLUGS+=("$d")
             fi
           done
