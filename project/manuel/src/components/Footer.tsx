@@ -6,7 +6,7 @@ const Footer = () => {
   const BASE = import.meta.env.BASE_URL;
   const LOGO = `${BASE}images/logo.jpg`;
 
-  // Weekly hours moved here
+  // Weekly hours
   const HOURS: { day: string; time: string }[] = [
     { day: 'Mon', time: 'Closed' },
     { day: 'Tue', time: '11:30 AM – 8:00 PM' },
@@ -21,7 +21,7 @@ const Footer = () => {
     <footer className="bg-black-deep text-white py-14 sm:py-16">
       <div className="container mx-auto px-4">
         <div className="text-center space-y-8">
-          {/* HOURS (added) */}
+          {/* HOURS */}
           <motion.div
             initial={{ y: 24, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
@@ -33,7 +33,10 @@ const Footer = () => {
             </h3>
             <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm sm:text-base text-gray-200">
               {HOURS.map(({ day, time }) => (
-                <div key={day} className="flex justify-between border-b border-white/10 py-2 col-span-2">
+                <div
+                  key={day}
+                  className="flex justify-between border-b border-white/10 py-2 col-span-2"
+                >
                   <span className="font-body text-gray-300">{day}</span>
                   <span className="font-body">{time}</span>
                 </div>
@@ -41,7 +44,7 @@ const Footer = () => {
             </div>
           </motion.div>
 
-          {/* Facebook only */}
+          {/* Facebook */}
           <motion.div
             initial={{ y: 30, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
@@ -72,17 +75,23 @@ const Footer = () => {
             className="flex items-center justify-center space-x-3 sm:space-x-4"
           >
             <div className="w-14 h-14 sm:w-16 sm:h-16 bg-red-primary rounded-full flex items-center justify-center border-2 border-silver-accent overflow-hidden">
-              <img src={LOGO} alt="Manuel Food Truck Logo" className="w-full h-full object-cover" />
+              <img
+                src={LOGO}
+                alt="Manuel Food Truck Logo"
+                className="w-full h-full object-cover"
+              />
             </div>
             <div className="text-left">
               <h2 className="font-display text-xl sm:text-3xl font-normal tracking-wider">
                 MANUEL FOOD TRUCK
               </h2>
-              <p className="font-body text-gray-400 text-sm sm:text-base">Fresh • Fast • Local</p>
+              <p className="font-body text-gray-400 text-sm sm:text-base">
+                Fresh • Fast • Local
+              </p>
             </div>
           </motion.div>
 
-          {/* Copyright */}
+          {/* Copyright + Built4You credit */}
           <motion.div
             initial={{ y: 30, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
@@ -92,6 +101,17 @@ const Footer = () => {
           >
             <p className="font-body text-gray-500 text-xs sm:text-sm">
               © 2025 Manuel Food Truck. All rights reserved.
+            </p>
+            <p className="font-body text-gray-500 text-xs sm:text-sm">
+              Made with <span className="text-red-500">♥</span> by{' '}
+              <a
+                href="https://built4you.org"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-emerald-400 hover:text-emerald-300 transition-colors"
+              >
+                Built4You
+              </a>
             </p>
           </motion.div>
         </div>
