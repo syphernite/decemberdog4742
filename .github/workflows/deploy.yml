@@ -1,4 +1,4 @@
-name: 🚀 Build & Deploy All Clients
+name: "🚀 Build & Deploy All Clients"
 
 on:
   push:
@@ -61,19 +61,41 @@ jobs:
           cd ../../
           cp -r project/landingpage/dist/* .
 
-      # NEW: inject SEO tags into built HTML and regenerate sitemap/robots at publish root
-      - name: Finalize SEO (inject tags + sitemap)
+      # Install only what we need (avoids ETARGET errors)
+      - name: Install OG generator deps
+        run: npm i puppeteer@22 --no-save
+
+      # Generate 1200x630 OG images + icon pack (apple-touch-icon, favicons, android, pinned-tab)
+      - name: Generate OG images and icons
+        run: node .scripts/gen-og-images.mjs
+
+      # Finalize SEO across root and all subsites (adds meta + links to og images/icons)
+      - name: Finalize SEO (inject tags + sitemaps)
         run: node .scripts/finalize-seo.mjs
 
-      # Dynamic SPA fallback: send to demo folder only if that folder exists.
-      # Otherwise treat as a root SPA route (e.g., /careers).
+      # Guard against accidental noindex anywhere in published HTML
+      - name: Noindex guard
+        shell: bash
+        run: |
+          set -e
+          echo "Scanning for noindex in built HTML..."
+          if grep -RIl --include="*.html" "name=[\"']robots[\"'][^>]*noindex" . >/dev/null 2>&1; then
+            echo "Found noindex. Replacing with index,follow."
+            grep -RIl --include="*.html" "name=[\"']robots[\"'][^>]*noindex" . | while read -r f; do
+              sed -i 's/\(<meta[^>]*name=["'\'']robots["'\''][^>]*content=["'\'']\)[^"'\'']*noindex[^"'\'']*\(["'\''][^>]*>\)/\1index,follow\2/g' "$f"
+            done
+          else
+            echo "No noindex found in built HTML."
+          fi
+
+      # Smart SPA 404 keeps all subpaths working
       - name: Create smart 404.html
         run: |
           SLUGS=()
           for d in */ ; do
             d="${d%/}"
             case "$d" in
-              project|.git|.github|node_modules) continue ;;
+              project|.git|.github|node_modules|seo|og|icons) continue ;;
             esac
             if [ -f "$d/index.html" ]; then
               SLUGS+=("$d")
@@ -82,14 +104,14 @@ jobs:
           printf -v SLUGS_JS "'%s'," "${SLUGS[@]}"
           SLUGS_JS="[${SLUGS_JS%,}]"
 
-          cat > 404.html << EOF
+          cat > 404.html << 'EOF'
           <!DOCTYPE html>
           <html>
           <head><meta charset="utf-8"><title>Redirecting…</title></head>
           <body>
             <script>
               (function () {
-                const DEMO_SLUGS = ${SLUGS_JS};
+                const DEMO_SLUGS = SLUGS_PLACEHOLDER;
 
                 const raw = location.pathname.replace(/^\/+/, '');
                 const parts = raw.split('/').filter(Boolean);
@@ -113,7 +135,6 @@ jobs:
                   return;
                 }
 
-                // Not a demo slug → root SPA route. Encode original path.
                 const query = q ? '&q=' + q.slice(1).replace(/&/g, '~and~') : '';
                 const p = '?p=/' + raw + query + h;
                 location.replace('/' + p);
@@ -123,6 +144,8 @@ jobs:
           </body>
           </html>
           EOF
+
+          sed -i "s|SLUGS_PLACEHOLDER|${SLUGS_JS//\\/\\\\}|g" 404.html
 
       - name: Show publish directory
         run: |

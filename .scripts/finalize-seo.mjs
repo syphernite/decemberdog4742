@@ -3,19 +3,16 @@ import path from "path";
 
 const PUBLISH = process.cwd();
 const SITE_BASE = "https://built4you.org";
-const IGNORE = new Set(["project", ".git", ".github", "node_modules"]);
+const IGNORE = new Set(["project", ".git", ".github", "node_modules", "seo", "og", "icons"]);
 
-// --- helpers to read controls ---
-const readSet = (p) =>
-  fs.existsSync(p)
-    ? new Set(fs.readFileSync(p, "utf8").split(/\r?\n/).map(s => s.trim()).filter(Boolean))
-    : new Set();
-
-const readMap = (p) => {
+function readLines(p) {
+  if (!fs.existsSync(p)) return [];
+  return fs.readFileSync(p, "utf8").split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+}
+function readMap(p) {
   const m = new Map();
   if (!fs.existsSync(p)) return m;
-  const lines = fs.readFileSync(p, "utf8").split(/\r?\n/).map(s => s.trim()).filter(Boolean);
-  for (const line of lines) {
+  for (const line of readLines(p)) {
     const i = line.indexOf("|");
     if (i === -1) continue;
     const k = line.slice(0, i).trim();
@@ -23,107 +20,28 @@ const readMap = (p) => {
     if (k) m.set(k, v);
   }
   return m;
-};
+}
 
 const esc = (s) => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 const titleCase = (s) => s.replace(/[-_]/g," ").replace(/\b\w/g, c => c.toUpperCase());
 
-// --- inputs (all optional except clients/demos you already use) ---
-const CLIENTS   = readSet(path.join(process.cwd(), "seo", "clients.txt"));
-const DEMOS     = readSet(path.join(process.cwd(), "seo", "demos.txt"));
-const INDUSTRY  = readMap(path.join(process.cwd(), "seo", "industries.txt")); // slug|Industry
-const CITY      = readMap(path.join(process.cwd(), "seo", "locations.txt"));  // slug|City, ST
-const overridesPath = path.join(process.cwd(), "seo", "overrides.json");
+const SEO_DIR = path.join(PUBLISH, "seo");
+const CLIENTS   = new Set(readLines(path.join(SEO_DIR, "clients.txt")));
+const DEMOS     = new Set(readLines(path.join(SEO_DIR, "demos.txt")));
+const INDUSTRY  = readMap(path.join(SEO_DIR, "industries.txt"));
+const CITY      = readMap(path.join(SEO_DIR, "locations.txt"));
+const IK_PATH   = path.join(SEO_DIR, "industry-keywords.json");
+const KEYWORDS  = fs.existsSync(IK_PATH) ? JSON.parse(fs.readFileSync(IK_PATH,"utf8")) : {};
+const overridesPath = path.join(SEO_DIR, "overrides.json");
 const OVERRIDES = fs.existsSync(overridesPath) ? JSON.parse(fs.readFileSync(overridesPath, "utf8")) : {};
 
-const statusFor = (slug) => CLIENTS.has(slug) ? "client" : (DEMOS.has(slug) ? "demo" : "demo");
+const CANON = new Map([ ["restaraunt","Restaurant"] ]);
+const canonIndustry = (x) => {
+  if (!x) return undefined;
+  const s = String(x).trim(); const lower = s.toLowerCase();
+  return CANON.get(lower) || s.charAt(0).toUpperCase() + s.slice(1);
+};
 
-// default generator (clients may use city/industry; demos never do)
-function defaultSEO(slug){
-  const status = statusFor(slug);
-  const brand = titleCase(slug || "Built4You");
-
-  // Base defaults for everyone
-  let title = `${brand} — Built4You`;
-  let description = "Modern, mobile-first site by Built4You.";
-  let keywords = slug ? [slug, "website", "Built4You", `${slug} site`, `${slug} online`] : ["Built4You","website","online"];
-
-  // Enrich ONLY clients with industry/city if present
-  if (status === "client") {
-    const ind  = INDUSTRY.get(slug); // e.g. "Restaurant"
-    const city = CITY.get(slug);     // e.g. "Morehead City, NC"
-    if (ind && city) {
-      title = `${ind} in ${city} — ${brand} | Built4You`;
-      description = `Professional ${ind.toLowerCase()} in ${city}.`;
-      keywords = [ind, city, `${ind} ${city}`, slug, "website", "Built4You"];
-    } else if (ind) {
-      title = `${ind} — ${brand} | Built4You`;
-      description = `Professional ${ind.toLowerCase()} services.`;
-      keywords = [ind, slug, "website", "Built4You"];
-    }
-  }
-
-  return { status, title, description, keywords };
-}
-
-// merge defaults + optional overrides
-function seoFor(slug){
-  const base = defaultSEO(slug);
-  const o = OVERRIDES[slug] || {};
-  const forcedStatus = (o.status === "client" || o.status === "demo") ? o.status : base.status;
-  return { ...base, ...o, status: forcedStatus };
-}
-
-function injectHead(file, slug, seo){
-  if (!fs.existsSync(file)) return false;
-  let html = fs.readFileSync(file, "utf8");
-  const canonical = `${SITE_BASE}/${slug ? slug + "/" : ""}`;
-  const robots = seo.status === "client" ? "index, follow" : "noindex, nofollow";
-
-  const tags = [
-    `<meta name="robots" content="${robots}">`,
-    `<link rel="canonical" href="${esc(canonical)}">`,
-    `<title>${esc(seo.title)}</title>`,
-    `<meta name="description" content="${esc(seo.description)}">`,
-    Array.isArray(seo.keywords) && seo.keywords.length ? `<meta name="keywords" content="${esc(seo.keywords.join(", "))}">` : "",
-    `<meta property="og:type" content="website">`,
-    `<meta property="og:title" content="${esc(seo.title)}">`,
-    `<meta property="og:description" content="${esc(seo.description)}">`,
-    `<meta property="og:url" content="${esc(canonical)}">`,
-    `<meta name="twitter:card" content="summary_large_image">`,
-    `<meta name="twitter:title" content="${esc(seo.title)}">`,
-    `<meta name="twitter:description" content="${esc(seo.description)}">`
-  ].filter(Boolean).join("");
-
-  const addr = seo.address || null;
-  const ld = (seo.status === "client" && (addr || seo.phone)) ? `
-<script type="application/ld+json">
-${JSON.stringify({
-  "@context":"https://schema.org",
-  "@type":"LocalBusiness",
-  name: seo.title,
-  url: canonical,
-  telephone: seo.phone || undefined,
-  address: addr ? {
-    "@type":"PostalAddress",
-    streetAddress: addr.street,
-    addressLocality: addr.locality,
-    addressRegion: addr.region,
-    postalCode: addr.postalCode,
-    addressCountry: addr.country
-  } : undefined
-}, null, 2)}
-</script>` : "";
-
-  html = (/<\/head>/i.test(html))
-    ? html.replace(/<\/head>/i, `${tags}\n${ld}\n</head>`)
-    : `<!-- SEO INJECT START -->${tags}${ld}<!-- SEO INJECT END -->\n` + html;
-
-  fs.writeFileSync(file, html, "utf8");
-  return true;
-}
-
-// collect built subfolders at publish root
 const slugs = fs.readdirSync(PUBLISH, { withFileTypes: true })
   .filter(d => d.isDirectory() && !IGNORE.has(d.name))
   .map(d => d.name)
@@ -131,27 +49,133 @@ const slugs = fs.readdirSync(PUBLISH, { withFileTypes: true })
 
 const entries = [];
 
-// root
+function statusFor(slug) { if (CLIENTS.has(slug)) return "client"; if (DEMOS.has(slug)) return "demo"; return "demo"; }
+function buildDesc(name, ind, loc) {
+  const keySet = KEYWORDS[canonIndustry(ind)] || KEYWORDS[ind] || [];
+  const kws = keySet.slice(0, 6).join(", ");
+  const parts = []; if (name) parts.push(name); if (ind) parts.push(canonIndustry(ind)); if (loc) parts.push(loc);
+  const who = parts.filter(Boolean).join(" • ") || "Custom websites";
+  const baseline = `${who} by Built4You. ${kws}`.trim();
+  return baseline.slice(0, 155);
+}
+
+function injectHead(file, slug, data, isRoot = false) {
+  if (!fs.existsSync(file)) return false;
+  let html = fs.readFileSync(file, "utf8");
+
+  const canonical = `${SITE_BASE}/${slug ? slug + "/" : ""}`;
+  const shouldNoindex = data.noindex === true;
+  const robots = shouldNoindex ? "noindex, nofollow" : "index, follow";
+
+  // og image url (prefer generated)
+  let ogImageUrl = data.ogImage;
+  if (!ogImageUrl) ogImageUrl = `${SITE_BASE}/og/${slug ? slug : "root"}.png`;
+
+  const ogW = "1200", ogH = "630";
+
+  const baseTags = [
+    `<meta name="robots" content="${robots}">`,
+    `<link rel="canonical" href="${esc(canonical)}">`,
+    `<title>${esc(data.title)}</title>`,
+    `<meta name="description" content="${esc(data.description)}">`,
+    `<meta property="og:site_name" content="Built4You">`,
+    `<meta property="og:type" content="website">`,
+    `<meta property="og:title" content="${esc(data.title)}">`,
+    `<meta property="og:description" content="${esc(data.description)}">`,
+    `<meta property="og:url" content="${esc(canonical)}">`,
+    `<meta property="og:image" content="${esc(ogImageUrl)}">`,
+    `<meta property="og:image:width" content="${ogW}">`,
+    `<meta property="og:image:height" content="${ogH}">`,
+    `<meta name="twitter:card" content="summary_large_image">`,
+    `<meta name="twitter:title" content="${esc(data.title)}">`,
+    `<meta name="twitter:description" content="${esc(data.description)}">`,
+    `<meta name="twitter:image" content="${esc(ogImageUrl)}">`
+  ];
+
+  // Root-only icons and app meta so iMessage and iOS tiles look clean
+  const iconTags = isRoot ? [
+    `<link rel="apple-touch-icon" href="/apple-touch-icon.png">`,
+    `<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">`,
+    `<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">`,
+    `<link rel="manifest" href="/site.webmanifest" crossorigin="use-credentials">`,
+    `<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#10b981">`,
+    `<meta name="theme-color" content="#0ea5e9">`,
+    `<meta name="application-name" content="Built4You">`,
+    `<meta name="apple-mobile-web-app-capable" content="yes">`,
+    `<meta name="apple-mobile-web-app-title" content="Built4You">`
+  ] : [];
+
+  const tags = baseTags.concat(iconTags).join("");
+
+  html = (/<\/head>/i.test(html))
+    ? html.replace(/<\/head>/i, `${tags}\n</head>`)
+    : `<!-- SEO INJECT START -->${tags}<!-- SEO INJECT END -->\n` + html;
+
+  if (!shouldNoindex) {
+    html = html.replace(
+      /(<meta[^>]*name=["']robots["'][^>]*content=["'])[^"']*noindex[^"']*(["'][^>]*>)/ig,
+      '$1index, follow$2'
+    );
+  }
+
+  fs.writeFileSync(file, html, "utf8");
+  return true;
+}
+
+// Root
 const rootIndex = path.join(PUBLISH, "index.html");
 if (fs.existsSync(rootIndex)) {
-  injectHead(rootIndex, "", seoFor(""));
+  const title = "Built4You — Custom websites for small businesses";
+  const description = "Fast, mobile-first websites that convert. $0 demos, subscription or one-time pricing.";
+  injectHead(rootIndex, "", {
+    title,
+    description,
+    keywords: ["Built4You","web design","mobile first","small business"]
+  }, true);
   entries.push({ loc: `${SITE_BASE}/`, priority: "1.0", changefreq: "weekly" });
   entries.push({ loc: `${SITE_BASE}/pricing`, priority: "0.9", changefreq: "weekly" });
   entries.push({ loc: `${SITE_BASE}/why-we-exist`, priority: "0.7", changefreq: "monthly" });
 }
 
-// subsites
+// Subsites
 for (const slug of slugs) {
-  const cfg = seoFor(slug);
-  injectHead(path.join(PUBLISH, slug, "index.html"), slug, cfg);
+  const status = statusFor(slug);
+  const name = titleCase(slug);
+  const indRaw = INDUSTRY.get(slug);
+  const ind = canonIndustry(indRaw);
+  const loc = CITY.get(slug);
+  const kws = (KEYWORDS[ind] || KEYWORDS[indRaw] || []);
+  const baseKeywords = [slug, "website", "Built4You", ...(kws || [])];
+
+  let title = `${name} — Built4You`;
+  if (ind && loc) title = `${ind} in ${loc} — ${name} | Built4You`;
+  else if (ind) title = `${ind} — ${name} | Built4You`;
+
+  const description = buildDesc(name, ind || indRaw, loc);
+
+  const o = OVERRIDES[slug] || {};
+  const data = {
+    status,
+    title: o.title || title,
+    description: o.description || description,
+    keywords: Array.isArray(o.keywords) ? o.keywords : baseKeywords,
+    noindex: o.noindex === true ? true : false,
+    phone: o.phone,
+    address: o.address,
+    schemaName: o.schemaName,
+    ogImage: o.ogImage
+  };
+
+  injectHead(path.join(PUBLISH, slug, "index.html"), slug, data, false);
+
   entries.push({
     loc: `${SITE_BASE}/${slug}/`,
-    priority: cfg.status === "client" ? "0.9" : "0.5",
-    changefreq: cfg.status === "client" ? "weekly" : "monthly"
+    priority: data.noindex ? "0.3" : (status === "client" ? "0.9" : "0.7"),
+    changefreq: data.noindex ? "yearly" : (status === "client" ? "weekly" : "monthly")
   });
 }
 
-// write sitemap + robots at publish root
+// Root sitemap + robots
 const urls = entries.map(e =>
   `  <url><loc>${e.loc}</loc><changefreq>${e.changefreq}</changefreq><priority>${e.priority}</priority></url>`
 ).join("\n");
@@ -162,11 +186,15 @@ ${urls}
 </urlset>
 `;
 fs.writeFileSync(path.join(PUBLISH, "sitemap.xml"), xml, "utf8");
-fs.writeFileSync(path.join(PUBLISH, "robots.txt"),
-`User-agent: *
+
+fs.writeFileSync(
+  path.join(PUBLISH, "robots.txt"),
+  `User-agent: *
 Allow: /
 
 Sitemap: ${SITE_BASE}/sitemap.xml
-`, "utf8");
+`,
+  "utf8"
+);
 
-console.log(`SEO injected for ${slugs.length} subsites. Clients used city/industry where available. Wrote ${entries.length} URLs.`);
+console.log("Finalize SEO complete. OG + icons linked. Canonicals, metas, JSON-LD, and sitemaps generated.");
