@@ -24,50 +24,46 @@
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#10b981" />
     <link rel="manifest" href="/site.webmanifest" crossorigin="use-credentials" />
 
-    <!-- Minimal, clean preloader to avoid any "index" flash -->
+    <!-- Minimal, clean preloader -->
     <style>
       :root {
         --bg1: #059669; /* emerald-600 */
         --bg2: #2563eb; /* blue-600 */
-        --ring: rgba(255, 255, 255, 0.65);
       }
-      html, body { height: 100%; margin: 0; background: #0b1120; }
+      html, body { height: 100%; margin: 0; background: #ffffff; }
       #root { isolation: isolate; }
+
       .b4y-preload {
         position: fixed; inset: 0; z-index: 9999;
         display: grid; place-items: center;
-        background: linear-gradient(135deg, var(--bg1), var(--bg2));
-        color: #fff;
+        background: #ffffff;
+        color: #000000;
         font-family: ui-sans-serif, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
         transition: opacity .35s ease, visibility .35s ease;
       }
       .b4y-preload.hidden { opacity: 0; visibility: hidden; }
+
       .b4y-card {
-        background: rgba(255,255,255,.08);
-        border: 1px solid rgba(255,255,255,.25);
-        border-radius: 28px;
-        padding: 36px 42px;
-        box-shadow: 0 20px 60px rgba(0,0,0,.25), inset 0 0 40px rgba(255,255,255,.08);
-        backdrop-filter: blur(8px);
         text-align: center;
-        max-width: 560px;
+        padding: 24px 28px;
+      }
+      .b4y-logo {
+        width: 48px; height: 48px; display: block; margin: 0 auto 12px auto;
       }
       .b4y-title {
-        margin: 0 0 10px 0;
+        margin: 0 0 16px 0;
         font-weight: 800;
-        font-size: clamp(28px, 6vw, 40px);
-        letter-spacing: .3px;
+        font-size: clamp(20px, 4.8vw, 28px);
+        letter-spacing: .2px;
       }
-      .b4y-sub {
-        margin: 0 0 18px 0;
-        opacity: .92;
-        font-size: clamp(14px, 3.6vw, 18px);
-      }
+
+      /* Gradient ring spinner using a conic gradient with an inner mask */
       .b4y-ring {
-        width: 40px; height: 40px; border-radius: 9999px;
-        border: 3px solid rgba(255,255,255,.25);
-        border-top-color: var(--ring);
-        margin: 0 auto;
+        width: 48px; height: 48px; border-radius: 9999px; margin: 0 auto;
+        background:
+          conic-gradient(from 0turn, var(--bg1), var(--bg2), var(--bg1));
+        -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 0);
+                mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 0);
         animation: spin 1s linear infinite;
       }
       @keyframes spin { to { transform: rotate(360deg); } }
@@ -92,8 +88,8 @@
     <!-- Branded preloader until React mounts -->
     <div id="b4y-preload" class="b4y-preload" aria-hidden="true">
       <div class="b4y-card">
-        <h1 class="b4y-title">Built4You</h1>
-        <p class="b4y-sub">Loading your experience…</p>
+        <img src="/favicon.ico" alt="Built4You logo" class="b4y-logo" />
+        <h1 class="b4y-title">Loading..</h1>
         <div class="b4y-ring" aria-hidden="true"></div>
       </div>
     </div>
