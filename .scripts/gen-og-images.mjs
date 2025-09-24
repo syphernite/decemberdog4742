@@ -1,231 +1,185 @@
 /**
- * Generates:
- *  - OG images (1200x630 PNG) at /og/root.png and /og/<slug>.png
- *  - Icon pack at site root:
- *      /apple-touch-icon.png (180x180)
- *      /favicon-32x32.png, /favicon-16x16.png
- *      /android-chrome-192x192.png, /android-chrome-512x512.png
- *      /favicon.ico  (optional; built if ico library available)
- *      /safari-pinned-tab.svg
+ * Generates Open Graph images and icon pack.
+ * - Shared default OG for ALL client pages: /og/clients-default.png
+ * - Per-client override: put a PNG at seo/og/<slug>.png → copied to /og/<slug>.png
+ * - Marketing OGs: /og/root.png, /og/pricing.png, /og/careers.png
+ * - Icons: apple-touch-icon, favicons, android-chrome, site.webmanifest, safari-pinned-tab.svg
  *
- * Gradient: Tailwind emerald-600 (#059669) → blue-600 (#2563eb)
- * Logo: auto-detected at seo/logo.svg|png or root logo.svg|png
+ * Gradient: emerald-600 (#059669) → blue-600 (#2563eb)
+ * Logo: seo/logo.svg (preferred) or seo/logo.png (fallback)
  */
 
 import fs from "fs";
+import fsp from "fs/promises";
 import path from "path";
-import { fileURLToPath } from "url";
+import puppeteer from "puppeteer";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const PUBLISH = process.cwd();
+const OUT_OG = path.join(PUBLISH, "og");
+const SEO_DIR = path.join(PUBLISH, "seo");
+const OG_OVERRIDE_DIR = path.join(SEO_DIR, "og");
 
-const PUBLISH = path.resolve(__dirname, "..");
-const OG_DIR = path.join(PUBLISH, "og");
-const IGNORE = new Set(["project", ".git", ".github", "node_modules", "seo", "og", "icons"]);
+const COLORS = { g1: "#059669", g2: "#2563eb" }; // emerald-600 → blue-600
 
-function readLines(p) {
-  if (!fs.existsSync(p)) return [];
-  return fs.readFileSync(p, "utf8").split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+async function ensureDir(p) {
+  await fsp.mkdir(p, { recursive: true });
 }
-function readMap(p) {
-  const m = new Map();
-  if (!fs.existsSync(p)) return m;
-  for (const line of readLines(p)) {
-    const i = line.indexOf("|");
-    if (i === -1) continue;
-    const k = line.slice(0, i).trim();
-    const v = line.slice(i + 1).trim();
-    if (k) m.set(k, v);
+
+function exists(p) {
+  try { fs.accessSync(p, fs.constants.F_OK); return true; } catch { return false; }
+}
+
+async function loadLogoDataURL() {
+  const svg = path.join(SEO_DIR, "logo.svg");
+  const png = path.join(SEO_DIR, "logo.png");
+  if (exists(svg)) {
+    const svgText = await fsp.readFile(svg, "utf8");
+    const b64 = Buffer.from(svgText, "utf8").toString("base64");
+    return `data:image/svg+xml;base64,${b64}`;
   }
-  return m;
-}
-const titleCase = (s) => String(s).replace(/[-_]/g, " ").replace(/\b\w/g, c => c.toUpperCase());
-
-function findLogo() {
-  const candidates = [
-    path.join(PUBLISH, "seo", "logo.svg"),
-    path.join(PUBLISH, "seo", "logo.png"),
-    path.join(PUBLISH, "logo.svg"),
-    path.join(PUBLISH, "logo.png"),
-  ];
-  for (const p of candidates) if (fs.existsSync(p)) return p;
+  if (exists(png)) {
+    const buf = await fsp.readFile(png);
+    const b64 = buf.toString("base64");
+    return `data:image/png;base64,${b64}`;
+  }
   return null;
 }
-function fileToDataURL(p) {
-  const buf = fs.readFileSync(p);
-  const ext = p.toLowerCase().endsWith(".svg") ? "image/svg+xml" : "image/png";
-  return `data:${ext};base64,${buf.toString("base64")}`;
-}
 
-function discoverSlugs() {
-  return fs.readdirSync(PUBLISH, { withFileTypes: true })
-    .filter(d => d.isDirectory() && !IGNORE.has(d.name))
-    .map(d => d.name)
-    .filter(slug => fs.existsSync(path.join(PUBLISH, slug, "index.html")));
-}
-
-function ogHTML({ title, subtitle, logoDataUrl }) {
-  const logo = logoDataUrl
-    ? `<div class="logo"><img src="${logoDataUrl}" alt="logo" /></div>`
-    : `<div class="logo-fallback">B4Y</div>`;
-
+function htmlTemplate({ title, subtitle, logoDataURL, width = 1200, height = 630 }) {
+  // Very clean card: gradient bg, centered logo, optional title/subtitle
   return `<!doctype html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <style>
-    html, body {
-      margin: 0; padding: 0; width: 1200px; height: 630px;
-      background: linear-gradient(135deg, #059669, #2563eb);
-      color: #ffffff;
-      font-family: ui-sans-serif, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial;
-    }
-    .wrap { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
-    .card {
-      width: 1000px; border-radius: 28px; padding: 56px;
-      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.25);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.25), inset 0 0 40px rgba(255,255,255,0.08); backdrop-filter: blur(8px);
-    }
-    h1 { margin: 0 0 12px 0; font-size: 72px; line-height: 1.05; }
-    p  { margin: 0; font-size: 36px; opacity: .92; }
-    .logo, .logo-fallback {
-      position: absolute; top: 28px; left: 32px;
-      width: 120px; height: 120px; border-radius: 24px;
-      background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.35);
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 12px 28px rgba(0,0,0,0.25), inset 0 0 24px rgba(255,255,255,0.12);
-      overflow: hidden;
-    }
-    .logo img { width: 76%; height: 76%; object-fit: contain; }
-    .logo-fallback { font-size: 48px; font-weight: 800; letter-spacing: 1px; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=${width}, initial-scale=1">
+<style>
+  :root { --g1:${COLORS.g1}; --g2:${COLORS.g2}; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; }
+  body {
+    width:${width}px; height:${height}px;
+    display:flex; align-items:center; justify-content:center;
+    background: linear-gradient(135deg, var(--g1), var(--g2));
+    font-family: ui-sans-serif, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial;
+    color:#fff;
+  }
+  .wrap { width:100%; height:100%; display:flex; align-items:center; justify-content:center; position:relative; }
+  .logo {
+    width: 360px; max-width: 60%; opacity: 0.98;
+    filter: drop-shadow(0 10px 30px rgba(0,0,0,.35));
+  }
+  .text { position:absolute; bottom:48px; left:64px; right:64px; text-align:center; }
+  .title { font-size:56px; font-weight:800; line-height:1.05; margin:0; }
+  .subtitle { margin-top:10px; font-size:28px; opacity:.92 }
+</style>
 </head>
 <body>
   <div class="wrap">
-    ${logo}
-    <div class="card">
-      <h1>${title}</h1>
-      <p>${subtitle}</p>
+    ${logoDataURL ? `<img class="logo" src="${logoDataURL}" alt="">` : ""}
+    <div class="text">
+      ${title ? `<h1 class="title">${title}</h1>` : ""}
+      ${subtitle ? `<div class="subtitle">${subtitle}</div>` : ""}
     </div>
   </div>
 </body>
 </html>`;
 }
 
-function iconHTML({ logoDataUrl, size }) {
-  const content = logoDataUrl ? `<img src="${logoDataUrl}" alt="logo" />` : `<div class="txt">B4Y</div>`;
-  return `<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <style>
-    html, body { margin:0; padding:0; width:${size}px; height:${size}px;
-      background: linear-gradient(135deg, #059669, #2563eb); color:#fff;
-      font-family: ui-sans-serif, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial; }
-    .wrap { width:100%; height:100%; display:flex; justify-content:center; align-items:center; }
-    .badge {
-      width:${Math.floor(size*0.72)}px; height:${Math.floor(size*0.72)}px;
-      border-radius:${Math.floor(size*0.14)}px;
-      background: rgba(255,255,255,.10); border: 1px solid rgba(255,255,255,.35);
-      display:flex; align-items:center; justify-content:center;
-      box-shadow: 0 18px 40px rgba(0,0,0,.25), inset 0 0 30px rgba(255,255,255,.12);
-      overflow:hidden;
-    }
-    img { width:76%; height:76%; object-fit:contain; }
-    .txt { font-size:${Math.floor(size*0.35)}px; font-weight:800; letter-spacing:2px; }
-  </style>
-</head>
-<body>
-  <div class="wrap"><div class="badge">${content}</div></div>
-</body>
-</html>`;
-}
-
-async function shot({ html, outPath, width, height }) {
-  const puppeteer = await import("puppeteer");
-  const browser = await puppeteer.launch({ headless: "new", args: ["--no-sandbox","--disable-setuid-sandbox"] });
-  const page = await browser.newPage();
+async function renderPNG(page, html, outPath, width = 1200, height = 630) {
   await page.setViewport({ width, height, deviceScaleFactor: 1 });
   await page.setContent(html, { waitUntil: "networkidle0" });
-  const buf = await page.screenshot({ path: outPath, type: "png" });
-  await browser.close();
-  return buf;
+  await page.screenshot({ path: outPath, type: "png" });
 }
 
-async function makeIcoFromPngBuffers(buffers, outFile) {
-  // Try to-ico first (v2), then png-to-ico v2; skip if neither is available
-  try {
-    const mod = await import("to-ico");
-    const toIco = mod.default || mod;
-    const ico = await toIco(buffers);
-    fs.writeFileSync(outFile, ico);
-    return true;
-  } catch {}
-  try {
-    const mod = await import("png-to-ico");
-    const pngToIco = mod.default || mod;
-    const ico = await pngToIco(buffers);
-    fs.writeFileSync(outFile, ico);
-    return true;
-  } catch {}
-  console.warn("Skipping favicon.ico (ico library not available)");
-  return false;
+async function simpleSquare(page, size, outPath, logoDataURL) {
+  const html = `<!doctype html><meta charset="utf-8"><style>
+    :root{--g1:${COLORS.g1};--g2:${COLORS.g2}}
+    html,body{margin:0;padding:0;width:${size}px;height:${size}px;background:linear-gradient(135deg,var(--g1),var(--g2));display:flex;align-items:center;justify-content:center}
+    img{max-width:${Math.round(size*0.6)}px;max-height:${Math.round(size*0.6)}px;filter: drop-shadow(0 6px 18px rgba(0,0,0,.35));}
+  </style>${logoDataURL ? `<img src="${logoDataURL}">` : ""}`;
+  await page.setViewport({ width: size, height: size, deviceScaleFactor: 1 });
+  await page.setContent(html, { waitUntil: "networkidle0" });
+  await page.screenshot({ path: outPath, type: "png" });
+}
+
+async function copyIfExists(src, dst) {
+  if (exists(src)) await fsp.copyFile(src, dst);
 }
 
 async function main() {
-  fs.mkdirSync(OG_DIR, { recursive: true });
+  await ensureDir(OUT_OG);
 
-  // Optional SEO params
-  const SEO_DIR = path.join(PUBLISH, "seo");
-  const INDUSTRY = readMap(path.join(SEO_DIR, "industries.txt"));
-  const CITY = readMap(path.join(SEO_DIR, "locations.txt"));
+  const browser = await puppeteer.launch({ args: ["--no-sandbox", "--disable-setuid-sandbox"] });
+  const page = await browser.newPage();
+  const logoDataURL = await loadLogoDataURL();
 
-  const logoPath = findLogo();
-  const logoDataUrl = logoPath ? fileToDataURL(logoPath) : null;
+  // 1) Marketing OGs
+  await renderPNG(page, htmlTemplate({ title: "", subtitle: "", logoDataURL }), path.join(OUT_OG, "root.png"));
+  await renderPNG(page, htmlTemplate({ title: "Pricing", subtitle: "Fair monthly or one-time", logoDataURL }), path.join(OUT_OG, "pricing.png"));
+  await renderPNG(page, htmlTemplate({ title: "Careers", subtitle: "Build fast. Ship value.", logoDataURL }), path.join(OUT_OG, "careers.png"));
 
-  // Root OG
-  await shot({
-    html: ogHTML({ title: "Built4You", subtitle: "Custom websites for small businesses", logoDataUrl }),
-    outPath: path.join(OG_DIR, "root.png"),
-    width: 1200, height: 630
-  });
-
-  // Subsite OGs
-  const slugs = discoverSlugs();
-  for (const slug of slugs) {
-    const name = titleCase(slug);
-    const ind = INDUSTRY.get(slug) || "";
-    const loc = CITY.get(slug) || "";
-    const subtitle = [ind, loc].filter(Boolean).join(" • ") || "Modern, mobile-first site";
-    await shot({
-      html: ogHTML({ title: name, subtitle, logoDataUrl }),
-      outPath: path.join(OG_DIR, `${slug}.png`),
-      width: 1200, height: 630
-    });
-  }
-
-  // Icons at site root
-  await shot({ html: iconHTML({ logoDataUrl, size: 512 }), outPath: path.join(PUBLISH, "android-chrome-512x512.png"), width: 512, height: 512 });
-  await shot({ html: iconHTML({ logoDataUrl, size: 192 }), outPath: path.join(PUBLISH, "android-chrome-192x192.png"), width: 192, height: 192 });
-  await shot({ html: iconHTML({ logoDataUrl, size: 180 }), outPath: path.join(PUBLISH, "apple-touch-icon.png"), width: 180, height: 180 });
-  const fav32 = await shot({ html: iconHTML({ logoDataUrl, size: 32 }), outPath: path.join(PUBLISH, "favicon-32x32.png"), width: 32, height: 32 });
-  const fav16 = await shot({ html: iconHTML({ logoDataUrl, size: 16 }), outPath: path.join(PUBLISH, "favicon-16x16.png"), width: 16, height: 16 });
-
-  // Optional favicon.ico
-  await makeIcoFromPngBuffers([fav16, fav32], path.join(PUBLISH, "favicon.ico"));
-
-  // Pinned tab SVG: prefer your SVG logo; else a mono fallback
-  if (logoPath && logoPath.toLowerCase().endsWith(".svg")) {
-    fs.copyFileSync(logoPath, path.join(PUBLISH, "safari-pinned-tab.svg"));
+  // 2) Clients default OG (shared across all client pages)
+  // If user provided a custom default at seo/og/clients-default.png, use it. Otherwise, generate a clean default.
+  const clientsDefaultOverride = path.join(OG_OVERRIDE_DIR, "clients-default.png");
+  if (exists(clientsDefaultOverride)) {
+    await fsp.copyFile(clientsDefaultOverride, path.join(OUT_OG, "clients-default.png"));
   } else {
-    const pinned = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="currentColor"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#fff" font-weight="700">B4Y</text></svg>`;
-    fs.writeFileSync(path.join(PUBLISH, "safari-pinned-tab.svg"), pinned, "utf8");
+    await renderPNG(
+      page,
+      htmlTemplate({ title: "", subtitle: "", logoDataURL }),
+      path.join(OUT_OG, "clients-default.png")
+    );
   }
 
-  console.log(`OG images generated: root + ${slugs.length}; icon pack written to site root.`);
+  // 3) Per-client overrides: copy any seo/og/<slug>.png to /og/<slug>.png
+  if (exists(OG_OVERRIDE_DIR)) {
+    for (const entry of fs.readdirSync(OG_OVERRIDE_DIR)) {
+      if (!entry.toLowerCase().endsWith(".png")) continue;
+      if (entry.toLowerCase() === "clients-default.png") continue; // handled
+      const src = path.join(OG_OVERRIDE_DIR, entry);
+      const dst = path.join(OUT_OG, entry);
+      await fsp.copyFile(src, dst);
+    }
+  }
+
+  // 4) Icons (simple gradient square w/ logo)
+  const ICONS = [
+    { size: 512, name: "android-chrome-512x512.png" },
+    { size: 192, name: "android-chrome-192x192.png" },
+    { size: 180, name: "apple-touch-icon.png" },
+    { size: 32,  name: "favicon-32x32.png" },
+    { size: 16,  name: "favicon-16x16.png" }
+  ];
+  const ICON_ROOT = PUBLISH;
+  for (const icon of ICONS) {
+    await simpleSquare(page, icon.size, path.join(ICON_ROOT, icon.name), logoDataURL);
+  }
+
+  // 5) site.webmanifest
+  const manifest = {
+    name: "Built4You",
+    short_name: "Built4You",
+    icons: [
+      { src: "/android-chrome-192x192.png", sizes: "192x192", type: "image/png" },
+      { src: "/android-chrome-512x512.png", sizes: "512x512", type: "image/png" }
+    ],
+    theme_color: "#0ea5e9",
+    background_color: "#0b1120",
+    display: "standalone"
+  };
+  await fsp.writeFile(path.join(ICON_ROOT, "site.webmanifest"), JSON.stringify(manifest, null, 2), "utf8");
+
+  // 6) safari pinned tab (use logo.svg if available; else a tiny fallback)
+  const pinned = path.join(ICON_ROOT, "safari-pinned-tab.svg");
+  const logoSvg = path.join(SEO_DIR, "logo.svg");
+  if (exists(logoSvg)) {
+    await fsp.copyFile(logoSvg, pinned);
+  } else {
+    await fsp.writeFile(pinned, `<?xml version="1.0" encoding="UTF-8"?><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="${COLORS.g1}"/></svg>`, "utf8");
+  }
+
+  await browser.close();
+  console.log("OG images and icons generated.");
 }
 
-main().catch(err => {
-  console.error(err);
-  process.exit(1);
-});
+main().catch(err => { console.error(err); process.exit(1); });
