@@ -7,6 +7,7 @@
   <url><loc>https://built4you.org/bst/</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
   <url><loc>https://built4you.org/colorshift/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://built4you.org/creator/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://built4you.org/demos/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://built4you.org/detailer/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://built4you.org/ecommerce/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://built4you.org/foodtruck/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
@@ -16,6 +17,7 @@
   <url><loc>https://built4you.org/photography/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://built4you.org/plazamexico/</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
   <url><loc>https://built4you.org/plumbing/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://built4you.org/pricing/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://built4you.org/restaraunt/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://built4you.org/studio/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://built4you.org/tattooshop/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
@@ -23,4 +25,5 @@
   <url><loc>https://built4you.org/timeout/</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
   <url><loc>https://built4you.org/tufamilia/</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
   <url><loc>https://built4you.org/wakefield/</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://built4you.org/why-we-exist/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
 </urlset>
