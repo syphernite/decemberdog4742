@@ -1,8 +1,10 @@
 import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react' // <-- add this
 
-// Static Bolt export for subpath /johnny (NO React plugin)
+// React SPA under /johnny
 export default defineConfig({
   base: '/johnny/',
+  plugins: [react()],
   build: {
     outDir: 'dist',
     emptyOutDir: true

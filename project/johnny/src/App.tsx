@@ -1,23 +1,24 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Layout from './components/Layout';
-import Home from './pages/Home';
-import Portfolio from './pages/Portfolio';
-import Contact from './pages/Contact';
+import React from 'react'
+import { NavLink, Outlet } from 'react-router-dom'
 
-function App() {
+export default function App() {
   return (
-    <Router>
-      <Layout>
-        <Routes>
-          <Route path="/johnny" element={<Home />} />
-          <Route path="/johnny/portfolio" element={<Portfolio />} />
-          <Route path="/johnny/contact" element={<Contact />} />
-          <Route path="/" element={<Home />} />
-        </Routes>
-      </Layout>
-    </Router>
-  );
-}
+    <div className="app">
+      <header className="header">
+        <nav className="nav">
+          <NavLink to="/johnny/" end className="nav-link">Home</NavLink>
+          <NavLink to="/johnny/portfolio" className="nav-link">Portfolio</NavLink>
+          <NavLink to="/johnny/contact" className="nav-link cta">Book</NavLink>
+        </nav>
+      </header>
 
-export default App;
+      <main className="container">
+        <Outlet />
+      </main>
+
+      <footer className="footer">
+        <p>© {new Date().getFullYear()} Tattoo Johnny ATL • <a href="https://www.instagram.com/tattoojohnnyatl/" target="_blank" rel="noreferrer">@tattoojohnnyatl</a></p>
+      </footer>
+    </div>
+  )
+}
