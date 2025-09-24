@@ -1,0 +1,17 @@
+{
+  "home": {
+    "title": "Built4You — Home",
+    "description": "Fast, mobile-first websites for small businesses. $0 demos plus simple subscription or one-time pricing.",
+    "keywords": ["home", "Built4You", "small business websites", "fast websites"]
+  },
+  "pricing": {
+    "title": "Pricing — Built4You",
+    "description": "Simple plans for small businesses: $0 demos, fair monthly or one-time pricing. Fast sites that convert.",
+    "keywords": ["pricing", "website pricing", "small business website", "Built4You"]
+  },
+  "careers": {
+    "title": "Careers — Built4You",
+    "description": "Join Built4You and help small businesses win online. We value speed, craft, and real customer outcomes.",
+    "keywords": ["careers", "jobs", "hiring", "Built4You"]
+  }
+}
