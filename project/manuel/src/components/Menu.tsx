@@ -366,12 +366,24 @@ export default function Menu() {
           >
             <motion.a
               href="tel:580-771-6373"
+              aria-label="Call to order"
               className="bg-red-primary hover:bg-red-dark text-white px-6 sm:px-8 py-4 rounded-xl font-body font-bold text-lg md:text-xl border-2 border-red-600 inline-flex items-center justify-center gap-3 w-full sm:w-auto shadow-[0_0_30px_rgba(220,38,38,0.45)]"
               whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(220,38,38,0.55)' }}
               whileTap={{ scale: 0.97 }}
             >
-              CALL TO ORDER: 580-771-6373
+              CALL TO ORDER
             </motion.a>
+
+            {/* Phone number below the button */}
+            <div className="mt-3">
+              <a
+                href="tel:580-771-6373"
+                className="font-display text-2xl sm:text-3xl font-semibold text-red-700 hover:text-red-800"
+              >
+                580-771-6373
+              </a>
+            </div>
+
             <p className="text-xs text-gray-600 mt-3">
               Menu items may change. Call for today’s prices and specials.
             </p>
