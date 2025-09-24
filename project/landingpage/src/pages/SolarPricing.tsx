@@ -82,7 +82,6 @@ const SolarPricing: React.FC = () => {
         <header className="text-center mb-8">
           <p className="text-[11px] uppercase tracking-[0.22em] text-white/70">Our Pricing Plans</p>
           <h1 className="mt-2 text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">Pricing and Plans</h1>
-          <p className="mt-2 text-white/70">Transparent background. Glass cards. Space icons.</p>
         </header>
 
         <div className="mx-auto mb-12 flex w-full max-w-md items-center justify-center">
