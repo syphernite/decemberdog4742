@@ -61,6 +61,14 @@ jobs:
           cd ../../
           cp -r project/landingpage/dist/* .
 
+      # NEW: real files for SPA marketing routes so Google gets 200 (not 404)
+      - name: Create static shells for marketing routes
+        run: |
+          for route in pricing why-we-exist demos; do
+            mkdir -p "$route"
+            cp -f index.html "$route/index.html"
+          done
+
       # Install only what we need (avoids ETARGET errors)
       - name: Install OG generator deps
         run: npm i puppeteer@22 --no-save
