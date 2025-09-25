@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Eye, Heart, Share2 } from 'lucide-react';
+import { X, Eye, Heart, Share2, ExternalLink } from 'lucide-react';
 
 interface PortfolioItem {
   id: number;
@@ -8,71 +8,67 @@ interface PortfolioItem {
   category: string;
 }
 
+type BookingModalProps = {
+  open: boolean;
+  onClose: () => void;
+};
+
+const BookingModal: React.FC<BookingModalProps> = ({ open, onClose }) => {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm" role="dialog" aria-modal="true">
+      <div className="mx-4 w-full max-w-md rounded-2xl bg-neutral-900 border border-white/10 shadow-xl">
+        <div className="p-5">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-xl font-bold text-white">Booking Link</h3>
+            <button
+              onClick={onClose}
+              className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white"
+              aria-label="Close booking modal"
+            >
+              <X size={18} />
+            </button>
+          </div>
+          <p className="text-gray-300 mb-6">insert your booking link here</p>
+          <div className="flex justify-end">
+            <button
+              onClick={onClose}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-yellow-400 text-black font-semibold hover:bg-yellow-300 transition-colors"
+            >
+              <ExternalLink size={18} />
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Portfolio: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<PortfolioItem | null>(null);
   const [filter, setFilter] = useState<string>('all');
+  const [bookingOpen, setBookingOpen] = useState(false);
+
+  const openBooking = () => setBookingOpen(true);
+  const closeBooking = () => setBookingOpen(false);
 
   const portfolioItems: PortfolioItem[] = [
-    {
-      id: 1,
-      image: "https://images.pexels.com/photos/1813513/pexels-photo-1813513.jpeg?auto=compress&cs=tinysrgb&w=800",
-      title: "Portrait Study",
-      category: "Black & Grey"
-    },
-    {
-      id: 2,
-      image: "https://images.pexels.com/photos/1616403/pexels-photo-1616403.jpeg?auto=compress&cs=tinysrgb&w=800",
-      title: "Rose Design",
-      category: "Fine Line Floral"
-    },
-    {
-      id: 3,
-      image: "https://images.pexels.com/photos/1021693/pexels-photo-1021693.jpeg?auto=compress&cs=tinysrgb&w=800",
-      title: "Script Work",
-      category: "Bold Script Lettering"
-    },
-    {
-      id: 4,
-      image: "https://images.pexels.com/photos/1040753/pexels-photo-1040753.jpeg?auto=compress&cs=tinysrgb&w=800",
-      title: "Geometric Art",
-      category: "Fine Line"
-    },
-    {
-      id: 5,
-      image: "https://images.pexels.com/photos/1435049/pexels-photo-1435049.jpeg?auto=compress&cs=tinysrgb&w=800",
-      title: "Nature Scene",
-      category: "Black & Grey"
-    },
-    {
-      id: 6,
-      image: "https://images.pexels.com/photos/1040752/pexels-photo-1040752.jpeg?auto=compress&cs=tinysrgb&w=800",
-      title: "Abstract Design",
-      category: "Bold Statement"
-    },
-    {
-      id: 7,
-      image: "https://images.pexels.com/photos/1553787/pexels-photo-1553787.jpeg?auto=compress&cs=tinysrgb&w=800",
-      title: "Mandala Pattern",
-      category: "Fine Line"
-    },
-    {
-      id: 8,
-      image: "https://images.pexels.com/photos/1190307/pexels-photo-1190307.jpeg?auto=compress&cs=tinysrgb&w=800",
-      title: "Animal Portrait",
-      category: "Black & Grey"
-    },
-    {
-      id: 9,
-      image: "https://images.pexels.com/photos/1654698/pexels-photo-1654698.jpeg?auto=compress&cs=tinysrgb&w=800",
-      title: "Minimalist Art",
-      category: "Fine Line"
-    }
+    { id: 1, image: "https://images.pexels.com/photos/1813513/pexels-photo-1813513.jpeg?auto=compress&cs=tinysrgb&w=800", title: "Portrait Study", category: "Black & Grey" },
+    { id: 2, image: "https://images.pexels.com/photos/1616403/pexels-photo-1616403.jpeg?auto=compress&cs=tinysrgb&w=800", title: "Rose Design", category: "Fine Line Floral" },
+    { id: 3, image: "https://images.pexels.com/photos/1021693/pexels-photo-1021693.jpeg?auto=compress&cs=tinysrgb&w=800", title: "Script Work", category: "Bold Script Lettering" },
+    { id: 4, image: "https://images.pexels.com/photos/1040753/pexels-photo-1040753.jpeg?auto=compress&cs=tinysrgb&w=800", title: "Geometric Art", category: "Fine Line" },
+    { id: 5, image: "https://images.pexels.com/photos/1435049/pexels-photo-1435049.jpeg?auto=compress&cs=tinysrgb&w=800", title: "Nature Scene", category: "Black & Grey" },
+    { id: 6, image: "https://images.pexels.com/photos/1040752/pexels-photo-1040752.jpeg?auto=compress&cs=tinysrgb&w=800", title: "Abstract Design", category: "Bold Statement" },
+    { id: 7, image: "https://images.pexels.com/photos/1553787/pexels-photo-1553787.jpeg?auto=compress&cs=tinysrgb&w=800", title: "Mandala Pattern", category: "Fine Line" },
+    { id: 8, image: "https://images.pexels.com/photos/1190307/pexels-photo-1190307.jpeg?auto=compress&cs=tinysrgb&w=800", title: "Animal Portrait", category: "Black & Grey" },
+    { id: 9, image: "https://images.pexels.com/photos/1654698/pexels-photo-1654698.jpeg?auto=compress&cs=tinysrgb&w=800", title: "Minimalist Art", category: "Fine Line" }
   ];
 
   const categories = ['all', 'Black & Grey', 'Fine Line', 'Bold Statement'];
-  
-  const filteredItems = filter === 'all' 
-    ? portfolioItems 
+
+  const filteredItems = filter === 'all'
+    ? portfolioItems
     : portfolioItems.filter(item => item.category.includes(filter));
 
   const openLightbox = (item: PortfolioItem) => {
@@ -98,7 +94,7 @@ const Portfolio: React.FC = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-purple-900/20 to-black/80"></div>
         </div>
-        
+
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="relative z-10">
             <div className="inline-block mb-6">
@@ -113,7 +109,7 @@ const Portfolio: React.FC = () => {
               Curated from Instagram <span className="text-yellow-400 font-bold">@tattoojohnnyatl</span>
             </p>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto animate-slide-up-delay-2">
-              Each piece represents hours of dedication, artistic vision, and collaborative creativity 
+              Each piece represents hours of dedication, artistic vision, and collaborative creativity
               with clients who trust me to bring their stories to life.
             </p>
           </div>
@@ -158,7 +154,7 @@ const Portfolio: React.FC = () => {
                     alt={item.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   />
-                  
+
                   {/* Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500">
                     {/* Action buttons */}
@@ -173,7 +169,7 @@ const Portfolio: React.FC = () => {
                         <Share2 size={18} />
                       </button>
                     </div>
-                    
+
                     <div className="absolute bottom-6 left-6 right-6 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
                       <h3 className="text-2xl font-bold text-white mb-2">{item.title}</h3>
                       <p className="text-yellow-400 font-semibold text-lg">{item.category}</p>
@@ -182,7 +178,7 @@ const Portfolio: React.FC = () => {
 
                   {/* Hover Border Effect */}
                   <div className="absolute inset-0 border-2 border-transparent group-hover:border-yellow-400/50 transition-colors duration-500 rounded-2xl"></div>
-                  
+
                   {/* Shine effect */}
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out"></div>
                 </div>
@@ -202,7 +198,7 @@ const Portfolio: React.FC = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/90 to-yellow-600/90"></div>
         </div>
-        
+
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl md:text-6xl font-black text-black mb-6 animate-slide-up">
             Ready for Your Next Piece?
@@ -210,15 +206,14 @@ const Portfolio: React.FC = () => {
           <p className="text-xl text-black/80 mb-8 animate-slide-up-delay">
             Let's create something extraordinary together. Book your consultation today.
           </p>
-          <a
-            href="https://tattoo-johnny.square.site"
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            type="button"
+            onClick={openBooking}
             className="inline-flex items-center space-x-3 bg-black text-yellow-400 px-10 py-5 rounded-2xl text-xl font-bold hover:bg-gray-900 transform hover:scale-110 transition-all duration-300 shadow-2xl animate-slide-up-delay-2"
           >
             <span>Book Your Session</span>
             <X className="rotate-45" size={24} />
-          </a>
+          </button>
         </div>
       </section>
 
@@ -232,14 +227,14 @@ const Portfolio: React.FC = () => {
             >
               <X size={28} />
             </button>
-            
+
             <div className="relative animate-scale-in">
               <img
                 src={selectedImage.image}
                 alt={selectedImage.title}
                 className="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl"
               />
-              
+
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-8 rounded-b-2xl">
                 <h3 className="text-3xl font-bold text-white mb-3">{selectedImage.title}</h3>
                 <p className="text-yellow-400 text-xl font-semibold">{selectedImage.category}</p>
@@ -248,6 +243,9 @@ const Portfolio: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Page-level booking modal */}
+      <BookingModal open={bookingOpen} onClose={closeBooking} />
     </div>
   );
 };

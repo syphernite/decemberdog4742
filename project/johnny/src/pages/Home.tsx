@@ -1,7 +1,48 @@
-import React from 'react';
-import { ExternalLink, Palette, Users, MapPin, Star, Award, Clock } from 'lucide-react';
+import React, { useState } from 'react';
+import { ExternalLink, Palette, Users, MapPin, Star, Award, Clock, X } from 'lucide-react';
+
+type BookingModalProps = {
+  open: boolean;
+  onClose: () => void;
+};
+
+const BookingModal: React.FC<BookingModalProps> = ({ open, onClose }) => {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm" role="dialog" aria-modal="true">
+      <div className="mx-4 w-full max-w-md rounded-2xl bg-neutral-900 border border-white/10 shadow-xl">
+        <div className="p-5">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-xl font-bold text-white">Booking Link</h3>
+            <button
+              onClick={onClose}
+              className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white"
+              aria-label="Close booking modal"
+            >
+              <X size={18} />
+            </button>
+          </div>
+          <p className="text-gray-300 mb-6">insert your booking link here</p>
+          <div className="flex justify-end">
+            <button
+              onClick={onClose}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-yellow-400 text-black font-semibold hover:bg-yellow-300 transition-colors"
+            >
+              <ExternalLink size={18} />
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const Home: React.FC = () => {
+  const [bookingOpen, setBookingOpen] = useState(false);
+  const openBooking = () => setBookingOpen(true);
+  const closeBooking = () => setBookingOpen(false);
+
   return (
     <div>
       {/* Hero Section */}
@@ -15,7 +56,7 @@ const Home: React.FC = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-br from-black/90 via-purple-900/20 to-black/90"></div>
           <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
-          
+
           {/* Animated particles */}
           <div className="absolute inset-0">
             <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-yellow-400 rounded-full animate-float opacity-60"></div>
@@ -32,7 +73,7 @@ const Home: React.FC = () => {
             <span className="text-yellow-400 font-medium">10+ Years Experience</span>
             <Star className="w-4 h-4 text-yellow-400" />
           </div>
-          
+
           <h1 className="text-6xl md:text-8xl font-black mb-8 animate-slide-up tracking-tight">
             <span className="bg-gradient-to-r from-white via-yellow-400 to-yellow-600 bg-clip-text text-transparent drop-shadow-2xl">
               Atlanta's Premier
@@ -40,25 +81,24 @@ const Home: React.FC = () => {
             <br />
             <span className="text-white drop-shadow-2xl animate-glow">Tattoo Artist</span>
           </h1>
-          
+
           <p className="text-2xl md:text-3xl text-gray-200 mb-12 animate-slide-up-delay font-light tracking-wide">
-            Custom <span className="text-yellow-400 font-semibold">black & grey</span>, 
-            <span className="text-yellow-400 font-semibold"> fine line</span>, 
-            <span className="text-yellow-400 font-semibold"> bold ink</span> — by Johnny
+            Custom <span className="text-yellow-400 font-semibold">black & grey</span>,
+            <span className="text-yellow-400 font-semibold"> fine line</span>,
+            <span className="text-yellow-400 font-semibold"> bold ink</span> by Johnny
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center animate-slide-up-delay-2">
-            <a
-              href="https://tattoo-johnny.square.site"
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              type="button"
+              onClick={openBooking}
               className="group relative inline-flex items-center space-x-3 bg-gradient-to-r from-yellow-400 to-yellow-600 text-black px-10 py-5 rounded-2xl text-xl font-bold hover:from-yellow-300 hover:to-yellow-500 transform hover:scale-110 hover:-rotate-1 transition-all duration-500 shadow-2xl hover:shadow-yellow-500/50 overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-yellow-300 to-yellow-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <span className="relative z-10">Book Your Session</span>
               <ExternalLink size={24} className="relative z-10 group-hover:rotate-12 transition-transform duration-300" />
-            </a>
-            
+            </button>
+
             <div className="flex items-center space-x-4 text-gray-300">
               <div className="flex items-center space-x-2">
                 <Award className="w-5 h-5 text-yellow-400" />
@@ -89,7 +129,7 @@ const Home: React.FC = () => {
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
           }}></div>
         </div>
-        
+
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20">
             <div className="inline-block mb-6">
@@ -99,9 +139,9 @@ const Home: React.FC = () => {
               Master of the <span className="bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent animate-glow">Craft</span>
             </h2>
             <p className="text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed animate-slide-up-delay">
-              With over <span className="text-yellow-400 font-bold">10 years</span> of tattoo artistry, Johnny has perfected the art of 
-              <span className="text-white font-semibold"> clean linework</span> and 
-              <span className="text-white font-semibold"> smooth shading</span>. Every piece tells a story, crafted with precision and passion in 
+              With over <span className="text-yellow-400 font-bold">10 years</span> of tattoo artistry, Johnny has perfected the art of
+              <span className="text-white font-semibold"> clean linework</span> and
+              <span className="text-white font-semibold"> smooth shading</span>. Every piece tells a story, crafted with precision and passion in
               the heart of <span className="text-yellow-400 font-bold">Atlanta</span>.
             </p>
           </div>
@@ -115,7 +155,7 @@ const Home: React.FC = () => {
           <div className="absolute top-1/4 left-0 w-96 h-96 bg-yellow-400/5 rounded-full blur-3xl animate-float"></div>
           <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl animate-float-delayed"></div>
         </div>
-        
+
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {/* Style Card */}
@@ -179,7 +219,7 @@ const Home: React.FC = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/90 to-yellow-600/90"></div>
         </div>
-        
+
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div className="animate-slide-up">
@@ -201,6 +241,9 @@ const Home: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Page-level booking modal */}
+      <BookingModal open={bookingOpen} onClose={closeBooking} />
     </div>
   );
 };
