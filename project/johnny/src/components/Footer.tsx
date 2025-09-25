@@ -1,68 +1,99 @@
-import React from 'react';
-import { Instagram, Zap } from 'lucide-react';
+import React from "react";
+import { Instagram, Phone, Mail, MapPin } from "lucide-react";
+import { Link } from "react-router-dom";
 
-type FooterProps = {
-  onOpenBooking: () => void;
-};
-
-const Footer: React.FC<FooterProps> = ({ onOpenBooking }) => {
+export default function Footer() {
   return (
-    <footer className="relative bg-gradient-to-br from-gray-900 to-black border-t border-gray-800/50 overflow-hidden">
-      {/* Subtle background glow */}
-      <div className="absolute inset-0 opacity-5 pointer-events-none">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 100%)`,
-          }}
-        />
-      </div>
-
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-          <div>
-            <div className="text-xl font-black tracking-wide">
-              <span className="text-white">JOHNNY</span>
-              <span className="text-yellow-400">INK</span>
-            </div>
-            <p className="text-white/60 mt-1">
-              Clean linework. Smooth shading. Custom designs.
-            </p>
+    <footer className="border-t border-white/10 bg-black">
+      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 md:grid-cols-3">
+        {/* Brand */}
+        <div>
+          <div className="mb-3 inline-flex items-center gap-2">
+            <span
+              className="inline-block h-6 w-6 rounded-lg bg-gradient-to-r from-emerald-500 to-blue-600"
+              aria-hidden
+            />
+            <span className="text-base font-bold tracking-wide text-white">
+              Johnny
+            </span>
           </div>
-          <div className="flex items-center gap-3">
+          <p className="max-w-xs text-sm leading-6 text-white/70">
+            Clean, bold tattoo work. Modern booking, clear communication, and a
+            portfolio that speaks for itself.
+          </p>
+        </div>
+
+        {/* Links */}
+        <div className="grid grid-cols-2 gap-6 text-sm">
+          <div className="space-y-2">
+            <p className="mb-2 text-xs uppercase tracking-wider text-white/50">
+              Pages
+            </p>
+            <Link to="/" className="block text-white/80 hover:text-white">
+              Home
+            </Link>
+            <Link to="/portfolio" className="block text-white/80 hover:text-white">
+              Portfolio
+            </Link>
+            <Link to="/contact" className="block text-white/80 hover:text-white">
+              Contact
+            </Link>
+          </div>
+          <div className="space-y-2">
+            <p className="mb-2 text-xs uppercase tracking-wider text-white/50">
+              Contact
+            </p>
             <a
-              href="https://instagram.com"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/90 transition"
+              href="tel:+1-000-000-0000"
+              className="flex items-center gap-2 text-white/80 hover:text-white"
             >
-              <Instagram size={18} />
-              <span className="text-sm">Instagram</span>
+              <Phone className="h-4 w-4" /> <span>(000) 000-0000</span>
             </a>
-            <button
-              onClick={onOpenBooking}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-yellow-400 text-black font-semibold hover:bg-yellow-300 transition shadow-[0_0_16px_rgba(234,179,8,0.25)]"
+            <a
+              href="mailto:hello@built4you.org"
+              className="flex items-center gap-2 text-white/80 hover:text-white"
             >
-              <Zap size={18} /> Book
-            </button>
+              <Mail className="h-4 w-4" /> <span>hello@built4you.org</span>
+            </a>
+            <span className="flex items-center gap-2 text-white/60">
+              <MapPin className="h-4 w-4" /> Lawton, OK
+            </span>
           </div>
         </div>
-        <div className="mt-8 border-t border-white/10 pt-6 text-sm text-white/50">
-          <span>
-            © {new Date().getFullYear()} Johnny Ink. Built by{' '}
+
+        {/* Socials + Credit */}
+        <div className="flex flex-col items-start justify-between gap-6 md:items-end">
+          <div className="flex items-center gap-3">
+            <a
+              href="https://www.instagram.com/tattoojohnnyatl/"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Instagram"
+              className="rounded-xl p-2 text-white/80 ring-1 ring-white/10 transition hover:bg-white/5 hover:text-white"
+            >
+              <Instagram className="h-5 w-5" />
+            </a>
+          </div>
+
+          <p className="text-sm text-white/70">
+            Made with <span aria-hidden>🖋️</span> by{" "}
             <a
               href="https://built4you.org"
               target="_blank"
               rel="noreferrer"
-              className="underline decoration-dotted underline-offset-2 hover:text-white"
+              className="font-semibold text-white hover:underline"
             >
               Built4You
             </a>
-          </span>
+          </p>
         </div>
+      </div>
+
+      <div className="border-t border-white/10 py-4">
+        <p className="mx-auto max-w-6xl px-4 text-xs text-white/50">
+          © {new Date().getFullYear()} Johnny. All rights reserved.
+        </p>
       </div>
     </footer>
   );
-};
-
-export default Footer;
+}
