@@ -1,15 +1,11 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react' // <-- add this
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-// React SPA under /johnny
+// https://vitejs.dev/config/
 export default defineConfig({
-  base: '/johnny/',
+  base: '/sb1/',
   plugins: [react()],
-  build: {
-    outDir: 'dist',
-    emptyOutDir: true
+  optimizeDeps: {
+    exclude: ['lucide-react'],
   },
-  server: {
-    host: true
-  }
-})
+});

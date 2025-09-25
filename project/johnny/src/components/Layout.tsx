@@ -11,15 +11,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
 
   const navigation = [
-    { name: 'Home', href: '/johnny' },
-    { name: 'Portfolio', href: '/johnny/portfolio' },
-    { name: 'Contact', href: '/johnny/contact' },
+    { name: 'Home', href: '/' },
+    { name: 'Portfolio', href: '/portfolio' },
+    { name: 'Contact', href: '/contact' },
   ];
 
   const isActive = (href: string) => {
-    if (href === '/johnny') {
-      return location.pathname === '/johnny' || location.pathname === '/';
-    }
     return location.pathname === href;
   };
 
@@ -30,7 +27,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             {/* Logo */}
-            <Link to="/johnny" className="group flex items-center space-x-3 text-3xl font-black text-white hover:text-yellow-400 transition-all duration-300">
+            <Link
+              to="/"
+              className="group flex items-center space-x-3 text-3xl font-black text-white hover:text-yellow-400 transition-all duration-300"
+            >
               <div className="p-2 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-xl group-hover:scale-110 group-hover:rotate-12 transition-all duration-300">
                 <Zap className="text-black" size={24} />
               </div>
@@ -46,15 +46,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   key={item.name}
                   to={item.href}
                   className={`relative text-xl font-bold transition-all duration-300 hover:text-yellow-400 group ${
-                    isActive(item.href)
-                      ? 'text-yellow-400'
-                      : 'text-gray-300'
+                    isActive(item.href) ? 'text-yellow-400' : 'text-gray-300'
                   }`}
                 >
                   <span className="relative z-10">{item.name}</span>
-                  <div className={`absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-yellow-400 to-yellow-600 transform origin-left transition-transform duration-300 ${
-                    isActive(item.href) ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
-                  }`}></div>
+                  <div
+                    className={`absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-yellow-400 to-yellow-600 transform origin-left transition-transform duration-300 ${
+                      isActive(item.href)
+                        ? 'scale-x-100'
+                        : 'scale-x-0 group-hover:scale-x-100'
+                    }`}
+                  ></div>
                 </Link>
               ))}
             </nav>
@@ -78,7 +80,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   key={item.name}
                   to={item.href}
                   className={`block text-2xl font-bold transition-all duration-300 transform hover:translate-x-2 ${
-                    isActive(item.href) ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-400'
+                    isActive(item.href)
+                      ? 'text-yellow-400'
+                      : 'text-gray-300 hover:text-yellow-400'
                   }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -91,25 +95,27 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       </header>
 
       {/* Main Content */}
-      <main className="pt-24">
-        {children}
-      </main>
+      <main className="pt-24">{children}</main>
 
       {/* Footer */}
       <footer className="relative bg-gradient-to-br from-gray-900 to-black border-t border-gray-800/50 overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-5">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M20 20c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10zm10 0c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10z'/%3E%3C/g%3E%3C/svg%3E")`,
-          }}></div>
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M20 20c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10zm10 0c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10z'/%3E%3C/g%3E%3C/svg%3E")`,
+            }}
+          ></div>
         </div>
-        
+
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-8 md:space-y-0">
             <div className="text-gray-400 text-lg">
-              © {new Date().getFullYear()} Tattoo Johnny ATL. All rights reserved.
+              © {new Date().getFullYear()} Tattoo Johnny ATL. All rights
+              reserved.
             </div>
-            
+
             <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-8">
               <a
                 href="https://instagram.com/tattoojohnnyatl"
@@ -122,7 +128,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </div>
                 <span className="text-lg font-medium">@tattoojohnnyatl</span>
               </a>
-              
+
               <a
                 href="https://tattoo-johnny.square.site"
                 target="_blank"
