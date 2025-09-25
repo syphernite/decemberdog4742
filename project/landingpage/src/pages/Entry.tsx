@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { gsap } from "gsap";
 import { Instagram, Phone } from "lucide-react";
+import { Helmet } from "react-helmet-async";
 
 const NEWSLETTER_FORMSPREE = "https://formspree.io/f/mrblknpq";
 const FREE_SITE_FORMSPREE = "https://formspree.io/f/xyzdqejn";
@@ -416,6 +417,11 @@ export default function Entry() {
 
   return (
     <section ref={rootRef} className="relative min-h-svh w-full overflow-hidden bg-black text-white" aria-label="Entry screen">
+      {/* HEAD METADATA (Bing verification) */}
+      <Helmet>
+        <meta name="msvalidate.01" content="4E27CBCDF0D40788B551DAB0D1227C8C" />
+      </Helmet>
+
       {/* Backdrop layers */}
       <div ref={entryBgRef} className="entry-bg pointer-events-none absolute inset-0">
         <div className="absolute inset-0 bg-black" />
