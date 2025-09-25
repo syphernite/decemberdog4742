@@ -8,7 +8,8 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-const HEADER_OFFSET = 96; // matches main pt-24
+/** Keep this in sync with the main padding below */
+const HEADER_OFFSET = 72; // tighter offset (header height + thin breathing room)
 
 const BookingModal: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClose }) => {
   if (!open) return null;
@@ -43,7 +44,7 @@ const BookingModal: React.FC<{ open: boolean; onClose: () => void }> = ({ open, 
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [bookingOpen, setBookingOpen] = useState(false);
-  const [revealDone, setRevealDone] = useState(false);
+  const [revealDone, setRevealDone] = useState(true); // overlay off (saves vertical room)
   const location = useLocation();
 
   // Force top-of-page on refresh and route change
@@ -71,7 +72,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, [location.pathname, location.hash]);
 
-  // Initial “zooming out of black” reveal (runs once per load)
+  // Optional reveal overlay (disabled by default)
   const overlayStyle = useMemo<React.CSSProperties>(() => ({
     position: 'fixed',
     inset: 0,
@@ -84,6 +85,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   }), [revealDone]);
 
   useEffect(() => {
+    if (revealDone) return;
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReduced) {
       setRevealDone(true);
@@ -91,42 +93,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     }
     const timeout = setTimeout(() => setRevealDone(true), 900);
     return () => clearTimeout(timeout);
-  }, []);
+  }, [revealDone]);
 
   return (
     <div className="min-h-screen bg-[#090c12] text-white overflow-x-hidden">
-      {/* Initial reveal overlay: black circle shrinks to reveal page */}
-      <div style={overlayStyle}>
-        {!revealDone && (
-          <>
-            <style>
-              {`
-              @keyframes jf_reveal {
-                0%   { transform: scale(1); opacity: 1; }
-                70%  { transform: scale(0.12); opacity: 1; }
-                100% { transform: scale(0); opacity: 0; }
-              }
-            `}
-            </style>
-            <div
-              aria-hidden
-              style={{
-                width: '200vmax',
-                height: '200vmax',
-                background: '#000',
-                borderRadius: '50%',
-                transform: 'scale(1)',
-                animation: 'jf_reveal 900ms cubic-bezier(0.22, 1, 0.36, 1) forwards',
-              }}
-            />
-          </>
-        )}
-      </div>
+      {/* Initial reveal overlay (disabled) */}
+      <div style={overlayStyle} />
 
       <Header onOpenBooking={() => setBookingOpen(true)} />
 
-      {/* main padding equals HEADER_OFFSET to avoid content under fixed header */}
-      <main className="pt-24">{children}</main>
+      {/* Tighter top padding to account for fixed header */}
+      <main className="pt-18 md:pt-[72px]">{children}</main>
 
       <Footer onOpenBooking={() => setBookingOpen(true)} />
 

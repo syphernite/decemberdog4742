@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { ExternalLink, Users, Star, X } from 'lucide-react';
-import SlideToStartCTA from '../components/SlideToStartCTA';
+import { Link } from 'react-router-dom';
+import { ExternalLink, Users, MapPin, Star, X } from 'lucide-react';
 
 type BookingModalProps = {
   open: boolean;
@@ -46,8 +46,8 @@ const Home: React.FC = () => {
 
   return (
     <div>
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* HERO (shorter) */}
+      <section className="relative min-h-[76vh] md:min-h-[78vh] flex items-center justify-center overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0">
           <img
@@ -60,25 +60,25 @@ const Home: React.FC = () => {
         </div>
 
         {/* Content */}
-        <div className="relative z-10 text-center px-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 mb-4">
+        <div className="relative z-10 text-center px-4 sm:px-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 mb-2">
             <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-            <span className="text-xs font-medium text-white/70 tracking-wide">
+            <span className="text-[11px] sm:text-xs font-medium text-white/70 tracking-wide">
               Accepting appointments
             </span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tight">
+          <h1 className="text-[2.25rem] sm:text-[2.75rem] md:text-[3.25rem] font-black leading-[1.05] tracking-tight">
             <span className="text-white">Clean Lines.</span>{' '}
             <span className="text-yellow-400">Bold Designs.</span>
           </h1>
 
-          <p className="mt-4 max-w-2xl mx-auto text-white/70">
+          <p className="mt-2 max-w-2xl mx-auto text-white/70">
             Johnny is a professional tattoo artist in Atlanta specializing in clean linework,
             smooth shading, and custom pieces that tell your story.
           </p>
 
-          <div className="mt-8 flex items-center justify-center gap-3">
+          <div className="mt-5 flex items-center justify-center gap-3">
             <button
               onClick={openBooking}
               className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-yellow-400 text-white font-semibold hover:bg-yellow-300 transition shadow-[0_0_16px_rgba(234,179,8,0.25)]"
@@ -97,49 +97,74 @@ const Home: React.FC = () => {
             </a>
           </div>
 
-          {/* Quick stats */}
-          <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-xl mx-auto">
+          {/* Quick stats (tighter) */}
+          <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-xl mx-auto">
             <div className="rounded-xl bg-white/5 border border-white/10 p-3">
               <div className="text-2xl font-bold text-white">10+</div>
-              <div className="text-xs text-white/60">Years Experience</div>
+              <div className="text-[11px] text-white/60">Years Experience</div>
             </div>
             <div className="rounded-xl bg-white/5 border border-white/10 p-3">
               <div className="text-2xl font-bold text-white">500+</div>
-              <div className="text-xs text-white/60">Happy Clients</div>
+              <div className="text-[11px] text-white/60">Happy Clients</div>
             </div>
             <div className="rounded-xl bg-white/5 border border-white/10 p-3">
               <div className="text-2xl font-bold text-white">ATL</div>
-              <div className="text-xs text-white/60">Based in Atlanta</div>
+              <div className="text-[11px] text-white/60">Based in Atlanta</div>
             </div>
             <div className="rounded-xl bg-white/5 border border-white/10 p-3">
               <div className="text-2xl font-bold text-white">4.9</div>
-              <div className="text-xs text-white/60">Average Rating</div>
+              <div className="text-[11px] text-white/60">Average Rating</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Swipe CTA Section (replaces the static 3-card Styles section) */}
-      <SlideToStartCTA to="/portfolio" label="Slide to see portfolio" />
-
-      {/* Social Proof / CTA */}
-      <section className="relative py-24 bg-gradient-to-b from-gray-900 to-black border-t border-white/5">
+      {/* CTA to Portfolio (tighter) */}
+      <section className="relative py-12 bg-gradient-to-b from-black to-gray-900 border-t border-white/5">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-8 items-center">
+          <div className="relative overflow-hidden rounded-3xl border border-yellow-400/20 bg-[radial-gradient(800px_260px_at_50%_-140px,rgba(234,179,8,0.12),transparent)]">
+            <div className="relative px-6 sm:px-8 py-10 sm:py-12 flex flex-col items-center text-center">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] sm:text-xs text-white/70 mb-2">
+                Portfolio
+              </span>
+              <h2 className="text-2xl md:text-4xl font-black tracking-tight">
+                <span className="text-white">See My</span>{' '}
+                <span className="text-yellow-400">Work</span>
+              </h2>
+              <p className="mt-2 max-w-2xl text-white/70">
+                A curated gallery of fine-line, traditional, and custom script pieces.
+              </p>
+
+              <Link
+                to="/portfolio"
+                className="mt-5 inline-flex items-center justify-center gap-3 rounded-2xl px-6 py-3 text-[15px] font-semibold bg-yellow-400 text-white hover:bg-yellow-300 transition shadow-[0_0_24px_rgba(234,179,8,0.35)] focus:outline-none focus:ring-2 focus:ring-yellow-300"
+              >
+                <ExternalLink size={18} />
+                See My Work
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials (tighter) */}
+      <section className="relative py-12 bg-gradient-to-b from-gray-900 to-black border-t border-white/5">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 gap-7 items-center">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 mb-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-2">
                 <Users className="w-4 h-4 text-yellow-400" />
-                <span className="text-xs font-medium tracking-wide text-white/70">Testimonials</span>
+                <span className="text-[11px] sm:text-xs font-medium tracking-wide text-white/70">Testimonials</span>
               </div>
-              <h3 className="text-3xl md:text-4xl font-black">
+              <h3 className="text-2xl md:text-3xl font-black">
                 <span className="text-white">Real Clients.</span>{' '}
                 <span className="text-yellow-400">Real Stories.</span>
               </h3>
-              <p className="mt-3 text-white/60">
+              <p className="mt-2 text-white/60">
                 Hundreds of happy clients and a consistent 4.9★ rating.
               </p>
 
-              <div className="mt-6 space-y-3">
+              <div className="mt-4 space-y-3">
                 <div className="rounded-xl bg-white/5 border border-white/10 p-4">
                   <div className="flex items-center gap-2 mb-1">
                     <Star className="w-4 h-4 text-yellow-400" />
@@ -161,24 +186,24 @@ const Home: React.FC = () => {
               </div>
             </div>
 
-            <div className="rounded-2xl bg-white/5 border border-white/10 p-6">
-              <div className="grid grid-cols-3 gap-4 text-center">
+            <div className="rounded-2xl bg-white/5 border border-white/10 p-5">
+              <div className="grid grid-cols-3 gap-3 text-center">
                 <div className="rounded-xl bg-yellow-400/10 border border-yellow-400/20 p-4">
-                  <div className="text-3xl md:text-4xl font-black text-yellow-400 mb-1">10+</div>
-                  <div className="text-sm text-white/70">Years</div>
+                  <div className="text-3xl font-black text-yellow-400 mb-1">10+</div>
+                  <div className="text-xs text-white/70">Years</div>
                 </div>
                 <div className="rounded-xl bg-yellow-400/10 border border-yellow-400/20 p-4">
-                  <div className="text-3xl md:text-4xl font-black text-yellow-400 mb-1">500+</div>
-                  <div className="text-sm text-white/70">Clients</div>
+                  <div className="text-3xl font-black text-yellow-400 mb-1">500+</div>
+                  <div className="text-xs text-white/70">Clients</div>
                 </div>
                 <div className="rounded-xl bg-yellow-400/10 border border-yellow-400/20 p-4">
-                  <div className="text-3xl md:text-4xl font-black text-yellow-400 mb-1">24/7</div>
-                  <div className="text-sm text-white/70">Aftercare</div>
+                  <div className="text-3xl font-black text-yellow-400 mb-1">24/7</div>
+                  <div className="text-xs text-white/70">Aftercare</div>
                 </div>
               </div>
               <button
                 onClick={openBooking}
-                className="mt-6 w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-yellow-400 text-white font-semibold hover:bg-yellow-300 transition"
+                className="mt-5 w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-yellow-400 text-white font-semibold hover:bg-yellow-300 transition"
               >
                 <ExternalLink size={18} />
                 Book Now
@@ -188,7 +213,7 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Page-level booking modal */}
+      {/* Modal */}
       <BookingModal open={bookingOpen} onClose={closeBooking} />
     </div>
   );
