@@ -1,37 +1,67 @@
 import React, { useState } from 'react';
-import { ExternalLink, Instagram, Mail, MapPin, Phone, Send, Clock, Star } from 'lucide-react';
+import { ExternalLink, Instagram, Mail, MapPin, Phone, Send, Clock, Star, X } from 'lucide-react';
+
+type BookingModalProps = {
+  open: boolean;
+  onClose: () => void;
+};
+
+const BookingModal: React.FC<BookingModalProps> = ({ open, onClose }) => {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm" role="dialog" aria-modal="true">
+      <div className="mx-4 w-full max-w-md rounded-2xl bg-neutral-900 border border-white/10 shadow-xl">
+        <div className="p-5">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-xl font-bold text-white">Booking Link</h3>
+            <button
+              onClick={onClose}
+              className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white"
+              aria-label="Close booking modal"
+            >
+              <X size={18} />
+            </button>
+          </div>
+          <p className="text-gray-300 mb-6">insert your booking link here</p>
+          <div className="flex justify-end">
+            <button
+              onClick={onClose}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-yellow-400 text-black font-semibold hover:bg-yellow-300 transition-colors"
+            >
+              <ExternalLink size={18} />
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const Contact: React.FC = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: ''
-  });
+  const [bookingOpen, setBookingOpen] = useState(false);
+  const openBooking = () => setBookingOpen(true);
+  const closeBooking = () => setBookingOpen(false);
 
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulate form submission
+
     setTimeout(() => {
       setIsSubmitting(false);
       setSubmitStatus('success');
       setFormData({ name: '', email: '', message: '' });
-      
-      setTimeout(() => {
-        setSubmitStatus('idle');
-      }, 3000);
+
+      setTimeout(() => setSubmitStatus('idle'), 3000);
     }, 1000);
   };
 
@@ -48,7 +78,7 @@ const Contact: React.FC = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-purple-900/20 to-black/80"></div>
         </div>
-        
+
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="relative z-10">
             <div className="inline-block mb-6">
@@ -74,7 +104,7 @@ const Contact: React.FC = () => {
               <div>
                 <h2 className="text-4xl font-black text-white mb-6">Send a Message</h2>
                 <p className="text-xl text-gray-400 leading-relaxed">
-                  Have questions about pricing, availability, or want to discuss your tattoo idea? 
+                  Have questions about pricing, availability, or want to discuss your tattoo idea?
                   Drop me a line and I'll get back to you soon.
                 </p>
               </div>
@@ -140,12 +170,11 @@ const Contact: React.FC = () => {
                   }`}
                 >
                   <span>
-                    {isSubmitting 
-                      ? 'Sending...' 
-                      : submitStatus === 'success' 
-                      ? 'Message Sent!' 
-                      : 'Send Message'
-                    }
+                    {isSubmitting
+                      ? 'Sending...'
+                      : submitStatus === 'success'
+                      ? 'Message Sent!'
+                      : 'Send Message'}
                   </span>
                   <Send size={24} className={`${isSubmitting ? 'animate-pulse' : 'group-hover:translate-x-1 transition-transform duration-300'}`} />
                 </button>
@@ -160,24 +189,23 @@ const Contact: React.FC = () => {
                 <div className="relative z-10">
                   <h3 className="text-3xl font-black mb-6">Ready to Book?</h3>
                   <p className="text-xl mb-8 leading-relaxed">
-                    For appointments and consultations, use my secure booking system powered by Square.
+                    For appointments and consultations, use my secure booking system.
                   </p>
-                  <a
-                    href="https://tattoo-johnny.square.site"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center space-x-3 bg-black text-yellow-400 px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-900 transition-all duration-300 transform hover:scale-110 shadow-xl"
+                  <button
+                    type="button"
+                    onClick={openBooking}
+                    className="inline-flex items-center space-x-3 bg.black text-yellow-400 px-8 py-4 rounded-2xl font-bold text-lg bg-black hover:bg-gray-900 transition-all duration-300 transform hover:scale-110 shadow-xl"
                   >
                     <span>Book Your Session</span>
                     <ExternalLink size={24} className="group-hover:rotate-12 transition-transform duration-300" />
-                  </a>
+                  </button>
                 </div>
               </div>
 
               {/* Contact Details */}
               <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm p-10 rounded-3xl border border-gray-700/50 hover:border-yellow-400/50 transition-all duration-300">
-                <h3 className="text-3xl font-black text-white mb-8">Contact Details</h3>
-                
+                <h3 className="text-3xl font-black text.white mb-8 text-white">Contact Details</h3>
+
                 <div className="space-y-6">
                   <div className="flex items-center space-x-4 group">
                     <div className="p-3 bg-yellow-400/10 rounded-full group-hover:bg-yellow-400/20 transition-colors duration-300">
@@ -185,7 +213,7 @@ const Contact: React.FC = () => {
                     </div>
                     <span className="text-gray-300 text-lg group-hover:text-white transition-colors duration-300">Atlanta, GA Metro Area</span>
                   </div>
-                  
+
                   <div className="flex items-center space-x-4 group">
                     <div className="p-3 bg-yellow-400/10 rounded-full group-hover:bg-yellow-400/20 transition-colors duration-300">
                       <Instagram className="text-yellow-400 flex-shrink-0" size={24} />
@@ -225,7 +253,7 @@ const Contact: React.FC = () => {
                   <Star className="text-yellow-400" size={32} />
                   <span>Client Reviews</span>
                 </h3>
-                
+
                 <div className="space-y-6">
                   <div className="border-l-4 border-yellow-400 pl-6">
                     <div className="flex text-yellow-400 mb-2">
@@ -238,7 +266,7 @@ const Contact: React.FC = () => {
                     </p>
                     <p className="text-gray-400 mt-2 font-medium">- Sarah M.</p>
                   </div>
-                  
+
                   <div className="border-l-4 border-yellow-400 pl-6">
                     <div className="flex text-yellow-400 mb-2">
                       {[...Array(5)].map((_, i) => (
@@ -269,6 +297,9 @@ const Contact: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Page-level booking modal */}
+      <BookingModal open={bookingOpen} onClose={closeBooking} />
     </div>
   );
 };
