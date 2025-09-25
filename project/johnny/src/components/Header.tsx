@@ -1,181 +1,186 @@
-import React, { useEffect, useState } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
-import { Menu, X, Instagram, Phone, Mail } from "lucide-react";
+import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { Menu, X, Instagram, Zap, Phone, MapPin } from 'lucide-react';
 
-type NavItem = { name: string; to: string };
-const NAV: NavItem[] = [
-  { name: "Home", to: "/" },
-  { name: "Portfolio", to: "/portfolio" },
-  { name: "Contact", to: "/contact" },
-];
+type HeaderProps = {
+  onOpenBooking: () => void;
+};
 
-export default function Header() {
-  const [open, setOpen] = useState(false);
+/** Monochrome SVG logo: tattoo needle + ink drop + subtle sparks (no letters) */
+function JohnnyLogo({ size = 32 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 48 48"
+      aria-label="Tattoo logo"
+      role="img"
+      className="drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)]"
+    >
+      {/* Badge background */}
+      <circle
+        cx="24"
+        cy="24"
+        r="20"
+        fill="rgba(255,255,255,0.06)"
+        stroke="rgba(255,255,255,0.28)"
+        strokeWidth="2"
+      />
+
+      {/* Needle shaft */}
+      <path
+        d="M24 12 L24 30"
+        stroke="white"
+        strokeWidth="2.8"
+        strokeLinecap="round"
+        fill="none"
+      />
+      {/* Needle tip (triangle) */}
+      <path
+        d="M22 28 L24 33 L26 28 Z"
+        fill="white"
+        opacity="0.95"
+      />
+
+      {/* Ink drop */}
+      <path
+        d="M24 36
+           q 3 -3 0 -6
+           q -3 3 0 6 Z"
+        fill="white"
+        opacity="0.9"
+      />
+
+      {/* Subtle sparks (fine-line highlights) */}
+      <path d="M18 16 L21 16" stroke="white" strokeWidth="1.4" strokeLinecap="round" opacity="0.7" />
+      <path d="M27 20 L30 20" stroke="white" strokeWidth="1.2" strokeLinecap="round" opacity="0.55" />
+      <path d="M17 22 L19 22" stroke="white" strokeWidth="1.2" strokeLinecap="round" opacity="0.55" />
+    </svg>
+  );
+}
+
+const Header: React.FC<HeaderProps> = ({ onOpenBooking }) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
 
-  // Close drawer & scroll top on route change
-  useEffect(() => {
-    setOpen(false);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [location.pathname, location.hash, location.search]);
+  const navigation = [
+    { name: 'Home', href: '/' },
+    { name: 'Portfolio', href: '/portfolio' },
+    { name: 'Contact', href: '/contact' },
+  ];
+
+  const isActive = (href: string) => location.pathname === href;
 
   return (
-    <header className="fixed top-0 z-50 w-full border-b border-white/10 bg-black/70 backdrop-blur-md">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:py-4">
-        {/* Brand */}
-        <Link to="/" className="group inline-flex items-center gap-2">
-          <span
-            className="inline-block h-6 w-6 rounded-lg bg-gradient-to-r from-emerald-500 to-blue-600 transition-transform group-hover:scale-110"
-            aria-hidden
-          />
-          <span className="text-base font-bold tracking-wide text-white">
-            Johnny
-          </span>
-        </Link>
+    <header className="fixed top-0 w-full z-50 bg-gradient-to-b from-black/95 to-black/80 backdrop-blur-md border-b border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="h-16 flex items-center justify-between gap-3">
+          {/* Brand */}
+          <Link to="/" className="inline-flex items-center gap-2">
+            <JohnnyLogo size={32} />
+            <span className="text-lg font-black tracking-wide text-white">Johnny</span>
+          </Link>
 
-        {/* Desktop Nav */}
-        <nav className="hidden items-center gap-6 md:flex">
-          {NAV.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) =>
-                [
-                  "text-sm transition-colors",
-                  isActive ? "text-white" : "text-white/70 hover:text-white",
-                ].join(" ")
-              }
-              end={item.to === "/"}
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-2">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                to={item.href}
+                onClick={() => setIsMenuOpen(false)}
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition ${
+                  isActive(item.href)
+                    ? 'text-yellow-400 bg-white/5'
+                    : 'text-white/80 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                {item.name}
+              </Link>
+            ))}
+            <button
+              onClick={onOpenBooking}
+              className="px-3 py-2 rounded-lg text-sm font-semibold text-white bg-yellow-400/10 hover:bg-yellow-400/20 border border-yellow-400/30 transition flex items-center gap-1"
+              title="Book"
             >
-              {item.name}
-            </NavLink>
-          ))}
+              <Zap size={16} className="text-yellow-400" /> Book
+            </button>
+          </nav>
 
-          {/* Socials */}
-          <div className="ml-2 flex items-center gap-3">
+          {/* Right contact */}
+          <div className="hidden md:flex items-center gap-3">
             <a
-              href="https://www.instagram.com/tattoojohnnyatl/"
+              href="tel:4045555555"
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/90 transition border border-white/10"
+            >
+              <Phone size={16} />
+              <span className="text-sm">(404) 555-5555</span>
+            </a>
+            <div className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 text-white/80 border border-white/10">
+              <MapPin size={16} />
+              <span className="text-sm">Atlanta, GA</span>
+            </div>
+            <a
+              href="https://instagram.com"
               target="_blank"
               rel="noreferrer"
-              aria-label="Instagram"
-              className="text-white/70 transition hover:text-white"
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/90 transition border border-white/10"
             >
-              <Instagram className="h-5 w-5" />
-            </a>
-            <a
-              href="tel:+1-000-000-0000"
-              aria-label="Call"
-              className="text-white/70 transition hover:text-white"
-            >
-              <Phone className="h-5 w-5" />
-            </a>
-            <a
-              href="mailto:hello@built4you.org"
-              aria-label="Email"
-              className="text-white/70 transition hover:text-white"
-            >
-              <Mail className="h-5 w-5" />
+              <Instagram size={18} />
+              <span className="text-sm">Instagram</span>
             </a>
           </div>
-        </nav>
 
-        {/* Mobile Burger */}
-        <button
-          aria-label="Open menu"
-          onClick={() => setOpen(true)}
-          className="rounded-xl p-2 text-white/80 ring-1 ring-white/10 transition hover:bg-white/5 active:scale-95 md:hidden"
-        >
-          <Menu className="h-6 w-6" />
-        </button>
+          {/* Mobile toggle */}
+          <button
+            className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 transition"
+            onClick={() => setIsMenuOpen((v) => !v)}
+          >
+            {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
       </div>
 
-      {/* Mobile Drawer */}
-      {open && (
-        <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 md:hidden">
-          <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            onClick={() => setOpen(false)}
-          />
-          <div className="absolute inset-y-0 right-0 w-[82%] max-w-xs overflow-y-auto border-l border-white/10 bg-neutral-950 shadow-2xl">
-            <div className="flex items-center justify-between px-4 py-3">
-              <div className="inline-flex items-center gap-2">
-                <span
-                  className="inline-block h-6 w-6 rounded-lg bg-gradient-to-r from-emerald-500 to-blue-600"
-                  aria-hidden
-                />
-                <span className="text-base font-bold tracking-wide text-white">
-                  Johnny
-                </span>
-              </div>
-              <button
-                aria-label="Close menu"
-                onClick={() => setOpen(false)}
-                className="rounded-xl p-2 text-white/80 ring-1 ring-white/10 transition hover:bg-white/5 active:scale-95"
+      {/* Mobile menu */}
+      {isMenuOpen && (
+        <div className="md:hidden border-t border-white/10 bg-black/95 backdrop-blur-md">
+          <div className="max-w-6xl mx-auto px-4 py-3 flex flex-col gap-1">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                to={item.href}
+                onClick={() => setIsMenuOpen(false)}
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition ${
+                  isActive(item.href)
+                    ? 'text-yellow-400 bg-white/5'
+                    : 'text-white/80 hover:text-white hover:bg-white/5'
+                }`}
               >
-                <X className="h-6 w-6" />
-              </button>
+                {item.name}
+              </Link>
+            ))}
+            <a
+              href="tel:4045555555"
+              className="mt-2 inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/90 transition border border-white/10"
+            >
+              <Phone size={16} /> (404) 555-5555
+            </a>
+            <div className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 text-white/80 border border-white/10">
+              <MapPin size={16} /> Atlanta, GA
             </div>
-
-            <nav className="px-4 pb-2 pt-1">
-              {NAV.map((item) => (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  className={({ isActive }) =>
-                    [
-                      "block rounded-xl px-3 py-3 text-sm transition",
-                      isActive
-                        ? "bg-white/5 text-white ring-1 ring-white/10"
-                        : "text-white/80 hover:bg-white/5 hover:text-white",
-                    ].join(" ")
-                  }
-                  end={item.to === "/"}
-                >
-                  {item.name}
-                </NavLink>
-              ))}
-
-              <div className="mt-4 grid grid-cols-3 gap-3">
-                <a
-                  href="https://www.instagram.com/tattoojohnnyatl/"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center justify-center gap-2 rounded-xl bg-white/5 px-3 py-2 text-white/80 ring-1 ring-white/10 transition hover:bg-white/10 hover:text-white"
-                >
-                  <Instagram className="h-5 w-5" />
-                  <span className="text-xs">Insta</span>
-                </a>
-                <a
-                  href="tel:+1-000-000-0000"
-                  className="flex items-center justify-center gap-2 rounded-xl bg-white/5 px-3 py-2 text-white/80 ring-1 ring-white/10 transition hover:bg-white/10 hover:text-white"
-                >
-                  <Phone className="h-5 w-5" />
-                  <span className="text-xs">Call</span>
-                </a>
-                <a
-                  href="mailto:hello@built4you.org"
-                  className="flex items-center justify-center gap-2 rounded-xl bg-white/5 px-3 py-2 text-white/80 ring-1 ring-white/10 transition hover:bg-white/10 hover:text-white"
-                >
-                  <Mail className="h-5 w-5" />
-                  <span className="text-xs">Email</span>
-                </a>
-              </div>
-
-              <p className="mt-6 rounded-xl bg-white/5 px-3 py-3 text-center text-[13px] text-white/70 ring-1 ring-white/10">
-                Made with <span aria-hidden>🖋️</span> by{" "}
-                <a
-                  href="https://built4you.org"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="font-semibold text-white hover:underline"
-                >
-                  Built4You
-                </a>
-              </p>
-            </nav>
+            <button
+              onClick={() => {
+                setIsMenuOpen(false);
+                onOpenBooking();
+              }}
+              className="inline-flex items-center gap-2 px-3 py-2 mt-1 rounded-lg bg-yellow-400 text-white font-semibold hover:bg-yellow-300 transition shadow-[0_0_16px_rgba(234,179,8,0.25)]"
+            >
+              <Zap size={16} /> Book
+            </button>
           </div>
         </div>
       )}
     </header>
   );
-}
+};
+
+export default Header;
