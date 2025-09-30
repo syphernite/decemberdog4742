@@ -6,8 +6,16 @@ import { CheckCircle, Phone, MessageSquare, Instagram, Clock, Zap } from 'lucide
 const Services: React.FC = () => {
   const [packagesRef, packagesInView] = useInView({ threshold: 0.1, triggerOnce: true });
 
-  // Removed anchor scrolling & booking form logic since there's no #book section now
-  useEffect(() => {}, []);
+  // Load Calendly widget script once for the Booking section
+  useEffect(() => {
+    if (!document.querySelector('#calendly-widget')) {
+      const s = document.createElement('script');
+      s.id = 'calendly-widget';
+      s.src = 'https://assets.calendly.com/assets/external/widget.js';
+      s.async = true;
+      document.body.appendChild(s);
+    }
+  }, []);
 
   // PRICING (flat across vehicle types)
   // - Basic Wash: $70
@@ -122,7 +130,7 @@ const Services: React.FC = () => {
                   ))}
                 </ul>
 
-                {/* Call-to-book button (no more #book section) */}
+                {/* Call-to-book button */}
                 <a
                   href="tel:9153185633"
                   className="w-full inline-block text-center bg-red-600 hover:bg-red-500 text-black py-3 rounded-lg font-semibold transition-colors shadow-[0_0_16px_rgba(239,68,68,.35)]"
@@ -132,6 +140,22 @@ const Services: React.FC = () => {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Online Booking (Calendly) */}
+      <section id="book" className="py-16 bg-zinc-950">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold mb-4">Book Online</h2>
+            <p className="text-white/70">Choose a time that works for you. Bookings sync to our calendar instantly.</p>
+          </div>
+
+          <div
+            className="calendly-inline-widget w-full mx-auto rounded-2xl overflow-hidden border border-white/10"
+            data-url="https://calendly.com/built4youonline"
+            style={{ minWidth: '320px', height: '900px' }}
+          />
         </div>
       </section>
 
