@@ -123,7 +123,7 @@ const Home: React.FC = () => {
           </div>
 
           <div className="mt-6 text-white/80 text-sm">
-            $60 Basic • $40 Interior/Exterior • $120 Premium — DM to book
+            $70 Basic • $50 Interior/Exterior • $120 Premium — DM to book
           </div>
         </motion.div>
       </section>

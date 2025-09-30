@@ -1,62 +1,39 @@
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { CheckCircle, Phone, MessageSquare, Instagram, Clock, MapPin, Zap } from 'lucide-react';
-import BookingForm from '../components/BookingForm';
+import { CheckCircle, Phone, MessageSquare, Instagram, Clock, Zap } from 'lucide-react';
 
 const Services: React.FC = () => {
   const [packagesRef, packagesInView] = useInView({ threshold: 0.1, triggerOnce: true });
-  const [formRef, formInView] = useInView({ threshold: 0.1, triggerOnce: true });
 
-  useEffect(() => {
-    try {
-      const hash = window.location.hash || '';
-      const search = window.location.search || '';
-      let targetId: string | null = null;
+  // Removed anchor scrolling & booking form logic since there's no #book section now
+  useEffect(() => {}, []);
 
-      if (search) {
-        const params = new URLSearchParams(search);
-        const v = params.get('scroll');
-        if (v && (v === 'book' || v === 'packages')) targetId = v;
-      }
-      if (!targetId && hash) {
-        const last = hash.split('#').pop();
-        if (last && (last === 'book' || last === 'packages')) targetId = last;
-      }
-      if (targetId) {
-        setTimeout(() => {
-          const el = document.getElementById(targetId!);
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-        }, 120);
-      }
-    } catch {}
-  }, []);
-
-  // PRICING (flat across vehicle types per your note)
-  // - Basic Wash: $60
-  // - Interior OR Exterior Only: $40
+  // PRICING (flat across vehicle types)
+  // - Basic Wash: $70
+  // - Interior OR Exterior Only: $50
   // - Premium Wash: $120
   const packages = [
     {
       name: 'Basic Wash',
-      prices: { sedan: 60, suv: 60, truck: 60 },
+      prices: { sedan: 70, suv: 70, truck: 70 },
       features: [
         'Foam wash & hand dry',
         'Wheels & tires dressed',
         'Windows cleaned (exterior)',
         'Light interior vacuum',
       ],
-      popular: false
+      popular: false,
     },
     {
       name: 'Interior OR Exterior Only',
-      prices: { sedan: 40, suv: 40, truck: 40 },
+      prices: { sedan: 50, suv: 50, truck: 50 },
       features: [
         'Choose a focused service:',
         'Interior: vacuum, wipe-down, windows',
         'Exterior: wash, dry, wheels, tire shine',
       ],
-      popular: false
+      popular: false,
     },
     {
       name: 'Premium Wash',
@@ -67,8 +44,8 @@ const Services: React.FC = () => {
         'Plastics conditioned',
         'Windows inside & out',
       ],
-      popular: true
-    }
+      popular: true,
+    },
   ];
 
   const addOns = [
@@ -76,7 +53,7 @@ const Services: React.FC = () => {
     { name: 'Glass Coating', price: 99, description: 'Hydrophobic coating for all windows' },
     { name: 'Engine Bay Detail', price: 75, description: 'Complete engine compartment cleaning' },
     { name: 'Headlight Restoration', price: 65, description: 'Remove oxidation and restore clarity' },
-    { name: 'Odor Treatment', price: 85, description: 'Ozone treatment for persistent odors' }
+    { name: 'Odor Treatment', price: 85, description: 'Ozone treatment for persistent odors' },
   ];
 
   return (
@@ -85,8 +62,9 @@ const Services: React.FC = () => {
       <section className="py-16 bg-gradient-to-br from-black via-zinc-900 to-black">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.6 }}>
-            <h1 className="text-4xl md:text-6xl font-black mb-6 tracking-tight">Packages & Booking</h1>
-            <div className="bg-red-600 text-black px-8 py-4 rounded-lg inline-flex items-center gap-3 text-lg font-semibold mb-8 shadow-[0_0_25px_rgba(239,68,68,.35)]">
+            <h1 className="text-4xl md:text-6xl font-black mb-3 tracking-tight">Packages & Booking</h1>
+            <p className="text-white/70 mb-6">Serving <span className="text-white">El Paso, TX</span> and nearby areas</p>
+            <div className="bg-red-600 text-black px-8 py-4 rounded-lg inline-flex items-center gap-3 text-lg font-semibold mb-2 shadow-[0_0_25px_rgba(239,68,68,.35)]">
               <Zap className="h-6 w-6" />
               <span>No water or power? We bring our own.</span>
             </div>
@@ -97,7 +75,12 @@ const Services: React.FC = () => {
       {/* Packages */}
       <section id="packages" ref={packagesRef} className="py-16 bg-black">
         <div className="max-w-7xl mx-auto px-4">
-          <motion.div initial={{ y: 30, opacity: 0 }} animate={packagesInView ? { y: 0, opacity: 1 } : {}} transition={{ duration: 0.6 }} className="text-center mb-12">
+          <motion.div
+            initial={{ y: 30, opacity: 0 }}
+            animate={packagesInView ? { y: 0, opacity: 1 } : {}}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
             <h2 className="text-3xl font-bold mb-4">Choose Your Package</h2>
             <p className="text-xl text-white/70">Professional detailing delivered to your location</p>
           </motion.div>
@@ -127,9 +110,7 @@ const Services: React.FC = () => {
                   <div className="text-3xl font-extrabold text-red-500 mb-2">
                     ${pkg.prices.sedan}
                   </div>
-                  <div className="text-xs text-white/50">
-                    Same price for sedan, SUV, or truck
-                  </div>
+                  <div className="text-xs text-white/50">Same price for sedan, SUV, or truck</div>
                 </div>
 
                 <ul className="space-y-3 mb-8">
@@ -141,15 +122,13 @@ const Services: React.FC = () => {
                   ))}
                 </ul>
 
-                <button
-                  onClick={() => {
-                    const formElement = document.getElementById('book');
-                    if (formElement) formElement.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="w-full bg-red-600 hover:bg-red-500 text-black py-3 rounded-lg font-semibold transition-colors shadow-[0_0_16px_rgba(239,68,68,.35)]"
+                {/* Call-to-book button (no more #book section) */}
+                <a
+                  href="tel:9153185633"
+                  className="w-full inline-block text-center bg-red-600 hover:bg-red-500 text-black py-3 rounded-lg font-semibold transition-colors shadow-[0_0_16px_rgba(239,68,68,.35)]"
                 >
-                  Book Mobile Detail
-                </button>
+                  Call to Book
+                </a>
               </motion.div>
             ))}
           </div>
@@ -185,18 +164,6 @@ const Services: React.FC = () => {
         </div>
       </section>
 
-      {/* Booking Form */}
-      <section id="book" ref={formRef} className="py-16 bg-black">
-        <div className="max-w-4xl mx-auto px-4">
-          <motion.div initial={{ y: 30, opacity: 0 }} animate={formInView ? { y: 0, opacity: 1 } : {}} transition={{ duration: 0.6 }} className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Book Your Mobile Detail</h2>
-            <p className="text-xl text-white/70">Schedule your appointment and we'll come to you</p>
-          </motion.div>
-
-          <BookingForm packages={packages} addOns={addOns} />
-        </div>
-      </section>
-
       {/* Contact / Info */}
       <section className="py-16 bg-zinc-950">
         <div className="max-w-7xl mx-auto px-4">
@@ -204,16 +171,16 @@ const Services: React.FC = () => {
             <div className="text-center">
               <Phone className="h-12 w-12 text-red-500 mx-auto mb-4" />
               <h3 className="text-xl font-semibold mb-2">Call Us</h3>
-              <a href="tel:555-123-7463" className="text-red-500 hover:text-red-400 text-lg font-medium">
-                (555) 123-SHINE
+              <a href="tel:9153185633" className="text-red-500 hover:text-red-400 text-lg font-medium">
+                (915) 318-5633
               </a>
             </div>
 
             <div className="text-center">
               <MessageSquare className="h-12 w-12 text-red-500 mx-auto mb-4" />
               <h3 className="text-xl font-semibold mb-2">Text Us</h3>
-              <a href="sms:555-123-7463" className="text-red-500 hover:text-red-400 text-lg font-medium">
-                (555) 123-SHINE
+              <a href="sms:9153185633" className="text-red-500 hover:text-red-400 text-lg font-medium">
+                (915) 318-5633
               </a>
             </div>
 
@@ -228,7 +195,12 @@ const Services: React.FC = () => {
               <Instagram className="h-12 w-12 text-red-500 mx-auto mb-4" />
               <h3 className="text-xl font-semibold mb-2">Follow Us</h3>
               <div className="space-x-4">
-                <a href="https://www.instagram.com/chromecousins_detailing/" target="_blank" rel="noreferrer" className="text-red-500 hover:text-red-400">
+                <a
+                  href="https://www.instagram.com/chromecousins_detailing/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-red-500 hover:text-red-400"
+                >
                   Instagram
                 </a>
                 <a href="#" className="text-red-500 hover:text-red-400">TikTok</a>
@@ -245,7 +217,7 @@ const Services: React.FC = () => {
               </div>
               <div>
                 <h4 className="font-semibold mb-2 text-red-500">Service Radius</h4>
-                <p className="text-sm text-white/70">25-mile radius from local area</p>
+                <p className="text-sm text-white/70">25-mile radius from El Paso, TX</p>
               </div>
               <div>
                 <h4 className="font-semibold mb-2 text-red-500">Weather Policy</h4>
