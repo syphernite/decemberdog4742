@@ -28,7 +28,7 @@ const Home: React.FC = () => {
   ];
 
   const services = [
-    { icon: Sparkles, title: 'Interior Detailing', description: 'Steam, shampoo, leather and plastic care, odor refresh' },
+    { icon: Sparkles, title: 'Interior Detailing', description: 'Steam, shampoo, leather and vinyl care, odor refresh' },
     { icon: Car, title: 'Exterior Detailing', description: 'Foam wash, decon, clay, wheels & tires dressed' },
     { icon: Droplets, title: 'Paint Protection', description: 'Machine polish with sealant or ceramic upgrade' }
   ];
