@@ -1,10 +1,9 @@
-// src/pages/Portfolio.tsx
 import React, { useState } from 'react';
 import { X, Eye, Heart, Share2, ExternalLink } from 'lucide-react';
 
 interface PortfolioItem {
   id: number;
-  image: string; // e.g. "photo1.jpg"
+  image: string;
   title: string;
 }
 
@@ -13,9 +12,9 @@ type BookingModalProps = {
   onClose: () => void;
 };
 
-/** Prefix a public asset with the Vite base so it works under /johnny */
-const withBase = (p: string) => {
-  const clean = p.replace(/^\/+/, ''); // no leading slash
+// helper: prepend vite base so images work on /johnny
+const withBase = (path: string) => {
+  const clean = path.replace(/^\/+/, '');
   const base = import.meta.env.BASE_URL || '/';
   return `${base}${clean}`;
 };
@@ -67,7 +66,6 @@ const Portfolio: React.FC = () => {
   const openBooking = () => setBookingOpen(true);
   const closeBooking = () => setBookingOpen(false);
 
-  // Files are in johnny/public/photo1.jpg ... photo9.jpg
   const portfolioItems: PortfolioItem[] = [
     { id: 1, image: 'photo1.jpg', title: 'Portfolio Piece 1' },
     { id: 2, image: 'photo2.jpg', title: 'Portfolio Piece 2' },
@@ -77,7 +75,7 @@ const Portfolio: React.FC = () => {
     { id: 6, image: 'photo6.jpg', title: 'Portfolio Piece 6' },
     { id: 7, image: 'photo7.jpg', title: 'Portfolio Piece 7' },
     { id: 8, image: 'photo8.jpg', title: 'Portfolio Piece 8' },
-    { id: 9, image: 'photo9.jpg', title: 'Portfolio Piece 9' },
+    { id: 9, image: 'photo9.jpg', title: 'Portfolio Piece 9' }
   ];
 
   const openLightbox = (item: PortfolioItem) => {
@@ -97,7 +95,6 @@ const Portfolio: React.FC = () => {
     <div className="min-h-screen bg-black">
       {/* Header Section */}
       <section className="relative py-32 bg-gradient-to-br from-gray-900 via-black to-gray-900 overflow-hidden">
-        {/* Background Image */}
         <div className="absolute inset-0">
           <img
             src={headerBg}
@@ -145,9 +142,7 @@ const Portfolio: React.FC = () => {
                       decoding="async"
                     />
 
-                    {/* Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500">
-                      {/* Action buttons */}
                       <div className="absolute top-4 right-4 flex space-x-2 transform translate-y-[-20px] group-hover:translate-y-0 transition-transform duration-300">
                         <button
                           className="p-2 bg-black/50 backdrop-blur-sm rounded-full text-white hover:text-yellow-400 hover:bg-black/70 transition-all duration-300"
@@ -174,10 +169,7 @@ const Portfolio: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Hover Border Effect */}
                     <div className="absolute inset-0 border-2 border-transparent group-hover:border-yellow-400/50 transition-colors duration-500 rounded-2xl"></div>
-
-                    {/* Shine effect */}
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out"></div>
                   </div>
                 </div>
@@ -242,7 +234,7 @@ const Portfolio: React.FC = () => {
         </div>
       )}
 
-      {/* Page-level booking modal */}
+      {/* Booking Modal */}
       <BookingModal open={bookingOpen} onClose={closeBooking} />
     </div>
   );

@@ -6,7 +6,7 @@
     <link rel="icon" type="image/svg+xml" href="vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tattoo Johnny ATL - Atlanta's Premier Tattoo Artist</title>
-    <meta name="description" content="Custom black & grey, fine line, and illustrative tattoo work in Atlanta. Over 10 years of experience in clean linework and smooth shading." />
+    <meta name="description" content="Custom black & grey, fine ...10 years of experience in clean linework and smooth shading." />
     <style>
       @keyframes fade-in {
         from { opacity: 0; transform: translateY(30px); }
@@ -17,12 +17,19 @@
         to { opacity: 1; transform: translateY(0); }
       }
       @keyframes slide-up {
-        from { opacity: 0; transform: translateY(60px) }
-        to { opacity: 1; transform: translateY(0) }
+        from { opacity: 0; transform: translateY(40px) scale(0.98); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
       }
       @keyframes pulse-slow {
-        0% { transform: scale(1); opacity: 1; }
-        50% { transform: scale(1.03); opacity: 0.9; }
+        0%, 100% { opacity: 0.6; }
+        50% { opacity: 1; }
+      }
+      @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-4px); }
+      }
+      @keyframes scale-in {
+        0% { transform: scale(0.98); opacity: 0; }
         100% { transform: scale(1); opacity: 1; }
       }
       .animate-fade-in { animation: fade-in 0.8s ease-out forwards; }
@@ -34,6 +41,6 @@
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="./src/main.tsx"></script>
   </body>
 </html>
