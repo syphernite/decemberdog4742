@@ -5,14 +5,10 @@ import { HelmetProvider } from 'react-helmet-async';
 import App from './App';
 import './index.css';
 
-// Automatically pick "/" in dev, "/chromecousins/" in production
-const base =
-  import.meta.env.DEV ? '/' : '/chromecousins/';
-
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <HelmetProvider>
-      <HashRouter basename={base}>
+      <HashRouter>
         <App />
       </HashRouter>
     </HelmetProvider>

@@ -86,7 +86,7 @@ const Home: React.FC = () => {
           alt=""
           className="absolute inset-0 w-full h-full object-cover"
           loading="eager"
-          fetchPriority="high"
+          fetchpriority="high"   /* <-- fixed: lowercase so React passes it to DOM */
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/85 via-black/65 to-black/90 diagonal-overlay" />
 
