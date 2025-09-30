@@ -25,6 +25,9 @@ const Navbar: React.FC = () => {
     { name: 'Results', path: '/results' }
   ];
 
+  // Build correct URL for /public assets with Vite base (e.g., /chromecousins/)
+  const logoUrl = `${import.meta.env.BASE_URL}logo.jpg`;
+
   return (
     <motion.nav
       initial={{ y: -80, opacity: 0 }}
@@ -32,16 +35,6 @@ const Navbar: React.FC = () => {
       transition={{ duration: 0.35, ease: 'easeOut' }}
       className="fixed top-0 left-0 right-0 z-50"
     >
-      {/* small local styles (safe) */}
-      <style>{`
-        .cc-card { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); }
-        .brand-badge {
-          background-image: linear-gradient(180deg, #f5f5f5 0%, #dcdcdc 40%, #bfbfbf 60%, #e9e9e9 100%);
-          color: #0a0a0a;
-          text-shadow: 0 1px 10px rgba(255,255,255,.25);
-        }
-      `}</style>
-
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-3">
         <div
           className={[
@@ -53,13 +46,14 @@ const Navbar: React.FC = () => {
         >
           {/* Brand */}
           <Link to="/" className="flex items-center gap-3 group">
-            {/* CC monogram (no car icon) */}
-            <span
-              className="brand-badge inline-flex h-9 w-9 items-center justify-center rounded-md ring-1 ring-white/10 text-sm font-extrabold tracking-tight"
-              aria-hidden="true"
-            >
-              CC
-            </span>
+            {/* Logo from /public/logo.jpg */}
+            <img
+              src={logoUrl}
+              alt="Chrome Cousins logo"
+              className="h-9 w-9 rounded-md ring-1 ring-white/10 object-cover"
+              loading="eager"
+              fetchpriority="high"
+            />
             <div className="leading-none">
               <div className="text-xl font-extrabold bg-gradient-to-r from-red-500 via-red-600 to-rose-600 bg-clip-text text-transparent">
                 Chrome Cousins
