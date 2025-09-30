@@ -61,7 +61,6 @@ const Services: React.FC = () => {
     { name: 'Glass Coating', price: 99, description: 'Hydrophobic coating for all windows' },
     { name: 'Engine Bay Detail', price: 75, description: 'Complete engine compartment cleaning' },
     { name: 'Headlight Restoration', price: 65, description: 'Remove oxidation and restore clarity' },
-    { name: 'Odor Treatment', price: 85, description: 'Ozone treatment for persistent odors' },
   ];
 
   return (
