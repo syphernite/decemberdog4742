@@ -5,6 +5,6 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react(), seoPlugin()],
   // IMPORTANT: this must match the folder you deploy to on the server
-  base: '/chromecousins/',
+  base: '/kingswheels/',
   optimizeDeps: { exclude: ['lucide-react'] }
 });

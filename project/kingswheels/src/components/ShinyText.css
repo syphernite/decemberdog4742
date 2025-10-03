@@ -1,0 +1,23 @@
+/* ShinyText — CSS-only gradient sweep */
+.shiny-text {
+  position: relative;
+  display: inline-block;
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.08) 0%,
+    rgba(255,255,255,0.9) 40%,
+    rgba(255,255,255,0.08) 80%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  /* subtle chrome look beneath */
+  text-shadow: 0 0 1px rgba(255,255,255,0.15);
+  background-size: 200% 100%;
+  animation: shine var(--shine-duration, 5s) linear infinite;
+}
+
+@keyframes shine {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
