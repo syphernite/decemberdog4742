@@ -5,7 +5,7 @@ import { AnimatePresence } from "framer-motion";
 
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
-import Shop from "./pages/Shop";
+import Services from "./pages/Services";
 import Catalog from "./pages/Catalog";
 import Gallery from "./pages/Gallery";
 import Contact from "./pages/Contact";
@@ -45,7 +45,7 @@ function App() {
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<Home />} />
-          <Route path="/shop" element={<Shop />} />
+          <Route path="/services" element={<Services />} />
           <Route path="/catalog" element={<Catalog />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/contact" element={<Contact />} />

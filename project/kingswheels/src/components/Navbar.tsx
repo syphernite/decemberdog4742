@@ -21,7 +21,7 @@ const Navbar: React.FC = () => {
 
   const navItems = [
     { name: "Home", path: "/" },
-    { name: "Shop", path: "/shop" },
+    { name: "Services", path: "/services" },
     { name: "Catalog", path: "/catalog" },
     { name: "Gallery", path: "/gallery" },
     { name: "Contact", path: "/contact" },
@@ -55,7 +55,7 @@ const Navbar: React.FC = () => {
               fetchpriority="high"
             />
             <div className="leading-none">
-              <div className="text-xl font-extrabold bg-gradient-to-r from-zinc-100 via-zinc-300 to-zinc-100 bg-clip-text text-transparent">
+              <div className="font-cinzel text-xl font-extrabold bg-gradient-to-r from-zinc-100 via-zinc-300 to-zinc-100 bg-clip-text text-transparent tracking-wide uppercase">
                 Kings Wheels
               </div>
               <div className="text-[11px] text-white/60 mt-[2px] group-hover:text-white/80 transition-colors">
@@ -92,12 +92,14 @@ const Navbar: React.FC = () => {
               })}
             </div>
 
+            {/* Glass button */}
             <Link
               to="/contact"
-              className="ml-2 relative inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold text-black transition-transform duration-200 hover:scale-[1.03]"
+              className="ml-2 inline-flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-semibold
+                         text-white bg-white/10 border border-white/25 backdrop-blur-md shadow-lg
+                         transition duration-200 hover:bg-white/15 hover:border-white/40 hover:scale-[1.03]"
             >
-              <span className="absolute inset-0 rounded-xl bg-gradient-to-r from-zinc-200 via-slate-100 to-zinc-200 opacity-95" />
-              <span className="relative">Visit or Call</span>
+              Visit or Call
             </Link>
           </div>
 
@@ -136,12 +138,14 @@ const Navbar: React.FC = () => {
                     </Link>
                   );
                 })}
+                {/* Glass button mobile */}
                 <Link
                   to="/contact"
-                  className="block mt-2 text-center rounded-xl py-2 font-medium text-black relative overflow-hidden"
+                  className="block mt-2 text-center rounded-xl py-3 font-medium
+                             text-white bg-white/10 border border-white/25 backdrop-blur-md shadow-lg
+                             transition hover:bg-white/15 hover:border-white/40"
                 >
-                  <span className="absolute inset-0 rounded-xl bg-gradient-to-r from-zinc-200 via-slate-100 to-zinc-200" />
-                  <span className="relative">Visit or Call</span>
+                  Visit or Call
                 </Link>
               </div>
             </motion.div>
