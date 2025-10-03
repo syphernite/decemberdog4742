@@ -140,7 +140,7 @@ const Home: React.FC = () => {
             containerClassName="mt-6 sm:mt-8 mb-10 sm:mb-12 px-2"
             textClassName="text-base sm:text-2xl text-zinc-200/90 max-w-4xl mx-auto leading-relaxed font-light"
           >
-            Chrome level finish, marble level calm. Forged wheels and tuned suspension for a ride that looks sharp and feels precise.
+            Lawton’s home for premium wheels, precision suspension, and professional auto care. A one-stop shop built on craftsmanship and trust.
           </ScrollFloat>
 
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 justify-center px-2">
