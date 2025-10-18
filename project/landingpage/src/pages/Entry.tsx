@@ -398,9 +398,17 @@ export default function Entry() {
       if (entryBgRef.current)
         gsap.fromTo(entryBgRef.current, { opacity: 0 }, { opacity: 1, duration: 0.9, ease: "power2.out" });
       if (logoRef.current)
-        gsap.fromTo(logoRef.current, { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: "power2.out", delay: 0.1 });
+        gsap.fromTo(
+          logoRef.current,
+          { y: 18, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.7, ease: "power2.out", delay: 0.1 }
+        );
       if (ctaRef.current)
-        gsap.fromTo(ctaRef.current, { y: 14, opacity: 0, scale: 0.9 }, { y: 0, opacity: 1, scale: 1, duration: 0.7, ease: "power2.out", delay: 0.25 });
+        gsap.fromTo(
+          ctaRef.current,
+          { y: 14, opacity: 0, scale: 0.9 },
+          { y: 0, opacity: 1, scale: 1, duration: 0.7, ease: "power2.out", delay: 0.25 }
+        );
     }, rootRef);
     return () => ctx.revert();
   }, []);
@@ -408,7 +416,11 @@ export default function Entry() {
   const handleEnter = () => {
     const tl = gsap.timeline();
     tl.to(ctaRef.current, { scale: 0.96, duration: 0.08, ease: "power1.out" })
-      .to(rocketRef.current, { y: -220, x: 120, rotation: -25, scale: 1.2, duration: 0.6, ease: "power2.in" }, "<")
+      .to(
+        rocketRef.current,
+        { y: -220, x: 120, rotation: -25, scale: 1.2, duration: 0.6, ease: "power2.in" },
+        "<"
+      )
       .to(ctaRef.current, { scale: 1, duration: 0.12, ease: "power1.inOut" }, "<0.15")
       .to(logoRef.current, { opacity: 0.75, duration: 0.2, ease: "power1.out" }, "<")
       .to(overlayRef.current, { opacity: 1, duration: 0.45, ease: "power2.inOut" })
@@ -459,31 +471,34 @@ export default function Entry() {
             </button>
           </div>
 
-          {/* Secondary CTA and social */}
-          <div className="mt-6 space-y-4">
+          {/* Secondary CTA (commented out cleanly) */}
+          {/*
+          <div className="mt-6">
             <button
               onClick={() => setFreeOpen(true)}
               className="rounded-2xl border border-white/15 bg-white/5 px-6 py-4 text-base font-semibold text-white backdrop-blur-sm transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black"
             >
               Want a Free site?
             </button>
+          </div>
+          */}
 
-            <div className="flex justify-center gap-3">
-              <a
-                href="https://www.instagram.com/built4youonline?igsh=MWJ6MmViMmlzemsyOA=="
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-2xl border border-white/15 bg-white/5 p-3 backdrop-blur-sm transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black"
-              >
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a
-                href="tel:5805076262"
-                className="rounded-2xl border border-white/15 bg-white/5 p-3 backdrop-blur-sm transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black"
-              >
-                <Phone className="h-5 w-5" />
-              </a>
-            </div>
+          {/* Social */}
+          <div className="mt-6 flex justify-center gap-3">
+            <a
+              href="https://www.instagram.com/built4youonline?igsh=MWJ6MmViMmlzemsyOA=="
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-2xl border border-white/15 bg-white/5 p-3 backdrop-blur-sm transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black"
+            >
+              <Instagram className="h-5 w-5" />
+            </a>
+            <a
+              href="tel:5805076262"
+              className="rounded-2xl border border-white/15 bg-white/5 p-3 backdrop-blur-sm transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-black"
+            >
+              <Phone className="h-5 w-5" />
+            </a>
           </div>
         </div>
 
