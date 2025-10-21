@@ -10,24 +10,21 @@
     "preview": "vite preview"
   },
   "dependencies": {
-<<<<<<<< HEAD:project/wok/package.json
-========
     "@headlessui/react": "^2.2.7",
     "framer-motion": "^12.23.12",
     "gsap": "^3.13.0",
->>>>>>>> 48a596740e5628d60fd8b3ed4455b1a8a5d062d3:project/kingswheels/package.json
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.23.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.1",
-    "tailwindcss": "^3.4.1",
-    "postcss": "^8.4.35",
-    "autoprefixer": "^10.4.18",
-    "typescript": "^5.5.3",
     "@types/react": "^18.3.5",
-    "@types/react-dom": "^18.3.0"
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.18",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.5.3"
   }
 }
