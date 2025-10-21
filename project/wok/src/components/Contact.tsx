@@ -5,12 +5,26 @@ export default function Contact() {
   const [fortune, setFortune] = useState("Your next meal is destiny");
 
   const fortunes = [
-    "Your next meal is destiny",
-    "Tip your wok master",
-    "Cash is king, flavor is queen",
-    "Good things come to those who wok",
-    "The secret ingredient is always love... and MSG",
-    "Fortune favors the hungry"
+  "Good fortune comes to those who eat here often.",
+  "Your next meal will bring unexpected joy.",
+  "A crispy bite is the secret to happiness.",
+  "Patience brings perfect fried rice.",
+  "Your generosity will return as free spring rolls.",
+  "Luck follows those who dine with chopsticks.",
+  "You will soon receive extra sauce in life.",
+  "Happiness is fried, not found.",
+  "Balance is key — one sweet, one spicy.",
+  "Great taste awaits you tomorrow.",
+  "The wok never lies.",
+  "Your wallet will forgive you for this meal.",
+  "Today’s spice, tomorrow’s wisdom.",
+  "The fortune you seek is in your next bite.",
+  "Your heart knows when it’s perfectly seasoned.",
+  "Noodles unite all hungry souls.",
+  "A full plate equals a full heart.",
+  "Your next fortune cookie will be right.",
+  "Wok on, hungry traveler.",
+  "Life tastes better with sesame oil."
   ];
 
   const refreshFortune = () => {
