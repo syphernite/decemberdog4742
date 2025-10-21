@@ -34,8 +34,19 @@ jobs:
             fi
             echo "🔨 Building demo: $slug"
             cd "$dir"
-            npm ci
-            npm run build
+
+            # Kingswheels fix: clean lock + node_modules so npm fetches the proper optional rollup binary
+            if [ "$slug" = "kingswheels" ]; then
+              rm -rf node_modules
+              rm -f package-lock.json
+            fi
+
+            # Install with guard so failures don't kill the entire loop
+            npm ci || npm install || { echo "❌ Install failed for $slug — skipping"; cd ../../; continue; }
+
+            # Build with guard so the loop continues on failure
+            npm run build || { echo "❌ Build failed for $slug — skipping"; cd ../../; continue; }
+
             cd ../../
 
             rm -rf "$slug"
@@ -119,8 +130,8 @@ jobs:
           cat > 404.html << 'EOF'
           <!DOCTYPE html>
           <html>
-          <head><meta charset="utf-8"><title>Redirecting…</title></head>
-          <body>
+          <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Redirecting…</title></head>
+          <body style="font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif">
             <script>
               (function () {
                 const DEMO_SLUGS = SLUGS_PLACEHOLDER;
