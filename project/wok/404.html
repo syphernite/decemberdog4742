@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirecting…</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="refresh" content="0; url=/" />
+    <style>
+      html,body{height:100%;margin:0}
+      body{display:flex;align-items:center;justify-content:center;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:#000;color:#fff}
+      .card{padding:16px 20px;border:1px solid #333;border-radius:10px;background:#0b0b0b}
+      .muted{opacity:0.7;font-size:14px}
+      a{color:#7fdcff}
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div>Redirecting…</div>
+      <div class="muted" id="msg"></div>
+    </div>
+
+    <script>
+      (function () {
+        // Example: https://built4you.org/wok  → segments = ["wok"]
+        //          https://built4you.org/wok/ → segments = ["wok"]
+        const path = window.location.pathname;
+        const segments = path.split('/').filter(Boolean); // drop empty parts
+
+        // If it's exactly one segment (e.g., "/wok") and there's no trailing slash,
+        // redirect to "/wok/" so GitHub Pages serves the folder's index.html.
+        if (segments.length === 1 && !path.endsWith('/')) {
+          const target = `/${segments[0]}/` + (window.location.search || '') + (window.location.hash || '');
+          document.getElementById('msg').textContent = `Appending slash… ${target}`;
+          window.location.replace(target);
+          return;
+        }
+
+        // Optional: if you have multi-route SPAs per client and want deep links (e.g., /wok/some/page)
+        // to load the client's index.html, you can redirect to "/<client>/" and preserve the hash.
+        // Uncomment if you want that behavior:
+        //
+        // if (segments.length >= 2) {
+        //   const client = segments[0];
+        //   const target = `/${client}/#/${segments.slice(1).join('/')}${window.location.search || ''}${window.location.hash || ''}`;
+        //   document.getElementById('msg').textContent = `Sending to app router… ${target}`;
+        //   window.location.replace(target);
+        //   return;
+        // }
+
+        // Fallback to home if nothing else matched
+        document.getElementById('msg').textContent = 'Sending you home…';
+        // Send to root landing page
+        window.location.replace('/' + (window.location.search || '') + (window.location.hash || ''));
+      })();
+    </script>
+  </body>
+</html>
