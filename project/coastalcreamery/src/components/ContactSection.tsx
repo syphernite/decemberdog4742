@@ -1,22 +1,6 @@
-import { useState } from 'react';
-import { MapPin, Clock, Phone, Mail } from 'lucide-react';
+import { MapPin, Clock, Phone } from 'lucide-react';
 
 export default function ContactSection() {
-  const [message, setMessage] = useState('');
-  const [scoopyResponse, setScoopyResponse] = useState('');
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const responses = [
-      "Squawk! That sounds delicious! Come catch the wave in person!",
-      "No online orders—but I promise the trip is worth it!",
-      "Ooh, great question! Swing by the shop and the crew will hook you up!",
-      "My feathers are tingling—sounds like you need a double scoop! See you soon!",
-    ];
-    setScoopyResponse(responses[Math.floor(Math.random() * responses.length)]);
-    setMessage('');
-  };
-
   return (
     <section className="py-20 bg-gradient-to-b from-blue-100 to-cyan-50 relative">
       <div className="absolute top-0 left-0 right-0">
@@ -33,8 +17,8 @@ export default function ContactSection() {
           <p className="text-xl text-cyan-600 italic">Come visit us by the shore!</p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-12 mb-16">
-          <div className="space-y-8">
+        <div className="flex justify-center mb-16">
+          <div className="space-y-8 max-w-lg w-full">
             <div className="bg-white/80 backdrop-blur rounded-3xl p-8 shadow-xl transform hover:scale-105 transition-all duration-300">
               <div className="flex items-start gap-4">
                 <div className="bg-gradient-to-br from-pink-300 to-rose-300 w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0">
@@ -77,49 +61,10 @@ export default function ContactSection() {
                   <p className="text-cyan-700">
                     Give us a ring!
                     <br />
-                    <span className="font-semibold">(252) SCOOP-NC</span>
+                    <span className="font-semibold">(252) 255-1102</span>
                   </p>
                 </div>
               </div>
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-br from-pink-200 via-purple-200 to-cyan-200 rounded-3xl p-8 shadow-2xl">
-            <div className="mb-6 text-center">
-              <div className="inline-block text-6xl mb-4 animate-bounce">🦅</div>
-              <h3 className="text-2xl font-bold text-cyan-900 mb-2">Ask Scoopy!</h3>
-              <p className="text-cyan-700">Our friendly seagull guide</p>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <textarea
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="What's your flavor crave today?"
-                className="w-full p-4 rounded-2xl border-2 border-cyan-200 focus:border-cyan-400 focus:outline-none resize-none h-32"
-                required
-              />
-              <button
-                type="submit"
-                className="w-full bg-gradient-to-r from-pink-400 to-rose-400 text-white font-semibold py-4 rounded-2xl hover:shadow-xl transition-all duration-300 hover:scale-105"
-              >
-                Ask Scoopy
-              </button>
-            </form>
-
-            {scoopyResponse && (
-              <div className="mt-6 bg-white/80 backdrop-blur rounded-2xl p-6 animate-fade-in">
-                <p className="text-cyan-800 font-medium">
-                  <span className="text-2xl mr-2">🦅</span>
-                  {scoopyResponse}
-                </p>
-              </div>
-            )}
-
-            <div className="mt-6 text-center">
-              <p className="text-sm text-cyan-700 italic">
-                No online orders—come catch the wave in person!
-              </p>
             </div>
           </div>
         </div>
