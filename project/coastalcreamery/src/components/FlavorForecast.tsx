@@ -1,14 +1,23 @@
 import { useState, useEffect } from 'react';
 import { Sun, Cloud, Sparkles, LucideProps, Loader2 } from 'lucide-react';
 
-// The URL you copied from "Publish to web" in Google Sheets
-const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTiILY_qFThxRTELPdgfnBv19mrnuq8H05fWZVtqr_BTTbR4Ej5OYZti0AjVebUyojhjhA8jeX9rnfI/pub?gid=0&single=true&output=csv';
+/**
+ * Uses your published CSV, but allows override via VITE_FLAVOR_CSV.
+ * Adds a cache-busting param to avoid stale Google caching.
+ */
+function csvUrl() {
+  const base =
+    import.meta.env.VITE_FLAVOR_CSV ||
+    'https://docs.google.com/spreadsheets/d/e/2PACX-1vTiILY_qFThxRTELPdgfnBv19mrnuq8H05fWZVtqr_BTTbR4Ej5OYZti0AjVebUyojhjhA8jeX9rnfI/pub?gid=0&single=true&output=csv';
+  const sep = base.includes('?') ? '&' : '?';
+  return `${base}${sep}_=${Date.now()}`;
+}
 
-// Map string names from your sheet to the actual icon components
-const iconMap: { [key: string]: React.FC<LucideProps> } = {
-  Sun,
-  Cloud,
-  Sparkles,
+/* --------------------------- Icon mapping --------------------------- */
+const iconMap: Record<string, React.FC<LucideProps>> = {
+  sun: Sun,
+  cloud: Cloud,
+  sparkles: Sparkles,
 };
 
 interface Forecast {
@@ -17,48 +26,164 @@ interface Forecast {
   special: string;
 }
 
+/* --------------------------- Robust CSV parser --------------------------- */
+/**
+ * Parses CSV with quote support and normalizes newlines/BOM.
+ */
+function parseCsv(text: string): string[][] {
+  const out: string[][] = [];
+  let row: string[] = [];
+  let cur = '';
+  let i = 0;
+  let inQuotes = false;
+
+  const s = text.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+
+  while (i < s.length) {
+    const ch = s[i];
+
+    if (inQuotes) {
+      if (ch === '"') {
+        if (s[i + 1] === '"') {
+          cur += '"';
+          i += 2;
+        } else {
+          inQuotes = false;
+          i += 1;
+        }
+      } else {
+        cur += ch;
+        i += 1;
+      }
+    } else {
+      if (ch === '"') {
+        inQuotes = true;
+        i += 1;
+      } else if (ch === ',') {
+        row.push(cur);
+        cur = '';
+        i += 1;
+      } else if (ch === '\n') {
+        row.push(cur);
+        out.push(row);
+        row = [];
+        cur = '';
+        i += 1;
+      } else {
+        cur += ch;
+        i += 1;
+      }
+    }
+  }
+
+  row.push(cur);
+  out.push(row);
+
+  // drop trailing fully-empty rows
+  return out.filter(r => r.some(c => String(c).trim() !== ''));
+}
+
+/* --------------------------- Normalizers --------------------------- */
+const clean = (v: unknown) =>
+  String(v ?? '')
+    // strip outer quotes
+    .replace(/^"+|"+$/g, '')
+    // remove zero-width / non-printing chars
+    .replace(/[\u200B-\u200D\uFEFF]/g, '')
+    .trim();
+
+const normKey = (k: string) => clean(k).toLowerCase();
+
+const normFlag = (v: unknown) => {
+  const s = clean(v).toLowerCase().replace(/[^a-z0-9]/g, '');
+  return s === 'y' || s === 'yes' || s === 'true' || s === '1';
+};
+
+/* --------------------------- Component --------------------------- */
 export default function FlavorForecast() {
-  const [currentForecast, setCurrentForecast] = useState<Forecast | null>(null);
+  const [current, setCurrent] = useState<Forecast | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
-    const fetchForecasts = async () => {
+    let cancelled = false;
+
+    (async () => {
       try {
-        const response = await fetch(GOOGLE_SHEET_CSV_URL);
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const text = await response.text();
-        const rows = text.trim().split('\n').map(r => r.split(','));
-        const headers = rows[0].map(h => h.trim().toLowerCase());
-        const data = rows.slice(1).map(row => Object.fromEntries(row.map((val, i) => [headers[i], val.trim()])));
+        const res = await fetch(csvUrl(), { cache: 'no-store' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const text = await res.text();
 
-        const activeForecasts = data.filter((row: any) => row.active?.trim().toLowerCase() === 'y');
-
-        if (activeForecasts.length === 0) {
-          // If no 'y' is found, or sheet is empty, we have no forecast to show.
-          setCurrentForecast(null); // Explicitly set to null
-        } else {
-          const forecastsFromSheet: Forecast[] = activeForecasts
-          .map((row: any) => ({
-            weather: row.weather || '',
-            icon: iconMap[row.icon] || Sun, // Default to Sun icon
-            special: row.special || '',
-          }))
-          .filter(f => f.weather && f.special); // Ensure rows have data
-          const randomForecast = forecastsFromSheet[Math.floor(Math.random() * forecastsFromSheet.length)];
-          setCurrentForecast(randomForecast);
+        const table = parseCsv(text);
+        if (!table.length) {
+          if (!cancelled) setCurrent(null);
+          return;
         }
-      } catch (err) {
-        setError('Could not load the flavor forecast. Please try again later.');
-        console.error('Error fetching or parsing CSV:', err);
+
+        const headers = table[0].map(normKey);
+        const rows = table.slice(1);
+
+        // map to objects with normalized keys and cleaned values
+        const objects = rows
+          .map(r => {
+            const o: Record<string, string> = {};
+            for (let i = 0; i < headers.length; i++) {
+              o[headers[i]] = clean(r[i] ?? '');
+            }
+            return o;
+          })
+          .filter(o => Object.values(o).some(v => v !== ''));
+
+        // Select keys with fallbacks by position if needed
+        const idx = {
+          active: headers.indexOf('active'),
+          weather: headers.indexOf('weather'),
+          icon: headers.indexOf('icon'),
+          special: headers.indexOf('special'),
+        };
+
+        const activeKey = idx.active !== -1 ? 'active' : headers[3] ?? 'active';
+        const weatherKey = idx.weather !== -1 ? 'weather' : headers[0] ?? 'weather';
+        const iconKey = idx.icon !== -1 ? 'icon' : headers[1] ?? 'icon';
+        const specialKey = idx.special !== -1 ? 'special' : headers[2] ?? 'special';
+
+        // Hard filter ONLY rows with a real truthy active flag
+        const actives = objects.filter(o => normFlag(o[activeKey]));
+
+        // If nothing matches, show a clear empty state
+        if (!actives.length) {
+          if (!cancelled) setCurrent(null);
+          return;
+        }
+
+        // Deterministic: pick the FIRST active row so you can verify flips instantly
+        const pick = actives[0];
+
+        const iconName = normKey(pick[iconKey] || '');
+        const Icon = iconMap[iconName] || Sun;
+
+        const next: Forecast = {
+          weather: pick[weatherKey] || '',
+          icon: Icon,
+          special: pick[specialKey] || '',
+        };
+
+        if (!cancelled) setCurrent(next);
+      } catch (e) {
+        if (!cancelled) {
+          setError('Could not load the flavor forecast.');
+          // eslint-disable-next-line no-console
+          console.error('FlavorForecast error:', e);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
       }
-      setLoading(false);
-    };
+    })();
 
-    fetchForecasts();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (
@@ -82,34 +207,42 @@ export default function FlavorForecast() {
         >
           {loading && (
             <div className="flex flex-col items-center justify-center gap-4">
-              <Loader2 className="w-16 h-16 text-cyan-500 animate-spin" />
+              <Loader2 className="w-16 h-16 animate-spin" />
               <p className="text-xl text-cyan-700">Forecasting the flavor...</p>
             </div>
           )}
+
           {error && <p className="text-xl text-red-500">{error}</p>}
-          {!loading && !error && currentForecast && (
+
+          {!loading && !error && current && (
             <>
               <div className="flex items-center justify-center gap-6 mb-6">
-                <currentForecast.icon className="w-16 h-16 text-yellow-500 animate-pulse" />
-                <p className="text-3xl md:text-4xl font-bold text-cyan-800">
-                  {currentForecast.weather}
-                </p>
+                <current.icon className="w-16 h-16 text-yellow-500 animate-pulse" />
+                <p className="text-3xl md:text-4xl font-bold text-cyan-800">{current.weather}</p>
               </div>
 
               <div className="border-t-2 border-cyan-200 pt-6 mt-6">
                 <p className="text-xl text-cyan-600 mb-3 font-semibold">Special of the Day:</p>
                 <p className="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-500">
-                  {currentForecast.special}
+                  {current.special}
                 </p>
               </div>
             </>
           )}
+
+          {!loading && !error && !current && (
+            <div className="flex flex-col items-center justify-center gap-2">
+              <Cloud className="w-12 h-12" />
+              <p className="text-lg text-cyan-800">
+                No active forecast found. Mark at least one row’s <strong>active</strong> column as
+                <strong> y</strong>.
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="mt-8 inline-block bg-white/60 backdrop-blur rounded-2xl px-6 py-3 shadow-lg">
-          <p className="text-cyan-800 font-medium italic">
-            Catch the flavor wave before it melts!
-          </p>
+          <p className="text-cyan-800 font-medium italic">Catch the flavor wave before it melts!</p>
         </div>
       </div>
     </section>
