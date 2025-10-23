@@ -7,7 +7,7 @@ export default function Footer() {
         <div className="grid md:grid-cols-3 gap-8 mb-8">
           <div className="text-center md:text-left">
             <h3 className="font-['Luckiest_Guy'] text-3xl text-yellow-300 mb-3">
-              CHINA WOK
+              CHINA WOK EXPRESS
             </h3>
             <p className="font-['Permanent_Marker'] text-sm text-gray-400">
               Serving flavor with attitude since forever
@@ -67,10 +67,10 @@ export default function Footer() {
 
           <div className="text-center mt-8">
             <p className="font-['Permanent_Marker'] text-xs text-gray-600">
-              © 2025 China Wok. Cash Only. No Regrets. All Rights Reserved.
+              © 2025 China Wok Express. Cash Only. No Regrets. All Rights Reserved.
             </p>
             <p className="font-['Permanent_Marker'] text-xs text-gray-600 mt-2">
-              Best Chinese Takeout in Lawton, TN | Cash-Only Drive-Thru | Family Owned & Operated
+              Best Chinese Takeout in Lawton, OK | Cash-Only Drive-Thru | Family Owned & Operated
             </p>
           </div>
         </div>
