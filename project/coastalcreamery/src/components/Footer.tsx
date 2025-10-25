@@ -23,7 +23,14 @@ export default function Footer() {
           <div className="flex items-center gap-2 text-cyan-200">
             <span>Made with</span>
             <Heart className="w-5 h-5 text-pink-400 fill-pink-400 animate-pulse" />
-            <span>by Built4You</span>
+            <a
+              href="https://built4you.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-pink-300 hover:text-pink-400 underline underline-offset-4 transition-colors"
+            >
+              Built4You
+            </a>
           </div>
 
           <div className="flex items-center gap-2">
