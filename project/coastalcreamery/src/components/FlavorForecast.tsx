@@ -1,10 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Sun, Cloud, Sparkles, LucideProps, Loader2 } from 'lucide-react';
 
-/**
- * Uses your published CSV, but allows override via VITE_FLAVOR_CSV.
- * Adds a cache-busting param to avoid stale Google caching.
- */
+/** Uses your published CSV, but allows override via VITE_FLAVOR_CSV. Adds cache-busting. */
 function csvUrl() {
   const base =
     import.meta.env.VITE_FLAVOR_CSV ||
@@ -13,12 +10,7 @@ function csvUrl() {
   return `${base}${sep}_=${Date.now()}`;
 }
 
-/* --------------------------- Icon mapping --------------------------- */
-const iconMap: Record<string, React.FC<LucideProps>> = {
-  sun: Sun,
-  cloud: Cloud,
-  sparkles: Sparkles,
-};
+const iconMap: Record<string, React.FC<LucideProps>> = { sun: Sun, cloud: Cloud, sparkles: Sparkles };
 
 interface Forecast {
   weather: string;
@@ -26,22 +18,17 @@ interface Forecast {
   special: string;
 }
 
-/* --------------------------- Robust CSV parser --------------------------- */
-/**
- * Parses CSV with quote support and normalizes newlines/BOM.
- */
+/** Robust CSV parser */
 function parseCsv(text: string): string[][] {
   const out: string[][] = [];
   let row: string[] = [];
   let cur = '';
   let i = 0;
   let inQuotes = false;
-
   const s = text.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
 
   while (i < s.length) {
     const ch = s[i];
-
     if (inQuotes) {
       if (ch === '"') {
         if (s[i + 1] === '"') {
@@ -75,31 +62,23 @@ function parseCsv(text: string): string[][] {
       }
     }
   }
-
   row.push(cur);
   out.push(row);
-
-  // drop trailing fully-empty rows
   return out.filter(r => r.some(c => String(c).trim() !== ''));
 }
 
-/* --------------------------- Normalizers --------------------------- */
 const clean = (v: unknown) =>
   String(v ?? '')
-    // strip outer quotes
     .replace(/^"+|"+$/g, '')
-    // remove zero-width / non-printing chars
     .replace(/[\u200B-\u200D\uFEFF]/g, '')
     .trim();
 
 const normKey = (k: string) => clean(k).toLowerCase();
-
 const normFlag = (v: unknown) => {
   const s = clean(v).toLowerCase().replace(/[^a-z0-9]/g, '');
   return s === 'y' || s === 'yes' || s === 'true' || s === '1';
 };
 
-/* --------------------------- Component --------------------------- */
 export default function FlavorForecast() {
   const [current, setCurrent] = useState<Forecast | null>(null);
   const [loading, setLoading] = useState(true);
@@ -108,7 +87,6 @@ export default function FlavorForecast() {
 
   useEffect(() => {
     let cancelled = false;
-
     (async () => {
       try {
         const res = await fetch(csvUrl(), { cache: 'no-store' });
@@ -123,19 +101,14 @@ export default function FlavorForecast() {
 
         const headers = table[0].map(normKey);
         const rows = table.slice(1);
-
-        // map to objects with normalized keys and cleaned values
         const objects = rows
           .map(r => {
             const o: Record<string, string> = {};
-            for (let i = 0; i < headers.length; i++) {
-              o[headers[i]] = clean(r[i] ?? '');
-            }
+            for (let i = 0; i < headers.length; i++) o[headers[i]] = clean(r[i] ?? '');
             return o;
           })
           .filter(o => Object.values(o).some(v => v !== ''));
 
-        // Select keys with fallbacks by position if needed
         const idx = {
           active: headers.indexOf('active'),
           weather: headers.indexOf('weather'),
@@ -148,46 +121,39 @@ export default function FlavorForecast() {
         const iconKey = idx.icon !== -1 ? 'icon' : headers[1] ?? 'icon';
         const specialKey = idx.special !== -1 ? 'special' : headers[2] ?? 'special';
 
-        // Hard filter ONLY rows with a real truthy active flag
         const actives = objects.filter(o => normFlag(o[activeKey]));
-
-        // If nothing matches, show a clear empty state
         if (!actives.length) {
           if (!cancelled) setCurrent(null);
           return;
         }
-
-        // Deterministic: pick the FIRST active row so you can verify flips instantly
         const pick = actives[0];
-
-        const iconName = normKey(pick[iconKey] || '');
-        const Icon = iconMap[iconName] || Sun;
+        const Icon = iconMap[normKey(pick[iconKey] || '')] || Sun;
 
         const next: Forecast = {
           weather: pick[weatherKey] || '',
           icon: Icon,
           special: pick[specialKey] || '',
         };
-
         if (!cancelled) setCurrent(next);
       } catch (e) {
         if (!cancelled) {
           setError('Could not load the flavor forecast.');
-          // eslint-disable-next-line no-console
           console.error('FlavorForecast error:', e);
         }
       } finally {
         if (!cancelled) setLoading(false);
       }
     })();
-
     return () => {
       cancelled = true;
     };
   }, []);
 
   return (
-    <section className="py-16 bg-gradient-to-r from-sky-300 via-cyan-300 to-blue-300 relative overflow-hidden">
+    <section
+      id="specials"
+      className="scroll-mt-24 py-16 bg-gradient-to-r from-sky-300 via-cyan-300 to-blue-300 relative overflow-hidden"
+    >
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-10 left-10 w-32 h-32 bg-white rounded-full blur-3xl animate-float"></div>
         <div className="absolute bottom-10 right-10 w-40 h-40 bg-yellow-200 rounded-full blur-3xl animate-float-delayed"></div>
