@@ -12,7 +12,7 @@ export default function ContactSection() {
       <div className="max-w-6xl mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-5xl md:text-7xl font-bold text-cyan-800 mb-4 font-display">
-            Catch the Wave
+            Come Stop By!
           </h2>
           <p className="text-xl text-cyan-600 italic">Come visit us by the shore!</p>
         </div>
