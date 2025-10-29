@@ -1,0 +1,44 @@
+import { useState } from 'react';
+import { DigitalGateway } from '@/components/DigitalGateway';
+import { useLocation } from 'wouter';
+import { motion } from 'framer-motion';
+
+export default function LoginPage() {
+  const [, setLocation] = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleLogin = async (username: string, password: string) => {
+    setIsLoading(true);
+    
+    // Simulated authentication - in real app, this would call the API
+    setTimeout(() => {
+      // Cinematic transition to dashboard
+      setLocation('/dashboard');
+    }, 2500);
+  };
+
+  return (
+    <div className="min-h-screen relative overflow-hidden" data-testid="page-login">
+      {/* Animated background */}
+      <div className="absolute inset-0">
+        <motion.div
+          className="absolute inset-0 opacity-30"
+          style={{
+            background: 'radial-gradient(circle at 50% 50%, rgba(0, 245, 255, 0.1) 0%, transparent 50%)',
+          }}
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.5, 0.3],
+          }}
+          transition={{
+            duration: 4,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      </div>
+
+      <DigitalGateway onLogin={handleLogin} isLoading={isLoading} />
+    </div>
+  );
+}
