@@ -27,6 +27,7 @@ jobs:
           VITE_SNEAKERS_PUBKEY: ${{ secrets.VITE_SNEAKERS_PUBKEY }}
           VITE_SNEAKERS_GID: ${{ secrets.VITE_SNEAKERS_GID }}
         run: |
+          set -e
           for dir in project/*/; do
             slug=$(basename "$dir")
             if [ "$slug" = "landingpage" ]; then
@@ -34,6 +35,36 @@ jobs:
             fi
             echo "🔨 Building demo: $slug"
             cd "$dir"
+
+            # --- Replit compatibility patch (CI-only, no repo changes) ---
+            # If vite.config.ts/js imports the Replit runtime error modal plugin, drop it.
+            if [ -f vite.config.ts ] || [ -f vite.config.js ]; then
+              VCFG="vite.config.ts"
+              [ -f vite.config.js ] && VCFG="vite.config.js"
+
+              # remove import line
+              sed -i "/@replit\/vite-plugin-runtime-error-modal/d" "$VCFG" || true
+              # remove any plugin call variants
+              sed -i "s/,*\s*runtimeErrorOverlay()//g" "$VCFG" || true
+              sed -i "s/,*\s*ReplitRuntimeErrorModal()//g" "$VCFG" || true
+              sed -i "s/,*\s*replitPlugin()//g" "$VCFG" || true
+
+              # ensure base is '/<slug>/'
+              if grep -q "base:" "$VCFG"; then
+                sed -i "s|base:\s*['\"][^'\"]*['\"]|base: '/$slug/'|g" "$VCFG" || true
+              else
+                sed -i "0,/defineConfig({/s//defineConfig({\n  base: '\/$slug\/',/" "$VCFG" || true
+              fi
+
+              # ensure react() appears exactly once in plugins array
+              if grep -q "plugins:" "$VCFG"; then
+                sed -i "s/react()[[:space:]]*,\{0,1\}//g" "$VCFG" || true
+                sed -i "0,/plugins:\s*\[/s//plugins: [react(), /" "$VCFG" || true
+              else
+                sed -i "0,/defineConfig({/s//defineConfig({\n  plugins: [react()],/" "$VCFG" || true
+              fi
+            fi
+            # --- end Replit patch ---
 
             # Kingswheels fix: clean lock + node_modules so npm fetches the proper optional rollup binary
             if [ "$slug" = "kingswheels" ]; then
@@ -51,7 +82,11 @@ jobs:
 
             rm -rf "$slug"
             mkdir -p "$slug"
-            cp -r "project/$slug/dist/." "$slug/"
+            if [ -d "project/$slug/dist/public" ]; then
+              cp -r "project/$slug/dist/public/." "$slug/"
+            else
+              cp -r "project/$slug/dist/." "$slug/"
+            fi
           done
 
       - name: Generate root sitemap and robots
