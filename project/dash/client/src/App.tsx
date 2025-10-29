@@ -11,8 +11,7 @@ import CheckoutPage from "@/pages/CheckoutPage";
 import NotFound from "@/pages/not-found";
 
 /**
- * Clean URLs under /demo with Wouter base.
- * Routes like /demo, /demo/login, /demo/dashboard will match.
+ * Clean URLs under /dash with Wouter base.
  */
 function AppRoutes() {
   return (
@@ -31,7 +30,7 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
-        <Router base="/demo">
+        <Router base="/dash">
           <AppRoutes />
         </Router>
       </TooltipProvider>
