@@ -16,7 +16,7 @@ import NotFound from "@/pages/not-found";
 function AppRoutes() {
   return (
     <Switch>
-      <Route path="/" component={HomePage} />
+      <Route path="/dash" component={HomePage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/dashboard" component={DashboardPage} />
       <Route path="/checkout" component={CheckoutPage} />

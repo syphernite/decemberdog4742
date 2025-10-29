@@ -1,8 +1,6 @@
 import React, { useMemo, useState } from "react";
-
-// Only import Stripe clients when a key actually exists
-let loadStripeFn: typeof import("@stripe/stripe-js").loadStripe | null = null;
-let ElementsComp: typeof import("@stripe/react-stripe-js").Elements | null = null;
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
 
 const STRIPE_PK = (import.meta as any)?.env?.VITE_STRIPE_PUBLIC_KEY as string | undefined;
 
@@ -15,14 +13,14 @@ function MissingStripeBanner() {
           No Stripe public key found. The rest of the dashboard still works, but checkout is disabled.
         </p>
         <div className="rounded-md bg-amber-50/80 dark:bg-amber-950/20 border border-amber-300/60 px-4 py-3 text-amber-800 dark:text-amber-200 text-sm text-left">
-          <p className="font-medium mb-1">Fix in production:</p>
+          <p className="font-medium mb-1">Enable in production:</p>
           <ul className="list-disc pl-5 space-y-1">
             <li>
-              Add a file <code>project/dash/.env.production</code> with
+              Add <code>project/dash/.env.production</code> with
               <br />
               <code>VITE_STRIPE_PUBLIC_KEY=pk_live_xxx</code>
             </li>
-            <li>Commit and push — your workflow builds each subsite and Vite will read the .env file.</li>
+            <li>Commit and push. Vite will read it during the CI build.</li>
           </ul>
         </div>
       </div>
@@ -30,7 +28,6 @@ function MissingStripeBanner() {
   );
 }
 
-// Example placeholder form — replace with your actual form if you have one.
 function BasicCheckoutForm() {
   const [email, setEmail] = useState("");
   return (
@@ -64,26 +61,10 @@ function BasicCheckoutForm() {
 }
 
 export default function CheckoutPage() {
-  // Lazy-load Stripe only when a key exists to avoid runtime errors
   const stripePromise = useMemo(() => {
-    if (!STRIPE_PK) return null;
-    if (!loadStripeFn) {
-      // dynamic imports so app doesn’t crash when key is missing
-      loadStripeFn = (await import("@stripe/stripe-js")).loadStripe;
-    }
-    return loadStripeFn!(STRIPE_PK);
+    return STRIPE_PK ? loadStripe(STRIPE_PK) : null;
   }, []);
 
-  const Elements = useMemo(() => {
-    if (!STRIPE_PK) return null;
-    if (!ElementsComp) {
-      // dynamic import of Elements
-      ElementsComp = (await import("@stripe/react-stripe-js")).Elements;
-    }
-    return ElementsComp!;
-  }, []);
-
-  // No key → render safe banner + a disabled mock form (so route isn’t blank)
   if (!STRIPE_PK) {
     return (
       <div className="px-6 py-12">
@@ -95,8 +76,7 @@ export default function CheckoutPage() {
     );
   }
 
-  // Key present → render real Elements wrapper; if import not ready yet, show a lightweight shell
-  if (!stripePromise || !Elements) {
+  if (!stripePromise) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-sm text-muted-foreground">Loading payments…</div>
@@ -108,7 +88,7 @@ export default function CheckoutPage() {
     <div className="px-6 py-12">
       <div className="max-w-3xl mx-auto">
         <Elements stripe={stripePromise}>
-          {/* Replace with your actual Elements-based form if you have one */}
+          {/* Replace with your real Elements form when ready */}
           <BasicCheckoutForm />
         </Elements>
       </div>
