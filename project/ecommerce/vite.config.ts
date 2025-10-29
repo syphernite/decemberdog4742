@@ -4,8 +4,8 @@ import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: "/ecommerce/",
-  plugins: [react(), seoPlugin()],
+  base: '/ecommerce/',
+  plugins: [react(),  seoPlugin()],
   optimizeDeps: {
     exclude: ['lucide-react'],
   },

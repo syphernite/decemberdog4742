@@ -5,6 +5,6 @@ import seoPlugin from "./vite.seo";
 
 // adjust base to this folder name
 export default defineConfig({
-  plugins: [react(), seoPlugin()],
-  base: "/testsite/",
+  plugins: [react(),  seoPlugin()],
+  base: '/testsite/',
 });

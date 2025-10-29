@@ -4,8 +4,8 @@ import react from '@vitejs/plugin-react';
 
 // GH Pages subfolder config
 export default defineConfig({
-  plugins: [react(), seoPlugin()],
-  base: "/pestcontrol/",
+  plugins: [react(),  seoPlugin()],
+  base: '/pestcontrol/',
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
