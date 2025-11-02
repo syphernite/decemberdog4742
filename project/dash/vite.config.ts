@@ -3,12 +3,13 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
+  root: 'client',
   plugins: [react(),  seoPlugin()],
   base: '/dash/',
   build: {
-    outDir: 'dist',
+    outDir: '../dist',
     assetsDir: 'assets',
-    sourcemap: false,
-    emptyOutDir: true
+    emptyOutDir: true,
+    sourcemap: false
   }
 })
