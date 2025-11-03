@@ -21,10 +21,10 @@ export default function Hero() {
 
   return (
     <section
-      className="relative w-full min-h-[60vh] md:min-h-[70vh] grid place-items-center overflow-hidden bg-gradient-to-b from-emerald-800 via-emerald-900 to-slate-900"
+      className="relative w-full min-h-[60vh] md:min-h-[70vh] grid place-items-center overflow-hidden bg-gradient-to-b from-slate-800 via-slate-900 to-black"
       aria-label="Havelock Cafe hero"
       style={{
-        backgroundImage: `linear-gradient(to bottom, rgba(6, 78, 59, 0.9), rgba(15, 23, 42, 0.95)), url(${HERO_URL})`,
+        backgroundImage: `linear-gradient(to bottom, rgba(15, 23, 42, 0.9), rgba(0, 0, 0, 0.95)), url(${HERO_URL})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
@@ -51,7 +51,7 @@ export default function Hero() {
           className="space-y-6"
         >
           <div className="flex items-center justify-center gap-2">
-            <Badge className="bg-emerald-500 text-emerald-950 hover:bg-emerald-400">
+            <Badge className="bg-blue-500 text-white hover:bg-blue-400">
               <Coffee className="mr-1 h-3.5 w-3.5" />
               Freshly Brewed Daily
             </Badge>
