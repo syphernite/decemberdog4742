@@ -1,7 +1,7 @@
 import React from "react";
 import { Router, Route } from "wouter";
 import { useHashLocation } from "wouter/use-hash-location";
-import Hero from "./components/Hero";
+import Hero from "@/components/Hero";
 
 /**
  * Normalize routing for GitHub Pages:
