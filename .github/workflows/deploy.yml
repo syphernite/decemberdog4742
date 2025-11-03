@@ -27,36 +27,38 @@ jobs:
           VITE_SNEAKERS_PUBKEY: ${{ secrets.VITE_SNEAKERS_PUBKEY }}
           VITE_SNEAKERS_GID: ${{ secrets.VITE_SNEAKERS_GID }}
         run: |
-          set -e
+          set -euo pipefail
+
           for dir in project/*/; do
-            slug=$(basename "$dir")
-            if [ "$slug" = "landingpage" ]; then
+            slug="$(basename "$dir")"
+            [ "$slug" = "landingpage" ] && continue
+
+            echo "🔨 Building demo: $slug"
+
+            # Guard: skip folders that do not contain a package.json
+            if [ ! -f "${dir}package.json" ]; then
+              echo "↪︎ Skipping $slug (no package.json)"
               continue
             fi
-            echo "🔨 Building demo: $slug"
-            cd "$dir"
 
-            # --- Replit compatibility patch (CI-only, no repo changes) ---
-            # If vite.config.ts/js imports the Replit runtime error modal plugin, drop it.
-            if [ -f vite.config.ts ] || [ -f vite.config.js ]; then
-              VCFG="vite.config.ts"
-              [ -f vite.config.js ] && VCFG="vite.config.js"
+            pushd "$dir" >/dev/null
 
-              # remove import line
+            # --- Replit compatibility patch (no repo changes) ---
+            VCFG=""
+            if [ -f vite.config.ts ]; then VCFG="vite.config.ts"; fi
+            if [ -f vite.config.js ]; then VCFG="vite.config.js"; fi
+            if [ -n "$VCFG" ]; then
               sed -i "/@replit\/vite-plugin-runtime-error-modal/d" "$VCFG" || true
-              # remove any plugin call variants
               sed -i "s/,*\s*runtimeErrorOverlay()//g" "$VCFG" || true
               sed -i "s/,*\s*ReplitRuntimeErrorModal()//g" "$VCFG" || true
               sed -i "s/,*\s*replitPlugin()//g" "$VCFG" || true
-
-              # ensure base is '/<slug>/'
+              # force base to '/<slug>/'
               if grep -q "base:" "$VCFG"; then
                 sed -i "s|base:\s*['\"][^'\"]*['\"]|base: '/$slug/'|g" "$VCFG" || true
               else
                 sed -i "0,/defineConfig({/s//defineConfig({\n  base: '\/$slug\/',/" "$VCFG" || true
               fi
-
-              # ensure react() appears exactly once in plugins array
+              # ensure react() present once
               if grep -q "plugins:" "$VCFG"; then
                 sed -i "s/react()[[:space:]]*,\{0,1\}//g" "$VCFG" || true
                 sed -i "0,/plugins:\s*\[/s//plugins: [react(), /" "$VCFG" || true
@@ -66,20 +68,25 @@ jobs:
             fi
             # --- end Replit patch ---
 
-            # Kingswheels fix: clean lock + node_modules so npm fetches the proper optional rollup binary
+            # One-off: kingswheels binary mismatch
             if [ "$slug" = "kingswheels" ]; then
               rm -rf node_modules
               rm -f package-lock.json
             fi
 
-            # Install with guard so failures don't kill the entire loop
-            npm ci || npm install || { echo "❌ Install failed for $slug — skipping"; cd ../../; continue; }
+            # Install with fallback. Never fail the whole job.
+            npm ci || npm install || { echo "❌ Install failed for $slug — skipping"; popd >/dev/null; continue; }
 
-            # Build with guard so the loop continues on failure
-            npm run build || { echo "❌ Build failed for $slug — skipping"; cd ../../; continue; }
+            # Build with fallback.
+            if ! npm run build; then
+              echo "❌ Build failed for $slug — skipping"
+              popd >/dev/null
+              continue
+            fi
 
-            cd ../../
+            popd >/dev/null
 
+            # Publish artifact into root /<slug> for Pages
             rm -rf "$slug"
             mkdir -p "$slug"
             if [ -d "project/$slug/dist/public" ]; then
@@ -101,11 +108,16 @@ jobs:
           VITE_SNEAKERS_PUBKEY: ${{ secrets.VITE_SNEAKERS_PUBKEY }}
           VITE_SNEAKERS_GID: ${{ secrets.VITE_SNEAKERS_GID }}
         run: |
-          cd project/landingpage
-          npm ci
-          npm run build
-          cd ../../
-          cp -r project/landingpage/dist/* .
+          set -euo pipefail
+          if [ -f project/landingpage/package.json ]; then
+            cd project/landingpage
+            npm ci || npm install
+            npm run build
+            cd ../../
+            cp -r project/landingpage/dist/* .
+          else
+            echo "↪︎ landingpage missing package.json. Skipping build."
+          fi
 
       # Real files for SPA marketing routes that should exist server-side
       - name: Create static shells for marketing routes
@@ -155,7 +167,7 @@ jobs:
             case "$d" in
               project|.git|.github|node_modules|seo|og|icons) continue ;;
             esac
-            if ( [ -f "$d/index.html" ] ); then
+            if [ -f "$d/index.html" ]; then
               SLUGS+=("$d")
             fi
           done
