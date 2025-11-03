@@ -11,7 +11,7 @@ import { motion } from "framer-motion";
  * If you later add an image to `client/public/havelock-hero.jpeg`, it will render automatically
  * at runtime (no rebuild changes needed beyond a rebuild to publish).
  */
-const HERO_URL = "/havelockcafe/havelock-hero.jpeg";
+const HERO_URL = "/havelockcafe/assets/cafe-hero.webp";
 
 export default function Hero() {
   const scrollToMenu = () => {
@@ -21,8 +21,13 @@ export default function Hero() {
 
   return (
     <section
-      className="relative w-full min-h-[60vh] md:min-h-[70vh] grid place-items-center overflow-hidden bg-gradient-to-b from-emerald-900 to-slate-900"
+      className="relative w-full min-h-[60vh] md:min-h-[70vh] grid place-items-center overflow-hidden bg-gradient-to-b from-emerald-800 via-emerald-900 to-slate-900"
       aria-label="Havelock Cafe hero"
+      style={{
+        backgroundImage: `linear-gradient(to bottom, rgba(6, 78, 59, 0.9), rgba(15, 23, 42, 0.95)), url(${HERO_URL})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
     >
       {/* Optional hero image from public/ — will 404 quietly if not present */}
       <img
