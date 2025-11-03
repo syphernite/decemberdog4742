@@ -1,2 +1,34 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log
+
+# Node (root + subprojects)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json.*
+.pnpm-debug.log*
+
+# Vite/Build outputs (safety  our workflow copies from project/*/dist)
+dist/
+.cache/
+.temp/
+
+# IDE
+.vscode/
+.idea/
+
+# Archives and temps
 *.zip
-.local/
+*.tar
+*.tgz
+*.tmp
+*.swp
+
+# Subproject locals we never want to commit accidentally
+project/*/node_modules/
+project/*/dist/
+project/*/.local/
