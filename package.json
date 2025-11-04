@@ -21,7 +21,7 @@
     "build": "npm run build:all",
     "build:all": "npm run seed:seo && npm run build:subs && npm run sitemap && npm run build:landingpage",
 
-    "build:subs": "node -e \"const {execSync}=require('child_process');const fs=require('fs');fs.readdirSync('project',{withFileTypes:true}).filter(d=>d.isDirectory()).map(d=>d.name).filter(n=>n!=='landingpage').forEach(slug=>{console.log('🔨 Building', slug);execSync(`cd project/${slug} && npm ci && npm run build`,{stdio:'inherit'})});\"",
+    "build:subs": "node -e \"const {execSync}=require('child_process');const fs=require('fs');fs.readdirSync('project',{withFileTypes:true}).filter(d=>d.isDirectory()).map(d=>d.name).filter(n=>n!=='landingpage').forEach(slug=>{console.log('🔨 Building', slug);execSync(`cd project/${slug} && npm ci && npm run build`,{stdio:'inherit'})});\" && copyfiles -u 2 project/dash/dist/** dash/",
 
     "build:landingpage": "cd project/landingpage && npm ci && npm run build && cd ../../ && copyfiles -u 2 project/landingpage/dist/** ."
   }
