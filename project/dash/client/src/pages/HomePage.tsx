@@ -2,14 +2,14 @@ import { HeroSection } from '@/components/HeroSection';
 import { ServiceMatrix } from '@/components/ServiceMatrix';
 import { LiveClientPulse } from '@/components/LiveClientPulse';
 import { AIChatbot } from '@/components/AIChatbot';
-import { useLocation } from 'wouter';
+import { useNavigate } from 'react-router-dom';
 import { SiInstagram } from 'react-icons/si';
 
 export default function HomePage() {
-  const [, setLocation] = useLocation();
+  const navigate = useNavigate();
 
   const handleLogin = () => {
-    setLocation('/login');
+    navigate('/login');
   };
 
   return (

@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { DigitalGateway } from '@/components/DigitalGateway';
-import { useLocation } from 'wouter';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 export default function LoginPage() {
-  const [, setLocation] = useLocation();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (username: string, password: string) => {
@@ -13,7 +13,7 @@ export default function LoginPage() {
     // Simulated authentication - in real app, this would call the API
     setTimeout(() => {
       // Cinematic transition to dashboard
-      setLocation('/dashboard');
+      navigate('/dashboard');
     }, 2500);
   };
 
