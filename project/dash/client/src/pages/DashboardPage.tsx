@@ -4,13 +4,15 @@ import { CentralHologram } from '@/components/CentralHologram';
 import { N8NNexus } from '@/components/N8NNexus';
 import { OrbitalMetrics } from '@/components/OrbitalMetrics';
 import { MissionControl } from '@/components/MissionControl';
+import { ClientManagement } from '@/components/ClientManagement';
+import { AnalyticsHub } from '@/components/AnalyticsHub';
 import { LogOut, Settings, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useLocation } from 'wouter';
+import { useNavigate } from 'react-router-dom';
 
 export default function DashboardPage() {
-  const [, setLocation] = useLocation();
+  const navigate = useNavigate();
 
   return (
     <motion.div
@@ -57,7 +59,7 @@ export default function DashboardPage() {
                 variant="outline"
                 size="sm"
                 className="glass"
-                onClick={() => setLocation('/')}
+                onClick={() => navigate('/')}
                 data-testid="button-logout"
               >
                 <LogOut className="w-4 h-4 mr-2" />
@@ -141,6 +143,17 @@ export default function DashboardPage() {
           </motion.div>
         </motion.div>
       </div>
+
+      {/* Additional Sections */}
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.7, duration: 0.5 }}
+        className="mt-8 space-y-6"
+      >
+        <ClientManagement />
+        <AnalyticsHub />
+      </motion.div>
     </motion.div>
   );
 }

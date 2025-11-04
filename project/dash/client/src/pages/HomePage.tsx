@@ -2,6 +2,7 @@ import { HeroSection } from '@/components/HeroSection';
 import { ServiceMatrix } from '@/components/ServiceMatrix';
 import { LiveClientPulse } from '@/components/LiveClientPulse';
 import { AIChatbot } from '@/components/AIChatbot';
+import { Testimonials } from '@/components/Testimonials';
 import { useNavigate } from 'react-router-dom';
 import { SiInstagram } from 'react-icons/si';
 
@@ -16,6 +17,7 @@ export default function HomePage() {
     <div className="min-h-screen" data-testid="page-home">
       <HeroSection onLoginClick={handleLogin} />
       <ServiceMatrix />
+      <Testimonials />
       <LiveClientPulse />
       
       <footer className="py-12 px-4 border-t border-border/50">
