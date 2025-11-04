@@ -1,7 +1,6 @@
 import { HeroSection } from '@/components/HeroSection';
 import { ServiceMatrix } from '@/components/ServiceMatrix';
 import { LiveClientPulse } from '@/components/LiveClientPulse';
-import { AIChatbot } from '@/components/AIChatbot';
 import { ContactForm } from '@/components/ContactForm';
 import { useNavigate } from 'react-router-dom';
 import { SiInstagram } from 'react-icons/si';
@@ -40,7 +39,6 @@ export default function HomePage() {
         </div>
       </footer>
 
-      <AIChatbot />
     </div>
   );
 }

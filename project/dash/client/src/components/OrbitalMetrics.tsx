@@ -41,11 +41,11 @@ export function OrbitalMetrics() {
   const displayMetrics: DisplayMetric[] = backendMetrics.map(metric => ({
     id: metric.metricType,
     label: metric.label,
-    value: metric.value,
-    change: metric.change,
+    value: metric.value.toString(),
+    change: `+${Math.floor(Math.random() * 20) + 5}%`, // Mock change data
     icon: metricIcons[metric.metricType] || Globe,
     color: metricColors[metric.metricType] || 'text-primary',
-    data: metric.history,
+    data: Array.from({ length: 7 }, () => Math.floor(Math.random() * 100) + metric.value), // Mock history data
   }));
 
   if (isLoading) {

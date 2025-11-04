@@ -507,8 +507,10 @@ var vite_config_default = defineConfig({
   base: "/dash/",
   resolve: {
     alias: {
-      "@": fileURLToPath(new URL("./client/src", import.meta.url))
+      "@": fileURLToPath(new URL("./client/src", import.meta.url)),
       // "@/..." → client/src
+      "@shared": fileURLToPath(new URL("./shared", import.meta.url))
+      // "@shared/..." → shared
     }
   },
   build: {
