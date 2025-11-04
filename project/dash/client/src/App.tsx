@@ -1,5 +1,5 @@
-import React from "react";
-import { Routes, Route } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import "./index.css";
 
 import HomePage from "./pages/HomePage";
@@ -9,6 +9,16 @@ import CheckoutPage from "./pages/CheckoutPage";
 import NotFound from "./pages/not-found";
 
 export default function App() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.search.startsWith('/?')) {
+      const path = location.search.slice(2); // remove '/?'
+      navigate(path, { replace: true });
+    }
+  }, [location.search, navigate]);
+
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
