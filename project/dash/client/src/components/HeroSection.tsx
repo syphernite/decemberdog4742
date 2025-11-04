@@ -30,10 +30,10 @@ export function HeroSection({ onLoginClick }: { onLoginClick: () => void }) {
     fpsLimit: 120,
     particles: {
       color: {
-        value: ["#00F5FF", "#FF00C8", "#8A2BE2"],
+        value: ["#059669", "#2563eb", "#7c3aed"],
       },
       links: {
-        color: "#00F5FF",
+        color: "#059669",
         distance: 150,
         enable: true,
         opacity: 0.2,
@@ -115,7 +115,7 @@ export function HeroSection({ onLoginClick }: { onLoginClick: () => void }) {
             )}
             <br />
             <span className="mt-4 inline-block">
-              We Build <GradientText gradient="cyan-purple">Digital Ecosystems</GradientText>
+              We Build <GradientText gradient="emerald-blue">Digital Ecosystems</GradientText>
             </span>
           </h1>
 
