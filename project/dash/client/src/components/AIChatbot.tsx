@@ -36,7 +36,7 @@ export function AIChatbot() {
     }
   }, [messages]);
 
-  const handleSendMessage = async (e: React.FormEvent) => {
+    const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!input.trim() || isLoading) return;
@@ -52,33 +52,29 @@ export function AIChatbot() {
     setInput('');
     setIsLoading(true);
 
-    try {
-      const response = await apiRequest('POST', '/api/chat', {
-        messages: [...messages, userMessage].map(m => ({
-          role: m.role,
-          content: m.content,
-        })),
-      });
+    // Simulate AI response
+    setTimeout(() => {
+      const responses = [
+        "I'd be happy to help you with that! Our digital ecosystem services can transform your business operations.",
+        "That's a great question. We specialize in creating comprehensive digital solutions that integrate websites, automation, and marketing.",
+        "Let me connect you with our team. What's the best way to reach you?",
+        "Our command center dashboard provides real-time insights into your business performance. Would you like a demo?",
+        "We can help optimize your Google Business profile and run targeted ad campaigns to increase your local visibility.",
+        "Social media management and SEO services are key components of our digital ecosystem approach.",
+      ];
 
-      const data = await response.json();
+      const randomResponse = responses[Math.floor(Math.random() * responses.length)];
 
-      const assistantMessage: Message = {
+      const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: data.message,
+        content: randomResponse,
         timestamp: Date.now(),
       };
 
-      setMessages(prev => [...prev, assistantMessage]);
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to get response from AI. Please try again.',
-        variant: 'destructive',
-      });
-    } finally {
+      setMessages(prev => [...prev, aiMessage]);
       setIsLoading(false);
-    }
+    }, 1000 + Math.random() * 2000);
   };
 
   return (

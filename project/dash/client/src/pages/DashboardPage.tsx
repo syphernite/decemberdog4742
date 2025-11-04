@@ -6,6 +6,7 @@ import { OrbitalMetrics } from '@/components/OrbitalMetrics';
 import { MissionControl } from '@/components/MissionControl';
 import { ClientManagement } from '@/components/ClientManagement';
 import { AnalyticsHub } from '@/components/AnalyticsHub';
+import { TaskManager } from '@/components/TaskManager';
 import { ThreeScene } from '@/components/ThreeScene';
 import { LogOut, Settings, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -150,7 +151,10 @@ export default function DashboardPage() {
         transition={{ delay: 0.7, duration: 0.5 }}
         className="mt-8 space-y-6"
       >
-        <ClientManagement />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <ClientManagement />
+          <TaskManager />
+        </div>
         <AnalyticsHub />
       </motion.div>
     </motion.div>
