@@ -6,6 +6,7 @@ import { OrbitalMetrics } from '@/components/OrbitalMetrics';
 import { MissionControl } from '@/components/MissionControl';
 import { ClientManagement } from '@/components/ClientManagement';
 import { AnalyticsHub } from '@/components/AnalyticsHub';
+import { ThreeScene } from '@/components/ThreeScene';
 import { LogOut, Settings, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -90,10 +91,8 @@ export default function DashboardPage() {
           className="lg:col-span-1 space-y-6"
         >
           <GlassCard className="p-6" elevated>
-            <h3 className="text-xl font-bold mb-4">Business Neural Network</h3>
-            <div className="h-[400px]">
-              <CentralHologram />
-            </div>
+            <h3 className="text-xl font-bold mb-4">3D Neural Network</h3>
+            <ThreeScene />
           </GlassCard>
 
           <N8NNexus />

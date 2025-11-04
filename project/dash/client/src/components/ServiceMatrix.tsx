@@ -133,8 +133,8 @@ export function ServiceMatrix() {
               >
                 <GlassCard
                   className={cn(
-                    'p-6 h-full transition-all duration-300',
-                    isHovered && 'glow-cyan scale-105'
+                    'p-6 h-full transition-all duration-300 transform-gpu',
+                    isHovered && 'glow-emerald scale-105 rotate-y-12'
                   )}
                   hoverable
                 >
