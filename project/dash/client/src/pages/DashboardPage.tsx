@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
 import { GlassCard } from '@/components/GlassCard';
-import { CentralHologram } from '@/components/CentralHologram';
 import { N8NNexus } from '@/components/N8NNexus';
 import { OrbitalMetrics } from '@/components/OrbitalMetrics';
 import { MissionControl } from '@/components/MissionControl';

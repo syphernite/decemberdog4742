@@ -69,9 +69,9 @@ export function MissionControl() {
     deleteTaskMutation.mutate(taskId);
   };
 
-  const getTimeAgo = (dateString: string) => {
-    const date = new Date(dateString);
-    const hours = Math.floor((Date.now() - date.getTime()) / (1000 * 60 * 60));
+  const getTimeAgo = (date: Date | string) => {
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    const hours = Math.floor((Date.now() - dateObj.getTime()) / (1000 * 60 * 60));
     return `${hours}h ago`;
   };
 
