@@ -10,7 +10,7 @@ import NotFound from "./pages/not-found";
 
 export default function App() {
   return (
-    <Router>
+    <Router base="#/">
       <Route path="/" component={HomePage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/dashboard" component={DashboardPage} />
