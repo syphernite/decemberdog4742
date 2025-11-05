@@ -211,12 +211,8 @@ export default function MenuSection() {
                           <div>
                             {/* fixed image area so all cards align */}
                             <div className="mb-4 rounded-lg overflow-hidden bg-gray-50 w-full h-40">
-                              {item.image ? (
+                              {item.image && (
                                 <img src={item.image} alt={item.name} className="w-full h-full object-cover object-center block" />
-                              ) : (
-                                <div className="w-full h-full flex items-center justify-center text-cyan-700">
-                                  <span className="text-sm font-medium">No image</span>
-                                </div>
                               )}
                             </div>
 
@@ -276,12 +272,8 @@ export default function MenuSection() {
 
                           <div>
                             <div className="mb-4 rounded-lg overflow-hidden bg-gray-50 w-full h-40">
-                              {item.image ? (
+                              {item.image && (
                                 <img src={item.image} alt={item.name} className="w-full h-full object-cover object-center block" />
-                              ) : (
-                                <div className="w-full h-full flex items-center justify-center text-cyan-700">
-                                  <span className="text-sm font-medium">No image</span>
-                                </div>
                               )}
                             </div>
 
