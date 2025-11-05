@@ -224,12 +224,12 @@ export default function MenuSection() {
                                       {item.description}
                                     </p>
                                   )}
-                                  <h3 className="text-base font-bold text-cyan-900 mb-2 leading-tight" style={{display: '-webkit-box', WebkitLineClamp: 3 as any, WebkitBoxOrient: 'vertical' as any, overflow: 'hidden'}}>{item.name}</h3>
+                                  <h3 className="text-base font-bold text-cyan-900 mb-2 leading-tight">{item.name}</h3>
                                 </div>
                               </div>
                             {/* fixed footer so price is always aligned at bottom (left-aligned for better visual balance) */}
-                            <div className="mt-auto pt-2 flex items-center border-t border-white/10">
-                              {item.price && <span className="text-sm font-semibold text-cyan-900">{item.price}</span>}
+                            <div className="mt-auto pt-3 flex items-center justify-center border-t border-white/10">
+                              {item.price && <span className="text-sm font-semibold text-cyan-900 text-center">{item.price}</span>}
                             </div>
                           </div>
 
@@ -305,8 +305,8 @@ export default function MenuSection() {
                                     )}
                                   </div>
 
-                                  <div className="mt-auto pt-2 flex items-center border-t border-white/10">
-                                    {item.price && <span className="text-sm font-semibold text-cyan-900">{item.price}</span>}
+                                  <div className="mt-auto pt-3 flex items-center justify-center border-t border-white/10">
+                                    {item.price && <span className="text-sm font-semibold text-cyan-900 text-center">{item.price}</span>}
                                   </div>
                                 </div>
                               </div>
