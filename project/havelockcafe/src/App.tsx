@@ -19,7 +19,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F3EE]">
+    <div className="min-h-screen bg-white">
       <Navigation
         scrollToSection={scrollToSection}
         mobileMenuOpen={mobileMenuOpen}

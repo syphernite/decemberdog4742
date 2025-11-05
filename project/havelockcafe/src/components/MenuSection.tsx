@@ -23,13 +23,13 @@ export default function MenuSection() {
   ];
 
   return (
-    <section id="menu" className="py-20 px-4 bg-[#F5F3EE]">
+    <section className="py-20 px-4 bg-gradient-to-br from-white to-[#B0E0E6]/30">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
-          <h2 className="font-chalk text-4xl sm:text-5xl text-[#6B5B3E] mb-6">
+          <h2 className="font-chalk text-4xl sm:text-5xl text-[#89CFF0] mb-6">
             Breakfast Favorites
           </h2>
-          <div className="w-24 h-1 bg-[#F4C430] mx-auto" />
+          <div className="w-24 h-1 bg-[#B0E0E6] mx-auto" />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
