@@ -223,7 +223,11 @@ export default function MenuSection() {
                             <div className="flex items-start justify-between">
                               <div className="pr-4">
                                 <span className="inline-block px-3 py-1 bg-white/50 rounded-full text-xs font-semibold text-cyan-800 mb-3">Varieties</span>
-                                {item.description && <p className="text-cyan-800 text-sm mb-2">{item.description}</p>}
+                                {item.description && (
+                                  <p className="text-cyan-800 text-sm mb-2" style={{display: '-webkit-box', WebkitLineClamp: 2 as any, WebkitBoxOrient: 'vertical' as any, overflow: 'hidden'}}>
+                                    {item.description}
+                                  </p>
+                                )}
                                 <h3 className="text-2xl font-bold text-cyan-900 mb-2 leading-tight">{item.name}</h3>
                               </div>
                               {item.price && (
@@ -234,7 +238,7 @@ export default function MenuSection() {
                             </div>
                           </div>
 
-                          {item.description && <p className="text-cyan-800 leading-relaxed text-sm">{item.description}</p>}
+                          {/* description is rendered above near the title to avoid duplicate content and variable heights */}
                         </div>
                       </div>
                     ))}
@@ -286,6 +290,11 @@ export default function MenuSection() {
                                 <span className="inline-block px-3 py-1 bg-white/50 rounded-full text-xs font-semibold text-cyan-800 mb-3">{subCat.title}</span>
                                 {subCat.description && <p className="text-cyan-800 text-sm mb-2">{subCat.description}</p>}
                                 <h3 className="text-2xl font-bold text-cyan-900 mb-2 leading-tight">{item.name}</h3>
+                                {item.description && (
+                                  <p className="text-cyan-800 text-sm mb-2" style={{display: '-webkit-box', WebkitLineClamp: 2 as any, WebkitBoxOrient: 'vertical' as any, overflow: 'hidden'}}>
+                                    {item.description}
+                                  </p>
+                                )}
                               </div>
                               {item.price && (
                                 <div className="text-right ml-4">
@@ -294,7 +303,7 @@ export default function MenuSection() {
                               )}
                             </div>
                           </div>
-                          {item.description && <p className="text-cyan-800 leading-relaxed text-sm">{item.description}</p>}
+                          {/* description is rendered above near the title to avoid duplicate content and variable heights */}
                         </div>
                       </div>
                     ))
