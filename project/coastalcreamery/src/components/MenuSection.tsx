@@ -202,7 +202,7 @@ export default function MenuSection() {
                 <>
                   {/* Varieties grid (cards with images) */}
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-6 items-stretch">
-                    {((activeCategory.subCategories || []).find(sc => sc.title === 'Varieties')?.items || []).map((item, index) => (
+                    {((activeCategory.subCategories || []).find(sc => sc.title === 'Varieties')?.items || []).filter(i => !!i.image).map((item, index) => (
                       <div key={index} onMouseEnter={() => setHoveredFlavor(item.name)} onMouseLeave={() => setHoveredFlavor(null)} className="relative group cursor-pointer">
                         <div className={`min-h-[360px] bg-gradient-to-br ${activeCategory.color} rounded-3xl p-0 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:scale-105 relative overflow-hidden flex flex-col`}>
                           {hoveredFlavor === item.name && <div className="absolute inset-0 bg-white/20 animate-drip"></div>}
@@ -216,17 +216,17 @@ export default function MenuSection() {
                               )}
                             </div>
 
-                            <div className="p-4 flex flex-col flex-1">
-                              <div className="pr-4">
-                                <span className="inline-block px-3 py-1 bg-white/50 rounded-full text-xs font-semibold text-cyan-800 mb-3">Varieties</span>
-                                {item.description && (
-                                <p className="text-cyan-800 text-sm mb-2" style={{display: '-webkit-box', WebkitLineClamp: 1 as any, WebkitBoxOrient: 'vertical' as any, overflow: 'hidden'}}>
-                                  {item.description}
-                                </p>
-                              )}
-                              <h3 className="text-base font-bold text-cyan-900 mb-2 leading-tight truncate">{item.name}</h3>
+                              <div className="p-4 flex flex-col flex-1">
+                                <div className="pr-4">
+                                  <span className="inline-block px-3 py-1 bg-white/50 rounded-full text-xs font-semibold text-cyan-800 mb-3">Varieties</span>
+                                  {item.description && (
+                                    <p className="text-cyan-800 text-sm mb-2" style={{display: '-webkit-box', WebkitLineClamp: 1 as any, WebkitBoxOrient: 'vertical' as any, overflow: 'hidden'}}>
+                                      {item.description}
+                                    </p>
+                                  )}
+                                  <h3 className="text-base font-bold text-cyan-900 mb-2 leading-tight" style={{display: '-webkit-box', WebkitLineClamp: 2 as any, WebkitBoxOrient: 'vertical' as any, overflow: 'hidden'}}>{item.name}</h3>
+                                </div>
                               </div>
-                            </div>
 
                             {/* fixed footer so price is always aligned at bottom */}
                             <div className="mt-auto pt-2 flex items-center justify-between border-t border-white/10">
