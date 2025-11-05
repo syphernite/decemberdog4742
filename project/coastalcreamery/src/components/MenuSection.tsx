@@ -210,11 +210,16 @@ export default function MenuSection() {
                         {hoveredFlavor === item.name && <div className="absolute inset-0 bg-white/20 animate-drip"></div>}
                         <div className="absolute top-2 right-2"><Sparkles className={`w-6 h-6 ${hoveredFlavor === item.name ? 'animate-spin text-yellow-400' : 'text-white/40'}`} /></div>
                         <div>
-                          {item.image && (
-                            <div className="mb-4 rounded-lg overflow-hidden">
-                              <img src={item.image} alt={item.name} className="w-full h-36 object-cover block" />
-                            </div>
-                          )}
+                          {/* Image container: enforce consistent square thumbnails, center and crop images */}
+                          <div className="mb-4 rounded-lg overflow-hidden bg-gray-50 w-full" style={{aspectRatio: '1'}}>
+                            {item.image ? (
+                              <img src={item.image} alt={item.name} className="w-full h-full object-cover object-center block" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-cyan-700">
+                                <span className="text-sm font-medium">No image</span>
+                              </div>
+                            )}
+                          </div>
                           <div className="flex items-start justify-between">
                             <div>
                               <span className="inline-block px-3 py-1 bg-white/50 rounded-full text-xs font-semibold text-cyan-800 mb-3">{subCat.title}</span>

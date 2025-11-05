@@ -10,27 +10,19 @@ interface GlassCardProps {
   hoverable?: boolean;
 }
 
-export function GlassCard({ 
-  children, 
-  className, 
-  elevated = false, 
+export function GlassCard({
+  children,
+  className,
+  elevated = false,
   glow = 'none',
-  hoverable = false 
+  hoverable = false
 }: GlassCardProps) {
-  const glowClass = {
-    cyan: 'glow-cyan',
-    magenta: 'glow-magenta',
-    purple: 'glow-purple',
-    none: '',
-  }[glow];
-
   return (
     <motion.div
       className={cn(
-        'rounded-md',
-        elevated ? 'glass-elevated' : 'glass',
-        glowClass,
-        hoverable && 'hover-elevate cursor-pointer',
+        'clean-card',
+        elevated && 'shadow-lg',
+        hoverable && 'hover:shadow-xl transition-shadow duration-300 cursor-pointer',
         className
       )}
       whileHover={hoverable ? { scale: 1.02 } : {}}

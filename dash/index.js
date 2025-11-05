@@ -1,5 +1,11 @@
 // server/index.ts
 import express2 from "express";
+import session from "express-session";
+import MemoryStore from "memorystore";
+import passport2 from "passport";
+import helmet from "helmet";
+import cors from "cors";
+import rateLimit from "express-rate-limit";
 
 // server/routes.ts
 import { createServer } from "http";
@@ -174,12 +180,122 @@ var MemStorage = class {
 var storage = new MemStorage();
 
 // server/routes.ts
+import passport from "passport";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import { randomUUID as randomUUID2 } from "crypto";
+
+// shared/schema.ts
+import { sql } from "drizzle-orm";
+import { pgTable, text, varchar, integer, timestamp, jsonb } from "drizzle-orm/pg-core";
+import { z } from "zod";
+var loginSchema = z.object({
+  username: z.string().min(1).max(100),
+  password: z.string().min(1).max(255)
+});
+var createMetricSchema = z.object({
+  businessId: z.string().min(1).max(100),
+  metricType: z.string().min(1).max(50),
+  value: z.number().int().min(0),
+  label: z.string().min(1).max(100)
+});
+var createWorkflowSchema = z.object({
+  businessId: z.string().min(1).max(100),
+  name: z.string().min(1).max(200),
+  description: z.string().max(1e3).optional(),
+  nodes: z.array(z.object({
+    id: z.string(),
+    type: z.string(),
+    label: z.string(),
+    position: z.object({ x: z.number(), y: z.number() }),
+    connections: z.array(z.string())
+  }))
+});
+var createTaskSchema = z.object({
+  businessId: z.string().min(1).max(100),
+  title: z.string().min(1).max(200),
+  description: z.string().max(1e3).optional(),
+  priority: z.enum(["low", "medium", "high"]).default("medium")
+});
+var updateTaskStatusSchema = z.object({
+  status: z.enum(["pending", "in-progress", "completed", "cancelled"])
+});
+var createActivitySchema = z.object({
+  businessName: z.string().min(1).max(100),
+  activityType: z.enum(["lead", "sale", "engagement", "automation"]),
+  description: z.string().min(1).max(500),
+  value: z.number().int().optional()
+});
+var chatMessageSchema = z.object({
+  messages: z.array(z.object({
+    role: z.enum(["user", "assistant", "system"]),
+    content: z.string().min(1).max(1e4)
+  })).min(1).max(50)
+});
+var paymentIntentSchema = z.object({
+  amount: z.number().positive().max(1e4)
+  // Max $10,000
+});
+var metrics = pgTable("metrics", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  businessId: varchar("business_id").notNull(),
+  metricType: text("metric_type").notNull(),
+  value: integer("value").notNull(),
+  label: text("label").notNull(),
+  timestamp: timestamp("timestamp").defaultNow().notNull()
+});
+var workflows = pgTable("workflows", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  businessId: varchar("business_id").notNull(),
+  name: text("name").notNull(),
+  description: text("description"),
+  nodes: jsonb("nodes").notNull().$type(),
+  status: text("status").notNull().default("active"),
+  lastTriggered: timestamp("last_triggered"),
+  executionCount: integer("execution_count").default(0)
+});
+var tasks = pgTable("tasks", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  businessId: varchar("business_id").notNull(),
+  title: text("title").notNull(),
+  description: text("description"),
+  priority: text("priority").notNull().default("medium"),
+  status: text("status").notNull().default("pending"),
+  source: text("source"),
+  createdAt: timestamp("created_at").defaultNow().notNull()
+});
+var activities = pgTable("activities", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  businessName: text("business_name").notNull(),
+  activityType: text("activity_type").notNull(),
+  description: text("description").notNull(),
+  value: integer("value"),
+  timestamp: timestamp("timestamp").defaultNow().notNull()
+});
+var users = pgTable("users", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  username: text("username").notNull().unique(),
+  password: text("password").notNull(),
+  businessId: varchar("business_id").unique(),
+  businessName: text("business_name")
+});
+
+// server/routes.ts
 import OpenAI from "openai";
 import Stripe from "stripe";
-var openai = new OpenAI({
-  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
-  baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL
-});
+var openai = null;
+if (process.env.AI_INTEGRATIONS_OPENAI_API_KEY) {
+  try {
+    openai = new OpenAI({
+      apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+      baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL
+    });
+  } catch (err) {
+    console.warn("OpenAI initialization failed, AI features disabled", err);
+    openai = null;
+  }
+} else {
+  console.warn("OPENAI API key not set \u2014 AI endpoints disabled in this environment");
+}
 if (!process.env.STRIPE_SECRET_KEY) {
   console.warn("STRIPE_SECRET_KEY not set - payment features will not work");
 }
@@ -212,9 +328,9 @@ async function registerRoutes(app2) {
   wss.on("connection", (ws) => {
     console.log("WebSocket client connected");
     clients.add(ws);
-    storage.getActivities(10).then((activities) => {
+    storage.getActivities(10).then((activities2) => {
       if (ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({ type: "initial", activities }));
+        ws.send(JSON.stringify({ type: "initial", activities: activities2 }));
       }
     });
     ws.on("close", () => {
@@ -238,7 +354,91 @@ async function registerRoutes(app2) {
     const activity = await storage.createActivity(generateMockActivity());
     broadcastActivity(activity);
   }, 5e3);
-  app2.post("/api/auth/login", async (req, res) => {
+  const validateInput = (schema) => {
+    return (req, res, next) => {
+      try {
+        schema.parse(req.body);
+        next();
+      } catch (error) {
+        return res.status(400).json({
+          error: "Invalid input data",
+          details: error.errors?.map((e) => e.message) || error.message
+        });
+      }
+    };
+  };
+  const googleClientId = process.env.GOOGLE_CLIENT_ID;
+  const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+  if (googleClientId && googleClientSecret) {
+    passport.use(new GoogleStrategy({
+      clientID: googleClientId,
+      clientSecret: googleClientSecret,
+      callbackURL: process.env.GOOGLE_CALLBACK_URL || "/api/auth/google/callback"
+    }, async (accessToken, refreshToken, profile, done) => {
+      try {
+        const email = profile.emails && profile.emails[0] && profile.emails[0].value;
+        if (!email) return done(new Error("No email found in Google profile"));
+        let user = await storage.getUserByUsername(email);
+        if (!user) {
+          user = await storage.createUser({ username: email, password: randomUUID2() });
+        }
+        return done(null, user);
+      } catch (err) {
+        return done(err);
+      }
+    }));
+    passport.serializeUser((user, done) => {
+      done(null, user.id);
+    });
+    passport.deserializeUser(async (id, done) => {
+      try {
+        const user = await storage.getUser(id);
+        done(null, user || null);
+      } catch (err) {
+        done(err);
+      }
+    });
+    app2.get("/api/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+    app2.get("/api/auth/google/callback", passport.authenticate("google", { failureRedirect: "/dash/login" }), (req, res) => {
+      res.redirect("/dash/dashboard");
+    });
+    if (app2.get("env") !== "production") {
+      app2.get("/api/auth/google/dev", async (req, res) => {
+        try {
+          const devEmail = process.env.DEV_AUTH_EMAIL || "dev@local.test";
+          let user = await storage.getUserByUsername(devEmail);
+          if (!user) {
+            user = await storage.createUser({ username: devEmail, password: randomUUID2() });
+          }
+          req.logIn(user, (err) => {
+            if (err) {
+              console.error("Dev login error:", err);
+              return res.status(500).json({ error: "Dev login failed" });
+            }
+            return res.redirect("/dash/dashboard");
+          });
+        } catch (err) {
+          console.error("Dev auth route error:", err);
+          res.status(500).json({ error: "Dev auth failed" });
+        }
+      });
+    }
+    app2.get("/api/me", (req, res) => {
+      const isAuth = req.isAuthenticated && req.isAuthenticated();
+      if (isAuth) {
+        const user = req.user;
+        const { password: _p, ...sanitized } = user || {};
+        return res.json({ user: sanitized });
+      }
+      res.status(401).json({ error: "Not authenticated" });
+    });
+    app2.post("/api/auth/logout", (req, res) => {
+      req.logout(() => {
+        res.json({ success: true });
+      });
+    });
+  }
+  app2.post("/api/auth/login", validateInput(loginSchema), async (req, res) => {
     try {
       const { username, password } = req.body;
       if (!username || !password) {
@@ -258,8 +458,8 @@ async function registerRoutes(app2) {
   app2.get("/api/metrics/:businessId", async (req, res) => {
     try {
       const { businessId } = req.params;
-      const metrics = await storage.getMetrics(businessId);
-      res.json(metrics);
+      const metrics2 = await storage.getMetrics(businessId);
+      res.json(metrics2);
     } catch (error) {
       console.error("Get metrics error:", error);
       res.status(500).json({ error: "Internal server error" });
@@ -277,8 +477,8 @@ async function registerRoutes(app2) {
   app2.get("/api/workflows/:businessId", async (req, res) => {
     try {
       const { businessId } = req.params;
-      const workflows = await storage.getWorkflows(businessId);
-      res.json(workflows);
+      const workflows2 = await storage.getWorkflows(businessId);
+      res.json(workflows2);
     } catch (error) {
       console.error("Get workflows error:", error);
       res.status(500).json({ error: "Internal server error" });
@@ -322,8 +522,8 @@ async function registerRoutes(app2) {
   app2.get("/api/tasks/:businessId", async (req, res) => {
     try {
       const { businessId } = req.params;
-      const tasks = await storage.getTasks(businessId);
-      res.json(tasks);
+      const tasks2 = await storage.getTasks(businessId);
+      res.json(tasks2);
     } catch (error) {
       console.error("Get tasks error:", error);
       res.status(500).json({ error: "Internal server error" });
@@ -368,8 +568,8 @@ async function registerRoutes(app2) {
   app2.get("/api/activities", async (req, res) => {
     try {
       const limit = req.query.limit ? parseInt(req.query.limit) : 10;
-      const activities = await storage.getActivities(limit);
-      res.json(activities);
+      const activities2 = await storage.getActivities(limit);
+      res.json(activities2);
     } catch (error) {
       console.error("Get activities error:", error);
       res.status(500).json({ error: "Internal server error" });
@@ -385,11 +585,14 @@ async function registerRoutes(app2) {
       res.status(500).json({ error: "Internal server error" });
     }
   });
-  app2.post("/api/chat", async (req, res) => {
+  app2.post("/api/chat", validateInput(chatMessageSchema), async (req, res) => {
     try {
       const { messages } = req.body;
       if (!messages || !Array.isArray(messages)) {
         return res.status(400).json({ error: "Messages array required" });
+      }
+      if (!openai) {
+        return res.status(503).json({ error: "AI service not configured in this environment" });
       }
       const completion = await openai.chat.completions.create({
         model: "gpt-5",
@@ -408,7 +611,7 @@ async function registerRoutes(app2) {
       res.status(500).json({ error: "Failed to process chat request" });
     }
   });
-  app2.post("/api/create-payment-intent", async (req, res) => {
+  app2.post("/api/create-payment-intent", validateInput(paymentIntentSchema), async (req, res) => {
     if (!stripe) {
       return res.status(503).json({ error: "Payment processing not configured" });
     }
@@ -517,7 +720,8 @@ var vite_config_default = defineConfig({
     outDir: "../dist",
     assetsDir: "assets",
     emptyOutDir: true,
-    sourcemap: false
+    sourcemap: process.env.NODE_ENV === "development"
+    // Only enable source maps in development
   }
 });
 
@@ -590,6 +794,62 @@ function serveStatic(app2) {
 
 // server/index.ts
 var app = express2();
+var MemoryStoreImpl = MemoryStore(session);
+var sessionSecret = process.env.SESSION_SECRET || "dev-secret-change-me";
+app.use(session({
+  cookie: {
+    httpOnly: true,
+    secure: app.get("env") === "production",
+    sameSite: "lax",
+    maxAge: 24 * 60 * 60 * 1e3
+    // 1 day
+  },
+  store: new MemoryStoreImpl({ checkPeriod: 864e5 }),
+  secret: sessionSecret,
+  resave: false,
+  saveUninitialized: false
+}));
+app.use(passport2.initialize());
+app.use(passport2.session());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "data:", "https:"],
+      scriptSrc: ["'self'"],
+      connectSrc: ["'self'", "ws:", "wss:"]
+    }
+  },
+  crossOriginEmbedderPolicy: false
+  // Allow embedding for now
+}));
+app.use(cors({
+  origin: process.env.NODE_ENV === "production" ? false : true,
+  // Allow all in development
+  credentials: true
+}));
+var limiter = rateLimit({
+  windowMs: 15 * 60 * 1e3,
+  // 15 minutes
+  max: 100,
+  // limit each IP to 100 requests per windowMs
+  message: "Too many requests from this IP, please try again later.",
+  standardHeaders: true,
+  legacyHeaders: false
+});
+app.use("/api/", limiter);
+var authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1e3,
+  // 15 minutes
+  max: 5,
+  // limit each IP to 5 auth attempts per windowMs
+  message: "Too many authentication attempts, please try again later.",
+  standardHeaders: true,
+  legacyHeaders: false
+});
+app.use("/api/auth/", authLimiter);
 app.use(express2.json({
   verify: (req, _res, buf) => {
     req.rawBody = buf;
@@ -609,7 +869,7 @@ app.use((req, res, next) => {
     const duration = Date.now() - start;
     if (path3.startsWith("/api")) {
       let logLine = `${req.method} ${path3} ${res.statusCode} in ${duration}ms`;
-      if (capturedJsonResponse) {
+      if (app.get("env") === "development" && capturedJsonResponse) {
         logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
       }
       if (logLine.length > 80) {
@@ -625,8 +885,13 @@ app.use((req, res, next) => {
   app.use((err, _req, res, _next) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
-    res.status(status).json({ message });
-    throw err;
+    console.error("Server error:", err);
+    const isDevelopment = app.get("env") === "development";
+    const response = {
+      message: isDevelopment ? message : "Internal Server Error",
+      ...isDevelopment && { stack: err.stack }
+    };
+    res.status(status).json(response);
   });
   if (app.get("env") === "development") {
     await setupVite(app, server);
@@ -634,11 +899,14 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
   const port = parseInt(process.env.PORT || "5000", 10);
-  server.listen({
+  const listenOptions = {
     port,
-    host: "0.0.0.0",
-    reusePort: true
-  }, () => {
+    host: "0.0.0.0"
+  };
+  if (process.platform !== "win32") {
+    listenOptions.reusePort = true;
+  }
+  server.listen(listenOptions, () => {
     log(`serving on port ${port}`);
   });
 })();

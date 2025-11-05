@@ -3,6 +3,61 @@ import { pgTable, text, varchar, integer, timestamp, boolean, jsonb} from "drizz
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+// Input validation schemas
+export const loginSchema = z.object({
+  username: z.string().min(1).max(100),
+  password: z.string().min(1).max(255),
+});
+
+export const createMetricSchema = z.object({
+  businessId: z.string().min(1).max(100),
+  metricType: z.string().min(1).max(50),
+  value: z.number().int().min(0),
+  label: z.string().min(1).max(100),
+});
+
+export const createWorkflowSchema = z.object({
+  businessId: z.string().min(1).max(100),
+  name: z.string().min(1).max(200),
+  description: z.string().max(1000).optional(),
+  nodes: z.array(z.object({
+    id: z.string(),
+    type: z.string(),
+    label: z.string(),
+    position: z.object({ x: z.number(), y: z.number() }),
+    connections: z.array(z.string()),
+  })),
+});
+
+export const createTaskSchema = z.object({
+  businessId: z.string().min(1).max(100),
+  title: z.string().min(1).max(200),
+  description: z.string().max(1000).optional(),
+  priority: z.enum(['low', 'medium', 'high']).default('medium'),
+});
+
+export const updateTaskStatusSchema = z.object({
+  status: z.enum(['pending', 'in-progress', 'completed', 'cancelled']),
+});
+
+export const createActivitySchema = z.object({
+  businessName: z.string().min(1).max(100),
+  activityType: z.enum(['lead', 'sale', 'engagement', 'automation']),
+  description: z.string().min(1).max(500),
+  value: z.number().int().optional(),
+});
+
+export const chatMessageSchema = z.object({
+  messages: z.array(z.object({
+    role: z.enum(['user', 'assistant', 'system']),
+    content: z.string().min(1).max(10000),
+  })).min(1).max(50),
+});
+
+export const paymentIntentSchema = z.object({
+  amount: z.number().positive().max(10000), // Max $10,000
+});
+
 // Business Metrics
 export const metrics = pgTable("metrics", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -62,6 +117,7 @@ export const activities = pgTable("activities", {
 });
 
 export type Activity = typeof activities.$inferSelect;
+export type InsertActivity = typeof activities.$inferInsert;
 
 // Users (existing schema updated)
 export const users = pgTable("users", {
