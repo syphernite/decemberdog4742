@@ -5,6 +5,7 @@ interface MenuItem {
   name: string;
   description?: string;
   image?: string; // Optional: for 3D product images
+  price?: string;
 }
 
 interface MenuCategory {
@@ -13,7 +14,8 @@ interface MenuCategory {
   color: string;
   icon: React.ElementType;
   display: 'grid' | 'list';
-  subCategories?: { title: string; items: MenuItem[] }[];
+  description?: string;
+  subCategories?: { title: string; items: MenuItem[]; description?: string }[];
 }
 
 const menuData: MenuCategory[] = [
@@ -39,17 +41,32 @@ const menuData: MenuCategory[] = [
     icon: Cookie,
     color: 'from-amber-300 to-yellow-200',
     display: 'grid',
-    items: [
-      { name: 'The Original', description: 'Nutella and Banana' },
-      { name: 'Banana Roll' },
-      { name: 'Monkey Business', description: 'Nutella, Banana, Strawberry' },
-      { name: 'Doughnut and Cream' },
-      { name: 'Strawberry Cheesecake' },
-      { name: 'Fruity Delight', description: 'Mixed Berries' },
-      { name: 'Lemon and Sugar' },
-      { name: 'Cinnabon' },
-      { name: 'Waffle Batter Crepe' },
-      { name: 'Make Your Own', description: 'Choose sauces, 3 toppings, and 1 ice cream scoop' },
+    description: 'Make fresh to order with your choice of fillings. Includes 2 fillings + 1 sauce',
+    items: [], // Parent category, items are in sub-categories
+    subCategories: [
+      { title: 'Varieties', items: [
+        { name: 'Berry Delight', description: 'Mixed berries and cream', image: '/assets/berry-delight.png', price: '$11.27 / $9.77' },
+        { name: 'Pumpkin Pie Caramel Apple', description: 'Pumpkin pie filling with caramel and apple slices', image: '/assets/pumpkin-pie-caramel-apple.png', price: '$11.27 / $9.77' },
+        { name: 'Strawberry and Banana', price: '$11.27 / $9.77' },
+        { name: 'Banana and Nutella', price: '$11.27 / $9.77' },
+        { name: 'Kiwi and Strawberry', price: '$11.27 / $9.77' },
+        { name: 'Cookie and Cream', price: '$11.27 / $9.77' },
+        { name: 'Strawberry Cheesecake', price: '$11.27 / $9.77' },
+        { name: 'Salted Caramel', price: '$11.27 / $9.77' },
+        { name: 'Pistachio Chocolate', price: '$11.27 / $9.77' },
+        { name: 'Coconut', price: '$11.27 / $9.77' },
+        { name: 'Butter Pecan', price: '$11.27 / $9.77' },
+        { name: 'Make Your Own', description: 'Pick 3 toppings, choice of sauces, pick 1 ice cream scoop or none', price: '$11.27 / $9.77' },
+      ]},
+      { title: 'Fillings', items: [
+        { name: 'Nutella' }, { name: 'Strawberry' }, { name: 'Banana' }, { name: 'Peanut Butter' }, { name: 'Cookies & Cream' },
+      ]},
+      { title: 'Sauces', items: [
+        { name: 'Chocolate' }, { name: 'Caramel' }, { name: 'Nutella' }, { name: 'Condensed Milk' }, { name: 'Honey' }, { name: 'Maple Syrup' },
+      ]},
+      { title: 'Add-ons', items: [
+        { name: 'Ice cream scoop', price: '$2.00' }, { name: 'Extra fillings', price: '$1.00' },
+      ]},
     ],
   },
   {
@@ -69,9 +86,14 @@ const menuData: MenuCategory[] = [
     icon: GlassWater,
     color: 'from-purple-300 to-indigo-200',
     display: 'grid',
-    items: [
-      // Add specific Boba flavors here when you have them
-      { name: 'Classic Milk Tea' }, { name: 'Taro Milk Tea' }, { name: 'Matcha Latte' }, { name: 'Brown Sugar Boba' },
+    items: [], // Parent category, items are in sub-categories
+    subCategories: [
+      { title: 'Flavors', items: [
+        { name: 'Mango' }, { name: 'Strawberry' }, { name: 'Vanilla' }, { name: 'Taro Tea' }, { name: 'Thai Tea' },
+      ]},
+      { title: 'Sizes', items: [
+        { name: 'Medium', price: '$6.95' }, { name: 'Large', price: '$7.95' },
+      ]},
     ],
   },
   {
@@ -82,16 +104,44 @@ const menuData: MenuCategory[] = [
     items: [], // Items are in sub-categories
     subCategories: [
       { title: 'Toppings', items: [
-        { name: 'Sprinkles' }, { name: 'Oreo' }, { name: 'Banana' }, { name: 'Marshmallows' },
-        { name: 'Strawberry' }, { name: 'Gummy Bears' }, { name: 'Reese\'s' }, { name: 'Fudge' },
-        { name: 'M&M\'s' }, { name: 'Whipped Cream' }, { name: 'Chocolate Chip' }, { name: 'Cherries' },
-        { name: 'Graham Cracker Crumbs' }, { name: 'Pretzels' }, { name: 'White Chocolate Chips' },
-        { name: 'Peanuts' }, { name: 'Toasted Coconut' }, { name: 'Butterscotch' },
-        { name: 'Peanut Butter Cups' }, { name: 'Heath Bar' }, { name: 'Butterfinger' },
+        // From the menu image (common toppings)
+        { name: 'Chocolate Chips' }, { name: 'Oreo' }, { name: 'KitKat' }, { name: 'Hershey' },
+        { name: 'M&M\'s' }, { name: 'Reese\'s' }, { name: 'Whipped Cream' }, { name: 'Strawberry' },
+        { name: 'Gummy Worms' }, { name: 'Gummy Bears' }, { name: 'Almonds' }, { name: 'Pocky' },
+        { name: 'Marshmallow' }, { name: 'Sprinkles' }, { name: 'Rainbow Sprinkles' }, { name: 'Pretzels' },
+        { name: 'Toasted Coconut' }, { name: 'Peanuts' }, { name: 'Chocolate Sprinkle' }, { name: 'White Chocolate Chips' },
       ]},
       { title: 'Sauces', items: [
-        { name: 'Nutella' }, { name: 'Hot Fudge' }, { name: 'Chocolate' }, { name: 'Caramel' },
-        { name: 'Maple Syrup' }, { name: 'Strawberry' }, { name: 'White Chocolate' },
+        // Sauces from the menu image
+        { name: 'Chocolate' }, { name: 'Caramel' }, { name: 'Nutella' }, { name: 'Condensed Milk' },
+        { name: 'Honey' }, { name: 'Maple Syrup' }, { name: 'Strawberry' }, { name: 'White Chocolate' },
+      ]},
+    ],
+  },
+  {
+    title: 'Waffle Ice Cream (Build Your Own) - $10.95',
+    icon: IceCream,
+    color: 'from-pink-300 to-fuchsia-200',
+    display: 'grid',
+    items: [],
+    subCategories: [
+      { title: 'Waffle Ice Cream Base', items: [
+        { name: 'Original Waffle' }, { name: 'Japanese Coconut' }, { name: 'Japanese Vanilla' },
+      ]},
+      { title: 'Ice Cream Flavors', items: [
+        { name: 'Strawberry' }, { name: 'Chocolate' }, { name: 'Vanilla' }, { name: 'Cookies and Cream' }, { name: 'Whipped Cream' },
+      ]},
+      { title: 'Toppings', items: [
+        { name: 'Chocolate Chips' }, { name: 'Oreo' }, { name: 'KitKat' }, { name: 'Hershey' }, { name: 'M&M\'s' }, { name: 'Reese\'s' },
+        { name: 'Chocolate sprinkle' }, { name: 'White chocolate sprinkle' }, { name: 'Oreo crumbs' }, { name: 'Rainbow sprinkles' },
+        { name: 'Strawberry' }, { name: 'Blueberry' }, { name: 'Mango' }, { name: 'Whipped cream' }, { name: 'Marshmallow' },
+        { name: 'Pocky' }, { name: 'Almonds' }, { name: 'Gummy Worms' }, { name: 'Gummy Bears' },
+      ]},
+      { title: 'Sauces', items: [
+        { name: 'Chocolate' }, { name: 'Caramel' }, { name: 'Nutella' }, { name: 'Condensed Milk' }, { name: 'Honey' }, { name: 'Maple Syrup' },
+      ]},
+      { title: 'Add-ons', items: [
+        { name: 'Add on scoop', price: '$2.00' }, { name: 'Add on toppings', price: '$0.25' },
       ]},
     ],
   },
@@ -139,6 +189,11 @@ export default function MenuSection() {
         
         {activeCategory && (
           <div className="bg-white/60 backdrop-blur-sm p-8 rounded-3xl shadow-lg">
+            {activeCategory.description && (
+              <div className="text-center mb-8">
+                <p className="text-lg text-cyan-700 italic">{activeCategory.description}</p>
+              </div>
+            )}
             {activeCategory.display === 'grid' && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                 {(activeCategory.items.length > 0 ? [{ title: activeCategory.title, items: activeCategory.items }] : activeCategory.subCategories || []).map(subCat => (
@@ -153,8 +208,23 @@ export default function MenuSection() {
                         {hoveredFlavor === item.name && <div className="absolute inset-0 bg-white/20 animate-drip"></div>}
                         <div className="absolute top-2 right-2"><Sparkles className={`w-6 h-6 ${hoveredFlavor === item.name ? 'animate-spin text-yellow-400' : 'text-white/40'}`} /></div>
                         <div>
-                          <span className="inline-block px-3 py-1 bg-white/50 rounded-full text-xs font-semibold text-cyan-800 mb-3">{subCat.title}</span>
-                          <h3 className="text-2xl font-bold text-cyan-900 mb-2 leading-tight">{item.name}</h3>
+                          {item.image && (
+                            <div className="mb-4 rounded-lg overflow-hidden">
+                              <img src={item.image} alt={item.name} className="w-full h-36 object-cover block" />
+                            </div>
+                          )}
+                          <div className="flex items-start justify-between">
+                            <div>
+                              <span className="inline-block px-3 py-1 bg-white/50 rounded-full text-xs font-semibold text-cyan-800 mb-3">{subCat.title}</span>
+                              {subCat.description && <p className="text-cyan-800 text-sm mb-2">{subCat.description}</p>}
+                              <h3 className="text-2xl font-bold text-cyan-900 mb-2 leading-tight">{item.name}</h3>
+                            </div>
+                            {item.price && (
+                              <div className="text-right ml-4">
+                                <span className="text-sm font-semibold text-cyan-900">{item.price}</span>
+                              </div>
+                            )}
+                          </div>
                         </div>
                         {item.description && <p className="text-cyan-800 leading-relaxed text-sm">{item.description}</p>}
                       </div>
