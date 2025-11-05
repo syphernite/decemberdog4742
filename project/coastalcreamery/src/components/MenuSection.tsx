@@ -209,12 +209,12 @@ export default function MenuSection() {
                           <div className="absolute top-2 right-2"><Sparkles className={`w-6 h-6 ${hoveredFlavor === item.name ? 'animate-spin text-yellow-400' : 'text-white/40'}`} /></div>
 
                           <div>
-                            {/* fixed image area so all cards align */}
-                            <div className="mb-4 rounded-lg overflow-hidden bg-gray-50 w-full h-40">
-                              {item.image && (
-                                <img src={item.image} alt={item.name} className="w-full h-full object-cover object-center block" />
-                              )}
-                            </div>
+                            {/* fixed image area so all cards align (render only if an image exists) */}
+                            {item.image && (
+                              <div className="mb-4 rounded-lg overflow-hidden bg-black w-full h-28">
+                                <img src={item.image} alt={item.name} className="w-full h-full object-cover object-center block mix-blend-multiply" />
+                              </div>
+                            )}
 
                             <div className="flex items-start justify-between">
                               <div className="pr-4">
@@ -271,11 +271,11 @@ export default function MenuSection() {
                           <div className="absolute top-2 right-2"><Sparkles className={`w-6 h-6 ${hoveredFlavor === item.name ? 'animate-spin text-yellow-400' : 'text-white/40'}`} /></div>
 
                           <div>
-                            <div className="mb-4 rounded-lg overflow-hidden bg-gray-50 w-full h-40">
-                              {item.image && (
-                                <img src={item.image} alt={item.name} className="w-full h-full object-cover object-center block" />
-                              )}
-                            </div>
+                            {item.image && (
+                              <div className="mb-4 rounded-lg overflow-hidden bg-black w-full h-28">
+                                <img src={item.image} alt={item.name} className="w-full h-full object-cover object-center block mix-blend-multiply" />
+                              </div>
+                            )}
 
                             <div className="flex items-start justify-between">
                               <div>
