@@ -48,7 +48,7 @@ const menuData: MenuCategory[] = [
     subCategories: [
       { title: 'Varieties', items: [
         { name: 'Berry Delight', description: 'Mixed berries and cream', image: berryDelight, price: '$11.27 / $9.77' },
-        { name: 'Pumpkin Pie Caramel Apple', description: 'Pumpkin pie filling with caramel and apple slices', image: pumpkinPieCaramelApple, price: '$11.27 / $9.77' },
+        { name: 'Pumpkin Pie Caramel Apple', description: 'Seasonal', image: pumpkinPieCaramelApple, price: '$11.27 / $9.77' },
         { name: 'Strawberry and Banana', price: '$11.27 / $9.77' },
         { name: 'Banana and Nutella', price: '$11.27 / $9.77' },
         { name: 'Kiwi and Strawberry', price: '$11.27 / $9.77' },
