@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Sparkles, IceCream, Cookie, GlassWater, Milk, Utensils } from 'lucide-react';
+import berryDelight from '../assets/berry-delight.png';
+import pumpkinPieCaramelApple from '../assets/pumpkin-pie-caramel-apple.png';
 
 interface MenuItem {
   name: string;
@@ -45,8 +47,8 @@ const menuData: MenuCategory[] = [
     items: [], // Parent category, items are in sub-categories
     subCategories: [
       { title: 'Varieties', items: [
-        { name: 'Berry Delight', description: 'Mixed berries and cream', image: '/assets/berry-delight.png', price: '$11.27 / $9.77' },
-        { name: 'Pumpkin Pie Caramel Apple', description: 'Pumpkin pie filling with caramel and apple slices', image: '/assets/pumpkin-pie-caramel-apple.png', price: '$11.27 / $9.77' },
+        { name: 'Berry Delight', description: 'Mixed berries and cream', image: berryDelight, price: '$11.27 / $9.77' },
+        { name: 'Pumpkin Pie Caramel Apple', description: 'Pumpkin pie filling with caramel and apple slices', image: pumpkinPieCaramelApple, price: '$11.27 / $9.77' },
         { name: 'Strawberry and Banana', price: '$11.27 / $9.77' },
         { name: 'Banana and Nutella', price: '$11.27 / $9.77' },
         { name: 'Kiwi and Strawberry', price: '$11.27 / $9.77' },
