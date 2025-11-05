@@ -16,6 +16,6 @@ export default defineConfig({
     outDir: '../dist',
     assetsDir: 'assets',
     emptyOutDir: true,
-    sourcemap: false,
+    sourcemap: process.env.NODE_ENV === 'development', // Only enable source maps in development
   },
 })

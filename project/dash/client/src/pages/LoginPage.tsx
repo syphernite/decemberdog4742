@@ -39,6 +39,15 @@ export default function LoginPage() {
       </div>
 
       <DigitalGateway onLogin={handleLogin} isLoading={isLoading} />
+
+      <div className="absolute bottom-8 left-0 right-0 flex justify-center">
+        <button
+          onClick={() => { window.location.href = '/api/auth/google'; }}
+          className="px-6 py-3 rounded-full bg-white/10 text-white backdrop-blur-sm border border-white/20 hover:bg-white/20 transition"
+        >
+          Sign in with Google
+        </button>
+      </div>
     </div>
   );
 }

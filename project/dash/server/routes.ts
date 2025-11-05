@@ -2,15 +2,38 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import type { InsertActivity } from "@shared/schema";
+import passport from 'passport';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import { randomUUID } from 'crypto';
+import type { InsertActivity } from "../shared/schema";
+import { 
+  loginSchema, 
+  createMetricSchema, 
+  createWorkflowSchema, 
+  createTaskSchema, 
+  updateTaskStatusSchema, 
+  createActivitySchema, 
+  chatMessageSchema, 
+  paymentIntentSchema 
+} from "../shared/schema";
 import OpenAI from "openai";
 import Stripe from "stripe";
 
-// Initialize OpenAI with Replit AI Integrations (following javascript_openai_ai_integrations blueprint)
-const openai = new OpenAI({
-  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
-  baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-});
+// Initialize OpenAI optionally (only if API key provided)
+let openai: OpenAI | null = null;
+if (process.env.AI_INTEGRATIONS_OPENAI_API_KEY) {
+  try {
+    openai = new OpenAI({
+      apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+      baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+    });
+  } catch (err) {
+    console.warn('OpenAI initialization failed, AI features disabled', err);
+    openai = null;
+  }
+} else {
+  console.warn('OPENAI API key not set — AI endpoints disabled in this environment');
+}
 
 // Initialize Stripe (following javascript_stripe blueprint)
 if (!process.env.STRIPE_SECRET_KEY) {
@@ -92,8 +115,115 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // API Routes
 
+  // Input validation middleware
+  const validateInput = (schema: any) => {
+    return (req: any, res: any, next: any) => {
+      try {
+        schema.parse(req.body);
+        next();
+      } catch (error: any) {
+        return res.status(400).json({ 
+          error: 'Invalid input data', 
+          details: error.errors?.map((e: any) => e.message) || error.message 
+        });
+      }
+    };
+  };
+
   // Authentication
-  app.post('/api/auth/login', async (req, res) => {
+  // Configure Passport Google strategy (only if env vars present)
+  const googleClientId = process.env.GOOGLE_CLIENT_ID;
+  const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+
+  if (googleClientId && googleClientSecret) {
+    passport.use(new GoogleStrategy({
+      clientID: googleClientId,
+      clientSecret: googleClientSecret,
+      callbackURL: process.env.GOOGLE_CALLBACK_URL || '/api/auth/google/callback',
+    }, async (accessToken: string, refreshToken: string, profile: any, done: any) => {
+      try {
+        const email = profile.emails && profile.emails[0] && profile.emails[0].value;
+        if (!email) return done(new Error('No email found in Google profile'));
+
+        // Try to find existing user by email (username)
+        let user = await storage.getUserByUsername(email);
+        if (!user) {
+          // Create a new user with a random password (OAuth users don't use it)
+          user = await storage.createUser({ username: email, password: randomUUID() });
+        }
+
+        return done(null, user);
+      } catch (err) {
+        return done(err as Error);
+      }
+    }));
+
+    passport.serializeUser((user: any, done) => {
+      done(null, user.id);
+    });
+
+    passport.deserializeUser(async (id: string, done) => {
+      try {
+        const user = await storage.getUser(id);
+        done(null, user || null);
+      } catch (err) {
+        done(err as Error);
+      }
+    });
+
+    // OAuth routes
+    app.get('/api/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+    app.get('/api/auth/google/callback', passport.authenticate('google', { failureRedirect: '/dash/login' }), (req, res) => {
+      // Successful authentication, redirect to client dashboard
+      res.redirect('/dash/dashboard');
+    });
+
+    // Development helper: quick-login when real Google credentials aren't provided.
+    // Only enabled in non-production to avoid accidental exposure.
+    if (app.get('env') !== 'production') {
+      app.get('/api/auth/google/dev', async (req, res) => {
+        try {
+          const devEmail = process.env.DEV_AUTH_EMAIL || 'dev@local.test';
+          let user = await storage.getUserByUsername(devEmail);
+          if (!user) {
+            user = await storage.createUser({ username: devEmail, password: randomUUID() });
+          }
+
+          // Log the user in via passport's req.logIn helper
+          (req as any).logIn(user, (err: any) => {
+            if (err) {
+              console.error('Dev login error:', err);
+              return res.status(500).json({ error: 'Dev login failed' });
+            }
+            return res.redirect('/dash/dashboard');
+          });
+        } catch (err) {
+          console.error('Dev auth route error:', err);
+          res.status(500).json({ error: 'Dev auth failed' });
+        }
+      });
+    }
+
+    app.get('/api/me', (req, res) => {
+      const isAuth = (req as any).isAuthenticated && (req as any).isAuthenticated();
+      if (isAuth) {
+        const user = (req as any).user;
+        const { password: _p, ...sanitized } = user || {};
+        return res.json({ user: sanitized });
+      }
+      res.status(401).json({ error: 'Not authenticated' });
+    });
+
+    app.post('/api/auth/logout', (req, res) => {
+      req.logout(() => {
+        res.json({ success: true });
+      });
+    });
+  }
+
+  // Existing local login (kept for compatibility)
+  app.post('/api/auth/login', validateInput(loginSchema), async (req, res) => {
     try {
       const { username, password } = req.body;
       
@@ -272,12 +402,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // AI Chat endpoint (following javascript_openai_ai_integrations blueprint)
-  app.post('/api/chat', async (req, res) => {
+  app.post('/api/chat', validateInput(chatMessageSchema), async (req, res) => {
     try {
       const { messages } = req.body;
 
       if (!messages || !Array.isArray(messages)) {
         return res.status(400).json({ error: 'Messages array required' });
+      }
+      if (!openai) {
+        return res.status(503).json({ error: 'AI service not configured in this environment' });
       }
 
       const completion = await openai.chat.completions.create({
@@ -300,7 +433,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Stripe payment routes (following javascript_stripe blueprint)
-  app.post("/api/create-payment-intent", async (req, res) => {
+  app.post("/api/create-payment-intent", validateInput(paymentIntentSchema), async (req, res) => {
     if (!stripe) {
       return res.status(503).json({ error: 'Payment processing not configured' });
     }
