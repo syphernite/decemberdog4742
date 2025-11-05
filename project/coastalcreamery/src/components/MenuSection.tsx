@@ -151,6 +151,12 @@ const menuData: MenuCategory[] = [
 
 const categories = menuData.map(cat => cat.title);
 
+// Helper: shorten long titles for compact card UI, keep full name in title attribute for accessibility
+function truncateText(text: string, max = 30) {
+  if (!text) return text;
+  return text.length > max ? text.slice(0, max - 1).trim() + '…' : text;
+}
+
 export default function MenuSection() {
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
   const [hoveredFlavor, setHoveredFlavor] = useState<string | null>(null);
@@ -224,7 +230,7 @@ export default function MenuSection() {
                                       {item.description}
                                     </p>
                                   )}
-                                  <h3 className="text-base font-bold text-cyan-900 mb-2 leading-tight">{item.name}</h3>
+                                  <h3 className="text-base font-bold text-cyan-900 mb-2 leading-tight" title={item.name}>{truncateText(item.name, 30)}</h3>
                                 </div>
                               </div>
                             {/* fixed footer so price is always aligned at bottom (left-aligned for better visual balance) */}
