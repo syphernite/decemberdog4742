@@ -197,48 +197,110 @@ export default function MenuSection() {
               </div>
             )}
             {activeCategory.display === 'grid' && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                {(activeCategory.items.length > 0 ? [{ title: activeCategory.title, items: activeCategory.items }] : activeCategory.subCategories || []).map(subCat => (
-                  (subCat.items).map((item, index) => (
-                    <div
-                      key={index}
-                      onMouseEnter={() => setHoveredFlavor(item.name)}
-                      onMouseLeave={() => setHoveredFlavor(null)}
-                      className="relative group cursor-pointer"
-                    >
-                      <div className={`bg-gradient-to-br ${activeCategory.color} rounded-3xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-rotate-2 relative overflow-hidden min-h-[220px] flex flex-col justify-between`}>
-                        {hoveredFlavor === item.name && <div className="absolute inset-0 bg-white/20 animate-drip"></div>}
-                        <div className="absolute top-2 right-2"><Sparkles className={`w-6 h-6 ${hoveredFlavor === item.name ? 'animate-spin text-yellow-400' : 'text-white/40'}`} /></div>
-                        <div>
-                          {/* Image container: enforce consistent square thumbnails, center and crop images */}
-                          <div className="mb-4 rounded-lg overflow-hidden bg-gray-50 w-full" style={{aspectRatio: '1'}}>
-                            {item.image ? (
-                              <img src={item.image} alt={item.name} className="w-full h-full object-cover object-center block" />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center text-cyan-700">
-                                <span className="text-sm font-medium">No image</span>
-                              </div>
-                            )}
-                          </div>
-                          <div className="flex items-start justify-between">
-                            <div>
-                              <span className="inline-block px-3 py-1 bg-white/50 rounded-full text-xs font-semibold text-cyan-800 mb-3">{subCat.title}</span>
-                              {subCat.description && <p className="text-cyan-800 text-sm mb-2">{subCat.description}</p>}
-                              <h3 className="text-2xl font-bold text-cyan-900 mb-2 leading-tight">{item.name}</h3>
+              // Special handling for Crepes: show 'Varieties' as cards (with images) and other sub-categories as plain lists
+              activeCategory.title === 'Crepes' ? (
+                <>
+                  {/* Varieties grid (cards with images) */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-6 items-stretch">
+                    {((activeCategory.subCategories || []).find(sc => sc.title === 'Varieties')?.items || []).map((item, index) => (
+                      <div key={index} className="relative group cursor-pointer h-72">
+                        <div className={`h-full bg-gradient-to-br ${activeCategory.color} rounded-3xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-rotate-2 relative overflow-hidden flex flex-col justify-between`}>
+                          {hoveredFlavor === item.name && <div className="absolute inset-0 bg-white/20 animate-drip"></div>}
+                          <div className="absolute top-2 right-2"><Sparkles className={`w-6 h-6 ${hoveredFlavor === item.name ? 'animate-spin text-yellow-400' : 'text-white/40'}`} /></div>
+
+                          <div>
+                            {/* fixed image area so all cards align */}
+                            <div className="mb-4 rounded-lg overflow-hidden bg-gray-50 w-full h-40">
+                              {item.image ? (
+                                <img src={item.image} alt={item.name} className="w-full h-full object-cover object-center block" />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center text-cyan-700">
+                                  <span className="text-sm font-medium">No image</span>
+                                </div>
+                              )}
                             </div>
-                            {item.price && (
-                              <div className="text-right ml-4">
-                                <span className="text-sm font-semibold text-cyan-900">{item.price}</span>
+
+                            <div className="flex items-start justify-between">
+                              <div className="pr-4">
+                                <span className="inline-block px-3 py-1 bg-white/50 rounded-full text-xs font-semibold text-cyan-800 mb-3">Varieties</span>
+                                {item.description && <p className="text-cyan-800 text-sm mb-2">{item.description}</p>}
+                                <h3 className="text-2xl font-bold text-cyan-900 mb-2 leading-tight">{item.name}</h3>
                               </div>
-                            )}
+                              {item.price && (
+                                <div className="text-right ml-4">
+                                  <span className="text-sm font-semibold text-cyan-900">{item.price}</span>
+                                </div>
+                              )}
+                            </div>
                           </div>
+
+                          {item.description && <p className="text-cyan-800 leading-relaxed text-sm">{item.description}</p>}
                         </div>
-                        {item.description && <p className="text-cyan-800 leading-relaxed text-sm">{item.description}</p>}
                       </div>
-                    </div>
-                  ))
-                ))}
-              </div>
+                    ))}
+                  </div>
+
+                  {/* Other crepe sub-categories as plain lists (no cards) */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {((activeCategory.subCategories || []).filter(sc => sc.title !== 'Varieties')).map(subCat => (
+                      <div key={subCat.title}>
+                        <h3 className="text-3xl font-bold text-cyan-800 mb-4 font-display">{subCat.title}</h3>
+                        {subCat.description && <p className="text-cyan-700 mb-3">{subCat.description}</p>}
+                        <ul className="flex flex-wrap gap-2">
+                          {subCat.items.map((item, idx) => (
+                            <li key={idx} className="px-3 py-2 bg-white/80 rounded-full text-cyan-900 font-medium text-sm">{item.name}{item.price ? ` — ${item.price}` : ''}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                // Default grid behavior for other categories
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                  {(activeCategory.items.length > 0 ? [{ title: activeCategory.title, items: activeCategory.items }] : activeCategory.subCategories || []).map(subCat => (
+                    (subCat.items).map((item, index) => (
+                      <div
+                        key={index}
+                        onMouseEnter={() => setHoveredFlavor(item.name)}
+                        onMouseLeave={() => setHoveredFlavor(null)}
+                        className="relative group cursor-pointer h-72"
+                      >
+                        <div className={`h-full bg-gradient-to-br ${activeCategory.color} rounded-3xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-rotate-2 relative overflow-hidden flex flex-col justify-between`}>
+                          {hoveredFlavor === item.name && <div className="absolute inset-0 bg-white/20 animate-drip"></div>}
+                          <div className="absolute top-2 right-2"><Sparkles className={`w-6 h-6 ${hoveredFlavor === item.name ? 'animate-spin text-yellow-400' : 'text-white/40'}`} /></div>
+
+                          <div>
+                            <div className="mb-4 rounded-lg overflow-hidden bg-gray-50 w-full h-40">
+                              {item.image ? (
+                                <img src={item.image} alt={item.name} className="w-full h-full object-cover object-center block" />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center text-cyan-700">
+                                  <span className="text-sm font-medium">No image</span>
+                                </div>
+                              )}
+                            </div>
+
+                            <div className="flex items-start justify-between">
+                              <div>
+                                <span className="inline-block px-3 py-1 bg-white/50 rounded-full text-xs font-semibold text-cyan-800 mb-3">{subCat.title}</span>
+                                {subCat.description && <p className="text-cyan-800 text-sm mb-2">{subCat.description}</p>}
+                                <h3 className="text-2xl font-bold text-cyan-900 mb-2 leading-tight">{item.name}</h3>
+                              </div>
+                              {item.price && (
+                                <div className="text-right ml-4">
+                                  <span className="text-sm font-semibold text-cyan-900">{item.price}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          {item.description && <p className="text-cyan-800 leading-relaxed text-sm">{item.description}</p>}
+                        </div>
+                      </div>
+                    ))
+                  ))}
+                </div>
+              )
             )}
             
             {activeCategory.display === 'list' && activeCategory.subCategories && (
