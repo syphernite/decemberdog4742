@@ -211,8 +211,8 @@ export default function MenuSection() {
                           <div>
                             {/* fixed image area so all cards align (render only if an image exists) */}
                             {item.image && (
-                              <div className="mb-4 rounded-lg overflow-hidden bg-black w-full h-28">
-                                <img src={item.image} alt={item.name} className="w-full h-full object-cover object-center block mix-blend-multiply" />
+                              <div className="mb-4 rounded-lg overflow-hidden bg-gray-50 w-full h-24">
+                                <img src={item.image} alt={item.name} className="w-full h-full object-cover object-center block" />
                               </div>
                             )}
 
@@ -224,7 +224,7 @@ export default function MenuSection() {
                                     {item.description}
                                   </p>
                                 )}
-                                <h3 className="text-2xl font-bold text-cyan-900 mb-2 leading-tight">{item.name}</h3>
+                                <h3 className="text-xl font-bold text-cyan-900 mb-2 leading-tight">{item.name}</h3>
                               </div>
                               {item.price && (
                                 <div className="text-right ml-4">
@@ -272,8 +272,8 @@ export default function MenuSection() {
 
                           <div>
                             {item.image && (
-                              <div className="mb-4 rounded-lg overflow-hidden bg-black w-full h-28">
-                                <img src={item.image} alt={item.name} className="w-full h-full object-cover object-center block mix-blend-multiply" />
+                              <div className="mb-4 rounded-lg overflow-hidden bg-gray-50 w-full h-24">
+                                <img src={item.image} alt={item.name} className="w-full h-full object-cover object-center block" />
                               </div>
                             )}
 
@@ -281,7 +281,7 @@ export default function MenuSection() {
                               <div>
                                 <span className="inline-block px-3 py-1 bg-white/50 rounded-full text-xs font-semibold text-cyan-800 mb-3">{subCat.title}</span>
                                 {subCat.description && <p className="text-cyan-800 text-sm mb-2">{subCat.description}</p>}
-                                <h3 className="text-2xl font-bold text-cyan-900 mb-2 leading-tight">{item.name}</h3>
+                                <h3 className="text-xl font-bold text-cyan-900 mb-2 leading-tight">{item.name}</h3>
                                 {item.description && (
                                   <p className="text-cyan-800 text-sm mb-2" style={{display: '-webkit-box', WebkitLineClamp: 2 as any, WebkitBoxOrient: 'vertical' as any, overflow: 'hidden'}}>
                                     {item.description}
