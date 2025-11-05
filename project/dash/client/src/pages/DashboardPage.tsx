@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { useEffect } from 'react';
 import { GlassCard } from '@/components/GlassCard';
 import { N8NNexus } from '@/components/N8NNexus';
 import { OrbitalMetrics } from '@/components/OrbitalMetrics';
@@ -14,6 +15,22 @@ import { useNavigate } from 'react-router-dom';
 
 export default function DashboardPage() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    let mounted = true;
+    fetch('/api/me', { credentials: 'include' })
+      .then(res => {
+        if (!mounted) return;
+        if (res.status === 401) {
+          navigate('/login');
+        }
+      })
+      .catch(() => {
+        if (mounted) navigate('/login');
+      });
+
+    return () => { mounted = false; };
+  }, [navigate]);
 
   return (
     <motion.div
