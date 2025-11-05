@@ -2,13 +2,13 @@ import { MapPin, Phone, Coffee } from 'lucide-react';
 
 export default function Visit() {
   return (
-    <section id="visit" className="py-20 px-4 bg-[#F5F3EE]">
+    <section id="visit" className="py-20 px-4 bg-gradient-to-b from-white to-[#B0E0E6]/40">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
-          <h2 className="font-chalk text-4xl sm:text-5xl text-[#6B5B3E] mb-6">
+          <h2 className="font-chalk text-4xl sm:text-5xl text-[#89CFF0] mb-6">
             Come Visit Us
           </h2>
-          <div className="w-24 h-1 bg-[#F4C430] mx-auto" />
+          <div className="w-24 h-1 bg-[#B0E0E6] mx-auto" />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -54,7 +54,7 @@ export default function Visit() {
                 href="https://www.google.com/maps/dir/?api=1&destination=1000+E+Main+St,+Havelock,+NC+28532"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block w-full px-8 py-4 bg-[#9BAA8D] text-white rounded-full font-medium text-lg text-center hover:shadow-lg hover:shadow-[#9BAA8D]/50 transition-all duration-300 transform hover:scale-105"
+                className="block w-full px-8 py-4 bg-[#B0E0E6] text-[#6B5B3E] rounded-full font-medium text-lg text-center hover:shadow-lg hover:shadow-[#B0E0E6]/50 transition-all duration-300 transform hover:scale-105"
               >
                 Get Directions
               </a>

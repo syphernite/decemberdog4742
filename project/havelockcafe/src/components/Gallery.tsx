@@ -1,14 +1,12 @@
 import { Coffee } from 'lucide-react';
 
 export default function Gallery() {
-  const images = [
-    { alt: 'Cozy cafe interior', bg: 'from-[#E8DCC8] to-[#C8B89A]' },
-    { alt: 'Fresh breakfast plate', bg: 'from-[#F4C430] to-[#D4A017]' },
-    { alt: 'Coffee and pastries', bg: 'from-[#9BAA8D] to-[#7B8A6D]' },
-    { alt: 'Sunny morning atmosphere', bg: 'from-[#FFE5B4] to-[#E8D4A4]' },
-  ];
-
-  return (
+    const images = [
+    { alt: 'Cozy cafe interior', bg: 'from-[#B0E0E6] to-white' },
+    { alt: 'Fresh breakfast plate', bg: 'from-[#89CFF0] to-[#B0E0E6]' },
+    { alt: 'Coffee and pastries', bg: 'from-white to-[#B0E0E6]' },
+    { alt: 'Sunny morning atmosphere', bg: 'from-[#B0E0E6] to-[#89CFF0]' },
+  ];  return (
     <section id="gallery" className="py-20 px-4 bg-white">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
