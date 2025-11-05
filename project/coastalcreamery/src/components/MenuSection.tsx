@@ -210,11 +210,13 @@ export default function MenuSection() {
 
                           <div>
                             {/* fixed image area so all cards align (render only if an image exists) */}
-                            {item.image && (
-                              <div className="mb-4 rounded-lg overflow-hidden bg-gray-50 w-full h-24">
-                                <img src={item.image} alt={item.name} className="w-full h-full object-cover object-center block" />
-                              </div>
-                            )}
+                            <div className="mb-4 rounded-lg overflow-hidden bg-transparent w-full h-20 flex items-center justify-center">
+                              {item.image ? (
+                                <img src={item.image} alt={item.name} className="max-h-full w-auto object-contain block" />
+                              ) : (
+                                <span className="text-4xl">🍨</span>
+                              )}
+                            </div>
 
                             <div className="flex items-start justify-between">
                               <div className="pr-4">
@@ -271,11 +273,13 @@ export default function MenuSection() {
                           <div className="absolute top-2 right-2"><Sparkles className={`w-6 h-6 ${hoveredFlavor === item.name ? 'animate-spin text-yellow-400' : 'text-white/40'}`} /></div>
 
                           <div>
-                            {item.image && (
-                              <div className="mb-4 rounded-lg overflow-hidden bg-gray-50 w-full h-24">
-                                <img src={item.image} alt={item.name} className="w-full h-full object-cover object-center block" />
-                              </div>
-                            )}
+                            <div className="mb-4 rounded-lg overflow-hidden bg-transparent w-full h-20 flex items-center justify-center">
+                              {item.image ? (
+                                <img src={item.image} alt={item.name} className="max-h-full w-auto object-contain block" />
+                              ) : (
+                                <span className="text-4xl">🍨</span>
+                              )}
+                            </div>
 
                             <div className="flex items-start justify-between">
                               <div>
