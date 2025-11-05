@@ -203,22 +203,20 @@ export default function MenuSection() {
                   {/* Varieties grid (cards with images) */}
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-6 items-stretch">
                     {((activeCategory.subCategories || []).find(sc => sc.title === 'Varieties')?.items || []).map((item, index) => (
-                      <div key={index} className="relative group cursor-pointer h-72">
-                        <div className={`h-full bg-gradient-to-br ${activeCategory.color} rounded-3xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-rotate-2 relative overflow-hidden flex flex-col justify-between`}>
+                      <div key={index} onMouseEnter={() => setHoveredFlavor(item.name)} onMouseLeave={() => setHoveredFlavor(null)} className="relative group cursor-pointer">
+                        <div className={`min-h-[480px] bg-gradient-to-br ${activeCategory.color} rounded-3xl p-0 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:scale-105 relative overflow-hidden flex flex-col`}>
                           {hoveredFlavor === item.name && <div className="absolute inset-0 bg-white/20 animate-drip"></div>}
                           <div className="absolute top-2 right-2"><Sparkles className={`w-6 h-6 ${hoveredFlavor === item.name ? 'animate-spin text-yellow-400' : 'text-white/40'}`} /></div>
 
                           <div>
                             {/* fixed image area so all cards align (render only if an image exists) */}
-                            <div className="mb-4 rounded-lg overflow-hidden bg-transparent w-full h-20 flex items-center justify-center">
-                              {item.image ? (
-                                <img src={item.image} alt={item.name} className="max-h-full w-auto object-contain block" />
-                              ) : (
-                                <span className="text-4xl">🍨</span>
+                            <div className="w-full h-72 overflow-hidden rounded-t-3xl bg-gray-100">
+                              {item.image && (
+                                <img src={item.image} alt={item.name} className="w-full h-full object-cover object-center block" />
                               )}
                             </div>
 
-                            <div className="flex items-start justify-between">
+                            <div className="p-6 flex flex-col flex-1">
                               <div className="pr-4">
                                 <span className="inline-block px-3 py-1 bg-white/50 rounded-full text-xs font-semibold text-cyan-800 mb-3">Varieties</span>
                                 {item.description && (
@@ -226,13 +224,16 @@ export default function MenuSection() {
                                     {item.description}
                                   </p>
                                 )}
-                                <h3 className="text-xl font-bold text-cyan-900 mb-2 leading-tight">{item.name}</h3>
+                                <h3 className="text-xl font-bold text-cyan-900 mb-2 leading-tight truncate">{item.name}</h3>
                               </div>
-                              {item.price && (
-                                <div className="text-right ml-4">
-                                  <span className="text-sm font-semibold text-cyan-900">{item.price}</span>
-                                </div>
-                              )}
+                            </div>
+
+                            {/* fixed footer so price is always aligned at bottom */}
+                            <div className="mt-auto pt-3 flex items-center justify-between border-t border-white/10">
+                              <div />
+                              <div className="text-right">
+                                {item.price && <span className="text-base font-semibold text-cyan-900">{item.price}</span>}
+                              </div>
                             </div>
                           </div>
 
@@ -261,42 +262,42 @@ export default function MenuSection() {
                 // Default grid behavior for other categories
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                   {(activeCategory.items.length > 0 ? [{ title: activeCategory.title, items: activeCategory.items }] : activeCategory.subCategories || []).map(subCat => (
-                    (subCat.items).map((item, index) => (
+                    subCat.items.map((item, index) => (
                       <div
                         key={index}
                         onMouseEnter={() => setHoveredFlavor(item.name)}
                         onMouseLeave={() => setHoveredFlavor(null)}
-                        className="relative group cursor-pointer h-72"
+                        className="relative group cursor-pointer"
                       >
-                        <div className={`h-full bg-gradient-to-br ${activeCategory.color} rounded-3xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-rotate-2 relative overflow-hidden flex flex-col justify-between`}>
+                          <div className={`min-h-[480px] bg-gradient-to-br ${activeCategory.color} rounded-3xl p-0 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:scale-105 relative overflow-hidden flex flex-col`}>
                           {hoveredFlavor === item.name && <div className="absolute inset-0 bg-white/20 animate-drip"></div>}
                           <div className="absolute top-2 right-2"><Sparkles className={`w-6 h-6 ${hoveredFlavor === item.name ? 'animate-spin text-yellow-400' : 'text-white/40'}`} /></div>
 
                           <div>
-                            <div className="mb-4 rounded-lg overflow-hidden bg-transparent w-full h-20 flex items-center justify-center">
-                              {item.image ? (
-                                <img src={item.image} alt={item.name} className="max-h-full w-auto object-contain block" />
-                              ) : (
-                                <span className="text-4xl">🍨</span>
+                            <div className="w-full h-72 overflow-hidden rounded-t-3xl bg-gray-100">
+                              {item.image && (
+                                <img src={item.image} alt={item.name} className="w-full h-full object-cover object-center block" />
                               )}
                             </div>
 
-                            <div className="flex items-start justify-between">
+                            <div className="p-6 flex flex-col flex-1">
                               <div>
                                 <span className="inline-block px-3 py-1 bg-white/50 rounded-full text-xs font-semibold text-cyan-800 mb-3">{subCat.title}</span>
                                 {subCat.description && <p className="text-cyan-800 text-sm mb-2">{subCat.description}</p>}
-                                <h3 className="text-xl font-bold text-cyan-900 mb-2 leading-tight">{item.name}</h3>
+                                <h3 className="text-xl font-bold text-cyan-900 mb-2 leading-tight truncate">{item.name}</h3>
                                 {item.description && (
                                   <p className="text-cyan-800 text-sm mb-2" style={{display: '-webkit-box', WebkitLineClamp: 2 as any, WebkitBoxOrient: 'vertical' as any, overflow: 'hidden'}}>
                                     {item.description}
                                   </p>
                                 )}
                               </div>
-                              {item.price && (
-                                <div className="text-right ml-4">
-                                  <span className="text-sm font-semibold text-cyan-900">{item.price}</span>
-                                </div>
-                              )}
+                            </div>
+
+                            <div className="mt-auto pt-3 flex items-center justify-between border-t border-white/10">
+                              <div />
+                              <div className="text-right">
+                                {item.price && <span className="text-base font-semibold text-cyan-900">{item.price}</span>}
+                              </div>
                             </div>
                           </div>
                           {/* description is rendered above near the title to avoid duplicate content and variable heights */}
