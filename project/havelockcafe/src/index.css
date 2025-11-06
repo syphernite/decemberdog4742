@@ -13,4 +13,25 @@
     font-family: 'Caveat', cursive;
     font-weight: 700;
   }
+  
+  /* Outline white, yellow, and gray text with a black stroke and a shadow fallback.
+     This targets common Tailwind text utility classes and bracket-notation colors.
+     We intentionally keep the selector broad to catch variants like `text-white/90`,
+     `text-gray-500`, and `text-[#F4C430]`.
+  */
+  :is([class*="text-white"], .text-white, .text-\[\#F4C430\], .text-\[\#f4c430\], [class*="text-gray"], [class*="text-\#F4C430"], [class*="text-\#f4c430"]) {
+    /* Stronger stroke and shadow for legibility */
+    -webkit-text-stroke: 1.2px #000; /* primary for WebKit/Chromium/Safari */
+    /* `text-stroke` is non-standard but included for completeness */
+    text-stroke: 1.2px #000;
+    /* more prominent shadow fallback for better contrast */
+    text-shadow: 0 0 2px rgba(0,0,0,0.95), 0 1px 0 rgba(0,0,0,0.9);
+  }
+  
+  /* Apply same outline on hover states for these selectors */
+  :is([class*="text-white"], .text-white, .text-\[\#F4C430\], .text-\[\#f4c430\], [class*="text-gray"], [class*="text-\#F4C430"], [class*="text-\#f4c430"]) :where(:hover) {
+    -webkit-text-stroke: 1.2px #000;
+    text-stroke: 1.2px #000;
+    text-shadow: 0 0 2px rgba(0,0,0,0.95), 0 1px 0 rgba(0,0,0,0.9);
+  }
 }
