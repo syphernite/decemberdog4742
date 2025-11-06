@@ -14,7 +14,7 @@ export default function Navigation({ scrollToSection, mobileMenuOpen, setMobileM
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center gap-2">
             <img src={eggLogo} alt="Havelock Cafe Logo" className="h-10 w-auto object-contain" />
-            <span className="font-chalk text-2xl text-[#F4C430] border-2 border-[#F4C430] px-2 py-0.5 rounded-md shadow-sm">Havelock</span>
+            <span className="font-chalk text-2xl text-[#F4C430] border-2 border-[#F4C430] px-2 py-0.5 rounded-md shadow-sm">Havelock Cafe</span>
           </div>
 
           <div className="hidden md:flex items-center gap-8">
