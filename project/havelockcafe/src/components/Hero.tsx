@@ -1,13 +1,12 @@
 import { MapPin, Phone } from 'lucide-react';
-import EggLogo from './EggLogo';
+import eggLogo from '../assets/egg-logo.png';
  
 
 export default function Hero({ scrollToSection }: { scrollToSection: (id: string) => void }) {
   return (
     <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
   <div className="absolute inset-0 bg-gradient-to-br from-[#B0E0E6] via-[#89CFF0] to-white" />
-  {/* subtle dark overlay to improve text contrast */}
-  <div className="absolute inset-0 bg-black/30 pointer-events-none" />
+  {/* removed overlay to preserve original background */}
       <div
         className="absolute inset-0"
         style={{
@@ -18,7 +17,7 @@ export default function Hero({ scrollToSection }: { scrollToSection: (id: string
       <div className="relative z-10 text-center px-4 max-w-4xl">
         <div className="mb-8 flex justify-center">
           <div className="transform hover:scale-105 transition-transform duration-200">
-            <EggLogo className="h-28 w-28" title="Havelock Cafe Logo" />
+            <img src={eggLogo} alt="Havelock Cafe Logo" className="h-28 w-auto object-contain" />
           </div>
         </div>
         <h1 className="font-chalk text-5xl sm:text-6xl md:text-7xl text-[#F5F3EE] mb-6 leading-tight">
