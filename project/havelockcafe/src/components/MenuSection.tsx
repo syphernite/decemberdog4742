@@ -1,4 +1,4 @@
-import menuData from '../data/menu';
+import menuData from '../data/menu.ts';
 
 type MenuItem = {
   name: string;
