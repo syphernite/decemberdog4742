@@ -3,7 +3,7 @@ import Navigation from './components/Navigation';
 import Hero from './components/Hero';
 import About from './components/About';
 import MenuSection from './components/MenuSection';
-import Gallery from './components/Gallery';
+// Gallery removed per request ("A Peek Inside")
 import Visit from './components/Visit';
 import Footer from './components/Footer';
 
@@ -27,8 +27,7 @@ function App() {
       />
       <Hero scrollToSection={scrollToSection} />
       <About />
-      <MenuSection />
-      <Gallery />
+  <MenuSection />
       <Visit />
       <Footer />
     </div>

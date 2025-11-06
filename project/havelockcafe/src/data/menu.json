@@ -1,0 +1,45 @@
+{
+  "sections": [
+    {
+      "title": "Subs & Sandwiches",
+      "items": [
+        {
+          "name": "Philly Cheesesteak",
+          "price": "$9.99",
+          "description": "Sliced steak, onions, peppers, melted provolone on a toasted roll"
+        },
+        {
+          "name": "Italian Sub",
+          "price": "$8.99",
+          "description": "Ham, salami, pepperoni, provolone, lettuce, tomato, onion, oil & vinegar"
+        }
+      ]
+    },
+    {
+      "title": "Pizzas",
+      "items": [
+        {
+          "name": "Cheese Pizza (Small)",
+          "price": "$10.99"
+        },
+        {
+          "name": "Pepperoni Pizza (Small)",
+          "price": "$12.99"
+        }
+      ]
+    },
+    {
+      "title": "Sides & Extras",
+      "items": [
+        {
+          "name": "Buffalo Wings (6)",
+          "price": "$7.99"
+        },
+        {
+          "name": "French Fries",
+          "price": "$3.49"
+        }
+      ]
+    }
+  ]
+}
