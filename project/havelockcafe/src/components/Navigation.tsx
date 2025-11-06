@@ -14,13 +14,12 @@ export default function Navigation({ scrollToSection, mobileMenuOpen, setMobileM
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center gap-2">
             <img src={eggLogo} alt="Egg Logo" className="h-10 w-auto object-contain" />
-            <span className="font-chalk text-2xl text-[#F4C430]">Havelock Cafe</span>
+            <span className="font-chalk text-2xl text-[#F4C430] border-2 border-[#F4C430] px-2 py-0.5 rounded-md shadow-sm">Havelock Cafe</span>
           </div>
 
           <div className="hidden md:flex items-center gap-8">
             <button onClick={() => scrollToSection('about')} className="text-[#F4C430] hover:text-[#B0E0E6] transition-colors">About</button>
             <button onClick={() => scrollToSection('menu')} className="text-[#F4C430] hover:text-[#B0E0E6] transition-colors">Menu</button>
-            <button onClick={() => scrollToSection('gallery')} className="text-[#F4C430] hover:text-[#B0E0E6] transition-colors">Gallery</button>
             <button onClick={() => scrollToSection('visit')} className="text-[#F4C430] hover:text-[#B0E0E6] transition-colors">Visit</button>
           </div>
 
@@ -35,7 +34,6 @@ export default function Navigation({ scrollToSection, mobileMenuOpen, setMobileM
           <div className="px-4 py-4 space-y-3">
             <button onClick={() => scrollToSection('about')} className="block w-full text-left py-2 text-[#F4C430] hover:text-[#B0E0E6]">About</button>
             <button onClick={() => scrollToSection('menu')} className="block w-full text-left py-2 text-[#F4C430] hover:text-[#B0E0E6]">Menu</button>
-            <button onClick={() => scrollToSection('gallery')} className="block w-full text-left py-2 text-[#F4C430] hover:text-[#B0E0E6]">Gallery</button>
             <button onClick={() => scrollToSection('visit')} className="block w-full text-left py-2 text-[#F4C430] hover:text-[#B0E0E6]">Visit</button>
           </div>
         </div>
