@@ -1,5 +1,5 @@
 import { MapPin, Phone } from 'lucide-react';
-import EggLogo from './EggLogo';
+import eggLogo from '../assets/egg-logo.png';
  
 
 export default function Hero({ scrollToSection }: { scrollToSection: (id: string) => void }) {
@@ -15,14 +15,12 @@ export default function Hero({ scrollToSection }: { scrollToSection: (id: string
 
       <div className="relative z-10 text-center px-4 max-w-4xl">
         <div className="mb-8 flex justify-center">
-          <div className="transform hover:scale-105 transition-transform duration-200">
-            <EggLogo className="h-28 w-28" title="Havelock Cafe Logo" />
-          </div>
+          <img src={eggLogo} alt="Havelock Cafe Logo" className="h-28 w-auto object-contain hover:scale-105 transition-transform duration-200" />
         </div>
-        <h1 className="font-chalk text-5xl sm:text-6xl md:text-7xl text-[#F5F3EE] mb-6 leading-tight">
+        <h1 className="font-chalk text-5xl sm:text-6xl md:text-7xl text-[#6B5B3E] mb-6 leading-tight">
           Good coffee.<br />Hot eggs.<br />Friendly faces.
         </h1>
-        <p className="text-xl sm:text-2xl text-[#F4C430] mb-10 font-light">
+        <p className="text-xl sm:text-2xl text-[#6B5B3E] mb-10 font-light">
           Your neighborhood breakfast spot in Havelock
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
