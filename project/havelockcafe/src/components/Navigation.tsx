@@ -1,5 +1,5 @@
 import { Menu } from 'lucide-react';
-import eggLogo from '../assets/egg-logo.png';
+import EggLogo from './EggLogo';
 
 type Props = {
   scrollToSection: (id: string) => void;
@@ -13,8 +13,8 @@ export default function Navigation({ scrollToSection, mobileMenuOpen, setMobileM
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center gap-2">
-            <img src={eggLogo} alt="Egg Logo" className="h-10 w-auto object-contain" />
-            <span className="font-chalk text-2xl text-[#F4C430] border-2 border-[#F4C430] px-2 py-0.5 rounded-md shadow-sm">Havelock Cafe</span>
+            <EggLogo className="h-10 w-10" />
+            <span className="font-chalk text-2xl text-[#F4C430] border-2 border-[#F4C430] px-2 py-0.5 rounded-md shadow-sm">Havelock</span>
           </div>
 
           <div className="hidden md:flex items-center gap-8">

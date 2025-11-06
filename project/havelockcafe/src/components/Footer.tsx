@@ -21,8 +21,14 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-white/20 text-center text-white/90 text-sm">
+        <div className="mt-8 pt-8 border-t border-white/20 text-center text-white/90 text-sm space-y-2">
           <p>&copy; 2024 Havelock Cafe. All rights reserved.</p>
+          <p>
+            Made with <span aria-hidden>🥚</span> by{' '}
+            <a href="https://built4you.org" target="_blank" rel="noopener noreferrer" className="text-[#B0E0E6] hover:text-white underline">
+              Built4You
+            </a>
+          </p>
         </div>
       </div>
     </footer>
