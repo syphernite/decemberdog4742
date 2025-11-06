@@ -1,4 +1,4 @@
-import eggLogo from '../assets/egg-logo.png';
+import EggLogo from './EggLogo';
 
 export default function Footer() {
   return (
@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-3">
-            <img src={eggLogo} alt="Havelock Cafe Logo" className="h-10 w-auto object-contain" />
+            <EggLogo />
             <div>
               <p className="font-chalk text-2xl">Havelock Cafe</p>
               <p className="text-white/90 text-sm">Good coffee. Hot eggs. Friendly faces.</p>
@@ -21,8 +21,14 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-white/20 text-center text-white/90 text-sm">
+        <div className="mt-8 pt-8 border-t border-white/20 text-center text-white/90 text-sm space-y-2">
           <p>&copy; 2024 Havelock Cafe. All rights reserved.</p>
+          <p>
+            Made with <span aria-hidden>🥚</span> by{' '}
+            <a href="https://built4you.org" target="_blank" rel="noopener noreferrer" className="text-[#B0E0E6] hover:text-white underline">
+              Built4You
+            </a>
+          </p>
         </div>
       </div>
     </footer>
