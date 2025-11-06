@@ -5,8 +5,17 @@ import eggLogo from '../assets/egg-logo.png';
 export default function Hero({ scrollToSection }: { scrollToSection: (id: string) => void }) {
   return (
     <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
-  <div className="absolute inset-0 bg-gradient-to-br from-[#B0E0E6] via-[#89CFF0] to-white" />
-  {/* removed overlay to preserve original background */}
+  <div className="absolute inset-0 bg-gradient-to-br from-[#B0E0E6] via-[#89CFF0] to-[#B0E0E6]" />
+  {/* subtle darken on the left side to add contrast */}
+  <div className="absolute inset-0 bg-gradient-to-r from-black/5 to-black/0 pointer-events-none" />
+  {/* radial blue fade at bottom-right to replace white corner */}
+  <div
+    className="absolute inset-0 pointer-events-none"
+    style={{
+      backgroundImage:
+        "radial-gradient(600px circle at 85% 85%, rgba(176,224,230,0.55) 0%, rgba(137,207,240,0.20) 40%, rgba(255,255,255,0) 70%)",
+    }}
+  />
       <div
         className="absolute inset-0"
         style={{
