@@ -5,7 +5,9 @@ import EggLogo from './EggLogo';
 export default function Hero({ scrollToSection }: { scrollToSection: (id: string) => void }) {
   return (
     <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-[#B0E0E6] via-[#89CFF0] to-white" />
+  <div className="absolute inset-0 bg-gradient-to-br from-[#B0E0E6] via-[#89CFF0] to-white" />
+  {/* subtle dark overlay to improve text contrast */}
+  <div className="absolute inset-0 bg-black/30 pointer-events-none" />
       <div
         className="absolute inset-0"
         style={{
