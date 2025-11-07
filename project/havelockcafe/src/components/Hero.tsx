@@ -1,6 +1,7 @@
 import { MapPin, Phone } from 'lucide-react';
 import eggLogo from '../assets/egg-logo.png';
  
+ 
 
 export default function Hero({ scrollToSection }: { scrollToSection: (id: string) => void }) {
   return (

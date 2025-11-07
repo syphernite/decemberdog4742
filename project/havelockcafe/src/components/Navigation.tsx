@@ -1,5 +1,6 @@
 import { Menu, Phone } from 'lucide-react';
 import eggLogo from '../assets/egg-logo.png';
+ 
 
 type Props = {
   scrollToSection: (id: string) => void;

@@ -1,4 +1,5 @@
 import eggLogo from '../assets/egg-logo.png';
+ 
 
 export default function Footer() {
   return (
@@ -6,7 +7,7 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-3">
-            <img src={eggLogo} alt="Havelock Cafe Logo" className="h-10 w-auto object-contain" />
+          <img src={eggLogo} alt="Havelock Cafe Logo" className="h-10 w-auto object-contain" />
             <div>
               <p className="font-chalk text-2xl">Havelock Cafe</p>
               <p className="text-white/90 text-sm">Good coffee. Hot eggs. Friendly faces.</p>
