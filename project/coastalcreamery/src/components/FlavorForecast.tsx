@@ -106,6 +106,10 @@ import imgLoadedCrepe from '../assets/images/loaded_crepe.png';
 import imgMapleBananaWaffle from '../assets/images/maple_banana_waffle.png';
 import imgMixedBerryKiwiCrepe from '../assets/images/mixedberry_kiwi_crepe.png';
 import imgSprinklesCone from '../assets/images/sprinkles_marshmallow_cone.png';
+import imgBerryCrepe from '../assets/images/berry_crepe.png';
+import imgCinnamonWaffle from '../assets/images/cinnamon_waffle.png';
+import imgHoneyCrepe from '../assets/images/honey_crepe.png';
+import imgStrawberryKiwiWaffle from '../assets/images/strawberry_kiwi_waffle.png';
 
 type FeaturedItem = {
   title: string;
@@ -116,13 +120,17 @@ type FeaturedItem = {
 };
 
 const STATIC_FEATURED: FeaturedItem[] = [
+  { title: 'Berry Crepe', caption: 'Mixed berries with a light cream', img: imgBerryCrepe, tag: 'Fresh' },
+  { title: 'Cinnamon Waffle', caption: 'Warm waffle dusted with cinnamon sugar', img: imgCinnamonWaffle, tag: 'Warm' },
+  { title: 'Honey Crepe', caption: 'Drizzled with local honey and lemon', img: imgHoneyCrepe, tag: 'Sweet' },
   { title: 'Loaded Crepe', caption: 'Fruit, drizzle, whipped cream', img: imgLoadedCrepe, tag: 'Rich' },
   { title: 'Maple Banana Waffle', caption: 'Caramelized banana + maple', img: imgMapleBananaWaffle, tag: 'Warm' },
   { title: 'Mixed Berry Kiwi Crepe', caption: 'Bright kiwi with berries', img: imgMixedBerryKiwiCrepe, tag: 'Fresh' },
-  { title: 'Sprinkles Marshmallow Cone', caption: 'Soft mallows + crunch', img: imgSprinklesCone, tag: 'Fun' },
+  { title: 'Sprinkles Marshmallow Cone', caption: 'Soft mallows + crunchy sprinkles', img: imgSprinklesCone, tag: 'Fun' },
+  { title: 'Strawberry Kiwi Waffle', caption: 'Fresh strawberries paired with kiwi', img: imgStrawberryKiwiWaffle, tag: 'Bright' },
 ];
 
-function FeaturedDesserts() {
+export function FeaturedDesserts() {
   const [items, setItems] = useState<FeaturedItem[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [err, setErr] = useState<string | null>(null);
@@ -177,7 +185,8 @@ function FeaturedDesserts() {
         }));
 
         if (!cancelled) {
-          setItems(mapped.slice(0, 4).length ? mapped.slice(0, 4) : STATIC_FEATURED);
+          if (mapped && mapped.length) setItems(mapped.slice(0, 8));
+          else setItems(STATIC_FEATURED);
         }
       } catch (e) {
         console.error('Featured CSV error:', e);
@@ -213,7 +222,7 @@ function FeaturedDesserts() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {(items ?? STATIC_FEATURED).slice(0, 4).map((it, i) => (
+            {(items ?? STATIC_FEATURED).map((it, i) => (
               <article
                 key={i}
                 className="group bg-white/90 backdrop-blur rounded-3xl shadow-2xl overflow-hidden transition-transform duration-300 hover:-translate-y-1 hover:shadow-cyan-400/40"
@@ -272,12 +281,10 @@ type Special = {
 
 export default function FlavorForecast() {
   const [specials, setSpecials] = useState<Special[]>([]);
-  const [idx, setIdx] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isActive, setIsActive] = useState(false);
 
-  // fetch and build list of active specials
+  // fetch and build list of active specials (same CSV parsing as before)
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -298,7 +305,6 @@ export default function FlavorForecast() {
           return o;
         });
 
-        // Accept either: name/desc/price/badge/image/active or weather/special/icon/active
         const activeKey = headers.includes('active') ? 'active' : 'active';
         const nameKey = headers.includes('name') ? 'name' : headers.includes('weather') ? 'weather' : 'name';
         const descKey = headers.includes('desc') ? 'desc' : headers.includes('special') ? 'special' : 'desc';
@@ -322,7 +328,6 @@ export default function FlavorForecast() {
 
         if (!cancelled) {
           setSpecials(mapped);
-          setIdx(0);
         }
       } catch (e) {
         if (!cancelled) {
@@ -338,15 +343,6 @@ export default function FlavorForecast() {
     };
   }, []);
 
-  // auto-rotate every 5 seconds
-  useEffect(() => {
-    if (specials.length <= 1) return;
-    const t = setInterval(() => setIdx(i => (i + 1) % specials.length), 5000);
-    return () => clearInterval(t);
-  }, [specials.length]);
-
-  const current = specials[idx];
-
   return (
     <>
       <section
@@ -358,87 +354,61 @@ export default function FlavorForecast() {
           <div className="absolute bottom-10 right-10 w-40 h-40 bg-yellow-200 rounded-full blur-3xl animate-float-delayed"></div>
         </div>
 
-        <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
+        <div className="max-w-6xl mx-auto px-4 text-center relative z-10">
           <h2 className="text-4xl md:text-6xl font-bold text-white mb-8 font-display drop-shadow-lg">
-            Today&apos;s Flavor Forecast
+            Today's Flavor Forecast
           </h2>
 
-        <div
-          className={`bg-white/90 backdrop-blur rounded-3xl p-8 md:p-12 shadow-2xl transform transition-all duration-300 min-h-[320px] flex flex-col justify-center ${
-            isActive ? 'scale-105 shadow-cyan-400/50' : 'hover:scale-105'
-          }`}
-          onMouseEnter={() => setIsActive(true)}
-          onMouseLeave={() => setIsActive(false)}
-        >
-          {loading && (
-            <div className="flex flex-col items-center justify-center gap-4">
-              <Loader2 className="w-16 h-16 animate-spin" />
-              <p className="text-xl text-cyan-700">Forecasting the flavor…</p>
-            </div>
-          )}
-
-          {error && <p className="text-xl text-red-500">{error}</p>}
-
-          {!loading && !error && current && (
-            <>
-              <div className="flex flex-col items-center justify-center gap-4 mb-6">
-                <current.Icon className="w-16 h-16 text-yellow-500 animate-pulse" />
-                <p className="text-3xl md:text-4xl font-bold text-cyan-800">{current.name}</p>
-                {current.img ? (
-                  <img
-                    src={current.img}
-                    alt={current.name}
-                    className="w-40 h-40 rounded-2xl object-cover shadow-lg border-2 border-cyan-100"
-                  />
-                ) : null}
-                {current.badge ? (
-                  <span className="inline-flex items-center rounded-full bg-cyan-600/90 text-white text-xs font-semibold px-3 py-1 shadow">
-                    {current.badge}
-                  </span>
-                ) : null}
+          <div className="bg-white/90 backdrop-blur rounded-3xl p-6 md:p-10 shadow-2xl transition-all">
+            {loading ? (
+              <div className="flex flex-col items-center justify-center gap-4 py-12">
+                <Loader2 className="w-14 h-14 animate-spin" />
+                <p className="text-lg text-cyan-700">Forecasting the flavor…</p>
               </div>
-
-              <div className="border-t-2 border-cyan-200 pt-6 mt-2">
-                <p className="text-xl text-cyan-600 mb-3 font-semibold">Special of the Day:</p>
-                <p className="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-500">
-                  {current.desc || current.price}
-                </p>
+            ) : error ? (
+              <p className="text-xl text-red-500 py-6">{error}</p>
+            ) : specials.length === 0 ? (
+              <div className="flex flex-col items-center justify-center gap-2 py-8">
+                <Cloud className="w-12 h-12" />
+                <p className="text-lg text-cyan-800">No specials today, come back later!</p>
               </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {specials.map((s, i) => (
+                  <article key={i} className="group bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
+                      {s.img ? (
+                        <img src={s.img} alt={s.name} loading="lazy" className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <s.Icon className="w-20 h-20 text-yellow-500" />
+                        </div>
+                      )}
+                      {s.badge ? (
+                        <span className="absolute left-3 top-3 inline-flex items-center rounded-full bg-cyan-600/90 text-white text-xs font-semibold px-3 py-1 shadow">
+                          {s.badge}
+                        </span>
+                      ) : null}
+                    </div>
 
-              {/* dots */}
-              {specials.length > 1 ? (
-                <div className="mt-6 flex justify-center gap-2">
-                  {specials.map((_, i) => (
-                    <button
-                      key={i}
-                      aria-label={`Show slide ${i + 1}`}
-                      onClick={() => setIdx(i)}
-                      className={`h-2.5 w-2.5 rounded-full transition ${
-                        i === idx ? 'bg-cyan-600' : 'bg-cyan-300 hover:bg-cyan-400'
-                      }`}
-                    />
-                  ))}
-                </div>
-              ) : null}
-            </>
-          )}
+                    <div className="p-4 text-left">
+                      <h4 className="text-lg font-bold text-cyan-900 mb-1">{s.name}</h4>
+                      {s.desc ? <p className="text-sm text-cyan-700 mb-2">{s.desc}</p> : null}
+                      {s.price ? <p className="text-sm font-semibold text-cyan-900">{s.price}</p> : null}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
+          </div>
 
-          {!loading && !error && specials.length === 0 && (
-            <div className="flex flex-col items-center justify-center gap-2">
-              <Cloud className="w-12 h-12" />
-              <p className="text-lg text-cyan-800">No specials today, come back later!</p>
-            </div>
-          )}
+          <div className="mt-8 inline-block bg-white/60 backdrop-blur rounded-2xl px-6 py-3 shadow-lg">
+            <p className="text-cyan-800 font-medium italic">Catch the flavor wave before it melts!</p>
+          </div>
         </div>
+      </section>
 
-        <div className="mt-8 inline-block bg-white/60 backdrop-blur rounded-2xl px-6 py-3 shadow-lg">
-          <p className="text-cyan-800 font-medium italic">Catch the flavor wave before it melts!</p>
-        </div>
-      </div>
-    </section>
-
-    {/* Featured Desserts below */}
-    <FeaturedDesserts />
-  </>
+  {/* Featured Desserts removed from here; rendered under the menu now */}
+    </>
   );
 }

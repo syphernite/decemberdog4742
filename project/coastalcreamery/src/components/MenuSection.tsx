@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Sparkles, IceCream, Cookie, GlassWater, Milk, Utensils } from 'lucide-react';
-import berryDelight from '../assets/berry-delight.png';
-import pumpkinPieCaramelApple from '../assets/pumpkin-pie-caramel-apple.png';
+import { FeaturedDesserts } from './FlavorForecast';
+import crepeMenuImg from '../assets/images/crepe_menu.png';
+import icecreamMenuImg from '../assets/images/icecream_menu.png';
 
 interface MenuItem {
   name: string;
@@ -39,6 +40,20 @@ const menuData: MenuCategory[] = [
     ],
   },
   {
+    title: 'Fruit Cups',
+    icon: Sparkles,
+    color: 'from-pink-300 to-rose-200',
+    display: 'grid',
+    description: 'Fresh fruit cups and specialty strawberry Dubai cups — ask for today\'s photos',
+    items: [],
+    subCategories: [
+      { title: 'Fruit Cups', items: [
+        { name: 'Fruit Cup', description: "Seasonal fresh fruit cup (ask for today's selection)", price: '$6.95' },
+        { name: 'Strawberry Dubai', description: 'Dubai strawberries cup — photos provided by client: https://www.facebook.com/share/v/1BWnjQLZRE/?mibextid=wwXIfr and https://www.facebook.com/share/v/17QPy7Zkfa/?mibextid=wwXIfr', price: '$8.95' },
+      ]},
+    ],
+  },
+  {
     title: 'Crepes',
     icon: Cookie,
     color: 'from-amber-300 to-yellow-200',
@@ -47,8 +62,8 @@ const menuData: MenuCategory[] = [
     items: [], // Parent category, items are in sub-categories
     subCategories: [
       { title: 'Varieties', items: [
-        { name: 'Berry Delight', description: 'Mixed berries and cream', image: berryDelight, price: '$11.27 / $9.77' },
-        { name: 'Pumpkin Pie Caramel Apple', description: 'Seasonal', image: pumpkinPieCaramelApple, price: '$11.27 / $9.77' },
+        { name: 'Berry Delight', description: 'Mixed berries and cream', price: '$11.27 / $9.77' },
+        { name: 'Pumpkin Pie Caramel Apple', description: 'Seasonal', price: '$11.27 / $9.77' },
         { name: 'Strawberry and Banana', price: '$11.27 / $9.77' },
         { name: 'Banana and Nutella', price: '$11.27 / $9.77' },
         { name: 'Kiwi and Strawberry', price: '$11.27 / $9.77' },
@@ -68,6 +83,9 @@ const menuData: MenuCategory[] = [
       ]},
       { title: 'Add-ons', items: [
         { name: 'Ice cream scoop', price: '$2.00' }, { name: 'Extra fillings', price: '$1.00' },
+      ]},
+      { title: 'Savory (Coming Soon)', items: [
+        { name: 'Savory crepes — coming soon', description: 'Client will add savory crepes later; we can display a full savory list when available.' },
       ]},
     ],
   },
@@ -160,11 +178,26 @@ function truncateText(text: string, max = 30) {
 export default function MenuSection() {
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
   const [hoveredFlavor, setHoveredFlavor] = useState<string | null>(null);
+  const [showFullMenu, setShowFullMenu] = useState(false);
+  const [menuImageSrc, setMenuImageSrc] = useState<string | null>(null);
+
+  // close modals on Escape
+  useEffect(() => {
+    if (!showFullMenu && !menuImageSrc) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setShowFullMenu(false);
+        setMenuImageSrc(null);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [showFullMenu, menuImageSrc]);
 
   const activeCategory = menuData.find(cat => cat.title === selectedCategory);
 
   return (
-    <section className="py-20 bg-gradient-to-b from-amber-50 to-cyan-50 relative overflow-hidden">
+    <section id="menu" className="py-20 bg-gradient-to-b from-amber-50 to-cyan-50 relative overflow-hidden">
       <div className="absolute top-0 left-0 right-0">
         <svg viewBox="0 0 1440 60" className="w-full fill-amber-50">
           <path d="M0,32L48,37.3C96,43,192,53,288,53.3C384,53,480,43,576,42.7C672,43,768,53,864,56C960,59,1056,53,1152,48C1248,43,1344,37,1392,34.7L1440,32L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"></path>
@@ -178,6 +211,8 @@ export default function MenuSection() {
           </h2>
           <p className="text-xl text-cyan-600 italic">Handcrafted happiness, one scoop at a time</p>
         </div>
+
+  {/* Featured photos gallery removed per request */}
 
         <div className="flex flex-wrap justify-center gap-4 mb-12">
           {categories.map(category => (
@@ -194,6 +229,11 @@ export default function MenuSection() {
             </button>
           ))}
         </div>
+        <div className="text-center mb-8">
+          <button onClick={() => setShowFullMenu(true)} className="inline-block px-6 py-3 bg-cyan-700 text-white rounded-2xl font-semibold shadow hover:bg-cyan-600 transition">
+            See full menu
+          </button>
+        </div>
         
         {activeCategory && (
           <div className="bg-white/60 backdrop-blur-sm p-8 rounded-3xl shadow-lg">
@@ -202,23 +242,35 @@ export default function MenuSection() {
                 <p className="text-lg text-cyan-700 italic">{activeCategory.description}</p>
               </div>
             )}
+
+            {/* Category-specific menu-photo buttons (open client-supplied menu images in a modal) */}
+            <div className="text-center mb-6">
+              {activeCategory.title === 'Crepes' && (
+                <button onClick={() => setMenuImageSrc(crepeMenuImg)} className="inline-block mr-3 px-5 py-2 bg-amber-500 text-white rounded-full font-semibold shadow hover:bg-amber-600 transition">View Crepe Menu</button>
+              )}
+              {activeCategory.title === 'Ice Cream & Gelato' && (
+                <button onClick={() => setMenuImageSrc(icecreamMenuImg)} className="inline-block px-5 py-2 bg-blue-500 text-white rounded-full font-semibold shadow hover:bg-blue-600 transition">View Ice Cream Menu</button>
+              )}
+            </div>
             {activeCategory.display === 'grid' && (
               // Special handling for Crepes: show 'Varieties' as cards (with images) and other sub-categories as plain lists
               activeCategory.title === 'Crepes' ? (
                 <>
                   {/* Varieties grid (cards with images) */}
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-6 items-stretch">
-                    {((activeCategory.subCategories || []).find(sc => sc.title === 'Varieties')?.items || []).filter(i => !!i.image).map((item, index) => (
+                    {((activeCategory.subCategories || []).find(sc => sc.title === 'Varieties')?.items || []).map((item, index) => (
                       <div key={index} onMouseEnter={() => setHoveredFlavor(item.name)} onMouseLeave={() => setHoveredFlavor(null)} className="relative group cursor-pointer">
                         <div className={`min-h-[360px] bg-gradient-to-br ${activeCategory.color} rounded-3xl p-0 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:scale-105 relative overflow-hidden flex flex-col`}>
                           {hoveredFlavor === item.name && <div className="absolute inset-0 bg-white/20 animate-drip"></div>}
                           <div className="absolute top-2 right-2"><Sparkles className={`w-6 h-6 ${hoveredFlavor === item.name ? 'animate-spin text-yellow-400' : 'text-white/40'}`} /></div>
 
                           <div>
-                            {/* fixed image area so all cards align (render only if an image exists) */}
+                            {/* fixed image area so all cards align (render image when available, placeholder otherwise) */}
                             <div className="w-full h-44 overflow-hidden rounded-t-3xl bg-gray-100">
-                              {item.image && (
+                              {item.image ? (
                                 <img src={item.image} alt={item.name} className="w-full h-full object-cover object-center block" />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center text-sm text-cyan-700">No photo</div>
                               )}
                             </div>
 
@@ -342,6 +394,70 @@ export default function MenuSection() {
                 ))}
               </div>
             )}
+          </div>
+        )}
+  {/* Featured desserts (moved below the menu) */}
+  <FeaturedDesserts />
+
+  {/* Full menu modal (renders full menuData) */}
+        {showFullMenu && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <div className="absolute inset-0 bg-black/50" onClick={() => setShowFullMenu(false)} />
+            <div className="relative bg-white rounded-2xl shadow-2xl max-w-4xl w-full mx-4 max-h-[85vh] overflow-auto p-6">
+              <div className="flex items-start justify-between mb-4">
+                <h3 className="text-2xl font-bold text-cyan-800">Full Menu</h3>
+                <button onClick={() => setShowFullMenu(false)} aria-label="Close menu" className="ml-4 px-3 py-1 rounded-md bg-cyan-100 hover:bg-cyan-200">Close</button>
+              </div>
+
+              <div className="space-y-6">
+                {menuData.map((cat, ci) => (
+                  <div key={ci} className="border-t pt-4">
+                    <h4 className="text-xl font-semibold text-cyan-900 mb-2">{cat.title}</h4>
+                    {cat.description && <p className="text-sm text-cyan-700 mb-2">{cat.description}</p>}
+
+                    {cat.subCategories && cat.subCategories.length > 0 ? (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {cat.subCategories.map((sc, sidx) => (
+                          <div key={sidx}>
+                            <h5 className="text-sm font-semibold text-cyan-800 mb-1">{sc.title}</h5>
+                            <ul className="text-sm text-cyan-700 space-y-1">
+                              {sc.items.map((it, ii) => (
+                                <li key={ii} className="flex justify-between">
+                                  <span>{it.name}</span>
+                                  {it.price ? <span className="font-semibold">{it.price}</span> : null}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <ul className="text-sm text-cyan-700 space-y-1">
+                        {cat.items.map((it, ii) => (
+                          <li key={ii} className="flex justify-between">
+                            <span>{it.name}</span>
+                            {it.price ? <span className="font-semibold">{it.price}</span> : null}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+        {menuImageSrc && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <div className="absolute inset-0 bg-black/60" onClick={() => setMenuImageSrc(null)} />
+            <div className="relative bg-white rounded-2xl shadow-2xl max-w-3xl w-full mx-4 max-h-[85vh] overflow-auto p-4">
+              <div className="flex items-center justify-end mb-2">
+                <button onClick={() => setMenuImageSrc(null)} aria-label="Close image" className="ml-4 px-3 py-1 rounded-md bg-cyan-100 hover:bg-cyan-200">Close</button>
+              </div>
+              <div className="flex items-center justify-center">
+                <img src={menuImageSrc} alt="menu photo" className="w-full h-auto object-contain rounded-md" />
+              </div>
+            </div>
           </div>
         )}
       </div>
