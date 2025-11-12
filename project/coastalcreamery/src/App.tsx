@@ -46,9 +46,9 @@ function App() {
   return (
     <ErrorBoundary>
       <div className="min-h-screen bg-gradient-to-b from-sky-100 to-cyan-50 coastal-cursor">
-        <Hero />
-        <MenuSection />
-        <FlavorForecast />
+  <Hero />
+  <FlavorForecast />
+  <MenuSection />
         <ContactSection />
         <Footer />
       </div>

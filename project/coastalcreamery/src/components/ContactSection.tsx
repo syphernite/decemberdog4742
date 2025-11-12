@@ -43,9 +43,11 @@ export default function ContactSection() {
                 <div>
                   <h3 className="text-xl font-bold text-cyan-800 mb-2">Hours</h3>
                   <p className="text-cyan-700">
-                    Daily: 11am - 9pm
+                    Winter: Mon–Sat 12:00pm – 7:00pm (Sundays closed)
                     <br />
-                    <span className="text-sm italic">Extended hours in summer!</span>
+                    Summer: Daily 10:00am – 10:00pm
+                    <br />
+                    <span className="text-sm italic">We open seven days a week in summer; seasonal hours may vary.</span>
                   </p>
                 </div>
               </div>

@@ -21,7 +21,7 @@ export default function Footer() {
 
         <div className="border-t border-cyan-700 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2 text-cyan-200">
-            <span>Made with</span>
+            <span>This demo was made with</span>
             <Heart className="w-5 h-5 text-pink-400 fill-pink-400 animate-pulse" />
             <a
               href="https://built4you.org"
@@ -29,7 +29,7 @@ export default function Footer() {
               rel="noopener noreferrer"
               className="text-pink-300 hover:text-pink-400 underline underline-offset-4 transition-colors"
             >
-              Built4You
+              by Built4You
             </a>
           </div>
 

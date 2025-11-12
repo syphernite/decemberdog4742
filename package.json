@@ -16,6 +16,7 @@
     "sitemap": "node .scripts/generate-sitemap.mjs",
 
     "dev": "npm run dev:landingpage",
+  "dev:dash": "npx http-server -p 5173 --silent",
     "dev:landingpage": "cd project/landingpage && npm run dev",
 
     "build": "npm run build:all",
