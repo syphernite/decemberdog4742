@@ -3,7 +3,7 @@ import eggLogo from '../assets/egg-logo.png';
  
  
 
-export default function Hero({ scrollToSection }: { scrollToSection: (id: string) => void }) {
+export default function Hero({ scrollToSection, openMenuModal }: { scrollToSection: (id: string) => void; openMenuModal: () => void }) {
   return (
     <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
   <div className="absolute inset-0 bg-gradient-to-br from-[#B0E0E6] via-[#89CFF0] to-[#B0E0E6]" />
@@ -36,29 +36,31 @@ export default function Hero({ scrollToSection }: { scrollToSection: (id: string
         <p className="text-xl sm:text-2xl text-[#F4C430] mb-10 font-light">
           Your neighborhood breakfast spot in Havelock
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <div className="flex flex-col gap-6 justify-center items-center">
           <button
-            onClick={() => scrollToSection('menu')}
-            className="px-8 py-4 bg-white/20 backdrop-blur-sm border border-white/30 text-white rounded-full font-medium text-lg hover:bg-white/30 transition-all duration-300 transform hover:scale-105 min-w-[200px]"
+            onClick={openMenuModal}
+            className="px-12 py-6 bg-white/20 backdrop-blur-sm border border-white/30 text-[#F4C430] rounded-full font-bold text-xl hover:bg-white/30 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl min-w-[250px]"
           >
-            View Menu
+            🍳 View Menu 🍳
           </button>
-          <a
-            href="tel:2526526115"
-            className="px-8 py-4 bg-white/20 backdrop-blur-sm border border-white/30 text-white rounded-full font-medium text-lg hover:bg-white/30 transition-all duration-300 transform hover:scale-105 min-w-[200px] flex items-center justify-center gap-2"
-          >
-            <Phone size={20} />
-            Call Now
-          </a>
-          <a
-            href="https://www.google.com/maps/dir/?api=1&destination=1000+E+Main+St,+Havelock,+NC+28532"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-8 py-4 bg-white/20 backdrop-blur-sm border border-white/30 text-white rounded-full font-medium text-lg hover:bg-white/30 transition-all duration-300 transform hover:scale-105 min-w-[200px] flex items-center justify-center gap-2"
-          >
-            <MapPin size={20} />
-            Get Directions
-          </a>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <a
+              href="tel:2526526115"
+              className="px-8 py-4 bg-white/20 backdrop-blur-sm border border-white/30 text-white rounded-full font-medium text-lg hover:bg-white/30 transition-all duration-300 transform hover:scale-105 min-w-[200px] flex items-center justify-center gap-2"
+            >
+              <Phone size={20} />
+              Call Now
+            </a>
+            <a
+              href="https://www.google.com/maps/dir/?api=1&destination=1000+E+Main+St,+Havelock,+NC+28532"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-8 py-4 bg-white/20 backdrop-blur-sm border border-white/30 text-white rounded-full font-medium text-lg hover:bg-white/30 transition-all duration-300 transform hover:scale-105 min-w-[200px] flex items-center justify-center gap-2"
+            >
+              <MapPin size={20} />
+              Get Directions
+            </a>
+          </div>
         </div>
       </div>
     </section>
