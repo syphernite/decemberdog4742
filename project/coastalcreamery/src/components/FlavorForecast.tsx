@@ -242,12 +242,12 @@ export function FeaturedDesserts() {
                 key={i}
                 className="group overflow-hidden transition-transform duration-300 hover:-translate-y-1"
               >
-                <div className="relative aspect-[4/3] overflow-hidden">
+                <div className="relative aspect-[4/3] p-2 overflow-hidden">
                   <img
                     src={it.img}
                     alt={it.title}
                     loading="lazy"
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 transform scale-80"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 transform scale-90"
                   />
                   {it.tag ? (
                     <span className="absolute left-3 top-3 inline-flex items-center rounded-full bg-cyan-600/90 text-white text-xs font-semibold px-3 py-1 shadow">
