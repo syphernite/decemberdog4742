@@ -110,6 +110,12 @@ import imgBerryCrepe from '../assets/images/berry_crepe.png';
 import imgCinnamonWaffle from '../assets/images/cinnamon_waffle.png';
 import imgHoneyCrepe from '../assets/images/honey_crepe.png';
 import imgStrawberryKiwiWaffle from '../assets/images/strawberry_kiwi_waffle.png';
+import imgBananaSplit from '../assets/images/banana_split.png';
+import imgBurstingBlueberries from '../assets/images/bursting_with_blueberries.png';
+import imgMangoStrawberrySplash from '../assets/images/mango_strawberry_splash.png';
+import imgMangoTango from '../assets/images/mango_tango.png';
+import imgBerryDelight from '../assets/berry-delight.png';
+import imgPumpkinPie from '../assets/pumpkin-pie-caramel-apple.png';
 
 type FeaturedItem = {
   title: string;
@@ -120,20 +126,28 @@ type FeaturedItem = {
 };
 
 const STATIC_FEATURED: FeaturedItem[] = [
-  { title: 'Berry Crepe', caption: 'Mixed berries with a light cream', img: imgBerryCrepe, tag: 'Fresh' },
-  { title: 'Cinnamon Waffle', caption: 'Warm waffle dusted with cinnamon sugar', img: imgCinnamonWaffle, tag: 'Warm' },
-  { title: 'Honey Crepe', caption: 'Drizzled with local honey and lemon', img: imgHoneyCrepe, tag: 'Sweet' },
-  { title: 'Loaded Crepe', caption: 'Fruit, drizzle, whipped cream', img: imgLoadedCrepe, tag: 'Rich' },
-  { title: 'Maple Banana Waffle', caption: 'Caramelized banana + maple', img: imgMapleBananaWaffle, tag: 'Warm' },
-  { title: 'Mixed Berry Kiwi Crepe', caption: 'Bright kiwi with berries', img: imgMixedBerryKiwiCrepe, tag: 'Fresh' },
-  { title: 'Sprinkles Marshmallow Cone', caption: 'Soft mallows + crunchy sprinkles', img: imgSprinklesCone, tag: 'Fun' },
-  { title: 'Strawberry Kiwi Waffle', caption: 'Fresh strawberries paired with kiwi', img: imgStrawberryKiwiWaffle, tag: 'Bright' },
+  { title: 'Berry Crepe', img: imgBerryCrepe },
+  { title: 'Cinnamon Waffle', img: imgCinnamonWaffle },
+  { title: 'Honey Crepe', img: imgHoneyCrepe },
+  { title: 'Loaded Crepe', img: imgLoadedCrepe },
+  { title: 'Maple Banana Waffle', img: imgMapleBananaWaffle },
+  { title: 'Mixed Berry Kiwi Crepe', img: imgMixedBerryKiwiCrepe },
+  { title: 'Sprinkles Marshmallow Cone', img: imgSprinklesCone },
+  { title: 'Strawberry Kiwi Waffle', img: imgStrawberryKiwiWaffle },
+  { title: 'Banana Split', img: imgBananaSplit },
+  { title: 'Bursting with Blueberries', img: imgBurstingBlueberries },
+  { title: 'Mango Strawberry Splash', img: imgMangoStrawberrySplash },
+  { title: 'Mango Tango', img: imgMangoTango },
+  { title: 'Berry Delight', img: imgBerryDelight },
+  { title: 'Pumpkin Pie Caramel Apple', img: imgPumpkinPie },
 ];
 
 export function FeaturedDesserts() {
   const [items, setItems] = useState<FeaturedItem[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [err, setErr] = useState<string | null>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const itemsPerPage = 4;
 
   useEffect(() => {
     let cancelled = false;
@@ -213,7 +227,7 @@ export function FeaturedDesserts() {
 
       <div className="max-w-6xl mx-auto px-4 relative z-10">
         <h3 className="text-3xl md:text-5xl font-bold text-white text-center mb-10 font-display drop-shadow-lg">
-          Featured Desserts
+          Dessert Gallery
         </h3>
 
         {loading ? (
@@ -221,18 +235,19 @@ export function FeaturedDesserts() {
             <Loader2 className="w-10 h-10 animate-spin text-cyan-800" />
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {(items ?? STATIC_FEATURED).map((it, i) => (
+          <div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {(items ?? STATIC_FEATURED).slice(currentIndex, currentIndex + 4).map((it, i) => (
               <article
                 key={i}
-                className="group bg-white/90 backdrop-blur rounded-3xl shadow-2xl overflow-hidden transition-transform duration-300 hover:-translate-y-1 hover:shadow-cyan-400/40"
+                className="group overflow-hidden transition-transform duration-300 hover:-translate-y-1"
               >
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <img
                     src={it.img}
                     alt={it.title}
                     loading="lazy"
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 transform scale-80"
                   />
                   {it.tag ? (
                     <span className="absolute left-3 top-3 inline-flex items-center rounded-full bg-cyan-600/90 text-white text-xs font-semibold px-3 py-1 shadow">
@@ -243,24 +258,36 @@ export function FeaturedDesserts() {
                 </div>
 
                 <div className="p-5">
-                  <h4 className="text-xl font-bold text-cyan-900">{it.title}</h4>
-                  {it.caption ? <p className="mt-1 text-cyan-700 text-sm">{it.caption}</p> : null}
-                  {it.price ? <p className="mt-2 text-cyan-900 font-semibold">{it.price}</p> : null}
                 </div>
               </article>
             ))}
+          </div>
+
+          <div className="flex justify-center mt-6 gap-4">
+            <button 
+              onClick={() => setCurrentIndex(Math.max(0, currentIndex - 4))} 
+              disabled={currentIndex === 0}
+              className="px-4 py-2 bg-cyan-600 text-white rounded-full font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-cyan-700 transition"
+            >
+              Previous
+            </button>
+            <button 
+              onClick={() => setCurrentIndex(Math.min((items ?? STATIC_FEATURED).length - 4, currentIndex + 4))} 
+              disabled={currentIndex >= (items ?? STATIC_FEATURED).length - 4}
+              className="px-4 py-2 bg-cyan-600 text-white rounded-full font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-cyan-700 transition"
+            >
+              Next
+            </button>
+          </div>
           </div>
         )}
 
         {err ? <div className="mt-6 text-center text-sm text-cyan-900/80">{err}</div> : null}
 
         <div className="mt-8 flex justify-center">
-          <a
-            href="#contact"
-            className="inline-flex items-center rounded-2xl bg-white/70 backdrop-blur px-6 py-3 text-cyan-900 font-semibold shadow-lg transition hover:shadow-cyan-400/40 hover:-translate-y-0.5"
-          >
-            Ask about today’s desserts
-          </a>
+          <div className="inline-flex items-center rounded-2xl bg-white/70 backdrop-blur px-6 py-3 text-cyan-900 font-semibold shadow-lg transition hover:shadow-cyan-400/40 hover:-translate-y-0.5">
+            Ask us about our favorite desserts
+          </div>
         </div>
       </div>
     </section>
