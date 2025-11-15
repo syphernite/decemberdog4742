@@ -1,11 +1,44 @@
+// Footer.tsx
+import { useLayoutEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
 export default function Footer() {
+  const footerRef = useRef<HTMLElement | null>(null);
+
+  useLayoutEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    const el = footerRef.current;
+    if (!el) return;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        el,
+        { autoAlpha: 0, y: 40 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.9,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 90%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+    }, el);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <footer className="bg-black border-t border-white/20">
+    <footer ref={footerRef} className="bg-black border-t border-white/20">
       <div className="max-w-[1320px] mx-auto px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           <div>
             <div className="text-white font-bold text-xl tracking-wider mb-4">
-              KOVSK
+              Built4You
             </div>
             <p className="text-gray-400 text-sm leading-relaxed">
               Custom high-end web development that converts.
@@ -38,7 +71,7 @@ export default function Footer() {
                   href="#services"
                   className="text-gray-400 text-sm hover:text-white transition-colors duration-200"
                 >
-                  SEO & Content
+                  SEO &amp; Content
                 </a>
               </li>
               <li>
@@ -99,10 +132,10 @@ export default function Footer() {
             <ul className="space-y-3">
               <li>
                 <a
-                  href="mailto:hello@kovsk.com"
+                  href="mailto:hello@built4you.com"
                   className="text-gray-400 text-sm hover:text-white transition-colors duration-200"
                 >
-                  hello@kovsk.com
+                  hello@built4you.com
                 </a>
               </li>
               <li>
@@ -119,7 +152,7 @@ export default function Footer() {
 
         <div className="border-t border-white/20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-gray-400 text-sm">
-            © 2025 KOVSK. All rights reserved.
+            © 2025 Built4You. All rights reserved.
           </p>
           <div className="flex gap-8">
             <a

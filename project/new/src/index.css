@@ -1,3 +1,6 @@
+/* index.css */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,7 +12,8 @@
 
   body {
     @apply bg-black text-white antialiased;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont,
+      'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -52,5 +56,41 @@
 
   .animate-scroll-slow:hover {
     animation-play-state: paused;
+  }
+
+  /* Sheen animation for special buttons (Client Dashboard) */
+  @keyframes sheen {
+    0% {
+      transform: translateX(-150%);
+    }
+    100% {
+      transform: translateX(150%);
+    }
+  }
+
+  .btn-sheen {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-sheen::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      120deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.2) 40%,
+      rgba(255, 255, 255, 0.45) 50%,
+      rgba(255, 255, 255, 0.2) 60%,
+      transparent 100%
+    );
+    transform: translateX(-150%);
+    animation: sheen 2.4s infinite;
+    pointer-events: none;
+  }
+
+  .btn-sheen:hover::before {
+    animation-duration: 1.4s;
   }
 }
