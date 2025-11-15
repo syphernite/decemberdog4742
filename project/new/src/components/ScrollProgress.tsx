@@ -1,3 +1,4 @@
+// ScrollProgress.tsx
 import { useState, useEffect } from 'react';
 
 export default function ScrollProgress() {
@@ -6,12 +7,12 @@ export default function ScrollProgress() {
   useEffect(() => {
     const handleScroll = () => {
       const windowHeight = window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight - windowHeight;
+      const documentHeight =
+        document.documentElement.scrollHeight - windowHeight;
       const scrolled = window.scrollY;
       const progress = (scrolled / documentHeight) * 100;
       setScrollProgress(progress);
     };
-
     window.addEventListener('scroll', handleScroll);
     handleScroll();
 
