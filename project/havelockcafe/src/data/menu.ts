@@ -1,16 +1,6 @@
 const menuData = {
   sections: [
     {
-      title: 'Kids / Senior',
-      items: [
-        { name: 'Coffee, Milk, or Juice', price: '$2.00', description: '' },
-        { name: '1 Egg, 1 Choice of Meat, and Home Fries with Toast', price: '$6.95' },
-        { name: '1 Pancake or French Toast and 1 Choice of Meat', price: '$6.95' },
-        { name: 'Chicken Tenders (2) Grilled or Fried with Fries', price: '$6.95' },
-        { name: 'Plain Cheeseburger with Fries', price: '$6.95' }
-      ]
-    },
-    {
       title: 'Classic Breakfast',
       items: [
         { name: '2 Cracked Eggs', price: '$9.95', description: 'With choice of meat, home fries or grits and toast' },
@@ -39,6 +29,16 @@ const menuData = {
         { name: 'Funnel Cake Pancake', price: '$12.95', description: 'Served with 2 Eggs and choice of meat' },
         { name: 'Banana Nut Pancake', price: '$12.95', description: 'Served with 2 Eggs and choice of meat' },
         { name: 'PB&J French Toast', price: '$12.95', description: 'Served with choice of meat' }
+      ]
+    },
+    {
+      title: 'Kids / Senior',
+      items: [
+        { name: 'Coffee, Milk, or Juice', price: '$2.00', description: '' },
+        { name: '1 Egg, 1 Choice of Meat, and Home Fries with Toast', price: '$6.95' },
+        { name: '1 Pancake or French Toast and 1 Choice of Meat', price: '$6.95' },
+        { name: 'Chicken Tenders (2) Grilled or Fried with Fries', price: '$6.95' },
+        { name: 'Plain Cheeseburger with Fries', price: '$6.95' }
       ]
     },
     {
