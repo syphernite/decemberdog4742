@@ -24,14 +24,6 @@ const menuData = {
       ]
     },
     {
-      title: 'Sweet Treats',
-      items: [
-        { name: 'Funnel Cake Pancake', price: '$12.95', description: 'Served with 2 Eggs and choice of meat' },
-        { name: 'Banana Nut Pancake', price: '$12.95', description: 'Served with 2 Eggs and choice of meat' },
-        { name: 'PB&J French Toast', price: '$12.95', description: 'Served with choice of meat' }
-      ]
-    },
-    {
       title: 'Kids / Senior',
       items: [
         { name: 'Coffee, Milk, or Juice', price: '$2.00', description: '' },
@@ -39,26 +31,6 @@ const menuData = {
         { name: '1 Pancake or French Toast and 1 Choice of Meat', price: '$6.95' },
         { name: 'Chicken Tenders (2) Grilled or Fried with Fries', price: '$6.95' },
         { name: 'Plain Cheeseburger with Fries', price: '$6.95' }
-      ]
-    },
-    {
-      title: 'Sides',
-      items: [
-        { name: 'Fresh Fruit Cup', price: '$3.95' },
-        { name: 'Grits', price: '$2.95', description: 'Add cheese $1.00' },
-        { name: 'Home Fries', price: '$3.95', description: 'Add onion, peppers $2.00' },
-        { name: 'Loaded Home Fries', price: '$5.95', description: 'With cheese and bacon' },
-        { name: 'Plain Biscuit', price: '$2.95', description: 'Add sausage gravy $1.95' }
-      ]
-    },
-    {
-      title: 'Beverages',
-      items: [
-        { name: 'Coke products / Sweet or Unsweet Tea', description: '' },
-        { name: 'Coffee / Hot tea', price: '$2.95' },
-        { name: 'Water', description: '' },
-        { name: 'Orange juice / Apple juice / Tomato juice', price: '$3.95', description: '$2.00 refills' },
-        { name: 'Cold brew', price: '$5.95' }
       ]
     },
     {
@@ -115,6 +87,34 @@ const menuData = {
         { name: 'Seafood Baskets — Pick 1', price: '$11.95', description: 'Served with French fries and slaw' },
         { name: 'Seafood Baskets — Pick 2', price: '$15.95' },
         { name: 'Add extra seafood items', price: '$5.95', description: 'Flounder, Shrimp, Scallops, Oysters, Clam strips' }
+      ]
+    },
+    {
+      title: 'Sides',
+      items: [
+        { name: 'Fresh Fruit Cup', price: '$3.95' },
+        { name: 'Grits', price: '$2.95', description: 'Add cheese $1.00' },
+        { name: 'Home Fries', price: '$3.95', description: 'Add onion, peppers $2.00' },
+        { name: 'Loaded Home Fries', price: '$5.95', description: 'With cheese and bacon' },
+        { name: 'Plain Biscuit', price: '$2.95', description: 'Add sausage gravy $1.95' }
+      ]
+    },
+    {
+      title: 'Sweet Treats',
+      items: [
+        { name: 'Funnel Cake Pancake', price: '$12.95', description: 'Served with 2 Eggs and choice of meat' },
+        { name: 'Banana Nut Pancake', price: '$12.95', description: 'Served with 2 Eggs and choice of meat' },
+        { name: 'PB&J French Toast', price: '$12.95', description: 'Served with choice of meat' }
+      ]
+    },
+    {
+      title: 'Beverages',
+      items: [
+        { name: 'Coke products / Sweet or Unsweet Tea', description: '' },
+        { name: 'Coffee / Hot tea', price: '$2.95' },
+        { name: 'Water', description: '' },
+        { name: 'Orange juice / Apple juice / Tomato juice', price: '$3.95', description: '$2.00 refills' },
+        { name: 'Cold brew', price: '$5.95' }
       ]
     }
   ]
