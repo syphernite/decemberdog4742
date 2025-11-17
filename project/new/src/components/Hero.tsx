@@ -4,12 +4,12 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import newbg from '../assets/images/newbg.jpg';
 
-import googleBusiness from '../assets/images/google_business.png';
-import metaLogo from '../assets/images/meta.png';
-import satisfaction from '../assets/images/satisfaction.png';
-import sslBadge from '../assets/images/ssl_badge.png';
-import stripeLogo from '../assets/images/stripe.png';
-import trustpilotLogo from '../assets/images/trustpilot.png';
+import googleLogo from '../assets/images/google-logo.png';
+import bingLogo from '../assets/images/bing-logo.png';
+import yahooLogo from '../assets/images/yahoo-logo.png';
+import duckGoLogo from '../assets/images/duck-go-logo.png';
+import braveLogo from '../assets/images/brave-logo.png';
+import operaLogo from '../assets/images/opera-logo.png';
 
 export default function Hero() {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -62,6 +62,18 @@ export default function Hero() {
           el.querySelector('[data-hero-meta]'),
           { autoAlpha: 0 },
           { autoAlpha: 1, duration: 0.5 },
+          '-=0.3'
+        )
+        .fromTo(
+          el.querySelector('[data-hero-engines-title]'),
+          { autoAlpha: 0, y: 10 },
+          { autoAlpha: 1, y: 0, duration: 0.5 },
+          '-=0.2'
+        )
+        .fromTo(
+          el.querySelector('[data-hero-engine-logos]'),
+          { autoAlpha: 0, y: 10 },
+          { autoAlpha: 1, y: 0, duration: 0.5 },
           '-=0.3'
         );
     }, sectionRef);
@@ -117,10 +129,10 @@ export default function Hero() {
           sustainable business growth.
         </p>
 
-        {/* Actions */}
+        {/* CTAs */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6 mb-16 md:mb-24">
 
-          {/* PRIMARY BUTTON — GLASS / TINTED #895bfd */}
+          {/* Primary CTA */}
           <button
             data-hero-cta
             onClick={() => scrollToSection('contact')}
@@ -138,20 +150,11 @@ export default function Hero() {
               Submit Inquiry
             </span>
 
-            {/* Outer Frame */}
             <span className="pointer-events-none absolute inset-0 border border-[#895bfd]/30" />
-
-            {/* Corner Brackets */}
-            <span className="pointer-events-none absolute -left-1 top-1 h-3 border-l border-[#895bfd]/50" />
-            <span className="pointer-events-none absolute -left-1 bottom-1 h-3 border-l border-[#895bfd]/50" />
-            <span className="pointer-events-none absolute -right-1 top-1 h-3 border-r border-[#895bfd]/50" />
-            <span className="pointer-events-none absolute -right-1 bottom-1 h-3 border-r border-[#895bfd]/50" />
-
-            {/* Hover Glow */}
             <span className="pointer-events-none absolute inset-0 border border-[#895bfd]/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
           </button>
 
-          {/* SECONDARY BUTTON */}
+          {/* Secondary CTA */}
           <button
             data-hero-cta
             onClick={() => scrollToSection('contact')}
@@ -199,41 +202,25 @@ export default function Hero() {
           Based in the USA. Trusted globally.
         </div>
 
+        {/* Title Above Logos */}
+        <h3
+          data-hero-engines-title
+          className="mt-10 md:mt-12 mb-6 text-white/60 text-[10px] md:text-xs tracking-[0.32em] uppercase"
+        >
+          Optimized Performance on Industry-Leading Search Engines
+        </h3>
+
         {/* Logos */}
-        <div className="mt-10 md:mt-12">
-          <div className="flex flex-wrap items-center justify-center gap-10 md:gap-14">
-            {/* Larger priority trust marks */}
-            <img
-              src={trustpilotLogo}
-              alt="Trustpilot"
-              className="h-16 md:h-20 opacity-80 hover:opacity-100 transition-opacity"
-            />
-            <img
-              src={googleBusiness}
-              alt="Google Business"
-              className="h-14 md:h-16 opacity-80 hover:opacity-100 transition-opacity"
-            />
-            <img
-              src={metaLogo}
-              alt="Meta"
-              className="h-14 md:h-16 opacity-80 hover:opacity-100 transition-opacity"
-            />
-            <img
-              src={stripeLogo}
-              alt="Stripe"
-              className="h-10 md:h-12 opacity-80 hover:opacity-100 transition-opacity"
-            />
-            <img
-              src={sslBadge}
-              alt="SSL Secure"
-              className="h-16 md:h-20 opacity-80 hover:opacity-100 transition-opacity"
-            />
-            <img
-              src={satisfaction}
-              alt="Satisfaction Guarantee"
-              className="h-16 md:h-20 opacity-80 hover:opacity-100 transition-opacity"
-            />
-          </div>
+        <div
+          data-hero-engine-logos
+          className="flex flex-wrap items-center justify-center gap-10 md:gap-14"
+        >
+          <img src={googleLogo} alt="Google" className="h-7 md:h-9 opacity-80 hover:opacity-100 transition-opacity" />
+          <img src={bingLogo} alt="Bing" className="h-12 md:h-14 opacity-80 hover:opacity-100 transition-opacity" />
+          <img src={yahooLogo} alt="Yahoo" className="h-12 md:h-14 opacity-80 hover:opacity-100 transition-opacity" />
+          <img src={duckGoLogo} alt="DuckDuckGo" className="h-12 md:h-14 opacity-80 hover:opacity-100 transition-opacity" />
+          <img src={braveLogo} alt="Brave" className="h-12 md:h-14 opacity-80 hover:opacity-100 transition-opacity" />
+          <img src={operaLogo} alt="Opera" className="h-12 md:h-14 opacity-80 hover:opacity-100 transition-opacity" />
         </div>
 
       </div>
