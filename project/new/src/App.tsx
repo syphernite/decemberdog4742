@@ -1,7 +1,7 @@
 // App.tsx
 import Header from './components/Header';
 import Hero from './components/Hero';
-import TrustStrip from './components/TrustStrip';
+// import TrustStrip from './components/TrustStrip';
 import Services from './components/Services';
 import Metrics from './components/Metrics';
 import Projects from './components/Projects';
@@ -19,7 +19,6 @@ function App() {
       <ScrollProgress />
       <main>
         <Hero />
-        <TrustStrip />
         <Services />
         <Metrics />
         <Projects />
