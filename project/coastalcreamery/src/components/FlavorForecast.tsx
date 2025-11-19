@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Sun, Cloud, Sparkles, LucideProps, Loader2 } from 'lucide-react';
+import { Sun, Cloud, Sparkles, LucideProps, Loader2, X } from 'lucide-react';
 
 /** =========
  * CSV helpers
@@ -102,20 +102,16 @@ function normalizeImageUrl(value: string): string {
  * Featured Desserts
  * ========= */
 // Local assets (restore routing via relative imports)
-import imgLoadedCrepe from '../assets/images/loaded_crepe.png';
+// imgLoadedCrepe removed because the Custom Loaded Waffle item was removed
 import imgMapleBananaWaffle from '../assets/images/maple_banana_waffle.png';
-import imgMixedBerryKiwiCrepe from '../assets/images/mixedberry_kiwi_crepe.png';
-import imgSprinklesCone from '../assets/images/sprinkles_marshmallow_cone.png';
-import imgBerryCrepe from '../assets/images/berry_crepe.png';
 import imgCinnamonWaffle from '../assets/images/cinnamon_waffle.png';
 import imgHoneyCrepe from '../assets/images/honey_crepe.png';
-import imgStrawberryKiwiWaffle from '../assets/images/strawberry_kiwi_waffle.png';
 import imgBananaSplit from '../assets/images/banana_split.png';
 import imgBurstingBlueberries from '../assets/images/bursting_with_blueberries.png';
 import imgMangoStrawberrySplash from '../assets/images/mango_strawberry_splash.png';
 import imgMangoTango from '../assets/images/mango_tango.png';
-import imgBerryDelight from '../assets/berry-delight.png';
 import imgPumpkinPie from '../assets/pumpkin-pie-caramel-apple.png';
+import imgFigCrepe from '../assets/images/fig_crepe.png';
 
 type FeaturedItem = {
   title: string;
@@ -126,28 +122,23 @@ type FeaturedItem = {
 };
 
 const STATIC_FEATURED: FeaturedItem[] = [
-  { title: 'Berry Crepe', img: imgBerryCrepe },
-  { title: 'Cinnamon Waffle', img: imgCinnamonWaffle },
-  { title: 'Honey Crepe', img: imgHoneyCrepe },
-  { title: 'Loaded Crepe', img: imgLoadedCrepe },
-  { title: 'Maple Banana Waffle', img: imgMapleBananaWaffle },
-  { title: 'Mixed Berry Kiwi Crepe', img: imgMixedBerryKiwiCrepe },
-  { title: 'Sprinkles Marshmallow Cone', img: imgSprinklesCone },
-  { title: 'Strawberry Kiwi Waffle', img: imgStrawberryKiwiWaffle },
-  { title: 'Banana Split', img: imgBananaSplit },
-  { title: 'Bursting with Blueberries', img: imgBurstingBlueberries },
-  { title: 'Mango Strawberry Splash', img: imgMangoStrawberrySplash },
-  { title: 'Mango Tango', img: imgMangoTango },
-  { title: 'Berry Delight', img: imgBerryDelight },
-  { title: 'Pumpkin Pie Caramel Apple', img: imgPumpkinPie },
+  { title: 'Cinnamon Waffle', img: imgCinnamonWaffle, caption: 'Warm waffle dusted with cinnamon sugar.' },
+  { title: 'Honey Crepe', img: imgHoneyCrepe, caption: 'Drizzled with local honey and a touch of lemon.' },
+  { title: 'Maple Banana Waffle', img: imgMapleBananaWaffle, caption: 'Caramelized banana topped with warm maple syrup.' },
+
+  { title: 'Banana Split', img: imgBananaSplit, caption: 'Classic banana split with scoops of ice cream, sauces and whipped cream.' },
+  { title: 'Bursting with Blueberries', img: imgBurstingBlueberries, caption: 'Fresh blueberries paired with cream or ice cream — bright and fruity.' },
+  { title: 'Mango Strawberry Splash', img: imgMangoStrawberrySplash, caption: 'Tropical mango and ripe strawberry served fresh.' },
+  { title: 'Mango Tango', img: imgMangoTango, caption: 'Mango-forward dessert with bold, tropical flavor.' },
+  { title: 'Pumpkin Pie Caramel Apple', img: imgPumpkinPie, caption: 'Seasonal crepe: pumpkin pie and caramel apple flavors.' },
+  { title: 'Fig Crepe', img: imgFigCrepe, caption: 'Fresh figs, honey, and whipped cream' },
 ];
 
 export function FeaturedDesserts() {
   const [items, setItems] = useState<FeaturedItem[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [err, setErr] = useState<string | null>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const itemsPerPage = 4;
+  const [modal, setModal] = useState<FeaturedItem | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -237,10 +228,10 @@ export function FeaturedDesserts() {
         ) : (
           <div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {(items ?? STATIC_FEATURED).slice(currentIndex, currentIndex + 4).map((it, i) => (
+            {(items ?? STATIC_FEATURED).map((it, i) => (
               <article
                 key={i}
-                className="group overflow-hidden transition-transform duration-300 hover:-translate-y-1"
+                className="group overflow-hidden transition-transform duration-300 hover:-translate-y-1 cursor-pointer"
               >
                 <div className="relative aspect-[4/3] p-2 overflow-hidden">
                   <img
@@ -248,6 +239,7 @@ export function FeaturedDesserts() {
                     alt={it.title}
                     loading="lazy"
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 transform scale-90"
+                    onClick={() => setModal(it)}
                   />
                   {it.tag ? (
                     <span className="absolute left-3 top-3 inline-flex items-center rounded-full bg-cyan-600/90 text-white text-xs font-semibold px-3 py-1 shadow">
@@ -257,28 +249,31 @@ export function FeaturedDesserts() {
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-60" />
                 </div>
 
-                <div className="p-5">
+                <div className="p-4 text-left">
+                  <h4 className="text-lg font-bold text-cyan-900 mb-1">{it.title}</h4>
+                  {it.caption ? <p className="text-sm text-cyan-700">{it.caption}</p> : null}
                 </div>
               </article>
             ))}
           </div>
 
-          <div className="flex justify-center mt-6 gap-4">
-            <button 
-              onClick={() => setCurrentIndex(Math.max(0, currentIndex - 4))} 
-              disabled={currentIndex === 0}
-              className="px-4 py-2 bg-cyan-600 text-white rounded-full font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-cyan-700 transition"
-            >
-              Previous
-            </button>
-            <button 
-              onClick={() => setCurrentIndex(Math.min((items ?? STATIC_FEATURED).length - 4, currentIndex + 4))} 
-              disabled={currentIndex >= (items ?? STATIC_FEATURED).length - 4}
-              className="px-4 py-2 bg-cyan-600 text-white rounded-full font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-cyan-700 transition"
-            >
-              Next
-            </button>
-          </div>
+          {/* Modal lightbox */}
+          {modal ? (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" onClick={() => setModal(null)}>
+              <div className="relative max-w-4xl w-full bg-transparent" onClick={e => e.stopPropagation()}>
+                <button className="absolute right-2 top-2 p-2 rounded-full bg-white/90" onClick={() => setModal(null)} aria-label="Close">
+                  <X className="w-5 h-5 text-cyan-900" />
+                </button>
+                <div className="bg-white rounded-lg overflow-hidden shadow-lg">
+                  <img src={modal.img} alt={modal.title} className="w-full h-auto object-contain max-h-[80vh] bg-gray-50" />
+                  <div className="p-4 text-left">
+                    <h4 className="text-lg font-bold text-cyan-900 mb-1">{modal.title}</h4>
+                    {modal.caption ? <p className="text-sm text-cyan-700">{modal.caption}</p> : null}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : null}
           </div>
         )}
 

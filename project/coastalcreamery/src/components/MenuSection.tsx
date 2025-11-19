@@ -62,12 +62,13 @@ const menuData: MenuCategory[] = [
     items: [], // Parent category, items are in sub-categories
     subCategories: [
       { title: 'Varieties', items: [
-        { name: 'Berry Delight', description: 'Mixed berries and cream', price: '$11.27 / $9.77' },
+      { name: 'Berry Delight', description: 'Mixed berries and cream', price: '$11.27 / $9.77' },
         { name: 'Pumpkin Pie Caramel Apple', description: 'Seasonal', price: '$11.27 / $9.77' },
         { name: 'Strawberry and Banana', price: '$11.27 / $9.77' },
         { name: 'Banana and Nutella', price: '$11.27 / $9.77' },
         { name: 'Kiwi and Strawberry', price: '$11.27 / $9.77' },
-        { name: 'Cookie and Cream', price: '$11.27 / $9.77' },
+      { name: 'Cookie and Cream', price: '$11.27 / $9.77' },
+      // Custom Loaded Waffle removed
         { name: 'Strawberry Cheesecake', price: '$11.27 / $9.77' },
         { name: 'Salted Caramel', price: '$11.27 / $9.77' },
         { name: 'Pistachio Chocolate', price: '$11.27 / $9.77' },
@@ -253,54 +254,12 @@ export default function MenuSection() {
               )}
             </div>
             {activeCategory.display === 'grid' && (
-              // Special handling for Crepes: show 'Varieties' as cards (with images) and other sub-categories as plain lists
-              activeCategory.title === 'Crepes' ? (
-                <>
-                  {/* Varieties grid (cards with images) */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-6 items-stretch">
-                    {((activeCategory.subCategories || []).find(sc => sc.title === 'Varieties')?.items || []).map((item, index) => (
-                      <div key={index} onMouseEnter={() => setHoveredFlavor(item.name)} onMouseLeave={() => setHoveredFlavor(null)} className="relative group cursor-pointer">
-                        <div className={`min-h-[360px] bg-gradient-to-br ${activeCategory.color} rounded-3xl p-0 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:scale-105 relative overflow-hidden flex flex-col`}>
-                          {hoveredFlavor === item.name && <div className="absolute inset-0 bg-white/20 animate-drip"></div>}
-                          <div className="absolute top-2 right-2"><Sparkles className={`w-6 h-6 ${hoveredFlavor === item.name ? 'animate-spin text-yellow-400' : 'text-white/40'}`} /></div>
-
-                          <div>
-                            {/* fixed image area so all cards align (render image when available, placeholder otherwise) */}
-                            <div className="w-full h-44 overflow-hidden rounded-t-3xl bg-gray-100">
-                              {item.image ? (
-                                <img src={item.image} alt={item.name} className="w-full h-full object-cover object-center block" />
-                              ) : (
-                                <div className="w-full h-full flex items-center justify-center text-sm text-cyan-700">No photo</div>
-                              )}
-                            </div>
-
-                              <div className="p-4 flex flex-col flex-1">
-                                <div className="pr-4">
-                                  <span className="inline-block px-3 py-1 bg-white/50 rounded-full text-xs font-semibold text-cyan-800 mb-3">Varieties</span>
-                                  {item.description && (
-                                    <p className="text-cyan-800 text-sm mb-2" style={{display: '-webkit-box', WebkitLineClamp: 1 as any, WebkitBoxOrient: 'vertical' as any, overflow: 'hidden'}}>
-                                      {item.description}
-                                    </p>
-                                  )}
-                                  <h3 className="text-base font-bold text-cyan-900 mb-2 leading-tight" title={item.name}>{truncateText(item.name, 30)}</h3>
-                                </div>
-                              </div>
-                            {/* fixed footer so price is always aligned at bottom (left-aligned for better visual balance) */}
-                            <div className="mt-auto pt-3 flex items-center justify-center border-t border-white/10">
-                              {item.price && <span className="text-sm font-semibold text-cyan-900 text-center">{item.price}</span>}
-                            </div>
-                          </div>
-
-                          {/* description is rendered above near the title to avoid duplicate content and variable heights */}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Other crepe sub-categories as plain lists (no cards) */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {((activeCategory.subCategories || []).filter(sc => sc.title !== 'Varieties')).map(subCat => (
-                      <div key={subCat.title}>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                {(activeCategory.items.length > 0 ? [{ title: activeCategory.title, items: activeCategory.items }] : activeCategory.subCategories || []).map((subCat, scIdx) => {
+                  const hasImages = (subCat.items || []).some(it => !!it.image);
+                  if (!hasImages) {
+                    return (
+                      <div key={subCat.title + scIdx}>
                         <h3 className="text-3xl font-bold text-cyan-800 mb-4 font-display">{subCat.title}</h3>
                         {subCat.description && <p className="text-cyan-700 mb-3">{subCat.description}</p>}
                         <ul className="flex flex-wrap gap-2">
@@ -309,73 +268,53 @@ export default function MenuSection() {
                           ))}
                         </ul>
                       </div>
-                    ))}
-                  </div>
-                </>
-              ) : (
-                // Default grid behavior for other categories
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                  {(activeCategory.items.length > 0 ? [{ title: activeCategory.title, items: activeCategory.items }] : activeCategory.subCategories || []).map((subCat, scIdx) => {
-                    const hasImages = (subCat.items || []).some(it => !!it.image);
-                    if (!hasImages) {
-                      return (
-                        <div key={subCat.title + scIdx}>
-                          <h3 className="text-3xl font-bold text-cyan-800 mb-4 font-display">{subCat.title}</h3>
-                          {subCat.description && <p className="text-cyan-700 mb-3">{subCat.description}</p>}
-                          <ul className="flex flex-wrap gap-2">
-                            {subCat.items.map((item, idx) => (
-                              <li key={idx} className="px-3 py-2 bg-white/80 rounded-full text-cyan-900 font-medium text-sm">{item.name}{item.price ? ` — ${item.price}` : ''}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      );
-                    }
+                    );
+                  }
 
-                    return (
-                      <div key={subCat.title + scIdx} className="col-span-1">
-                        {subCat.items.map((item, index) => (
-                          <div
-                            key={index}
-                            onMouseEnter={() => setHoveredFlavor(item.name)}
-                            onMouseLeave={() => setHoveredFlavor(null)}
-                            className="relative group cursor-pointer mb-0"
-                          >
-                            <div className={`min-h-[360px] bg-gradient-to-br ${activeCategory.color} rounded-3xl p-0 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:scale-105 relative overflow-hidden flex flex-col`}>
-                              {hoveredFlavor === item.name && <div className="absolute inset-0 bg-white/20 animate-drip"></div>}
-                              <div className="absolute top-2 right-2"><Sparkles className={`w-6 h-6 ${hoveredFlavor === item.name ? 'animate-spin text-yellow-400' : 'text-white/40'}`} /></div>
+                  return (
+                    <div key={subCat.title + scIdx} className="col-span-1">
+                      {subCat.items.map((item, index) => (
+                        <div
+                          key={index}
+                          onMouseEnter={() => setHoveredFlavor(item.name)}
+                          onMouseLeave={() => setHoveredFlavor(null)}
+                          className="relative group cursor-pointer mb-0"
+                        >
+                          <div className={`min-h-[360px] bg-gradient-to-br ${activeCategory.color} rounded-3xl p-0 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:scale-105 relative overflow-hidden flex flex-col`}>
+                            {hoveredFlavor === item.name && <div className="absolute inset-0 bg-white/20 animate-drip"></div>}
+                            <div className="absolute top-2 right-2"><Sparkles className={`w-6 h-6 ${hoveredFlavor === item.name ? 'animate-spin text-yellow-400' : 'text-white/40'}`} /></div>
 
-                              <div>
-                                <div className="w-full h-44 overflow-hidden rounded-t-3xl bg-gray-100">
-                                  {item.image && (
-                                    <img src={item.image} alt={item.name} className="w-full h-full object-cover object-center block" />
+                            <div>
+                              <div className="w-full h-44 overflow-hidden rounded-t-3xl bg-gray-100">
+                                {item.image && (
+                                  <img src={item.image} alt={item.name} className="w-full h-full object-cover object-center block" />
+                                )}
+                              </div>
+
+                              <div className="p-4 flex flex-col flex-1">
+                                <div>
+                                  <span className="inline-block px-3 py-1 bg-white/50 rounded-full text-xs font-semibold text-cyan-800 mb-3">{subCat.title}</span>
+                                  {subCat.description && <p className="text-cyan-800 text-sm mb-2">{subCat.description}</p>}
+                                  <h3 className="text-lg font-bold text-cyan-900 mb-2 leading-tight" style={{display: '-webkit-box', WebkitLineClamp: 2 as any, WebkitBoxOrient: 'vertical' as any, overflow: 'hidden'}}>{item.name}</h3>
+                                  {item.description && (
+                                    <p className="text-cyan-800 text-sm mb-2" style={{display: '-webkit-box', WebkitLineClamp: 1 as any, WebkitBoxOrient: 'vertical' as any, overflow: 'hidden'}}>
+                                      {item.description}
+                                    </p>
                                   )}
                                 </div>
 
-                                <div className="p-4 flex flex-col flex-1">
-                                  <div>
-                                    <span className="inline-block px-3 py-1 bg-white/50 rounded-full text-xs font-semibold text-cyan-800 mb-3">{subCat.title}</span>
-                                    {subCat.description && <p className="text-cyan-800 text-sm mb-2">{subCat.description}</p>}
-                                    <h3 className="text-lg font-bold text-cyan-900 mb-2 leading-tight" style={{display: '-webkit-box', WebkitLineClamp: 2 as any, WebkitBoxOrient: 'vertical' as any, overflow: 'hidden'}}>{item.name}</h3>
-                                    {item.description && (
-                                      <p className="text-cyan-800 text-sm mb-2" style={{display: '-webkit-box', WebkitLineClamp: 1 as any, WebkitBoxOrient: 'vertical' as any, overflow: 'hidden'}}>
-                                        {item.description}
-                                      </p>
-                                    )}
-                                  </div>
-
-                                  <div className="mt-auto pt-3 flex items-center justify-center border-t border-white/10">
-                                    {item.price && <span className="text-sm font-semibold text-cyan-900 text-center">{item.price}</span>}
-                                  </div>
+                                <div className="mt-auto pt-3 flex items-center justify-center border-t border-white/10">
+                                  {item.price && <span className="text-sm font-semibold text-cyan-900 text-center">{item.price}</span>}
                                 </div>
                               </div>
                             </div>
                           </div>
-                        ))}
-                      </div>
-                    );
-                  })}
-                </div>
-              )
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })}
+              </div>
             )}
             
             {activeCategory.display === 'list' && activeCategory.subCategories && (
