@@ -53,7 +53,6 @@ export default function Header() {
       <div className="border-t border-white/100" />
       <div className="max-w-[1320px] mx-auto px-4 md:px-8 py-4 md:py-5">
         <div className="flex items-center justify-between gap-4 group">
-
           {/* Logo */}
           <button
             onClick={() => scrollToSection('top')}
@@ -65,7 +64,7 @@ export default function Header() {
           {/* Middle Pill Nav */}
           <div className="hidden md:flex flex-1 justify-center">
             <nav className="inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 px-2 py-1 backdrop-blur-md">
-              {['services','projects','results','process','faq','contact'].map((item) => (
+              {['services', 'projects', 'results', 'process', 'faq', 'contact'].map((item) => (
                 <button
                   key={item}
                   onClick={() => scrollToSection(item)}
@@ -79,12 +78,11 @@ export default function Header() {
 
           {/* Right Buttons */}
           <div className="hidden md:flex items-center gap-4">
-
             {/* Start Project — GLASS TINT (#895bfd) */}
             <button
               onClick={() => scrollToSection('contact')}
               className="
-                group relative rounded-full
+                group relative rounded-full overflow-hidden
                 px-6 py-2
                 text-[11px] tracking-[0.2em] uppercase font-medium
                 text-white
@@ -96,14 +94,16 @@ export default function Header() {
               "
             >
               {/* Hover glow */}
-              <span className="
-                pointer-events-none absolute inset-0 
-                border border-[#895bfd]/50 
-                opacity-0 group-hover:opacity-100 
-                transition-opacity duration-200
-              " />
+              <span
+                className="
+                  pointer-events-none absolute inset-0 rounded-full
+                  border border-[#895bfd]/50 
+                  opacity-0 group-hover:opacity-100 
+                  transition-opacity duration-200
+                "
+              />
 
-              Start Project
+              <span className="relative z-10">Start Project</span>
             </button>
 
             {/* Client Dashboard — sheen stays the same */}
@@ -129,11 +129,9 @@ export default function Header() {
                 "
               />
 
-              <span className="relative z-10">Client Dashboard</span>
+              <span className="relative z-10">Client Login</span>
             </a>
-
           </div>
-
         </div>
       </div>
     </header>
