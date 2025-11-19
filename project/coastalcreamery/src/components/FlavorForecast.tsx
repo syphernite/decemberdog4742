@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Sun, Cloud, Sparkles, LucideProps, Loader2, X } from 'lucide-react';
+import { Sun, Cloud, Sparkles, LucideProps, Loader2, X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 /** =========
  * CSV helpers
@@ -139,6 +139,13 @@ export function FeaturedDesserts() {
   const [loading, setLoading] = useState<boolean>(true);
   const [err, setErr] = useState<string | null>(null);
   const [modal, setModal] = useState<FeaturedItem | null>(null);
+  const [page, setPage] = useState<number>(0);
+  const itemsPerPage = 2;
+
+  const itemsList: FeaturedItem[] = (items ?? STATIC_FEATURED) as FeaturedItem[];
+  const totalPages = Math.max(1, Math.ceil(itemsList.length / itemsPerPage));
+  const start = page * itemsPerPage;
+  const displayed = itemsList.slice(start, start + itemsPerPage);
 
   useEffect(() => {
     let cancelled = false;
@@ -227,53 +234,59 @@ export function FeaturedDesserts() {
           </div>
         ) : (
           <div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {(items ?? STATIC_FEATURED).map((it, i) => (
-              <article
-                key={i}
-                className="group overflow-hidden transition-transform duration-300 hover:-translate-y-1 cursor-pointer"
+            <div className="flex items-center justify-between mb-4">
+              <button
+                aria-label="Previous"
+                onClick={() => setPage(p => Math.max(0, p - 1))}
+                disabled={page <= 0}
+                className={`inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/90 shadow hover:shadow-md transition ${page <= 0 ? 'opacity-40 cursor-not-allowed' : ''}`}
               >
-                <div className="relative aspect-[4/3] p-2 overflow-hidden">
-                  <img
-                    src={it.img}
-                    alt={it.title}
-                    loading="lazy"
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 transform scale-90"
-                    onClick={() => setModal(it)}
-                  />
-                  {it.tag ? (
-                    <span className="absolute left-3 top-3 inline-flex items-center rounded-full bg-cyan-600/90 text-white text-xs font-semibold px-3 py-1 shadow">
-                      {it.tag}
-                    </span>
-                  ) : null}
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-60" />
-                </div>
+                <ChevronLeft className="w-5 h-5 text-cyan-900" /> Prev
+              </button>
 
-                <div className="p-4 text-left">
-                  <h4 className="text-lg font-bold text-cyan-900 mb-1">{it.title}</h4>
-                  {it.caption ? <p className="text-sm text-cyan-700">{it.caption}</p> : null}
-                </div>
-              </article>
-            ))}
-          </div>
-
-          {/* Modal lightbox */}
-          {modal ? (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" onClick={() => setModal(null)}>
-              <div className="relative max-w-4xl w-full bg-transparent" onClick={e => e.stopPropagation()}>
-                <button className="absolute right-2 top-2 p-2 rounded-full bg-white/90" onClick={() => setModal(null)} aria-label="Close">
-                  <X className="w-5 h-5 text-cyan-900" />
-                </button>
-                <div className="bg-white rounded-lg overflow-hidden shadow-lg">
-                  <img src={modal.img} alt={modal.title} className="w-full h-auto object-contain max-h-[80vh] bg-gray-50" />
-                  <div className="p-4 text-left">
-                    <h4 className="text-lg font-bold text-cyan-900 mb-1">{modal.title}</h4>
-                    {modal.caption ? <p className="text-sm text-cyan-700">{modal.caption}</p> : null}
-                  </div>
-                </div>
+              <div className="text-sm text-cyan-900 font-medium">
+                Page {page + 1} of {totalPages}
               </div>
+
+              <button
+                aria-label="Next"
+                onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+                disabled={page >= totalPages - 1}
+                className={`inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/90 shadow hover:shadow-md transition ${page >= totalPages - 1 ? 'opacity-40 cursor-not-allowed' : ''}`}
+              >
+                Next <ChevronRight className="w-5 h-5 text-cyan-900" />
+              </button>
             </div>
-          ) : null}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {displayed.map((it, i) => (
+                <article
+                  key={start + i}
+                  className="group overflow-hidden transition-transform duration-300 hover:-translate-y-1 cursor-pointer"
+                >
+                  <div className="relative aspect-[4/3] p-2 overflow-hidden">
+                    <img
+                      src={it.img}
+                      alt={it.title}
+                      loading="lazy"
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 transform scale-90"
+                      onClick={() => setModal(it)}
+                    />
+                    {it.tag ? (
+                      <span className="absolute left-3 top-3 inline-flex items-center rounded-full bg-cyan-600/90 text-white text-xs font-semibold px-3 py-1 shadow">
+                        {it.tag}
+                      </span>
+                    ) : null}
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-60" />
+                  </div>
+
+                  <div className="p-4 text-left">
+                    <h4 className="text-lg font-bold text-cyan-900 mb-1">{it.title}</h4>
+                    {it.caption ? <p className="text-sm text-cyan-700">{it.caption}</p> : null}
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
         )}
 
