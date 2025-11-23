@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Sun, Cloud, Sparkles, LucideProps, Loader2 } from 'lucide-react';
+import { Sun, Cloud, Sparkles, LucideProps, Loader2, X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 /** =========
  * CSV helpers
@@ -102,20 +102,16 @@ function normalizeImageUrl(value: string): string {
  * Featured Desserts
  * ========= */
 // Local assets (restore routing via relative imports)
-import imgLoadedCrepe from '../assets/images/loaded_crepe.png';
+// imgLoadedCrepe removed because the Custom Loaded Waffle item was removed
 import imgMapleBananaWaffle from '../assets/images/maple_banana_waffle.png';
-import imgMixedBerryKiwiCrepe from '../assets/images/mixedberry_kiwi_crepe.png';
-import imgSprinklesCone from '../assets/images/sprinkles_marshmallow_cone.png';
-import imgBerryCrepe from '../assets/images/berry_crepe.png';
 import imgCinnamonWaffle from '../assets/images/cinnamon_waffle.png';
 import imgHoneyCrepe from '../assets/images/honey_crepe.png';
-import imgStrawberryKiwiWaffle from '../assets/images/strawberry_kiwi_waffle.png';
 import imgBananaSplit from '../assets/images/banana_split.png';
 import imgBurstingBlueberries from '../assets/images/bursting_with_blueberries.png';
 import imgMangoStrawberrySplash from '../assets/images/mango_strawberry_splash.png';
 import imgMangoTango from '../assets/images/mango_tango.png';
-import imgBerryDelight from '../assets/berry-delight.png';
 import imgPumpkinPie from '../assets/pumpkin-pie-caramel-apple.png';
+import imgFigCrepe from '../assets/images/fig_crepe.png';
 
 type FeaturedItem = {
   title: string;
@@ -126,28 +122,30 @@ type FeaturedItem = {
 };
 
 const STATIC_FEATURED: FeaturedItem[] = [
-  { title: 'Berry Crepe', img: imgBerryCrepe },
-  { title: 'Cinnamon Waffle', img: imgCinnamonWaffle },
-  { title: 'Honey Crepe', img: imgHoneyCrepe },
-  { title: 'Loaded Crepe', img: imgLoadedCrepe },
-  { title: 'Maple Banana Waffle', img: imgMapleBananaWaffle },
-  { title: 'Mixed Berry Kiwi Crepe', img: imgMixedBerryKiwiCrepe },
-  { title: 'Sprinkles Marshmallow Cone', img: imgSprinklesCone },
-  { title: 'Strawberry Kiwi Waffle', img: imgStrawberryKiwiWaffle },
-  { title: 'Banana Split', img: imgBananaSplit },
-  { title: 'Bursting with Blueberries', img: imgBurstingBlueberries },
-  { title: 'Mango Strawberry Splash', img: imgMangoStrawberrySplash },
-  { title: 'Mango Tango', img: imgMangoTango },
-  { title: 'Berry Delight', img: imgBerryDelight },
-  { title: 'Pumpkin Pie Caramel Apple', img: imgPumpkinPie },
+  { title: 'Cinnamon Waffle', img: imgCinnamonWaffle, caption: 'Warm waffle dusted with cinnamon sugar.' },
+  { title: 'Honey Crepe', img: imgHoneyCrepe, caption: 'Drizzled with local honey and a touch of lemon.' },
+  { title: 'Maple Banana Waffle', img: imgMapleBananaWaffle, caption: 'Caramelized banana topped with warm maple syrup.' },
+
+  { title: 'Banana Split', img: imgBananaSplit, caption: 'Classic banana split with scoops of ice cream, sauces and whipped cream.' },
+  { title: 'Bursting with Blueberries', img: imgBurstingBlueberries, caption: 'Fresh blueberries paired with cream or ice cream — bright and fruity.' },
+  { title: 'Mango Strawberry Splash', img: imgMangoStrawberrySplash, caption: 'Tropical mango and ripe strawberry served fresh.' },
+  { title: 'Mango Tango', img: imgMangoTango, caption: 'Mango-forward dessert with bold, tropical flavor.' },
+  { title: 'Pumpkin Pie Caramel Apple', img: imgPumpkinPie, caption: 'Seasonal crepe: pumpkin pie and caramel apple flavors.' },
+  { title: 'Fig Crepe', img: imgFigCrepe, caption: 'Fresh figs, honey, and whipped cream' },
 ];
 
 export function FeaturedDesserts() {
   const [items, setItems] = useState<FeaturedItem[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [err, setErr] = useState<string | null>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const itemsPerPage = 4;
+  const [modal, setModal] = useState<FeaturedItem | null>(null);
+  const [page, setPage] = useState<number>(0);
+  const itemsPerPage = 2;
+
+  const itemsList: FeaturedItem[] = (items ?? STATIC_FEATURED) as FeaturedItem[];
+  const totalPages = Math.max(1, Math.ceil(itemsList.length / itemsPerPage));
+  const start = page * itemsPerPage;
+  const displayed = itemsList.slice(start, start + itemsPerPage);
 
   useEffect(() => {
     let cancelled = false;
@@ -236,49 +234,59 @@ export function FeaturedDesserts() {
           </div>
         ) : (
           <div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {(items ?? STATIC_FEATURED).slice(currentIndex, currentIndex + 4).map((it, i) => (
-              <article
-                key={i}
-                className="group overflow-hidden transition-transform duration-300 hover:-translate-y-1"
+            <div className="flex items-center justify-between mb-4">
+              <button
+                aria-label="Previous"
+                onClick={() => setPage(p => Math.max(0, p - 1))}
+                disabled={page <= 0}
+                className={`inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/90 shadow hover:shadow-md transition ${page <= 0 ? 'opacity-40 cursor-not-allowed' : ''}`}
               >
-                <div className="relative aspect-[4/3] p-2 overflow-hidden">
-                  <img
-                    src={it.img}
-                    alt={it.title}
-                    loading="lazy"
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 transform scale-90"
-                  />
-                  {it.tag ? (
-                    <span className="absolute left-3 top-3 inline-flex items-center rounded-full bg-cyan-600/90 text-white text-xs font-semibold px-3 py-1 shadow">
-                      {it.tag}
-                    </span>
-                  ) : null}
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-60" />
-                </div>
+                <ChevronLeft className="w-5 h-5 text-cyan-900" /> Prev
+              </button>
 
-                <div className="p-5">
-                </div>
-              </article>
-            ))}
-          </div>
+              <div className="text-sm text-cyan-900 font-medium">
+                Page {page + 1} of {totalPages}
+              </div>
 
-          <div className="flex justify-center mt-6 gap-4">
-            <button 
-              onClick={() => setCurrentIndex(Math.max(0, currentIndex - 4))} 
-              disabled={currentIndex === 0}
-              className="px-4 py-2 bg-cyan-600 text-white rounded-full font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-cyan-700 transition"
-            >
-              Previous
-            </button>
-            <button 
-              onClick={() => setCurrentIndex(Math.min((items ?? STATIC_FEATURED).length - 4, currentIndex + 4))} 
-              disabled={currentIndex >= (items ?? STATIC_FEATURED).length - 4}
-              className="px-4 py-2 bg-cyan-600 text-white rounded-full font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-cyan-700 transition"
-            >
-              Next
-            </button>
-          </div>
+              <button
+                aria-label="Next"
+                onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+                disabled={page >= totalPages - 1}
+                className={`inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/90 shadow hover:shadow-md transition ${page >= totalPages - 1 ? 'opacity-40 cursor-not-allowed' : ''}`}
+              >
+                Next <ChevronRight className="w-5 h-5 text-cyan-900" />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {displayed.map((it, i) => (
+                <article
+                  key={start + i}
+                  className="group overflow-hidden transition-transform duration-300 hover:-translate-y-1 cursor-pointer"
+                >
+                  <div className="relative aspect-[4/3] p-2 overflow-hidden">
+                    <img
+                      src={it.img}
+                      alt={it.title}
+                      loading="lazy"
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 transform scale-90"
+                      onClick={() => setModal(it)}
+                    />
+                    {it.tag ? (
+                      <span className="absolute left-3 top-3 inline-flex items-center rounded-full bg-cyan-600/90 text-white text-xs font-semibold px-3 py-1 shadow">
+                        {it.tag}
+                      </span>
+                    ) : null}
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-60" />
+                  </div>
+
+                  <div className="p-4 text-left">
+                    <h4 className="text-lg font-bold text-cyan-900 mb-1">{it.title}</h4>
+                    {it.caption ? <p className="text-sm text-cyan-700">{it.caption}</p> : null}
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
         )}
 
