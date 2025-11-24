@@ -1,129 +1,251 @@
-import { Star } from 'lucide-react';
+import { Star } from "lucide-react";
 
-const menuItems = [
+type MenuItem = {
+  name: string;
+  description: string;
+  price: string;
+  popular?: boolean;
+};
+
+type MenuCategory = {
+  category: string;
+  icon: string;
+  items: MenuItem[];
+};
+
+const menuCategories: MenuCategory[] = [
   {
-    category: "Signature Pizzas",
+    category: "Hand-Tossed Pizzas",
     icon: "🍕",
     items: [
       {
-        name: "The Riverside Supreme",
-        description: "Pepperoni, sausage, peppers, onions, mushrooms, olives - loaded the way you love it",
+        name: "Classic Cheese Pizza",
+        description:
+          "House-made dough, signature red sauce, and a generous layer of real mozzarella.",
+        price: "From $10.99",
+        popular: true,
+      },
+      {
+        name: "Riverside Special",
+        description:
+          "Pepperoni, sausage, onions, green peppers, and mushrooms on a golden crust.",
         price: "From $14.99",
-        popular: true
+        popular: true,
       },
       {
-        name: "White Pie Perfection",
-        description: "Ricotta, mozzarella, garlic, and fresh basil on our signature crust",
-        price: "From $13.99",
-        popular: true
-      },
-      {
-        name: "Meat Lovers Paradise",
-        description: "Pepperoni, sausage, bacon, ham, and meatballs - for serious carnivores",
+        name: "Meat Lover’s",
+        description:
+          "Pepperoni, sausage, ham, and bacon for serious appetites.",
         price: "From $15.99",
-        popular: false
-      }
-    ]
+      },
+      {
+        name: "Veggie Garden",
+        description:
+          "Onions, peppers, mushrooms, black olives, and tomatoes for a lighter bite.",
+        price: "From $14.49",
+      },
+    ],
   },
   {
-    category: "Famous Subs",
+    category: "Subs & Cheesesteaks",
     icon: "🥖",
     items: [
       {
-        name: "Italian Hero",
-        description: "Salami, capicola, ham, provolone, lettuce, tomato, onions, oil & vinegar",
-        price: "From $10.99",
-        popular: true
+        name: "Riverside Cheesesteak",
+        description:
+          "Thin-sliced steak grilled with onions and peppers, smothered in melted cheese.",
+        price: "From $9.99",
+        popular: true,
       },
       {
-        name: "Chicken Parm Classic",
-        description: "Breaded chicken cutlet, marinara, melted mozzarella on toasted bread",
-        price: "From $11.99",
-        popular: true
+        name: "Italian Combo Sub",
+        description:
+          "Ham, salami, pepperoni, provolone, lettuce, tomato, onion, and house dressing.",
+        price: "From $9.49",
       },
       {
-        name: "Philly Cheesesteak",
-        description: "Shaved steak, sautéed onions, peppers, and melted American cheese",
-        price: "From $12.99",
-        popular: false
-      }
-    ]
+        name: "Chicken Philly",
+        description:
+          "Grilled chicken, onions, peppers, cheese, and a soft toasted roll.",
+        price: "From $9.49",
+      },
+      {
+        name: "Meatball Parmesan",
+        description:
+          "Slow-simmered meatballs, marinara, and melted mozzarella on a toasted sub roll.",
+        price: "From $9.49",
+      },
+    ],
   },
   {
-    category: "Wings & Sides",
+    category: "Wings & Appetizers",
     icon: "🍗",
     items: [
       {
-        name: "Buffalo Wings",
-        description: "Crispy wings tossed in your choice of sauce: mild, hot, BBQ, or garlic parm",
-        price: "From $11.99",
-        popular: true
+        name: "Traditional Wings",
+        description:
+          "Crispy bone-in wings tossed in your choice of Buffalo, BBQ, garlic parm, or plain.",
+        price: "From $9.99",
+        popular: true,
+      },
+      {
+        name: "Boneless Wings",
+        description:
+          "Hand-breaded bites with the same sauces you love on our traditional wings.",
+        price: "From $9.49",
       },
       {
         name: "Mozzarella Sticks",
-        description: "Golden fried and served with our house marinara sauce",
-        price: "$8.99",
-        popular: false
+        description:
+          "Golden-fried cheese sticks served with marinara for dipping.",
+        price: "$7.49",
       },
       {
         name: "Garlic Knots",
-        description: "Fresh-baked and brushed with garlic butter and parmesan",
+        description:
+          "Soft knots brushed with garlic butter and sprinkled with parmesan.",
         price: "$5.99",
-        popular: false
-      }
-    ]
-  }
+      },
+    ],
+  },
+  {
+    category: "Salads & Sides",
+    icon: "🥗",
+    items: [
+      {
+        name: "House Salad",
+        description:
+          "Crisp lettuce, tomatoes, cucumbers, onions, and shredded cheese with your choice of dressing.",
+        price: "$7.49",
+      },
+      {
+        name: "Chef or Antipasto Salad",
+        description:
+          "Loaded with meats, cheese, and veggies for a full-meal salad.",
+        price: "From $9.99",
+      },
+      {
+        name: "French Fries",
+        description:
+          "Classic golden fries, perfect on the side of any sub or burger.",
+        price: "$4.49",
+      },
+      {
+        name: "Loaded Fries",
+        description:
+          "Fries topped with cheese and bacon, served with ranch.",
+        price: "$7.99",
+      },
+    ],
+  },
+  {
+    category: "Burgers, Stromboli & More",
+    icon: "🍔",
+    items: [
+      {
+        name: "Classic Cheeseburger",
+        description:
+          "Griddled patty with American cheese, lettuce, tomato, and onion on a toasted bun.",
+        price: "From $8.99",
+      },
+      {
+        name: "Bacon Cheeseburger",
+        description:
+          "Everything you love about the classic, plus crispy bacon.",
+        price: "From $9.49",
+      },
+      {
+        name: "Stromboli",
+        description:
+          "Stuffed with cheese and your choice of toppings, baked until golden.",
+        price: "From $12.99",
+        popular: true,
+      },
+      {
+        name: "Pasta Dinner (Ziti or Spaghetti)",
+        description:
+          "Served with marinara, melted cheese, and garlic bread.",
+        price: "From $11.99",
+      },
+    ],
+  },
 ];
 
 export default function MenuHighlights() {
   return (
-    <section id="menu" className="py-20 bg-white">
+    <section id="menu" className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
+        <div className="text-center mb-12">
+          <p className="inline-block px-4 py-1 rounded-full bg-red-100 text-red-700 font-semibold text-sm mb-3">
+            Crowd Favorites
+          </p>
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Fan Favorites & Signature Dishes
+            Riverside Pizza &amp; Subs Menu Highlights
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Every item made fresh to order. Every bite packed with flavor. These are the dishes that keep our neighbors coming back.
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Hand-tossed pizzas, stacked subs, saucy wings, and all the classic
+            comfort food that keeps Newport coming back.
           </p>
         </div>
 
-        <div className="space-y-16">
-          {menuItems.map((category, idx) => (
-            <div key={idx}>
-              <div className="flex items-center space-x-3 mb-8">
-                <span className="text-5xl">{category.icon}</span>
-                <h3 className="text-3xl font-bold text-gray-900">{category.category}</h3>
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {menuCategories.map((category) => (
+            <div
+              key={category.category}
+              className="bg-white rounded-3xl shadow-lg border border-gray-100 p-6 flex flex-col"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center space-x-3">
+                  <div className="text-2xl">{category.icon}</div>
+                  <h3 className="text-xl font-bold text-gray-900">
+                    {category.category}
+                  </h3>
+                </div>
               </div>
-              <div className="grid md:grid-cols-3 gap-6">
-                {category.items.map((item, itemIdx) => (
+
+              <div className="space-y-4 flex-1">
+                {category.items.map((item) => (
                   <div
-                    key={itemIdx}
-                    className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-6 border-2 border-gray-200 hover:border-red-700 transition-all hover:shadow-xl"
+                    key={item.name}
+                    className="border-b border-gray-100 pb-4 last:border-b-0 last:pb-0"
                   >
-                    {item.popular && (
-                      <div className="flex items-center space-x-1 text-yellow-500 mb-3">
-                        <Star className="w-5 h-5 fill-current" />
-                        <span className="text-sm font-bold text-gray-900">Customer Favorite</span>
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <div className="flex items-center space-x-2">
+                          <p className="font-semibold text-gray-900">
+                            {item.name}
+                          </p>
+                          {item.popular && (
+                            <span className="inline-flex items-center text-xs font-semibold text-amber-600 bg-amber-100 px-2 py-0.5 rounded-full">
+                              <Star className="w-3 h-3 mr-1" />
+                              Popular
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-sm text-gray-600 mt-1">
+                          {item.description}
+                        </p>
                       </div>
-                    )}
-                    <h4 className="text-xl font-bold text-gray-900 mb-2">{item.name}</h4>
-                    <p className="text-gray-600 mb-4 leading-relaxed">{item.description}</p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold text-red-700">{item.price}</span>
-                      <button className="bg-red-700 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-800 transition-colors">
-                        Add to Order
-                      </button>
+                      <p className="text-sm font-semibold text-gray-800 whitespace-nowrap">
+                        {item.price}
+                      </p>
                     </div>
                   </div>
                 ))}
+              </div>
+
+              <div className="mt-6 text-right">
+                <p className="text-xs text-gray-400">
+                  Pricing and availability may vary. Call for today&apos;s
+                  specials.
+                </p>
               </div>
             </div>
           ))}
         </div>
 
         <div className="text-center mt-12">
-          <button className="bg-gray-900 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-gray-800 transition-colors shadow-xl">
+          <button className="bg-gray-900 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-800 transition-colors shadow-xl">
             View Complete Menu
           </button>
         </div>
