@@ -218,9 +218,9 @@ export default function Hero() {
           <img src={googleLogo} alt="Google" className="h-7 md:h-9 opacity-80 hover:opacity-100 transition-opacity" />
           <img src={bingLogo} alt="Bing" className="h-12 md:h-14 opacity-80 hover:opacity-100 transition-opacity" />
           <img src={yahooLogo} alt="Yahoo" className="h-12 md:h-14 opacity-80 hover:opacity-100 transition-opacity" />
-          <img src={duckGoLogo} alt="DuckDuckGo" className="h-12 md:h-14 opacity-80 hover:opacity-100 transition-opacity" />
-          <img src={braveLogo} alt="Brave" className="h-12 md:h-14 opacity-80 hover:opacity-100 transition-opacity" />
-          <img src={operaLogo} alt="Opera" className="h-12 md:h-14 opacity-80 hover:opacity-100 transition-opacity" />
+          <img src={duckGoLogo} alt="DuckDuckGo" className="h-20 md:h-24 opacity-80 hover:opacity-100 transition-opacity" />
+          <img src={braveLogo} alt="Brave" className="h-16 md:h-20 opacity-80 hover:opacity-100 transition-opacity" />
+          <img src={operaLogo} alt="Opera" className="h-16 md:h-20 opacity-80 hover:opacity-100 transition-opacity" />
         </div>
 
       </div>
