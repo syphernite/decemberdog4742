@@ -97,6 +97,9 @@ export default function Footer() {
           <p className="text-gray-400 text-sm mt-4 md:mt-0">
             Made with fresh ingredients and hometown pride in Newport, North Carolina.
           </p>
+          <p className="text-gray-400 text-sm mt-4 md:mt-0">
+            Made with ❤️ by Built4You
+          </p>
         </div>
       </div>
     </footer>

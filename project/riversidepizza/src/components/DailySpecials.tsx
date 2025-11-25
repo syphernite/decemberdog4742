@@ -10,74 +10,6 @@ type Deal = {
   highlight?: boolean;
 };
 
-// Original deals used as fallback if the sheet cannot be loaded
-const fallbackDeals: Deal[] = [
-  {
-    type: "special",
-    name: "Pizza Monday",
-    description: "Large 1-Topping Pizza",
-    price: "$12.99",
-    badge: "Monday",
-    highlight: true,
-  },
-  {
-    type: "special",
-    name: "Two-for-Tuesday",
-    description: "Buy One Sub, Get One 50% Off (Mix & Match)",
-    price: "Mix & Match",
-    badge: "Tuesday",
-    highlight: true,
-  },
-  {
-    type: "special",
-    name: "Wings Day",
-    description: "50 Wings + 2 Large Pizzas",
-    price: "$49.99",
-    badge: "Wednesday",
-    highlight: false,
-  },
-  {
-    type: "special",
-    name: "Family Feast",
-    description: "2 Large Pizzas + Garlic Knots + 2L Soda",
-    price: "$34.99",
-    badge: "Thursday",
-    highlight: false,
-  },
-  {
-    type: "special",
-    name: "Weekend Kickoff",
-    description: "Large Specialty Pizza",
-    price: "$16.99",
-    badge: "Friday",
-    highlight: true,
-  },
-  {
-    type: "combo",
-    name: "Quick Lunch Combo",
-    description: "2 Slices + Can of Soda",
-    price: "$6.99",
-    badge: "11am–3pm",
-    highlight: true,
-  },
-  {
-    type: "combo",
-    name: "Party Package",
-    description: "3 Large Pizzas + 30 Wings + 2L Soda",
-    price: "$59.99",
-    badge: "Anytime",
-    highlight: true,
-  },
-  {
-    type: "combo",
-    name: "Game Day Special",
-    description: "5 Large Pizzas + 50 Wings + Caesar Salad",
-    price: "$89.99",
-    badge: "Weekend Only",
-    highlight: true,
-  },
-];
-
 // Hard-coded Google Sheet CSV URL (swap to env/remove for production)
 function dealsCsvUrl(): string {
   return "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ6CIAxRwVbGFhvtQE1KuYbk0mdXEGtKd4S3dE1gPriePf-GazobvChPL4f6qn-VSdO0s9y1XJGliRG/pub?gid=0&single=true&output=csv";
@@ -134,7 +66,7 @@ const specialGradients = [
 ];
 
 export default function DailySpecials() {
-  const [deals, setDeals] = useState<Deal[]>(fallbackDeals);
+  const [deals, setDeals] = useState<Deal[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -151,12 +83,12 @@ export default function DailySpecials() {
         if (parsed.length) {
           setDeals(parsed);
         } else {
-          setDeals(fallbackDeals);
+          setDeals([]);
         }
       })
       .catch(() => {
-        setDeals(fallbackDeals);
-        setError("Showing house specials (sheet unavailable).");
+        setDeals([]);
+        setError("Specials currently unavailable. Check back later!");
       })
       .finally(() => setLoading(false));
   }, []);
@@ -204,7 +136,7 @@ export default function DailySpecials() {
             <h3 className="text-3xl font-bold mb-8 text-center">
               This Week&apos;s Specials
             </h3>
-            <div className="grid md:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 gap-4">
               {specials.map((s, idx) => {
                 const gradient =
                   specialGradients[idx % specialGradients.length];
