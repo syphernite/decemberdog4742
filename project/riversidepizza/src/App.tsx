@@ -13,20 +13,20 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white">
-      <nav className="bg-red-700 text-white sticky top-0 z-50 shadow-lg">
+    <div className="min-h-screen bg-warm-white">
+      <nav className="bg-italian-red text-warm-white sticky top-0 z-50 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center min-h-20">
             <div className="flex items-center space-x-3">
-              <div className="bg-white rounded-full p-2 shadow-md">
-                <Pizza className="w-6 h-6 text-red-700" />
+              <div className="bg-warm-white rounded-full p-2 shadow-md">
+                <Pizza className="w-6 h-6 text-italian-red" />
               </div>
               <div>
                 <div className="flex items-baseline space-x-2">
-                  <span className="text-xl md:text-2xl font-extrabold tracking-tight">
+                  <span className="text-2xl md:text-2xl font-extrabold tracking-tight">
                     Riverside Pizza &amp; Subs
                   </span>
-                  <span className="px-2 py-1 text-xs font-bold bg-white/10 rounded-full border border-red-300/40">
+                  <span className="px-2 py-1 text-xs font-bold bg-warm-white/10 rounded-full border border-italian-gold/40">
                     Newport, NC
                   </span>
                 </div>
@@ -37,21 +37,21 @@ function App() {
             </div>
 
             <div className="hidden md:flex items-center space-x-8 text-sm font-semibold">
-              <a href="#menu" className="hover:text-yellow-200 transition-colors">
+              <a href="#menu" className="hover:text-italian-gold transition-colors">
                 Menu
               </a>
-              <a href="#specials" className="hover:text-yellow-200 transition-colors">
+              <a href="#specials" className="hover:text-italian-gold transition-colors">
                 Specials
               </a>
-              <a href="#about" className="hover:text-yellow-200 transition-colors">
+              <a href="#about" className="hover:text-italian-gold transition-colors">
                 Our Story
               </a>
-              <a href="#contact" className="hover:text-yellow-200 transition-colors">
+              <a href="#contact" className="hover:text-italian-gold transition-colors">
                 Visit / Contact
               </a>
               <a
                 href="tel:5557897499"
-                className="inline-flex items-center px-4 py-2 rounded-full bg-white text-red-700 font-bold shadow-md hover:bg-yellow-100 transition-colors"
+                className="inline-flex items-center px-4 py-2 rounded-full bg-warm-white text-italian-red font-bold shadow-md hover:bg-italian-gold transition-colors"
               >
                 Call Now
               </a>

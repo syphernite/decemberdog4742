@@ -353,10 +353,10 @@ export default function MenuHighlights() {
     <section id="menu" className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <p className="inline-block px-4 py-1 rounded-full bg-red-100 text-red-700 font-semibold text-sm mb-3">
+          <p className="inline-block px-4 py-1 rounded-full bg-italian-red text-warm-white font-semibold text-sm mb-3">
             Our Menu
           </p>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-4">
             Riverside Pizza &amp; Subs Full Menu
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
@@ -368,7 +368,7 @@ export default function MenuHighlights() {
           {menuCategories.map((category) => (
             <div
               key={category.category}
-              className="bg-white rounded-3xl shadow-lg border border-gray-100 p-6 flex flex-col"
+              className="bg-warm-white rounded-3xl shadow-lg border border-soft-gray p-6 flex flex-col"
             >
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">
@@ -421,7 +421,7 @@ export default function MenuHighlights() {
         </div>
 
         <div className="text-center mt-12">
-          <button className="bg-gray-900 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-800 transition-colors shadow-xl">
+          <button className="bg-italian-red text-warm-white px-8 py-4 rounded-full font-bold text-lg hover:bg-terracotta transition-colors shadow-xl">
             Order Online
           </button>
         </div>
