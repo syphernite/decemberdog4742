@@ -58,11 +58,11 @@ function parseCsvToDeals(text: string): Deal[] {
 }
 
 const specialGradients = [
-  "from-red-500 to-orange-500",
-  "from-blue-500 to-cyan-500",
-  "from-emerald-500 to-lime-500",
-  "from-purple-500 to-pink-500",
-  "from-amber-500 to-red-500",
+  "from-italian-red to-terracotta",
+  "from-olive-green to-soft-gray",
+  "from-terracotta to-italian-gold",
+  "from-italian-gold to-italian-red",
+  "from-soft-gray to-olive-green",
 ];
 
 export default function DailySpecials() {
@@ -108,7 +108,7 @@ export default function DailySpecials() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+          <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4">
             Daily Specials & Combo Deals
           </h2>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
@@ -185,7 +185,7 @@ export default function DailySpecials() {
               {combos.map((combo, idx) => (
                 <div
                   key={`combo-${combo.name}-${idx}`}
-                  className="relative rounded-3xl p-6 md:p-8 bg-gradient-to-br from-red-800 to-red-600 shadow-2xl flex flex-col justify-between"
+                  className="relative rounded-3xl p-6 md:p-8 bg-gradient-to-br from-italian-red to-terracotta shadow-2xl flex flex-col justify-between"
                 >
                   <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_top,_#ffffff,_transparent_60%)] pointer-events-none" />
                   <div className="relative z-10">
@@ -218,7 +218,7 @@ export default function DailySpecials() {
                         Perfect for families, teams, and parties.
                       </span>
                     </div>
-                    <button className="bg-white text-red-700 px-6 py-3 rounded-lg font-bold hover:bg-yellow-300 transition-colors w-full">
+                    <button className="bg-warm-white text-italian-red px-6 py-3 rounded-lg font-bold hover:bg-italian-gold transition-colors w-full">
                       Order Now
                     </button>
                   </div>

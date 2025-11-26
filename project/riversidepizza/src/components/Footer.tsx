@@ -2,13 +2,13 @@ import { Pizza, Facebook, Instagram } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-white py-12">
+    <footer className="bg-olive-green text-warm-white py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           {/* Brand */}
           <div className="md:col-span-2">
             <div className="flex items-center space-x-3 mb-4">
-              <Pizza className="w-10 h-10 text-red-500" />
+              <Pizza className="w-10 h-10 text-italian-red" />
               <div>
                 <h3 className="text-2xl font-bold">Riverside Pizza &amp; Subs</h3>
                 <p className="text-gray-400 text-sm">Your Neighborhood Favorite Since 1999</p>
@@ -22,14 +22,14 @@ export default function Footer() {
               <a
                 href="#"
                 aria-label="Riverside Pizza & Subs on Facebook"
-                className="bg-gray-800 p-3 rounded-lg hover:bg-red-700 transition-colors"
+                className="bg-italian-red p-3 rounded-lg hover:bg-terracotta transition-colors"
               >
                 <Facebook className="w-5 h-5" />
               </a>
               <a
                 href="#"
                 aria-label="Riverside Pizza & Subs on Instagram"
-                className="bg-gray-800 p-3 rounded-lg hover:bg-red-700 transition-colors"
+                className="bg-italian-red p-3 rounded-lg hover:bg-terracotta transition-colors"
               >
                 <Instagram className="w-5 h-5" />
               </a>
@@ -90,14 +90,14 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-400 text-sm">
+        <div className="border-t border-soft-gray pt-8 flex flex-col md:flex-row justify-between items-center">
+          <p className="text-soft-gray text-sm">
             &copy; {new Date().getFullYear()} Riverside Pizza &amp; Subs. All rights reserved.
           </p>
-          <p className="text-gray-400 text-sm mt-4 md:mt-0">
+          <p className="text-soft-gray text-sm mt-4 md:mt-0">
             Made with fresh ingredients and hometown pride in Newport, North Carolina.
           </p>
-          <p className="text-gray-400 text-sm mt-4 md:mt-0">
+          <p className="text-soft-gray text-sm mt-4 md:mt-0">
             Made with ❤️ by Built4You
           </p>
         </div>

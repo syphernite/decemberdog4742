@@ -1,10 +1,10 @@
 import { Users, Star, Clock, Pizza } from 'lucide-react';
 
 const stats = [
-  { icon: Pizza, value: '25+', label: 'Years Serving', color: 'text-red-600' },
-  { icon: Star, value: '4.3', label: 'Star Rating', color: 'text-yellow-500' },
-  { icon: Users, value: '50K+', label: 'Happy Customers', color: 'text-blue-600' },
-  { icon: Clock, value: '30min', label: 'Average Wait', color: 'text-green-600' },
+  { icon: Pizza, value: '25+', label: 'Years Serving', color: 'text-italian-red' },
+  { icon: Star, value: '4.3', label: 'Star Rating', color: 'text-italian-gold' },
+  { icon: Users, value: '50K+', label: 'Happy Customers', color: 'text-olive-green' },
+  { icon: Clock, value: '30min', label: 'Average Wait', color: 'text-terracotta' },
 ];
 
 export default function About() {
@@ -13,7 +13,7 @@ export default function About() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
           <div>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-6">
               Old-School Pizza Shop Energy.
               <br />
               Modern Comfort Food Cravings.
@@ -46,7 +46,7 @@ export default function About() {
           </div>
         </div>
 
-        <div className="bg-white rounded-3xl p-8 md:p-10 shadow-xl">
+        <div className="bg-warm-white rounded-3xl p-8 md:p-10 shadow-xl">
           <h3 className="text-2xl font-bold text-gray-900 mb-4">What Makes Riverside Different</h3>
           <div className="grid md:grid-cols-3 gap-6">
             <div>

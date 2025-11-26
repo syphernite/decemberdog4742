@@ -6,7 +6,7 @@ export default function ContactForm() {
     <section id="contact" className="py-20 bg-gradient-to-br from-gray-50 to-orange-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-4">
             Get In Touch
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -17,10 +17,10 @@ export default function ContactForm() {
         <div className="grid md:grid-cols-1 gap-12">
           <div className="flex justify-center">
             <div className="space-y-8 max-w-md">
-              <div className="bg-white rounded-2xl p-8 shadow-lg">
+              <div className="bg-warm-white rounded-2xl p-8 shadow-lg">
                 <div className="flex items-start space-x-4">
-                  <div className="bg-red-100 rounded-lg p-3">
-                    <MapPin className="w-6 h-6 text-red-700" />
+                  <div className="bg-italian-red rounded-lg p-3">
+                    <MapPin className="w-6 h-6 text-warm-white" />
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-gray-900 mb-2">Visit Us</h3>
@@ -33,10 +33,10 @@ export default function ContactForm() {
                 </div>
               </div>
 
-              <div className="bg-white rounded-2xl p-8 shadow-lg">
+              <div className="bg-warm-white rounded-2xl p-8 shadow-lg">
                 <div className="flex items-start space-x-4">
-                  <div className="bg-red-100 rounded-lg p-3">
-                    <Clock className="w-6 h-6 text-red-700" />
+                  <div className="bg-italian-red rounded-lg p-3">
+                    <Clock className="w-6 h-6 text-warm-white" />
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-gray-900 mb-2">Hours</h3>
@@ -48,16 +48,16 @@ export default function ContactForm() {
                 </div>
               </div>
 
-              <div className="bg-white rounded-2xl p-8 shadow-lg">
+              <div className="bg-warm-white rounded-2xl p-8 shadow-lg">
                 <div className="flex items-start space-x-4">
-                  <div className="bg-red-100 rounded-lg p-3">
-                    <Phone className="w-6 h-6 text-red-700" />
+                  <div className="bg-italian-red rounded-lg p-3">
+                    <Phone className="w-6 h-6 text-warm-white" />
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-gray-900 mb-2">Call or Text</h3>
                     <a
                       href="tel:12522232277"
-                      className="text-2xl font-bold text-red-700 hover:text-red-800"
+                      className="text-2xl font-bold text-italian-red hover:text-terracotta"
                     >
                       (252) 223-2277
                     </a>
@@ -68,16 +68,16 @@ export default function ContactForm() {
                 </div>
               </div>
 
-              <div className="bg-white rounded-2xl p-8 shadow-lg">
+              <div className="bg-warm-white rounded-2xl p-8 shadow-lg">
                 <div className="flex items-start space-x-4">
-                  <div className="bg-red-100 rounded-lg p-3">
-                    <Mail className="w-6 h-6 text-red-700" />
+                  <div className="bg-italian-red rounded-lg p-3">
+                    <Mail className="w-6 h-6 text-warm-white" />
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-gray-900 mb-2">Email</h3>
                     <a
                       href="mailto:riversidepizzaandsubs@gmail.com"
-                      className="text-lg text-red-700 hover:text-red-800"
+                      className="text-lg text-italian-red hover:text-terracotta"
                     >
                       riversidepizzaandsubs@gmail.com
                     </a>
